@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-07-22T15:58:44.973Z",
+  "origin": "https://rafayamir-1.tail372a9e.ts.net/classic/",
+  "releaseId": "r5-level100-production-contextfix-20260722",
+  "engine": "phaser-3.90.0",
+  "browser": "Microsoft Edge via Playwright CLI",
+  "forcedRestore": {
+    "extension": "WEBGL_lose_context",
+    "before": {
+      "renderer": "webgl",
+      "scene": "Intro",
+      "status": "ready",
+      "contextLost": false,
+      "lossCount": 0,
+      "restoredCount": 0
+    },
+    "lost": {
+      "at": 1784735924169,
+      "status": "lost",
+      "contextLost": true,
+      "lossCount": 1,
+      "restoredCount": 0,
+      "performanceBudget": "fail",
+      "scene": "Intro"
+    },
+    "restored": {
+      "at": 1784735924973,
+      "latencyMs": 804,
+      "status": "ready",
+      "contextLost": false,
+      "lossCount": 1,
+      "restoredCount": 1,
+      "fallbackAttempted": false,
+      "scene": "Intro",
+      "urlPreserved": true
+    }
+  },
+  "timeoutFallback": {
+    "observed": true,
+    "restoreWithheld": true,
+    "timeoutMs": 10000,
+    "resultUrl": "https://rafayamir-1.tail372a9e.ts.net/classic/?paopao-renderer=canvas",
+    "renderer": "canvas",
+    "loopGuardPresent": true,
+    "stableAfterReload": true
+  },
+  "captures": {
+    "before": "output/playwright/r5-contextfix-before-loss-2026-07-22.png",
+    "after": "output/playwright/r5-contextfix-after-restore-2026-07-22.png",
+    "visuallyNonblank": true
+  },
+  "acceptance": {
+    "lossDetected": true,
+    "diagnosticsFailClosed": true,
+    "nativeRestoreCompleted": true,
+    "sameScenePreserved": true,
+    "sameUrlPreserved": true,
+    "boundedCanvasFallbackCompleted": true,
+    "passed": true
+  }
+}

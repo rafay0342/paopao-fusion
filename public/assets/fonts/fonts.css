@@ -1,0 +1,39 @@
+@font-face {
+  font-family: "PaoPao Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./paopao-display-cinzel-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PaoPao Display";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./paopao-display-cinzel-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fusion Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fusion-sans-sora-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fusion Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fusion-sans-sora-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Fusion Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./fusion-sans-sora-latin.woff2") format("woff2");
+}

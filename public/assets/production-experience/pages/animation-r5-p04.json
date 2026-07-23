@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 5,
+  "page": 4,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-431",
+      "acceptanceId": "AT-PF-animation-431",
+      "category": "animation",
+      "ordinal": 431,
+      "release": 5,
+      "title": "hand reticle — camera effect",
+      "subject": "hand reticle",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-431-790cad42",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle camera effect",
+          "accentHue": 162,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 3,
+              "y": 11,
+              "scale": 1.03,
+              "rotation": 0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 4,
+              "y": 16,
+              "scale": 0.97,
+              "rotation": -0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-432",
+      "acceptanceId": "AT-PF-animation-432",
+      "category": "animation",
+      "ordinal": 432,
+      "release": 5,
+      "title": "hand reticle — light effect",
+      "subject": "hand reticle",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-432-303b770f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle light effect",
+          "accentHue": 151,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 2,
+              "y": 2,
+              "scale": 0.9,
+              "rotation": -0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 3,
+              "y": 3,
+              "scale": 1.1,
+              "rotation": 0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-433",
+      "acceptanceId": "AT-PF-animation-433",
+      "category": "animation",
+      "ordinal": 433,
+      "release": 5,
+      "title": "hand reticle — material effect",
+      "subject": "hand reticle",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-433-0e7b32ac",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle material effect",
+          "accentHue": 284,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 960,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 9,
+              "y": 16,
+              "scale": 1.09,
+              "rotation": -0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 13,
+              "y": 23,
+              "scale": 0.9099999999999999,
+              "rotation": 0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-434",
+      "acceptanceId": "AT-PF-animation-434",
+      "category": "animation",
+      "ordinal": 434,
+      "release": 5,
+      "title": "hand reticle — particle effect",
+      "subject": "hand reticle",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-434-244f5539",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle particle effect",
+          "accentHue": 257,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 630,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -10,
+              "y": 14,
+              "scale": 1.05,
+              "rotation": 0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -14,
+              "y": 20,
+              "scale": 0.95,
+              "rotation": -0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-435",
+      "acceptanceId": "AT-PF-animation-435",
+      "category": "animation",
+      "ordinal": 435,
+      "release": 5,
+      "title": "hand reticle — audio-synced cue",
+      "subject": "hand reticle",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-435-6753876e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle audio-synced cue",
+          "accentHue": 326,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": 240,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 10,
+              "scale": 1.02,
+              "rotation": 0.16,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -8,
+              "y": 14,
+              "scale": 0.98,
+              "rotation": -0.16,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-436",
+      "acceptanceId": "AT-PF-animation-436",
+      "category": "animation",
+      "ordinal": 436,
+      "release": 5,
+      "title": "hand reticle — pause-safe variant",
+      "subject": "hand reticle",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-436-2c8f7db3",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle pause-safe variant",
+          "accentHue": 131,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 1170,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -16,
+              "y": -8,
+              "scale": 0.94,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -23,
+              "y": -12,
+              "scale": 1.06,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-437",
+      "acceptanceId": "AT-PF-animation-437",
+      "category": "animation",
+      "ordinal": 437,
+      "release": 5,
+      "title": "hand reticle — reduced-motion variant",
+      "subject": "hand reticle",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-437-53dfee34",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle reduced-motion variant",
+          "accentHue": 236,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1080,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 8,
+              "y": -10,
+              "scale": 1.05,
+              "rotation": -0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 11,
+              "y": -14,
+              "scale": 0.95,
+              "rotation": 0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-438",
+      "acceptanceId": "AT-PF-animation-438",
+      "category": "animation",
+      "ordinal": 438,
+      "release": 5,
+      "title": "hand reticle — low-tier variant",
+      "subject": "hand reticle",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-438-c8462cb2",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle low-tier variant",
+          "accentHue": 162,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -16,
+              "y": -13,
+              "scale": 1.13,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -23,
+              "y": -18,
+              "scale": 0.8700000000000001,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-439",
+      "acceptanceId": "AT-PF-animation-439",
+      "category": "animation",
+      "ordinal": 439,
+      "release": 5,
+      "title": "hand reticle — replay marker",
+      "subject": "hand reticle",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-439-423e6219",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle replay marker",
+          "accentHue": 161,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 540,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": 11,
+              "scale": 1.09,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -5,
+              "y": 15,
+              "scale": 0.9099999999999999,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-440",
+      "acceptanceId": "AT-PF-animation-440",
+      "category": "animation",
+      "ordinal": 440,
+      "release": 5,
+      "title": "hand reticle — golden capture",
+      "subject": "hand reticle",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-440-afe2c281",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "hand reticle golden capture",
+          "accentHue": 169,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 12,
+              "y": -13,
+              "scale": 1.09,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 17,
+              "y": -19,
+              "scale": 0.9099999999999999,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

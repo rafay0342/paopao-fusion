@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 5,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-471",
+      "acceptanceId": "AT-PF-animated-element-471",
+      "category": "animated-element",
+      "ordinal": 471,
+      "release": 5,
+      "title": "connection status — progress response",
+      "subject": "connection status",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-471-8acf2501",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status progress response",
+          "accentHue": 233,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 7,
+          "y": -15,
+          "scale": 1.01,
+          "rotation": 0.08,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-472",
+      "acceptanceId": "AT-PF-animated-element-472",
+      "category": "animated-element",
+      "ordinal": 472,
+      "release": 5,
+      "title": "connection status — loading response",
+      "subject": "connection status",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-472-6c9c1ab4",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status loading response",
+          "accentHue": 260,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 15,
+          "y": 18,
+          "scale": 0.9,
+          "rotation": 0.02,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-473",
+      "acceptanceId": "AT-PF-animated-element-473",
+      "category": "animated-element",
+      "ordinal": 473,
+      "release": 5,
+      "title": "connection status — disabled response",
+      "subject": "connection status",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-473-98036900",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status disabled response",
+          "accentHue": 80,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -7,
+          "y": -12,
+          "scale": 0.9299999999999999,
+          "rotation": 0.02,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-474",
+      "acceptanceId": "AT-PF-animated-element-474",
+      "category": "animated-element",
+      "ordinal": 474,
+      "release": 5,
+      "title": "connection status — reduced-motion substitute",
+      "subject": "connection status",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-474-b5f27df8",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status reduced-motion substitute",
+          "accentHue": 256,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -5,
+          "y": 16,
+          "scale": 0.88,
+          "rotation": 0.09,
+          "alpha": 0.78
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-475",
+      "acceptanceId": "AT-PF-animated-element-475",
+      "category": "animated-element",
+      "ordinal": 475,
+      "release": 5,
+      "title": "connection status — pause behavior",
+      "subject": "connection status",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-475-b033ceb5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status pause behavior",
+          "accentHue": 269,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -12,
+          "y": -4,
+          "scale": 1.07,
+          "rotation": 0.01,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-476",
+      "acceptanceId": "AT-PF-animated-element-476",
+      "category": "animated-element",
+      "ordinal": 476,
+      "release": 5,
+      "title": "connection status — resume behavior",
+      "subject": "connection status",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-476-2f1da88a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status resume behavior",
+          "accentHue": 322,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 14,
+          "y": -5,
+          "scale": 1.01,
+          "rotation": 0.05,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-477",
+      "acceptanceId": "AT-PF-animated-element-477",
+      "category": "animated-element",
+      "ordinal": 477,
+      "release": 5,
+      "title": "connection status — camera-relative behavior",
+      "subject": "connection status",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-477-371eb4d1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status camera-relative behavior",
+          "accentHue": 249,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -10,
+          "y": 6,
+          "scale": 1.01,
+          "rotation": 0.07,
+          "alpha": 0.96
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-478",
+      "acceptanceId": "AT-PF-animated-element-478",
+      "category": "animated-element",
+      "ordinal": 478,
+      "release": 5,
+      "title": "connection status — offscreen culling",
+      "subject": "connection status",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-478-148a41fc",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status offscreen culling",
+          "accentHue": 220,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 1,
+          "y": 7,
+          "scale": 0.9299999999999999,
+          "rotation": 0.1,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-479",
+      "acceptanceId": "AT-PF-animated-element-479",
+      "category": "animated-element",
+      "ordinal": 479,
+      "release": 5,
+      "title": "connection status — pool reset",
+      "subject": "connection status",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-479-4eea3560",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status pool reset",
+          "accentHue": 296,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -7,
+          "y": -12,
+          "scale": 0.99,
+          "rotation": -0.04,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-480",
+      "acceptanceId": "AT-PF-animated-element-480",
+      "category": "animated-element",
+      "ordinal": 480,
+      "release": 5,
+      "title": "connection status — canonical timing marker",
+      "subject": "connection status",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-480-fdbf3f71",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "connection status canonical timing marker",
+          "accentHue": 65,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 11,
+          "y": 4,
+          "scale": 1.07,
+          "rotation": 0.05,
+          "alpha": 0.87
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

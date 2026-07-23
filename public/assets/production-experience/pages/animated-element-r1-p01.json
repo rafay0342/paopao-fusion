@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 1,
+  "page": 1,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-001",
+      "acceptanceId": "AT-PF-animated-element-001",
+      "category": "animated-element",
+      "ordinal": 1,
+      "release": 1,
+      "title": "launcher portal — idle behavior",
+      "subject": "launcher portal",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-001-d127d02d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal idle behavior",
+          "accentHue": 261,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -6,
+          "y": 6,
+          "scale": 1.02,
+          "rotation": -0.05,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-002",
+      "acceptanceId": "AT-PF-animated-element-002",
+      "category": "animated-element",
+      "ordinal": 2,
+      "release": 1,
+      "title": "launcher portal — focus response",
+      "subject": "launcher portal",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-002-f822353a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal focus response",
+          "accentHue": 18,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 3,
+          "y": -11,
+          "scale": 1.03,
+          "rotation": 0.11,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-003",
+      "acceptanceId": "AT-PF-animated-element-003",
+      "category": "animated-element",
+      "ordinal": 3,
+      "release": 1,
+      "title": "launcher portal — hover response",
+      "subject": "launcher portal",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-003-54864e4a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal hover response",
+          "accentHue": 130,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 18,
+          "y": 14,
+          "scale": 0.88,
+          "rotation": -0.14,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-004",
+      "acceptanceId": "AT-PF-animated-element-004",
+      "category": "animated-element",
+      "ordinal": 4,
+      "release": 1,
+      "title": "launcher portal — press response",
+      "subject": "launcher portal",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-004-b18a1aff",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal press response",
+          "accentHue": 71,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -11,
+          "y": -18,
+          "scale": 0.95,
+          "rotation": -0.04,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-005",
+      "acceptanceId": "AT-PF-animated-element-005",
+      "category": "animated-element",
+      "ordinal": 5,
+      "release": 1,
+      "title": "launcher portal — entry motion",
+      "subject": "launcher portal",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-005-78649cb5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal entry motion",
+          "accentHue": 77,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -18,
+          "y": -14,
+          "scale": 0.94,
+          "rotation": 0.09,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-006",
+      "acceptanceId": "AT-PF-animated-element-006",
+      "category": "animated-element",
+      "ordinal": 6,
+      "release": 1,
+      "title": "launcher portal — exit motion",
+      "subject": "launcher portal",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-006-4c9108cd",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal exit motion",
+          "accentHue": 149,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 8,
+          "y": 17,
+          "scale": 0.97,
+          "rotation": 0.12,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-007",
+      "acceptanceId": "AT-PF-animated-element-007",
+      "category": "animated-element",
+      "ordinal": 7,
+      "release": 1,
+      "title": "launcher portal — state change",
+      "subject": "launcher portal",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-007-8e6ede8c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal state change",
+          "accentHue": 284,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 16,
+          "y": -5,
+          "scale": 0.91,
+          "rotation": 0.02,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-008",
+      "acceptanceId": "AT-PF-animated-element-008",
+      "category": "animated-element",
+      "ordinal": 8,
+      "release": 1,
+      "title": "launcher portal — success response",
+      "subject": "launcher portal",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-008-347abde3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal success response",
+          "accentHue": 35,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 2,
+          "y": -2,
+          "scale": 0.88,
+          "rotation": -0.1,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-009",
+      "acceptanceId": "AT-PF-animated-element-009",
+      "category": "animated-element",
+      "ordinal": 9,
+      "release": 1,
+      "title": "launcher portal — failure response",
+      "subject": "launcher portal",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-009-91299732",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal failure response",
+          "accentHue": 42,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -8,
+          "y": -17,
+          "scale": 1.06,
+          "rotation": 0.02,
+          "alpha": 0.74
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-010",
+      "acceptanceId": "AT-PF-animated-element-010",
+      "category": "animated-element",
+      "ordinal": 10,
+      "release": 1,
+      "title": "launcher portal — attention cue",
+      "subject": "launcher portal",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-010-a51a5e08",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "launcher portal attention cue",
+          "accentHue": 128,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 1,
+          "y": -11,
+          "scale": 0.98,
+          "rotation": -0.14,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

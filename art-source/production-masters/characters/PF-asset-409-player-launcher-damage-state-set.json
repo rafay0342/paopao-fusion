@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-409",
+  "release": 5,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "player launcher",
+  "facet": "damage-state set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.207,
+          "y": -0.45,
+          "rotationDeg": 6.6,
+          "length": 0.236
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.281,
+          "y": -0.35,
+          "rotationDeg": -7,
+          "length": 0.152
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.341,
+          "y": -0.25,
+          "rotationDeg": 11.3,
+          "length": 0.211
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.023,
+          "y": -0.15,
+          "rotationDeg": 7.8,
+          "length": 0.214
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.346,
+          "y": -0.05,
+          "rotationDeg": 0.9,
+          "length": 0.283
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.377,
+          "y": 0.05,
+          "rotationDeg": -9.9,
+          "length": 0.199
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.164,
+          "y": 0.15,
+          "rotationDeg": 11.4,
+          "length": 0.263
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.077,
+          "y": 0.25,
+          "rotationDeg": 1,
+          "length": 0.167
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.377,
+          "y": 0.35,
+          "rotationDeg": -8.4,
+          "length": 0.263
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.194,
+          "y": 0.45,
+          "rotationDeg": -1.1,
+          "length": 0.239
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "damage-state-set-1",
+        "durationMs": 940,
+        "loop": true,
+        "emphasis": 0.85,
+        "silhouetteKey": "player-launcher-71a5b3b6-1"
+      },
+      {
+        "id": "damage-state-set-2",
+        "durationMs": 1187,
+        "loop": false,
+        "emphasis": 0.53,
+        "silhouetteKey": "player-launcher-71a5b3b6-2"
+      },
+      {
+        "id": "damage-state-set-3",
+        "durationMs": 876,
+        "loop": false,
+        "emphasis": 0.17,
+        "silhouetteKey": "player-launcher-71a5b3b6-3"
+      },
+      {
+        "id": "damage-state-set-4",
+        "durationMs": 865,
+        "loop": false,
+        "emphasis": 0.09,
+        "silhouetteKey": "player-launcher-71a5b3b6-4"
+      },
+      {
+        "id": "damage-state-set-5",
+        "durationMs": 1013,
+        "loop": false,
+        "emphasis": 0.71,
+        "silhouetteKey": "player-launcher-71a5b3b6-5"
+      }
+    ]
+  }
+}

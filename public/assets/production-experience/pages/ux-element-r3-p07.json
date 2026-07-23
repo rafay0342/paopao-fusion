@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 3,
+  "page": 7,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-261",
+      "acceptanceId": "AT-PF-ux-element-261",
+      "category": "ux-element",
+      "ordinal": 261,
+      "release": 3,
+      "title": "inventory — primary action",
+      "subject": "inventory",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-261-6b0416a1",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "inventory primary action",
+          "description": "primary action for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 249
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-262",
+      "acceptanceId": "AT-PF-ux-element-262",
+      "category": "ux-element",
+      "ordinal": 262,
+      "release": 3,
+      "title": "inventory — secondary action",
+      "subject": "inventory",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-262-97663443",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "inventory secondary action",
+          "description": "secondary action for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 267
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-263",
+      "acceptanceId": "AT-PF-ux-element-263",
+      "category": "ux-element",
+      "ordinal": 263,
+      "release": 3,
+      "title": "inventory — status badge",
+      "subject": "inventory",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-263-b358529c",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "inventory status badge",
+          "description": "status badge for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 100
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-264",
+      "acceptanceId": "AT-PF-ux-element-264",
+      "category": "ux-element",
+      "ordinal": 264,
+      "release": 3,
+      "title": "inventory — progress indicator",
+      "subject": "inventory",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-264-6ffd0859",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "inventory progress indicator",
+          "description": "progress indicator for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 41
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-265",
+      "acceptanceId": "AT-PF-ux-element-265",
+      "category": "ux-element",
+      "ordinal": 265,
+      "release": 3,
+      "title": "inventory — focus target",
+      "subject": "inventory",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-265-45b7c87c",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "inventory focus target",
+          "description": "focus target for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 276
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-266",
+      "acceptanceId": "AT-PF-ux-element-266",
+      "category": "ux-element",
+      "ordinal": 266,
+      "release": 3,
+      "title": "inventory — keyboard hint",
+      "subject": "inventory",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-266-62f2e507",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "inventory keyboard hint",
+          "description": "keyboard hint for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 231
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-267",
+      "acceptanceId": "AT-PF-ux-element-267",
+      "category": "ux-element",
+      "ordinal": 267,
+      "release": 3,
+      "title": "inventory — controller hint",
+      "subject": "inventory",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-267-8663350e",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "inventory controller hint",
+          "description": "controller hint for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 270
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-268",
+      "acceptanceId": "AT-PF-ux-element-268",
+      "category": "ux-element",
+      "ordinal": 268,
+      "release": 3,
+      "title": "inventory — touch hint",
+      "subject": "inventory",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-268-2fae7317",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "inventory touch hint",
+          "description": "touch hint for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 119
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-269",
+      "acceptanceId": "AT-PF-ux-element-269",
+      "category": "ux-element",
+      "ordinal": 269,
+      "release": 3,
+      "title": "inventory — hand hint",
+      "subject": "inventory",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-269-c8d48fd1",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "inventory hand hint",
+          "description": "hand hint for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 89
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-270",
+      "acceptanceId": "AT-PF-ux-element-270",
+      "category": "ux-element",
+      "ordinal": 270,
+      "release": 3,
+      "title": "inventory — loading skeleton",
+      "subject": "inventory",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-270-e481a04a",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "inventory loading skeleton",
+          "description": "loading skeleton for inventory; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 306
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

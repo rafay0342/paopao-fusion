@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>PaoPao Fusion · The Shattered Crown</title>
+  <meta name="description" content="Restore the Aurora Crown across six corrupted realms in PaoPao Fusion: The Shattered Crown." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./assets/icons/favicon.ico" sizes="any" />
+  <link rel="icon" href="./assets/icons/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" sizes="180x180" />
+  <link rel="preload" href="./assets/fonts/paopao-display-cinzel-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./assets/fonts/fusion-sans-sora-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="./assets/fonts/fonts.css" />
+  <meta name="theme-color" content="#0b0f1e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PaoPao Fusion" />
+  <style>
+    :root {
+      color-scheme: dark;
+      background: #050713;
+    }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #050713;
+      overscroll-behavior: none;
+      touch-action: none;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    #app-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: max(28px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+      color: #f2e2b4;
+      background:
+        linear-gradient(180deg, rgba(5, 7, 20, .76), rgba(10, 7, 25, .94)),
+        radial-gradient(circle at 50% 34%, rgba(96, 69, 156, .22), transparent 42%),
+        url("./assets/brand/paopao-shattered-crown-key-art.png") center / cover no-repeat,
+        #060817;
+      font-family: "Fusion Sans", "Avenir Next", "Trebuchet MS", Arial, sans-serif;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 420ms ease, visibility 420ms step-end;
+      isolation: isolate;
+    }
+    #app-splash::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 38%, transparent 0 18%, rgba(4, 5, 16, .34) 58%, rgba(3, 4, 13, .86) 100%),
+        linear-gradient(90deg, rgba(3, 4, 13, .72), transparent 36% 64%, rgba(3, 4, 13, .72));
+    }
+    #app-splash.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .splash-lockup {
+      width: min(88vw, 520px);
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      animation: splashRise 650ms cubic-bezier(.18, .78, .24, 1) both;
+    }
+    .splash-sigil {
+      width: clamp(78px, 19vw, 112px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      margin-bottom: 21px;
+      border: 1px solid rgba(217, 173, 85, .58);
+      border-radius: 50%;
+      background: rgba(8, 9, 28, .78);
+      box-shadow: 0 12px 42px rgba(0, 0, 0, .42), inset 0 0 26px rgba(119, 81, 178, .16);
+    }
+    .splash-sigil svg {
+      width: 67%;
+      height: 67%;
+      filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .48));
+    }
+    .splash-eyebrow {
+      margin: 0 0 8px;
+      color: #d9ad55;
+      font-size: clamp(11px, 2.8vw, 14px);
+      font-weight: 700;
+      letter-spacing: .34em;
+      text-transform: uppercase;
+    }
+    .splash-title {
+      margin: 0;
+      color: #f5e7bd;
+      font-family: "PaoPao Display", Cinzel, Georgia, serif;
+      font-size: clamp(36px, 9.5vw, 62px);
+      font-weight: 700;
+      line-height: .98;
+      letter-spacing: .055em;
+      text-shadow: 0 6px 22px rgba(0, 0, 0, .68);
+    }
+    .splash-subtitle {
+      margin: 13px 0 0;
+      color: #b8cbe4;
+      font-size: clamp(11px, 2.8vw, 14px);
+      font-weight: 600;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+    }
+    .splash-divider {
+      width: min(58vw, 260px);
+      height: 1px;
+      margin: 30px 0 18px;
+      background: linear-gradient(90deg, transparent, rgba(217, 173, 85, .72), transparent);
+    }
+    .splash-status {
+      margin: 0;
+      color: #8fa1bd;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .splash-credit {
+      position: absolute;
+      right: 24px;
+      bottom: max(22px, env(safe-area-inset-bottom));
+      left: 24px;
+      margin: 0;
+      color: rgba(215, 221, 235, .68);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .16em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -6vmax;
+      z-index: 0;
+      background:
+        linear-gradient(120deg, rgba(4, 7, 20, .18), rgba(24, 9, 48, .42)),
+        url("./assets/worlds/v3/world-crystal-hd.jpg") center 68% / cover no-repeat;
+      filter: blur(18px) saturate(1.28) brightness(.68);
+      transform: scale(1.08);
+      animation: outerWorldDrift 16s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(83, 229, 255, .14), transparent 34%),
+        radial-gradient(circle at 16% 72%, rgba(133, 71, 236, .18), transparent 29%),
+        radial-gradient(circle at 84% 25%, rgba(255, 197, 92, .08), transparent 25%),
+        linear-gradient(90deg, rgba(2, 4, 14, .74), transparent 32%, transparent 68%, rgba(2, 4, 14, .74)),
+        radial-gradient(ellipse at center, transparent 40%, rgba(1, 3, 10, .76) 100%);
+    }
+    #game {
+      position: relative;
+      z-index: 2;
+      width: 100vw;
+      height: 100dvh;
+      min-height: 100vh;
+      isolation: isolate;
+      background:
+        radial-gradient(ellipse at center, rgba(35, 115, 154, .1), transparent 48%),
+        linear-gradient(180deg, rgba(5, 8, 22, .35), rgba(15, 7, 31, .28));
+    }
+    #game canvas {
+      display: block;
+      image-rendering: auto;
+      backface-visibility: hidden;
+      transform: translateZ(0);
+      outline: 1px solid rgba(116, 239, 255, .24);
+      box-shadow:
+        0 0 0 2px rgba(230, 181, 77, .08),
+        0 0 34px rgba(70, 224, 255, .18),
+        0 0 96px rgba(48, 22, 104, .42),
+        0 28px 90px rgba(0, 0, 0, .72);
+      animation: stageReveal .8s cubic-bezier(.18,.8,.2,1) both;
+    }
+    @keyframes stageReveal {
+      from { opacity: 0; filter: brightness(.55) saturate(.75); transform: scale(.985); }
+      to { opacity: 1; filter: none; transform: scale(1); }
+    }
+    @keyframes splashRise {
+      from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.99); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes outerWorldDrift {
+      from { transform: scale(1.08) translate3d(-.8%, -.6%, 0); }
+      to { transform: scale(1.14) translate3d(.8%, .7%, 0); }
+    }
+    @media (min-width: 760px) and (min-aspect-ratio: 3/4) {
+      #game canvas { border-radius: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      body::before, #game canvas, .splash-lockup { animation: none; }
+      #app-splash { transition-duration: 1ms; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-splash" role="status" aria-live="polite" aria-label="PaoPao Fusion is starting">
+    <div class="splash-lockup">
+      <div class="splash-sigil" aria-hidden="true">
+        <svg viewBox="0 0 100 100" role="img">
+          <path d="M18 69 12 31l24 18L50 18l14 31 24-18-6 38Z" fill="#d9ad55" />
+          <path d="m20 72 62 0-5 11H25Z" fill="#9f7136" />
+          <path d="m50 28 8 31H42Z" fill="#f0ce7a" opacity=".86" />
+          <circle cx="13" cy="29" r="5" fill="#7650aa" />
+          <circle cx="50" cy="16" r="5" fill="#e7bb58" />
+          <circle cx="87" cy="29" r="5" fill="#4d9bc4" />
+        </svg>
+      </div>
+      <p class="splash-eyebrow">RafayGen presents</p>
+      <h1 class="splash-title">PAOPAO FUSION</h1>
+      <p class="splash-subtitle">The Shattered Crown</p>
+      <div class="splash-divider" aria-hidden="true"></div>
+      <p class="splash-status" id="splash-status">Restoring the realm gateway</p>
+    </div>
+    <p class="splash-credit">Powered by RafayGen AI</p>
+  </div>
+  <div id="game"></div>
+  <script>
+    (() => {
+      const splash = document.getElementById('app-splash');
+      const status = document.getElementById('splash-status');
+      if (!splash) return;
+
+      const shownAt = performance.now();
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let dismissalRequested = false;
+
+      const dismissSplash = () => {
+        if (dismissalRequested) return;
+        dismissalRequested = true;
+        const minimumWait = Math.max(0, 900 - (performance.now() - shownAt));
+        window.setTimeout(() => {
+          splash.classList.add('is-leaving');
+          splash.setAttribute('aria-hidden', 'true');
+          window.setTimeout(() => splash.remove(), reducedMotion ? 20 : 440);
+        }, minimumWait);
+      };
+
+      window.addEventListener('paopao:boot-visible', dismissSplash, { once: true });
+      window.addEventListener('paopao:startup-error', () => {
+        if (status) status.textContent = 'Startup interrupted · reload to retry';
+      }, { once: true });
+    })();
+  </script>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

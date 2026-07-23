@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 4,
+  "page": 4,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-331",
+      "acceptanceId": "AT-PF-animated-element-331",
+      "category": "animated-element",
+      "ordinal": 331,
+      "release": 4,
+      "title": "artifact icon — progress response",
+      "subject": "artifact icon",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-331-69c010f2",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon progress response",
+          "accentHue": 90,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -6,
+          "y": 11,
+          "scale": 1.08,
+          "rotation": 0,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-332",
+      "acceptanceId": "AT-PF-animated-element-332",
+      "category": "animated-element",
+      "ordinal": 332,
+      "release": 4,
+      "title": "artifact icon — loading response",
+      "subject": "artifact icon",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-332-3f8d580d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon loading response",
+          "accentHue": 245,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 2,
+          "y": 7,
+          "scale": 0.96,
+          "rotation": 0.01,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-333",
+      "acceptanceId": "AT-PF-animated-element-333",
+      "category": "animated-element",
+      "ordinal": 333,
+      "release": 4,
+      "title": "artifact icon — disabled response",
+      "subject": "artifact icon",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-333-715e9cdb",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon disabled response",
+          "accentHue": 147,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 7,
+          "y": -6,
+          "scale": 0.9299999999999999,
+          "rotation": 0.09,
+          "alpha": 0.94
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-334",
+      "acceptanceId": "AT-PF-animated-element-334",
+      "category": "animated-element",
+      "ordinal": 334,
+      "release": 4,
+      "title": "artifact icon — reduced-motion substitute",
+      "subject": "artifact icon",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-334-3ed84b33",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon reduced-motion substitute",
+          "accentHue": 179,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 4,
+          "y": -11,
+          "scale": 1,
+          "rotation": -0.03,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-335",
+      "acceptanceId": "AT-PF-animated-element-335",
+      "category": "animated-element",
+      "ordinal": 335,
+      "release": 4,
+      "title": "artifact icon — pause behavior",
+      "subject": "artifact icon",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-335-c2ea1e58",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon pause behavior",
+          "accentHue": 96,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -7,
+          "y": -12,
+          "scale": 1.11,
+          "rotation": 0.14,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-336",
+      "acceptanceId": "AT-PF-animated-element-336",
+      "category": "animated-element",
+      "ordinal": 336,
+      "release": 4,
+      "title": "artifact icon — resume behavior",
+      "subject": "artifact icon",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-336-e2a25f31",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon resume behavior",
+          "accentHue": 97,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -14,
+          "y": -13,
+          "scale": 1,
+          "rotation": -0.12,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-337",
+      "acceptanceId": "AT-PF-animated-element-337",
+      "category": "animated-element",
+      "ordinal": 337,
+      "release": 4,
+      "title": "artifact icon — camera-relative behavior",
+      "subject": "artifact icon",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-337-5e30c2f0",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon camera-relative behavior",
+          "accentHue": 96,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 13,
+          "y": 9,
+          "scale": 1.05,
+          "rotation": 0.07,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-338",
+      "acceptanceId": "AT-PF-animated-element-338",
+      "category": "animated-element",
+      "ordinal": 338,
+      "release": 4,
+      "title": "artifact icon — offscreen culling",
+      "subject": "artifact icon",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-338-73750857",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon offscreen culling",
+          "accentHue": 207,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -9,
+          "y": 10,
+          "scale": 0.89,
+          "rotation": 0.04,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-339",
+      "acceptanceId": "AT-PF-animated-element-339",
+      "category": "animated-element",
+      "ordinal": 339,
+      "release": 4,
+      "title": "artifact icon — pool reset",
+      "subject": "artifact icon",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-339-c0d5276d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon pool reset",
+          "accentHue": 13,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 0,
+          "y": 16,
+          "scale": 1.05,
+          "rotation": 0.02,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-340",
+      "acceptanceId": "AT-PF-animated-element-340",
+      "category": "animated-element",
+      "ordinal": 340,
+      "release": 4,
+      "title": "artifact icon — canonical timing marker",
+      "subject": "artifact icon",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-340-21f53c1e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "artifact icon canonical timing marker",
+          "accentHue": 38,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -1,
+          "y": -12,
+          "scale": 1.1,
+          "rotation": -0.1,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

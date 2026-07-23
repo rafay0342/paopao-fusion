@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "completedAt": "2026-07-22T16:31:28.000Z",
+  "backupFile": "backups/private/paopao-level100-contextfix-r5-20260722-213125.pbackup",
+  "backupBytes": 1443027,
+  "backupSha256": "84565aea6222e0c383373676b3bea38687372ad4f47f857069cc0f5ba00cdcbd",
+  "keyProtection": {
+    "method": "Windows PowerShell SecureString DPAPI",
+    "scope": "CurrentUser",
+    "sidecar": "backups/private/paopao-level100-contextfix-r5-20260722-213125.pbackup.key.dpapi",
+    "sidecarBytes": 716,
+    "roundTripVerified": true,
+    "published": false
+  },
+  "drill": {
+    "mode": "isolated-create-verify-restore",
+    "sqliteQuickCheck": "ok",
+    "databaseHashMatched": true,
+    "databaseSha256": "182279d5680d4014f5f4b19f330ecef039f9ae8fc6511d94273750b55e5d1c4e",
+    "sessionSecretVerified": true,
+    "signingKeyringVerified": true,
+    "releaseStatePolicy": "reference-only",
+    "releaseStateRestored": false,
+    "releaseReference": {
+      "active": "r5-level100-production-contextfix-20260722",
+      "contentSha256": "10694cddc96bc9fa393601e94830825ac02f97864aecf48761199c9eb4630996"
+    }
+  },
+  "auditChainEntrySha256": "36b9eb16ed648b9afbdc759bf4e4836f711c1ff0ab9731ed4857b81438e0d71c"
+}

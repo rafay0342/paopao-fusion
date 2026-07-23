@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-07-22T16:29:57.902Z",
+  "origin": "https://rafayamir-1.tail372a9e.ts.net",
+  "releaseId": "r5-level100-production-contextfix-20260722",
+  "apiSchemaVersion": 20,
+  "engine": "phaser-3.90.0",
+  "browser": "Microsoft Edge via Playwright CLI",
+  "method": "fresh isolated browser profiles; Navigation Timing and Resource Timing encodedBodySize, with the full bundled cinematic size added conservatively when media range loading was not exposed as a resource-timing entry",
+  "limits": {
+    "classicInitialEncodedBytes": 78643200,
+    "classicInitialEncodedMiB": 75
+  },
+  "launcher": {
+    "url": "https://rafayamir-1.tail372a9e.ts.net/",
+    "entryCount": 7,
+    "transferBytes": 2829820,
+    "encodedBytes": 2827720,
+    "largestEncodedResource": {
+      "path": "/assets/brand/paopao-shattered-crown-key-art.png",
+      "encodedBytes": 2562558
+    }
+  },
+  "classic": {
+    "url": "https://rafayamir-1.tail372a9e.ts.net/classic/",
+    "measuredEntryCount": 51,
+    "measuredTransferBytes": 12541191,
+    "measuredEncodedBytes": 13727217,
+    "bundledCinematicFullBytes": 45954829,
+    "conservativeEncodedBytes": 59682046,
+    "conservativeEncodedMiB": 56.917234,
+    "budgetMarginBytes": 18961154,
+    "withinBudget": true
+  },
+  "runtimeBoundary": {
+    "renderer": "webgl",
+    "activeScene": "Intro",
+    "contextStatus": "ready",
+    "contextLost": false,
+    "contextLossCount": 0,
+    "note": "This capture certifies payload and asset integrity only; its headless FPS was not used as performance-soak evidence."
+  },
+  "integrity": {
+    "classicHtml": {
+      "path": "/classic/",
+      "sha256": "bea317fa432e0cdeb051cc5b60ab005d9b196ba88216cf2a2c941b06708d2cd2",
+      "liveMatchesRelease": true
+    },
+    "applicationBundle": {
+      "path": "/assets/index-DyRX5DCM.js",
+      "sha256": "b875a53195f430cf33796ea7f5a0fe01c8e1d82a62489c244271ef2f1004f003",
+      "liveMatchesRelease": true
+    },
+    "handWorker": {
+      "path": "/assets/handtracking.worker-Dk3ViyOZ.js",
+      "sha256": "3cd57648a5cb7b69790777fe7e407017127b263daec8c8584fe6fce5535b27c9",
+      "liveMatchesRelease": true
+    }
+  }
+}

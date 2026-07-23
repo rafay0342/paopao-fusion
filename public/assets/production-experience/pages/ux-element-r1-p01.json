@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 1,
+  "page": 1,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-001",
+      "acceptanceId": "AT-PF-ux-element-001",
+      "category": "ux-element",
+      "ordinal": 1,
+      "release": 1,
+      "title": "launcher — primary action",
+      "subject": "launcher",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-001-2b9f8a37",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "launcher primary action",
+          "description": "primary action for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 215
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-002",
+      "acceptanceId": "AT-PF-ux-element-002",
+      "category": "ux-element",
+      "ordinal": 2,
+      "release": 1,
+      "title": "launcher — secondary action",
+      "subject": "launcher",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-002-4b9cfffd",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "launcher secondary action",
+          "description": "secondary action for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 109
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-003",
+      "acceptanceId": "AT-PF-ux-element-003",
+      "category": "ux-element",
+      "ordinal": 3,
+      "release": 1,
+      "title": "launcher — status badge",
+      "subject": "launcher",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-003-fb88cfae",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "launcher status badge",
+          "description": "status badge for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 198
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-004",
+      "acceptanceId": "AT-PF-ux-element-004",
+      "category": "ux-element",
+      "ordinal": 4,
+      "release": 1,
+      "title": "launcher — progress indicator",
+      "subject": "launcher",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-004-962bf98b",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "launcher progress indicator",
+          "description": "progress indicator for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 11
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-005",
+      "acceptanceId": "AT-PF-ux-element-005",
+      "category": "ux-element",
+      "ordinal": 5,
+      "release": 1,
+      "title": "launcher — focus target",
+      "subject": "launcher",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-005-f73871e6",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "launcher focus target",
+          "description": "focus target for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 286
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-006",
+      "acceptanceId": "AT-PF-ux-element-006",
+      "category": "ux-element",
+      "ordinal": 6,
+      "release": 1,
+      "title": "launcher — keyboard hint",
+      "subject": "launcher",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-006-de2c2b79",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "launcher keyboard hint",
+          "description": "keyboard hint for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 265
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-007",
+      "acceptanceId": "AT-PF-ux-element-007",
+      "category": "ux-element",
+      "ordinal": 7,
+      "release": 1,
+      "title": "launcher — controller hint",
+      "subject": "launcher",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-007-aafba3b8",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "launcher controller hint",
+          "description": "controller hint for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 288
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-008",
+      "acceptanceId": "AT-PF-ux-element-008",
+      "category": "ux-element",
+      "ordinal": 8,
+      "release": 1,
+      "title": "launcher — touch hint",
+      "subject": "launcher",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-008-b5c30bc5",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "launcher touch hint",
+          "description": "touch hint for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 149
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-009",
+      "acceptanceId": "AT-PF-ux-element-009",
+      "category": "ux-element",
+      "ordinal": 9,
+      "release": 1,
+      "title": "launcher — hand hint",
+      "subject": "launcher",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-009-1fffc9cf",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "launcher hand hint",
+          "description": "hand hint for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 199
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-010",
+      "acceptanceId": "AT-PF-ux-element-010",
+      "category": "ux-element",
+      "ordinal": 10,
+      "release": 1,
+      "title": "launcher — loading skeleton",
+      "subject": "launcher",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-010-d9a5a1f8",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "launcher loading skeleton",
+          "description": "loading skeleton for launcher; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 176
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

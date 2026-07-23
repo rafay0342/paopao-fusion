@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 3,
+  "page": 10,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-291",
+      "acceptanceId": "AT-PF-animation-291",
+      "category": "animation",
+      "ordinal": 291,
+      "release": 3,
+      "title": "boss — camera effect",
+      "subject": "boss",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-291-b12a474a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss camera effect",
+          "accentHue": 154,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -15,
+              "y": 13,
+              "scale": 0.97,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -21,
+              "y": 19,
+              "scale": 1.03,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-292",
+      "acceptanceId": "AT-PF-animation-292",
+      "category": "animation",
+      "ordinal": 292,
+      "release": 3,
+      "title": "boss — light effect",
+      "subject": "boss",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-292-986cba63",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss light effect",
+          "accentHue": 275,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -7,
+              "y": 6,
+              "scale": 0.98,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -10,
+              "y": 8,
+              "scale": 1.02,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-293",
+      "acceptanceId": "AT-PF-animation-293",
+      "category": "animation",
+      "ordinal": 293,
+      "release": 3,
+      "title": "boss — material effect",
+      "subject": "boss",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-293-3d98d71c",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss material effect",
+          "accentHue": 276,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -12,
+              "y": 5,
+              "scale": 0.97,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -17,
+              "y": 7,
+              "scale": 1.03,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-294",
+      "acceptanceId": "AT-PF-animation-294",
+      "category": "animation",
+      "ordinal": 294,
+      "release": 3,
+      "title": "boss — particle effect",
+      "subject": "boss",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-294-9505f21d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss particle effect",
+          "accentHue": 245,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 810,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 4,
+              "y": -15,
+              "scale": 1.1400000000000001,
+              "rotation": 0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 5,
+              "y": -21,
+              "scale": 0.8599999999999999,
+              "rotation": -0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-295",
+      "acceptanceId": "AT-PF-animation-295",
+      "category": "animation",
+      "ordinal": 295,
+      "release": 3,
+      "title": "boss — audio-synced cue",
+      "subject": "boss",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-295-7c93d406",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss audio-synced cue",
+          "accentHue": 54,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": 780,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 16,
+              "y": 17,
+              "scale": 1.13,
+              "rotation": 0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 23,
+              "y": 24,
+              "scale": 0.8700000000000001,
+              "rotation": -0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-296",
+      "acceptanceId": "AT-PF-animation-296",
+      "category": "animation",
+      "ordinal": 296,
+      "release": 3,
+      "title": "boss — pause-safe variant",
+      "subject": "boss",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-296-cc95557f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss pause-safe variant",
+          "accentHue": 175,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": -5,
+              "scale": 0.87,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": -7,
+              "scale": 1.13,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-297",
+      "acceptanceId": "AT-PF-animation-297",
+      "category": "animation",
+      "ordinal": 297,
+      "release": 3,
+      "title": "boss — reduced-motion variant",
+      "subject": "boss",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-297-b45950d4",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss reduced-motion variant",
+          "accentHue": 156,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 150,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": 11,
+              "scale": 1.09,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -2,
+              "y": 15,
+              "scale": 0.9099999999999999,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-298",
+      "acceptanceId": "AT-PF-animation-298",
+      "category": "animation",
+      "ordinal": 298,
+      "release": 3,
+      "title": "boss — low-tier variant",
+      "subject": "boss",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-298-48e655ae",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss low-tier variant",
+          "accentHue": 126,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -5,
+              "y": 6,
+              "scale": 1.05,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -7,
+              "y": 8,
+              "scale": 0.95,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-299",
+      "acceptanceId": "AT-PF-animation-299",
+      "category": "animation",
+      "ordinal": 299,
+      "release": 3,
+      "title": "boss — replay marker",
+      "subject": "boss",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-299-c8d219e1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss replay marker",
+          "accentHue": 105,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -2,
+              "y": 2,
+              "scale": 1.01,
+              "rotation": -0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -3,
+              "y": 3,
+              "scale": 0.99,
+              "rotation": 0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-300",
+      "acceptanceId": "AT-PF-animation-300",
+      "category": "animation",
+      "ordinal": 300,
+      "release": 3,
+      "title": "boss — golden capture",
+      "subject": "boss",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-300-a51a9629",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "boss golden capture",
+          "accentHue": 97,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 6,
+              "y": -10,
+              "scale": 1.1400000000000001,
+              "rotation": -0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 8,
+              "y": -14,
+              "scale": 0.8599999999999999,
+              "rotation": 0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

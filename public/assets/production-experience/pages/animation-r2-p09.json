@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 2,
+  "page": 9,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-181",
+      "acceptanceId": "AT-PF-animation-181",
+      "category": "animation",
+      "ordinal": 181,
+      "release": 2,
+      "title": "floating fall — intro clip",
+      "subject": "floating fall",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-181-68fd9c76",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall intro clip",
+          "accentHue": 286,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 600,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -11,
+              "y": 9,
+              "scale": 0.92,
+              "rotation": -0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -16,
+              "y": 13,
+              "scale": 1.08,
+              "rotation": 0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-182",
+      "acceptanceId": "AT-PF-animation-182",
+      "category": "animation",
+      "ordinal": 182,
+      "release": 2,
+      "title": "floating fall — idle loop",
+      "subject": "floating fall",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-182-43a711d6",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall idle loop",
+          "accentHue": 150,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Cubic.easeOut",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 1,
+              "y": 6,
+              "scale": 1.08,
+              "rotation": 0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 1,
+              "y": 9,
+              "scale": 0.9199999999999999,
+              "rotation": -0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-183",
+      "acceptanceId": "AT-PF-animation-183",
+      "category": "animation",
+      "ordinal": 183,
+      "release": 2,
+      "title": "floating fall — anticipation clip",
+      "subject": "floating fall",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-183-e86379bf",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall anticipation clip",
+          "accentHue": 223,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -3,
+              "scale": 0.87,
+              "rotation": 0.1,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -4,
+              "y": -4,
+              "scale": 1.13,
+              "rotation": -0.1,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-184",
+      "acceptanceId": "AT-PF-animation-184",
+      "category": "animation",
+      "ordinal": 184,
+      "release": 2,
+      "title": "floating fall — action clip",
+      "subject": "floating fall",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-184-c3a8c19a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall action clip",
+          "accentHue": 290,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 630,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -11,
+              "y": -8,
+              "scale": 0.97,
+              "rotation": -0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -16,
+              "y": -11,
+              "scale": 1.03,
+              "rotation": 0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-185",
+      "acceptanceId": "AT-PF-animation-185",
+      "category": "animation",
+      "ordinal": 185,
+      "release": 2,
+      "title": "floating fall — contact effect",
+      "subject": "floating fall",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-185-beece15f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall contact effect",
+          "accentHue": 191,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 540,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -8,
+              "y": -3,
+              "scale": 0.98,
+              "rotation": 0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -12,
+              "y": -5,
+              "scale": 1.02,
+              "rotation": -0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-186",
+      "acceptanceId": "AT-PF-animation-186",
+      "category": "animation",
+      "ordinal": 186,
+      "release": 2,
+      "title": "floating fall — release effect",
+      "subject": "floating fall",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-186-0cca5f54",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall release effect",
+          "accentHue": 108,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 11,
+              "y": 4,
+              "scale": 0.97,
+              "rotation": -0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 16,
+              "y": 5,
+              "scale": 1.03,
+              "rotation": 0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-187",
+      "acceptanceId": "AT-PF-animation-187",
+      "category": "animation",
+      "ordinal": 187,
+      "release": 2,
+      "title": "floating fall — success clip",
+      "subject": "floating fall",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-187-518d97c5",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall success clip",
+          "accentHue": 285,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 6,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -8,
+              "y": 8,
+              "scale": 1.04,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-188",
+      "acceptanceId": "AT-PF-animation-188",
+      "category": "animation",
+      "ordinal": 188,
+      "release": 2,
+      "title": "floating fall — failure clip",
+      "subject": "floating fall",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-188-4a94378a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall failure clip",
+          "accentHue": 10,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 660,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 8,
+              "y": 16,
+              "scale": 0.88,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 11,
+              "y": 23,
+              "scale": 1.12,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-189",
+      "acceptanceId": "AT-PF-animation-189",
+      "category": "animation",
+      "ordinal": 189,
+      "release": 2,
+      "title": "floating fall — transition in",
+      "subject": "floating fall",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-189-f4e9ef7c",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall transition in",
+          "accentHue": 300,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 330,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -11,
+              "scale": 1.06,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -5,
+              "y": -16,
+              "scale": 0.94,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-190",
+      "acceptanceId": "AT-PF-animation-190",
+      "category": "animation",
+      "ordinal": 190,
+      "release": 2,
+      "title": "floating fall — transition out",
+      "subject": "floating fall",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-190-7e5ad14d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "floating fall transition out",
+          "accentHue": 157,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 10,
+              "scale": 0.9,
+              "rotation": -0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -9,
+              "y": 14,
+              "scale": 1.1,
+              "rotation": 0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

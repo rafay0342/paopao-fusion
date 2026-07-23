@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-088",
+  "release": 1,
+  "allocation": "music-ambience-sfx",
+  "subject": "Emerald realm",
+  "facet": "accessibility cue master",
+  "masterType": "procedural-audio-score",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "audio": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "tempoBpm": 80,
+    "meter": [
+      4,
+      4
+    ],
+    "masterGainDb": -8,
+    "loopBeats": 4,
+    "tracks": [
+      {
+        "id": "accessibility-cue-master-layer-1",
+        "role": "crystal-lead",
+        "oscillator": "sawtooth",
+        "envelope": {
+          "attackMs": 103,
+          "decayMs": 179,
+          "sustain": 0.7,
+          "releaseMs": 405
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 1476,
+          "resonance": 5.21
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 123.75,
+            "velocity": 0.55,
+            "pan": -0.59
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 1,
+            "frequencyHz": 220,
+            "velocity": 0.76,
+            "pan": 0.3
+          },
+          {
+            "id": "note-03",
+            "atBeats": 2,
+            "durationBeats": 0.75,
+            "frequencyHz": 137.5,
+            "velocity": 0.74,
+            "pan": 0.45
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 206.25,
+            "velocity": 0.86,
+            "pan": -0.36
+          },
+          {
+            "id": "note-05",
+            "atBeats": 3,
+            "durationBeats": 0.75,
+            "frequencyHz": 165,
+            "velocity": 0.59,
+            "pan": 0.36
+          },
+          {
+            "id": "note-06",
+            "atBeats": 3.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 123.75,
+            "velocity": 0.71,
+            "pan": -0.34
+          },
+          {
+            "id": "note-07",
+            "atBeats": 4,
+            "durationBeats": 1,
+            "frequencyHz": 123.75,
+            "velocity": 0.49,
+            "pan": 0.01
+          },
+          {
+            "id": "note-08",
+            "atBeats": 5,
+            "durationBeats": 1,
+            "frequencyHz": 220,
+            "velocity": 0.68,
+            "pan": 0.23
+          }
+        ]
+      },
+      {
+        "id": "accessibility-cue-master-layer-2",
+        "role": "warm-pad",
+        "oscillator": "square",
+        "envelope": {
+          "attackMs": 111,
+          "decayMs": 331,
+          "sustain": 0.67,
+          "releaseMs": 749
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 4960,
+          "resonance": 1.68
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 261.67,
+            "velocity": 0.75,
+            "pan": 0.24
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 0.75,
+            "frequencyHz": 294.38,
+            "velocity": 0.65,
+            "pan": 0.61
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.75,
+            "durationBeats": 0.75,
+            "frequencyHz": 176.63,
+            "velocity": 0.65,
+            "pan": 0.15
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 588.75,
+            "velocity": 0.9,
+            "pan": -0.48
+          },
+          {
+            "id": "note-05",
+            "atBeats": 3.25,
+            "durationBeats": 1,
+            "frequencyHz": 209.33,
+            "velocity": 0.42,
+            "pan": 0.21
+          },
+          {
+            "id": "note-06",
+            "atBeats": 4.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 294.38,
+            "velocity": 0.72,
+            "pan": -0.54
+          },
+          {
+            "id": "note-07",
+            "atBeats": 5,
+            "durationBeats": 0.5,
+            "frequencyHz": 235.5,
+            "velocity": 0.85,
+            "pan": 0.33
+          },
+          {
+            "id": "note-08",
+            "atBeats": 5.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 261.67,
+            "velocity": 0.82,
+            "pan": -0.55
+          }
+        ]
+      },
+      {
+        "id": "accessibility-cue-master-layer-3",
+        "role": "pulse-bass",
+        "oscillator": "sine",
+        "envelope": {
+          "attackMs": 60,
+          "decayMs": 355,
+          "sustain": 0.72,
+          "releaseMs": 201
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 6517,
+          "resonance": 0.4
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 408,
+            "velocity": 0.49,
+            "pan": -0.36
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 0.5,
+            "frequencyHz": 816,
+            "velocity": 0.78,
+            "pan": 0.68
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.5,
+            "durationBeats": 0.25,
+            "frequencyHz": 272,
+            "velocity": 0.76,
+            "pan": -0.27
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 229.5,
+            "velocity": 0.46,
+            "pan": -0.63
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2,
+            "durationBeats": 0.75,
+            "frequencyHz": 229.5,
+            "velocity": 0.73,
+            "pan": 0.22
+          },
+          {
+            "id": "note-06",
+            "atBeats": 2.75,
+            "durationBeats": 1,
+            "frequencyHz": 306,
+            "velocity": 0.6,
+            "pan": 0.15
+          },
+          {
+            "id": "note-07",
+            "atBeats": 3.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 382.5,
+            "velocity": 0.52,
+            "pan": 0.46
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4,
+            "durationBeats": 0.5,
+            "frequencyHz": 255,
+            "velocity": 0.7,
+            "pan": 0.56
+          }
+        ]
+      },
+      {
+        "id": "accessibility-cue-master-layer-4",
+        "role": "prism-percussion",
+        "oscillator": "triangle",
+        "envelope": {
+          "attackMs": 110,
+          "decayMs": 183,
+          "sustain": 0.68,
+          "releaseMs": 662
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 1456,
+          "resonance": 2.41
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 470.63,
+            "velocity": 0.51,
+            "pan": -0.23
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 0.5,
+            "frequencyHz": 282.38,
+            "velocity": 0.49,
+            "pan": -0.4
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 564.75,
+            "velocity": 0.69,
+            "pan": 0.61
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2,
+            "durationBeats": 1,
+            "frequencyHz": 470.63,
+            "velocity": 0.4,
+            "pan": 0.25
+          },
+          {
+            "id": "note-05",
+            "atBeats": 3,
+            "durationBeats": 0.25,
+            "frequencyHz": 313.75,
+            "velocity": 0.81,
+            "pan": -0.54
+          },
+          {
+            "id": "note-06",
+            "atBeats": 3.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 470.63,
+            "velocity": 0.52,
+            "pan": 0.35
+          },
+          {
+            "id": "note-07",
+            "atBeats": 4,
+            "durationBeats": 0.5,
+            "frequencyHz": 502,
+            "velocity": 0.63,
+            "pan": 0.57
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 418.33,
+            "velocity": 0.55,
+            "pan": 0.04
+          }
+        ]
+      },
+      {
+        "id": "accessibility-cue-master-layer-5",
+        "role": "aurora-air",
+        "oscillator": "sawtooth",
+        "envelope": {
+          "attackMs": 91,
+          "decayMs": 171,
+          "sustain": 0.41,
+          "releaseMs": 664
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 5444,
+          "resonance": 1.55
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 372.5,
+            "velocity": 0.9,
+            "pan": -0.2
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 0.5,
+            "frequencyHz": 397.33,
+            "velocity": 0.81,
+            "pan": -0.61
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 496.67,
+            "velocity": 0.82,
+            "pan": -0.02
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2.25,
+            "durationBeats": 1,
+            "frequencyHz": 335.25,
+            "velocity": 0.84,
+            "pan": -0.64
+          },
+          {
+            "id": "note-05",
+            "atBeats": 3.25,
+            "durationBeats": 1,
+            "frequencyHz": 894,
+            "velocity": 0.77,
+            "pan": 0.61
+          },
+          {
+            "id": "note-06",
+            "atBeats": 4.25,
+            "durationBeats": 0.25,
+            "frequencyHz": 558.75,
+            "velocity": 0.58,
+            "pan": 0.01
+          },
+          {
+            "id": "note-07",
+            "atBeats": 4.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 447,
+            "velocity": 0.42,
+            "pan": 0.26
+          },
+          {
+            "id": "note-08",
+            "atBeats": 5.25,
+            "durationBeats": 0.25,
+            "frequencyHz": 596,
+            "velocity": 0.6,
+            "pan": -0.2
+          }
+        ]
+      },
+      {
+        "id": "accessibility-cue-master-layer-6",
+        "role": "accessibility-transient",
+        "oscillator": "square",
+        "envelope": {
+          "attackMs": 95,
+          "decayMs": 146,
+          "sustain": 0.63,
+          "releaseMs": 314
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 4577,
+          "resonance": 5.68
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 1,
+            "frequencyHz": 690,
+            "velocity": 0.85,
+            "pan": -0.32
+          },
+          {
+            "id": "note-02",
+            "atBeats": 1,
+            "durationBeats": 0.75,
+            "frequencyHz": 690,
+            "velocity": 0.49,
+            "pan": 0.12
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.75,
+            "durationBeats": 0.75,
+            "frequencyHz": 690,
+            "velocity": 0.65,
+            "pan": 0.26
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2.5,
+            "durationBeats": 1,
+            "frequencyHz": 646.88,
+            "velocity": 0.68,
+            "pan": -0.7
+          },
+          {
+            "id": "note-05",
+            "atBeats": 3.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 690,
+            "velocity": 0.41,
+            "pan": 0.17
+          },
+          {
+            "id": "note-06",
+            "atBeats": 4.25,
+            "durationBeats": 0.5,
+            "frequencyHz": 345,
+            "velocity": 0.53,
+            "pan": -0.69
+          },
+          {
+            "id": "note-07",
+            "atBeats": 4.75,
+            "durationBeats": 1,
+            "frequencyHz": 517.5,
+            "velocity": 0.62,
+            "pan": -0.28
+          },
+          {
+            "id": "note-08",
+            "atBeats": 5.75,
+            "durationBeats": 0.5,
+            "frequencyHz": 345,
+            "velocity": 0.81,
+            "pan": -0.1
+          }
+        ]
+      }
+    ],
+    "loudnessTargetLufs": -16,
+    "truePeakDbtp": -1.2
+  }
+}

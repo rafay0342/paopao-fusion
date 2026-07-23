@@ -1,0 +1,422 @@
+import Phaser from 'phaser';
+import { VIEW } from '../config';
+import { getQualityProfile, type QualityProfile } from '../game/meta';
+import { resolveTextFitScale } from './text-layout';
+
+export const DISPLAY_FONT = '"PaoPao Display", Cinzel, Georgia, serif';
+export const UI_FONT = '"Fusion Sans", Sora, "Avenir Next", "Trebuchet MS", Arial, sans-serif';
+
+/**
+ * One shared type scale for the whole app. The game is authored at 720 px and
+ * commonly displayed around 390–430 CSS px wide, so anything below 14 design
+ * pixels becomes illegible on a phone. Keep all durable UI on these tokens.
+ */
+export const TYPE = {
+  display: '80px',
+  hero: '60px',
+  screen: '42px',
+  title: '32px',
+  section: '26px',
+  metric: '26px',
+  body: '22px',
+  control: '20px',
+  label: '21px',
+  caption: '20px',
+} as const;
+
+export const UI_COLORS = {
+  canvas: 0x030611,
+  surface: 0x07101e,
+  raised: 0x0b1629,
+  quietBorder: 0x33415a,
+  cyan: 0x65dbe8,
+  gold: 0xd4ac5c,
+  text: '#f2e8d4',
+  secondaryText: '#bac5d5',
+  mutedText: '#8794a8',
+  success: '#76d8b1',
+  danger: '#ed6b75',
+} as const;
+
+export function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+export function fitText(text: Phaser.GameObjects.Text, maxWidth: number, minScale = 0.88): Phaser.GameObjects.Text {
+  text.setScale(resolveTextFitScale(text.width, maxWidth, minScale));
+  return text;
+}
+
+/** Render canvas text at device-aware resolution after a scene is composed. */
+export function sharpenSceneText(scene: Phaser.Scene): void {
+  const resolution = Phaser.Math.Clamp(window.devicePixelRatio || 1, 1, getQualityProfile().dprCap);
+  const sharpen = (child: Phaser.GameObjects.GameObject): void => {
+    if (child instanceof Phaser.GameObjects.Text) {
+      child.setResolution(resolution);
+      return;
+    }
+    if (child instanceof Phaser.GameObjects.Container) {
+      for (const nested of child.list) sharpen(nested);
+    }
+  };
+  for (const child of scene.children.list) sharpen(child);
+}
+
+export function addWorldBackground(scene: Phaser.Scene, texture: string, shade = 0.16): Phaser.GameObjects.Image {
+  const quality = getQualityProfile();
+  const image = scene.add.image(VIEW.width / 2, VIEW.height / 2, texture)
+    .setDisplaySize(VIEW.width + 34, VIEW.height + 54)
+    .setDepth(0);
+  const baseScaleX = image.scaleX;
+  const baseScaleY = image.scaleY;
+  image.setData({
+    paopaoResourceRole: 'world-background',
+    paopaoBaseX: VIEW.width / 2,
+    paopaoBaseY: VIEW.height / 2,
+    paopaoBaseScaleX: baseScaleX,
+    paopaoBaseScaleY: baseScaleY,
+  });
+  if (quality.parallax) {
+    scene.tweens.add({
+      targets: image,
+      x: VIEW.width / 2 + 7,
+      y: VIEW.height / 2 - 8,
+      scaleX: baseScaleX * 1.025,
+      scaleY: baseScaleY * 1.025,
+      duration: 10500,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+  }
+
+  const cinematicWash = scene.add.graphics().setDepth(1);
+  cinematicWash.fillGradientStyle(0x020817, 0x020817, 0x02040c, 0x02040c, 0.04, 0.04, 0.58, 0.58);
+  cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height);
+  cinematicWash.fillGradientStyle(0x020611, 0x020611, 0x020611, 0x020611, shade, shade, shade * 0.42, shade * 0.42);
+  cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height * 0.54);
+  cinematicWash.fillGradientStyle(0x02040a, 0x02040a, 0x02040a, 0x02040a, 0, 0, 0.5, 0.5);
+  cinematicWash.fillRect(0, VIEW.height - 300, VIEW.width, 300);
+
+  const realmLight: Record<string, number> = {
+    world_crystal: 0x62f3ef,
+    world_emerald: 0x70ef98,
+    world_celestial: 0x79d9ff,
+    world_ember: 0xff715a,
+    world_frost: 0x78dcff,
+    world_nexus: 0xa88cff,
+    world_prize_vault: 0x82edff,
+  };
+  scene.add.ellipse(
+    VIEW.width / 2,
+    VIEW.height * 0.68,
+    VIEW.width * 0.9,
+    250,
+    realmLight[texture] ?? UI_COLORS.cyan,
+    quality.bloom ? 0.035 : 0.018,
+  ).setDepth(1);
+  return image;
+}
+
+type CrystalPoint = { x: number; y: number };
+
+function facetedSurfacePoints(width: number, height: number, inset = 0): CrystalPoint[] {
+  const halfWidth = Math.max(1, width / 2 - inset);
+  const halfHeight = Math.max(1, height / 2 - inset);
+  const shortCut = Math.min(halfWidth * 0.22, Phaser.Math.Clamp(height * 0.11, 8, 20));
+  const longCut = Math.min(halfWidth * 0.3, Phaser.Math.Clamp(height * 0.18, 12, 30));
+  return [
+    { x: -halfWidth + shortCut, y: -halfHeight },
+    { x: halfWidth - longCut, y: -halfHeight },
+    { x: halfWidth, y: -halfHeight + longCut * 0.72 },
+    { x: halfWidth, y: halfHeight - shortCut },
+    { x: halfWidth - shortCut * 0.68, y: halfHeight },
+    { x: -halfWidth + longCut, y: halfHeight },
+    { x: -halfWidth, y: halfHeight - longCut * 0.7 },
+    { x: -halfWidth, y: -halfHeight + shortCut * 0.76 },
+  ];
+}
+
+function offsetPoints(points: CrystalPoint[], x: number, y: number): CrystalPoint[] {
+  return points.map((point) => ({ x: point.x + x, y: point.y + y }));
+}
+
+export function addArtPanel(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  depth = 10,
+  alpha = 1,
+): Phaser.GameObjects.Container {
+  const panel = scene.add.container(x, y).setDepth(depth);
+  const shell = scene.add.graphics();
+  const outer = facetedSurfacePoints(width, height);
+  const inner = facetedSurfacePoints(width, height, 6);
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  const topSeam = Math.min(82, width * 0.19);
+  const lowerSeam = Math.min(108, width * 0.24);
+
+  // A grounded shadow and offset lower crystal plane establish depth without a
+  // luminous overlay or animation loop.
+  shell.fillStyle(0x01030a, 0.5);
+  shell.fillPoints(offsetPoints(outer, 4, 9), true);
+  shell.fillStyle(0x11253a, 0.42);
+  shell.fillPoints([
+    outer[4], outer[5], outer[6],
+    { x: inner[6].x, y: inner[6].y - 1 },
+    { x: inner[5].x, y: inner[5].y - 1 },
+    { x: inner[4].x, y: inner[4].y - 1 },
+  ], true);
+  shell.fillGradientStyle(
+    0x10253a,
+    0x08192b,
+    UI_COLORS.surface,
+    0x040b16,
+    0.97,
+    0.97,
+    0.99,
+    0.99,
+  );
+  shell.fillPoints(outer, true);
+
+  // Uneven translucent planes make the card feel cut from one living crystal
+  // rather than assembled from a generic rectangular UI kit.
+  shell.fillStyle(UI_COLORS.cyan, 0.055);
+  shell.fillPoints([outer[0], outer[1], { x: width * 0.08, y: -height * 0.08 }, inner[7]], true);
+  shell.fillStyle(UI_COLORS.gold, 0.045);
+  shell.fillPoints([outer[2], outer[3], { x: width * 0.19, y: height * 0.1 }, inner[1]], true);
+  shell.fillStyle(0x18334a, 0.22);
+  shell.fillPoints([outer[5], outer[6], { x: -width * 0.12, y: height * 0.12 }, inner[5]], true);
+
+  shell.lineStyle(1, UI_COLORS.quietBorder, 0.92);
+  shell.strokePoints(outer, true);
+  shell.lineStyle(1, UI_COLORS.cyan, 0.2);
+  shell.strokePoints(inner, true);
+  shell.lineStyle(2, UI_COLORS.gold, 0.62);
+  shell.lineBetween(-topSeam, -halfHeight + 1, topSeam * 0.58, -halfHeight + 1);
+  shell.lineStyle(2, UI_COLORS.cyan, 0.34);
+  shell.lineBetween(-halfWidth + 1, halfHeight - 28, -halfWidth + 1, halfHeight - 28 - Math.min(58, height * 0.26));
+  shell.lineStyle(1, UI_COLORS.cyan, 0.28);
+  shell.lineBetween(halfWidth - lowerSeam, halfHeight - 1, halfWidth - 14, halfHeight - 1);
+  shell.lineStyle(1, UI_COLORS.gold, 0.32);
+  shell.lineBetween(halfWidth - 1, -halfHeight + 20, halfWidth - 1, -halfHeight + Math.min(64, height * 0.28));
+  panel.add(shell);
+
+  if (prefersReducedMotion()) return panel.setAlpha(alpha);
+  panel.setY(y + 8).setAlpha(0).setScale(0.99);
+  scene.tweens.add({ targets: panel, y, alpha, scale: 1, duration: 210, ease: 'Cubic.easeOut' });
+  return panel;
+}
+
+export function addArtButton(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  label: string,
+  onPress: () => void,
+  width = 280,
+  height = 76,
+  depth = 20,
+): Phaser.GameObjects.Container {
+  const button = scene.add.container(x, y).setDepth(depth);
+  const surface = scene.add.graphics();
+  const outer = facetedSurfacePoints(width, height);
+  const inner = facetedSurfacePoints(width, height, 4);
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  const topSeam = Math.min(54, width * 0.18);
+  const drawSurface = (state: 'idle' | 'hover' | 'pressed'): void => {
+    surface.clear();
+    const hover = state === 'hover';
+    const pressed = state === 'pressed';
+
+    surface.fillStyle(0x01030a, pressed ? 0.34 : 0.48);
+    surface.fillPoints(offsetPoints(outer, 2, pressed ? 3 : 6), true);
+    surface.fillGradientStyle(
+      hover ? 0x17334a : pressed ? 0x06101d : 0x0d2033,
+      hover ? 0x102a40 : pressed ? 0x050c17 : 0x09182a,
+      pressed ? 0x040a13 : 0x071321,
+      pressed ? 0x07111c : 0x040b16,
+      0.99,
+      0.99,
+      0.99,
+      0.99,
+    );
+    surface.fillPoints(outer, true);
+
+    surface.fillStyle(UI_COLORS.cyan, hover ? 0.12 : pressed ? 0.035 : 0.065);
+    surface.fillPoints([outer[0], outer[1], { x: width * 0.04, y: 1 }, inner[7]], true);
+    surface.fillStyle(UI_COLORS.gold, hover ? 0.095 : pressed ? 0.035 : 0.055);
+    surface.fillPoints([outer[2], outer[3], { x: width * 0.22, y: height * 0.12 }, inner[1]], true);
+    surface.fillStyle(0x1a3850, pressed ? 0.08 : 0.2);
+    surface.fillPoints([outer[5], outer[6], { x: -width * 0.16, y: height * 0.08 }, inner[5]], true);
+
+    surface.lineStyle(state === 'hover' ? 2 : 1, state === 'hover' ? UI_COLORS.gold : UI_COLORS.cyan, state === 'hover' ? 0.9 : 0.56);
+    surface.strokePoints(outer, true);
+    surface.lineStyle(1, UI_COLORS.quietBorder, pressed ? 0.42 : 0.72);
+    surface.strokePoints(inner, true);
+    surface.lineStyle(2, UI_COLORS.gold, state === 'pressed' ? 0.3 : 0.58);
+    surface.lineBetween(-topSeam, -halfHeight + 1, topSeam * 0.62, -halfHeight + 1);
+    surface.lineStyle(2, UI_COLORS.cyan, hover ? 0.62 : pressed ? 0.22 : 0.38);
+    surface.lineBetween(-halfWidth + 1, halfHeight - 12, -halfWidth + 1, halfHeight - Math.min(36, height * 0.42));
+    surface.lineStyle(1, UI_COLORS.gold, hover ? 0.58 : 0.3);
+    surface.lineBetween(halfWidth - 1, -halfHeight + 12, halfWidth - 1, -halfHeight + Math.min(30, height * 0.38));
+  };
+  drawSurface('idle');
+  const text = scene.add.text(0, -1, label, {
+    fontFamily: UI_FONT,
+    fontSize: `${Phaser.Math.Clamp(Math.round(height * 0.34), 20, 26)}px`,
+    color: UI_COLORS.text,
+    fontStyle: 'bold',
+    stroke: '#020611',
+    strokeThickness: 2,
+    letterSpacing: 0.8,
+  }).setOrigin(0.5).setShadow(0, 2, '#02050b', 4);
+  fitText(text, width * 0.8, 0.84);
+  button.add([surface, text]);
+  // Keep touch targets forgiving even when compact button art is used.
+  button.setSize(width, Math.max(72, height)).setInteractive({ useHandCursor: true });
+  if (!prefersReducedMotion()) {
+    button.setY(y + 6).setAlpha(0);
+    scene.tweens.add({ targets: button, y, alpha: 1, duration: 190, ease: 'Cubic.easeOut' });
+  }
+  button.on('pointerover', () => drawSurface('hover'));
+  button.on('pointerout', () => {
+    drawSurface('idle');
+    button.setScale(1);
+  });
+  button.on('pointerdown', () => {
+    drawSurface('pressed');
+    button.setScale(0.98);
+  });
+  button.on('pointerup', () => {
+    drawSurface('hover');
+    button.setScale(1);
+    onPress();
+  });
+  return button;
+}
+
+/** Static frame for texture or vector icons; callers place their icon above it. */
+export function addIconFrame(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  size: number,
+  accent: number,
+  depth = 10,
+  selected = false,
+): Phaser.GameObjects.Container {
+  const frame = scene.add.container(x, y).setDepth(depth);
+  const art = scene.add.graphics();
+  const outer = facetedSurfacePoints(size, size);
+  const inner = facetedSurfacePoints(size, size, Math.max(6, size * 0.1));
+  const radius = size / 2;
+
+  art.fillStyle(0x01030a, 0.5);
+  art.fillPoints(offsetPoints(outer, 2, 4), true);
+  art.fillGradientStyle(0x11283c, 0x091a2b, UI_COLORS.surface, 0x040b15, 0.97, 0.97, 0.99, 0.99);
+  art.fillPoints(outer, true);
+
+  // Static, differently tinted crystal planes let each caller's accent colour
+  // identify the icon while keeping the frame itself calm and readable.
+  art.fillStyle(accent, selected ? 0.16 : 0.09);
+  art.fillPoints([outer[0], outer[1], { x: 0, y: 0 }, outer[7]], true);
+  art.fillStyle(UI_COLORS.cyan, selected ? 0.1 : 0.05);
+  art.fillPoints([outer[2], outer[3], { x: 0, y: 0 }, outer[1]], true);
+  art.fillStyle(UI_COLORS.gold, selected ? 0.12 : 0.055);
+  art.fillPoints([outer[4], outer[5], { x: 0, y: 0 }, outer[3]], true);
+  art.fillStyle(0x1b3150, 0.2);
+  art.fillPoints([outer[6], outer[7], { x: 0, y: 0 }, outer[5]], true);
+
+  art.lineStyle(selected ? 3 : 2, selected ? UI_COLORS.gold : accent, selected ? 0.92 : 0.62);
+  art.strokePoints(outer, true);
+  art.lineStyle(1, accent, selected ? 0.62 : 0.32);
+  art.strokePoints(inner, true);
+  // A quiet aperture supports circular orb art without turning the outer frame
+  // back into the generic ring it replaced.
+  art.lineStyle(1, accent, selected ? 0.22 : 0.12);
+  art.strokeCircle(0, 0, radius * 0.56);
+  art.lineStyle(2, UI_COLORS.gold, selected ? 0.78 : 0.36);
+  art.lineBetween(-Math.min(14, size * 0.12), -radius + 1, Math.min(10, size * 0.09), -radius + 1);
+  art.lineStyle(2, UI_COLORS.cyan, selected ? 0.64 : 0.3);
+  art.lineBetween(-radius + 1, radius * 0.14, -radius + 1, radius * 0.48);
+  art.lineStyle(1, UI_COLORS.gold, selected ? 0.5 : 0.24);
+  art.lineBetween(radius - 1, -radius * 0.46, radius - 1, -radius * 0.18);
+  frame.add(art);
+  return frame;
+}
+
+export function addAmbientMotes(scene: Phaser.Scene, tint: number, count = 18, depth = 2): void {
+  const quality = getQualityProfile();
+  const reducedMotion = prefersReducedMotion();
+  const adjustedCount = Math.min(10, Math.max(3, Math.round(count * quality.motes)));
+  for (let i = 0; i < adjustedCount; i++) {
+    const mote = scene.add.image(
+      Phaser.Math.Between(20, VIEW.width - 20),
+      Phaser.Math.Between(80, VIEW.height - 120),
+      'spark',
+    ).setTint(i % 5 === 0 ? 0xd8b875 : tint)
+      .setAlpha(Phaser.Math.FloatBetween(0.06, 0.2))
+      .setScale(Phaser.Math.FloatBetween(0.06, 0.18))
+      .setDepth(depth);
+    mote.setData({ paopaoResourceRole: 'ambient-mote', paopaoMoteIndex: i });
+    if (reducedMotion) continue;
+    scene.tweens.add({
+      targets: mote,
+      y: mote.y - Phaser.Math.Between(35, 110),
+      x: mote.x + Phaser.Math.Between(-28, 28),
+      scale: mote.scale * Phaser.Math.FloatBetween(1.1, 1.45),
+      angle: Phaser.Math.Between(80, 220),
+      alpha: Phaser.Math.FloatBetween(0.02, 0.12),
+      duration: Phaser.Math.Between(3600, 6200),
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+      delay: Phaser.Math.Between(0, 1600),
+    });
+  }
+}
+
+/**
+ * Apply a lower render profile to objects that are already alive. This is
+ * intentionally one-way inside a scene: upgrades take effect when the next
+ * scene is composed, while a pressure-triggered downgrade removes work now.
+ * Deterministic gameplay and MediaPipe cadence are not changed here.
+ */
+export function applyLiveSceneQuality(scene: Phaser.Scene, profile: QualityProfile): void {
+  const moteLimit = Math.min(10, Math.max(3, Math.round(18 * profile.motes)));
+  for (const child of scene.children.list) {
+    const dataObject = child as Phaser.GameObjects.GameObject & {
+      getData?: (key: string) => unknown;
+      setVisible?: (visible: boolean) => unknown;
+      setPosition?: (x: number, y: number) => unknown;
+      setScale?: (x: number, y?: number) => unknown;
+    };
+    const role = dataObject.getData?.('paopaoResourceRole');
+    if (role === 'ambient-mote') {
+      const index = Number(dataObject.getData?.('paopaoMoteIndex'));
+      if (!Number.isInteger(index) || index < moteLimit) continue;
+      scene.tweens.killTweensOf(child);
+      dataObject.setVisible?.(false);
+      continue;
+    }
+    if (role === 'world-background' && !profile.parallax) {
+      scene.tweens.killTweensOf(child);
+      const x = Number(dataObject.getData?.('paopaoBaseX'));
+      const y = Number(dataObject.getData?.('paopaoBaseY'));
+      const scaleX = Number(dataObject.getData?.('paopaoBaseScaleX'));
+      const scaleY = Number(dataObject.getData?.('paopaoBaseScaleY'));
+      if ([x, y, scaleX, scaleY].every(Number.isFinite)) {
+        dataObject.setPosition?.(x, y);
+        dataObject.setScale?.(scaleX, scaleY);
+      }
+    }
+  }
+  sharpenSceneText(scene);
+}

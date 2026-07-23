@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-185",
+  "release": 2,
+  "allocation": "music-ambience-sfx",
+  "subject": "Celestial realm",
+  "facet": "gameplay SFX palette",
+  "masterType": "procedural-audio-score",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "audio": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "tempoBpm": 100,
+    "meter": [
+      4,
+      4
+    ],
+    "masterGainDb": -8,
+    "loopBeats": 4,
+    "tracks": [
+      {
+        "id": "gameplay-sfx-palette-layer-1",
+        "role": "crystal-lead",
+        "oscillator": "triangle",
+        "envelope": {
+          "attackMs": 19,
+          "decayMs": 258,
+          "sustain": 0.45,
+          "releaseMs": 782
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 2983,
+          "resonance": 2.59
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 146.67,
+            "velocity": 0.77,
+            "pan": -0.29
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 0.5,
+            "frequencyHz": 123.75,
+            "velocity": 0.52,
+            "pan": -0.63
+          },
+          {
+            "id": "note-03",
+            "atBeats": 0.75,
+            "durationBeats": 1,
+            "frequencyHz": 220,
+            "velocity": 0.71,
+            "pan": 0.55
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1.75,
+            "durationBeats": 0.75,
+            "frequencyHz": 330,
+            "velocity": 0.43,
+            "pan": 0.57
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2.5,
+            "durationBeats": 1,
+            "frequencyHz": 206.25,
+            "velocity": 0.57,
+            "pan": -0.51
+          },
+          {
+            "id": "note-06",
+            "atBeats": 3.5,
+            "durationBeats": 1,
+            "frequencyHz": 206.25,
+            "velocity": 0.9,
+            "pan": -0.25
+          },
+          {
+            "id": "note-07",
+            "atBeats": 4.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 206.25,
+            "velocity": 0.52,
+            "pan": 0
+          },
+          {
+            "id": "note-08",
+            "atBeats": 5,
+            "durationBeats": 0.75,
+            "frequencyHz": 110,
+            "velocity": 0.78,
+            "pan": -0.13
+          }
+        ]
+      },
+      {
+        "id": "gameplay-sfx-palette-layer-2",
+        "role": "warm-pad",
+        "oscillator": "sawtooth",
+        "envelope": {
+          "attackMs": 35,
+          "decayMs": 372,
+          "sustain": 0.42,
+          "releaseMs": 164
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 6599,
+          "resonance": 5.58
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 314,
+            "velocity": 0.49,
+            "pan": 0.31
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 1,
+            "frequencyHz": 261.67,
+            "velocity": 0.46,
+            "pan": 0.24
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 261.67,
+            "velocity": 0.7,
+            "pan": 0.45
+          },
+          {
+            "id": "note-04",
+            "atBeats": 2,
+            "durationBeats": 0.75,
+            "frequencyHz": 235.5,
+            "velocity": 0.88,
+            "pan": -0.42
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 176.63,
+            "velocity": 0.78,
+            "pan": 0.29
+          },
+          {
+            "id": "note-06",
+            "atBeats": 3,
+            "durationBeats": 0.5,
+            "frequencyHz": 294.38,
+            "velocity": 0.75,
+            "pan": -0.65
+          },
+          {
+            "id": "note-07",
+            "atBeats": 3.5,
+            "durationBeats": 1,
+            "frequencyHz": 418.67,
+            "velocity": 0.64,
+            "pan": -0.23
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 314,
+            "velocity": 0.52,
+            "pan": -0.16
+          }
+        ]
+      },
+      {
+        "id": "gameplay-sfx-palette-layer-3",
+        "role": "pulse-bass",
+        "oscillator": "square",
+        "envelope": {
+          "attackMs": 36,
+          "decayMs": 333,
+          "sustain": 0.76,
+          "releaseMs": 603
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 5344,
+          "resonance": 5.69
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 255,
+            "velocity": 0.6,
+            "pan": -0.2
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 408,
+            "velocity": 0.51,
+            "pan": 0.26
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1,
+            "durationBeats": 0.25,
+            "frequencyHz": 382.5,
+            "velocity": 0.77,
+            "pan": 0.32
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 306,
+            "velocity": 0.65,
+            "pan": -0.29
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2,
+            "durationBeats": 0.5,
+            "frequencyHz": 544,
+            "velocity": 0.65,
+            "pan": 0.18
+          },
+          {
+            "id": "note-06",
+            "atBeats": 2.5,
+            "durationBeats": 0.25,
+            "frequencyHz": 204,
+            "velocity": 0.88,
+            "pan": 0.61
+          },
+          {
+            "id": "note-07",
+            "atBeats": 2.75,
+            "durationBeats": 1,
+            "frequencyHz": 340,
+            "velocity": 0.53,
+            "pan": -0.5
+          },
+          {
+            "id": "note-08",
+            "atBeats": 3.75,
+            "durationBeats": 0.5,
+            "frequencyHz": 340,
+            "velocity": 0.51,
+            "pan": 0.08
+          }
+        ]
+      },
+      {
+        "id": "gameplay-sfx-palette-layer-4",
+        "role": "prism-percussion",
+        "oscillator": "sine",
+        "envelope": {
+          "attackMs": 19,
+          "decayMs": 433,
+          "sustain": 0.81,
+          "releaseMs": 885
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 4906,
+          "resonance": 2.2
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 282.38,
+            "velocity": 0.63,
+            "pan": -0.01
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 282.38,
+            "velocity": 0.87,
+            "pan": -0.18
+          },
+          {
+            "id": "note-03",
+            "atBeats": 1,
+            "durationBeats": 0.5,
+            "frequencyHz": 418.33,
+            "velocity": 0.66,
+            "pan": -0.27
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 313.75,
+            "velocity": 0.75,
+            "pan": -0.61
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2,
+            "durationBeats": 0.5,
+            "frequencyHz": 334.67,
+            "velocity": 0.82,
+            "pan": 0.08
+          },
+          {
+            "id": "note-06",
+            "atBeats": 2.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 470.63,
+            "velocity": 0.45,
+            "pan": -0.67
+          },
+          {
+            "id": "note-07",
+            "atBeats": 3,
+            "durationBeats": 1,
+            "frequencyHz": 282.38,
+            "velocity": 0.84,
+            "pan": -0.69
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4,
+            "durationBeats": 1,
+            "frequencyHz": 282.38,
+            "velocity": 0.65,
+            "pan": -0.52
+          }
+        ]
+      },
+      {
+        "id": "gameplay-sfx-palette-layer-5",
+        "role": "aurora-air",
+        "oscillator": "triangle",
+        "envelope": {
+          "attackMs": 23,
+          "decayMs": 445,
+          "sustain": 0.75,
+          "releaseMs": 435
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 8087,
+          "resonance": 1.92
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 496.67,
+            "velocity": 0.85,
+            "pan": -0.09
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 0.25,
+            "frequencyHz": 745,
+            "velocity": 0.81,
+            "pan": 0.24
+          },
+          {
+            "id": "note-03",
+            "atBeats": 0.5,
+            "durationBeats": 0.5,
+            "frequencyHz": 298,
+            "velocity": 0.41,
+            "pan": -0.03
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1,
+            "durationBeats": 1,
+            "frequencyHz": 496.67,
+            "velocity": 0.52,
+            "pan": 0.64
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2,
+            "durationBeats": 0.5,
+            "frequencyHz": 298,
+            "velocity": 0.68,
+            "pan": -0.1
+          },
+          {
+            "id": "note-06",
+            "atBeats": 2.5,
+            "durationBeats": 0.75,
+            "frequencyHz": 558.75,
+            "velocity": 0.51,
+            "pan": 0.24
+          },
+          {
+            "id": "note-07",
+            "atBeats": 3.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 298,
+            "velocity": 0.55,
+            "pan": 0.36
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4,
+            "durationBeats": 0.25,
+            "frequencyHz": 298,
+            "velocity": 0.54,
+            "pan": 0.41
+          }
+        ]
+      },
+      {
+        "id": "gameplay-sfx-palette-layer-6",
+        "role": "accessibility-transient",
+        "oscillator": "sawtooth",
+        "envelope": {
+          "attackMs": 58,
+          "decayMs": 408,
+          "sustain": 0.5,
+          "releaseMs": 352
+        },
+        "filter": {
+          "type": "lowpass",
+          "cutoffHz": 4502,
+          "resonance": 4.16
+        },
+        "notes": [
+          {
+            "id": "note-01",
+            "atBeats": 0,
+            "durationBeats": 0.25,
+            "frequencyHz": 345,
+            "velocity": 0.83,
+            "pan": 0.09
+          },
+          {
+            "id": "note-02",
+            "atBeats": 0.25,
+            "durationBeats": 0.5,
+            "frequencyHz": 690,
+            "velocity": 0.85,
+            "pan": 0.7
+          },
+          {
+            "id": "note-03",
+            "atBeats": 0.75,
+            "durationBeats": 1,
+            "frequencyHz": 345,
+            "velocity": 0.74,
+            "pan": 0.29
+          },
+          {
+            "id": "note-04",
+            "atBeats": 1.75,
+            "durationBeats": 1,
+            "frequencyHz": 646.88,
+            "velocity": 0.39,
+            "pan": 0.08
+          },
+          {
+            "id": "note-05",
+            "atBeats": 2.75,
+            "durationBeats": 0.25,
+            "frequencyHz": 388.13,
+            "velocity": 0.83,
+            "pan": 0.03
+          },
+          {
+            "id": "note-06",
+            "atBeats": 3,
+            "durationBeats": 0.25,
+            "frequencyHz": 575,
+            "velocity": 0.77,
+            "pan": 0.62
+          },
+          {
+            "id": "note-07",
+            "atBeats": 3.25,
+            "durationBeats": 1,
+            "frequencyHz": 690,
+            "velocity": 0.6,
+            "pan": -0.66
+          },
+          {
+            "id": "note-08",
+            "atBeats": 4.25,
+            "durationBeats": 0.75,
+            "frequencyHz": 920,
+            "velocity": 0.52,
+            "pan": 0.12
+          }
+        ]
+      }
+    ],
+    "loudnessTargetLufs": -16,
+    "truePeakDbtp": -1.2
+  }
+}

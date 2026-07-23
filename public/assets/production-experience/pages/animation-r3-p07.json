@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 3,
+  "page": 7,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-261",
+      "acceptanceId": "AT-PF-animation-261",
+      "category": "animation",
+      "ordinal": 261,
+      "release": 3,
+      "title": "rainbow convert — intro clip",
+      "subject": "rainbow convert",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-261-d0a1cf14",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert intro clip",
+          "accentHue": 356,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -15,
+              "scale": 1.1,
+              "rotation": 0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -4,
+              "y": -22,
+              "scale": 0.8999999999999999,
+              "rotation": -0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-262",
+      "acceptanceId": "AT-PF-animation-262",
+      "category": "animation",
+      "ordinal": 262,
+      "release": 3,
+      "title": "rainbow convert — idle loop",
+      "subject": "rainbow convert",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-262-86633ccc",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert idle loop",
+          "accentHue": 92,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Linear",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 810,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 17,
+              "y": 4,
+              "scale": 1.08,
+              "rotation": 0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 24,
+              "y": 6,
+              "scale": 0.9199999999999999,
+              "rotation": -0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-263",
+      "acceptanceId": "AT-PF-animation-263",
+      "category": "animation",
+      "ordinal": 263,
+      "release": 3,
+      "title": "rainbow convert — anticipation clip",
+      "subject": "rainbow convert",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-263-4f93c19d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert anticipation clip",
+          "accentHue": 21,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -2,
+              "y": -15,
+              "scale": 1.06,
+              "rotation": -0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -3,
+              "y": -22,
+              "scale": 0.94,
+              "rotation": 0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-264",
+      "acceptanceId": "AT-PF-animation-264",
+      "category": "animation",
+      "ordinal": 264,
+      "release": 3,
+      "title": "rainbow convert — action clip",
+      "subject": "rainbow convert",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-264-9e852d78",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert action clip",
+          "accentHue": 336,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 210,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 10,
+              "y": -5,
+              "scale": 1.12,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 14,
+              "y": -7,
+              "scale": 0.8799999999999999,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-265",
+      "acceptanceId": "AT-PF-animation-265",
+      "category": "animation",
+      "ordinal": 265,
+      "release": 3,
+      "title": "rainbow convert — contact effect",
+      "subject": "rainbow convert",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-265-bf341d61",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert contact effect",
+          "accentHue": 129,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 210,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 5,
+              "scale": 1.1,
+              "rotation": -0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 7,
+              "scale": 0.8999999999999999,
+              "rotation": 0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-266",
+      "acceptanceId": "AT-PF-animation-266",
+      "category": "animation",
+      "ordinal": 266,
+      "release": 3,
+      "title": "rainbow convert — release effect",
+      "subject": "rainbow convert",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-266-c129d7f2",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert release effect",
+          "accentHue": 106,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 840,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 16,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 23,
+              "y": 0,
+              "scale": 1.04,
+              "rotation": -0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-267",
+      "acceptanceId": "AT-PF-animation-267",
+      "category": "animation",
+      "ordinal": 267,
+      "release": 3,
+      "title": "rainbow convert — success clip",
+      "subject": "rainbow convert",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-267-b6d2abfb",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert success clip",
+          "accentHue": 139,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 11,
+              "y": 4,
+              "scale": 0.94,
+              "rotation": 0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 15,
+              "y": 5,
+              "scale": 1.06,
+              "rotation": -0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-268",
+      "acceptanceId": "AT-PF-animation-268",
+      "category": "animation",
+      "ordinal": 268,
+      "release": 3,
+      "title": "rainbow convert — failure clip",
+      "subject": "rainbow convert",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-268-ee9ee7d0",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert failure clip",
+          "accentHue": 280,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": -8,
+              "scale": 1.13,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -18,
+              "y": -11,
+              "scale": 0.8700000000000001,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-269",
+      "acceptanceId": "AT-PF-animation-269",
+      "category": "animation",
+      "ordinal": 269,
+      "release": 3,
+      "title": "rainbow convert — transition in",
+      "subject": "rainbow convert",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-269-cc4157d6",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert transition in",
+          "accentHue": 150,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 270,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": 8,
+              "y": -1,
+              "scale": 0.95,
+              "rotation": 0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 11,
+              "y": -2,
+              "scale": 1.05,
+              "rotation": -0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-270",
+      "acceptanceId": "AT-PF-animation-270",
+      "category": "animation",
+      "ordinal": 270,
+      "release": 3,
+      "title": "rainbow convert — transition out",
+      "subject": "rainbow convert",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-270-5b541627",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "rainbow convert transition out",
+          "accentHue": 311,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1080,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -16,
+              "y": 8,
+              "scale": 1.11,
+              "rotation": 0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -23,
+              "y": 12,
+              "scale": 0.8899999999999999,
+              "rotation": -0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

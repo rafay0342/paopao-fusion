@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 5,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-451",
+      "acceptanceId": "AT-PF-ux-element-451",
+      "category": "ux-element",
+      "ordinal": 451,
+      "release": 5,
+      "title": "update notice — empty message",
+      "subject": "update notice",
+      "facet": "empty message",
+      "behaviorFingerprint": "PX-ux-element-451-817bc5a4",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "update notice empty message",
+          "description": "empty message for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 268
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-452",
+      "acceptanceId": "AT-PF-ux-element-452",
+      "category": "ux-element",
+      "ordinal": 452,
+      "release": 5,
+      "title": "update notice — error message",
+      "subject": "update notice",
+      "facet": "error message",
+      "behaviorFingerprint": "PX-ux-element-452-420e2481",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "alert",
+          "label": "update notice error message",
+          "description": "error message for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "assertive",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 185
+        },
+        "interaction": {
+          "event": "recover",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "error-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "error"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-453",
+      "acceptanceId": "AT-PF-ux-element-453",
+      "category": "ux-element",
+      "ordinal": 453,
+      "release": 5,
+      "title": "update notice — confirmation",
+      "subject": "update notice",
+      "facet": "confirmation",
+      "behaviorFingerprint": "PX-ux-element-453-5d49723f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "update notice confirmation",
+          "description": "confirmation for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 223
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": true,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-454",
+      "acceptanceId": "AT-PF-ux-element-454",
+      "category": "ux-element",
+      "ordinal": 454,
+      "release": 5,
+      "title": "update notice — undo notice",
+      "subject": "update notice",
+      "facet": "undo notice",
+      "behaviorFingerprint": "PX-ux-element-454-8ec2c89a",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "update notice undo notice",
+          "description": "undo notice for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "polite",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 330
+        },
+        "interaction": {
+          "event": "undo",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 5000
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "ui-confirm",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-455",
+      "acceptanceId": "AT-PF-ux-element-455",
+      "category": "ux-element",
+      "ordinal": 455,
+      "release": 5,
+      "title": "update notice — tooltip",
+      "subject": "update notice",
+      "facet": "tooltip",
+      "behaviorFingerprint": "PX-ux-element-455-12cca801",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "tooltip",
+          "label": "update notice tooltip",
+          "description": "tooltip for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 121
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-456",
+      "acceptanceId": "AT-PF-ux-element-456",
+      "category": "ux-element",
+      "ordinal": 456,
+      "release": 5,
+      "title": "update notice — numeric readout",
+      "subject": "update notice",
+      "facet": "numeric readout",
+      "behaviorFingerprint": "PX-ux-element-456-39a86b83",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "update notice numeric readout",
+          "description": "numeric readout for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 163
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-457",
+      "acceptanceId": "AT-PF-ux-element-457",
+      "category": "ux-element",
+      "ordinal": 457,
+      "release": 5,
+      "title": "update notice — icon label",
+      "subject": "update notice",
+      "facet": "icon label",
+      "behaviorFingerprint": "PX-ux-element-457-829ec959",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "icon",
+          "role": "img",
+          "label": "update notice icon label",
+          "description": "icon label for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 113
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-458",
+      "acceptanceId": "AT-PF-ux-element-458",
+      "category": "ux-element",
+      "ordinal": 458,
+      "release": 5,
+      "title": "update notice — responsive container",
+      "subject": "update notice",
+      "facet": "responsive container",
+      "behaviorFingerprint": "PX-ux-element-458-cefa9911",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "region",
+          "label": "update notice responsive container",
+          "description": "responsive container for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 281
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-459",
+      "acceptanceId": "AT-PF-ux-element-459",
+      "category": "ux-element",
+      "ordinal": 459,
+      "release": 5,
+      "title": "update notice — reduced-motion state",
+      "subject": "update notice",
+      "facet": "reduced-motion state",
+      "behaviorFingerprint": "PX-ux-element-459-d13a19ac",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "update notice reduced-motion state",
+          "description": "reduced-motion state for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 284
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-460",
+      "acceptanceId": "AT-PF-ux-element-460",
+      "category": "ux-element",
+      "ordinal": 460,
+      "release": 5,
+      "title": "update notice — screen-reader description",
+      "subject": "update notice",
+      "facet": "screen-reader description",
+      "behaviorFingerprint": "PX-ux-element-460-8f3d6560",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "definition",
+          "label": "update notice screen-reader description",
+          "description": "screen-reader description for update notice; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 296
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

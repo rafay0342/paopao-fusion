@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-300",
+  "release": 3,
+  "allocation": "tutorial-accessibility-promotion",
+  "subject": "input accessibility guide",
+  "facet": "localized delivery master",
+  "masterType": "localized-guide-delivery",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "guide": {
+    "deterministicSeed": 580951372,
+    "readingLevel": "plain-language",
+    "steps": [
+      {
+        "id": "observe",
+        "action": "Open input accessibility guide and wait for the ready state.",
+        "expected": "The primary affordance and current input mode are visible."
+      },
+      {
+        "id": "act",
+        "action": "Perform the guided input accessibility guide action once.",
+        "expected": "Feedback confirms the action without changing unrelated state."
+      },
+      {
+        "id": "recover",
+        "action": "Cancel or interrupt the action, then resume.",
+        "expected": "The flow returns to a safe, understandable state."
+      },
+      {
+        "id": "complete",
+        "action": "Complete the action with reduced motion enabled.",
+        "expected": "Rules and timing remain identical while decorative motion is reduced."
+      }
+    ],
+    "narration": {
+      "en": "input accessibility guide: follow the highlighted action, wait for confirmation, and use Back to cancel safely.",
+      "urLatn": "input accessibility guide: highlight ki hui action karein, confirmation ka intezar karein, aur cancel ke liye Back use karein.",
+      "sdLatn": "input accessibility guide: highlight kyal action karo, tasdeeq jo intezar karo, ain cancel lae Back istemal karo."
+    },
+    "accessibility": {
+      "captions": true,
+      "audioDescription": true,
+      "reducedMotionAlternative": true,
+      "minimumTargetCssPx": 44,
+      "minimumContrast": 4.5
+    }
+  }
+}

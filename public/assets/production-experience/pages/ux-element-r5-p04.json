@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 5,
+  "page": 4,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-431",
+      "acceptanceId": "AT-PF-ux-element-431",
+      "category": "ux-element",
+      "ordinal": 431,
+      "release": 5,
+      "title": "downloads — empty message",
+      "subject": "downloads",
+      "facet": "empty message",
+      "behaviorFingerprint": "PX-ux-element-431-2f382562",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "downloads empty message",
+          "description": "empty message for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 298
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-432",
+      "acceptanceId": "AT-PF-ux-element-432",
+      "category": "ux-element",
+      "ordinal": 432,
+      "release": 5,
+      "title": "downloads — error message",
+      "subject": "downloads",
+      "facet": "error message",
+      "behaviorFingerprint": "PX-ux-element-432-392258c7",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "alert",
+          "label": "downloads error message",
+          "description": "error message for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "assertive",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 63
+        },
+        "interaction": {
+          "event": "recover",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "error-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "error"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-433",
+      "acceptanceId": "AT-PF-ux-element-433",
+      "category": "ux-element",
+      "ordinal": 433,
+      "release": 5,
+      "title": "downloads — confirmation",
+      "subject": "downloads",
+      "facet": "confirmation",
+      "behaviorFingerprint": "PX-ux-element-433-87720dd1",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "downloads confirmation",
+          "description": "confirmation for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 321
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": true,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-434",
+      "acceptanceId": "AT-PF-ux-element-434",
+      "category": "ux-element",
+      "ordinal": 434,
+      "release": 5,
+      "title": "downloads — undo notice",
+      "subject": "downloads",
+      "facet": "undo notice",
+      "behaviorFingerprint": "PX-ux-element-434-7a342b40",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "downloads undo notice",
+          "description": "undo notice for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 56
+        },
+        "interaction": {
+          "event": "undo",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 5000
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "ui-confirm",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-435",
+      "acceptanceId": "AT-PF-ux-element-435",
+      "category": "ux-element",
+      "ordinal": 435,
+      "release": 5,
+      "title": "downloads — tooltip",
+      "subject": "downloads",
+      "facet": "tooltip",
+      "behaviorFingerprint": "PX-ux-element-435-7a09d8bb",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "tooltip",
+          "label": "downloads tooltip",
+          "description": "tooltip for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 219
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-436",
+      "acceptanceId": "AT-PF-ux-element-436",
+      "category": "ux-element",
+      "ordinal": 436,
+      "release": 5,
+      "title": "downloads — numeric readout",
+      "subject": "downloads",
+      "facet": "numeric readout",
+      "behaviorFingerprint": "PX-ux-element-436-c5c44921",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "downloads numeric readout",
+          "description": "numeric readout for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 49
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-437",
+      "acceptanceId": "AT-PF-ux-element-437",
+      "category": "ux-element",
+      "ordinal": 437,
+      "release": 5,
+      "title": "downloads — icon label",
+      "subject": "downloads",
+      "facet": "icon label",
+      "behaviorFingerprint": "PX-ux-element-437-6d2eca7f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "icon",
+          "role": "img",
+          "label": "downloads icon label",
+          "description": "icon label for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 79
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-438",
+      "acceptanceId": "AT-PF-ux-element-438",
+      "category": "ux-element",
+      "ordinal": 438,
+      "release": 5,
+      "title": "downloads — responsive container",
+      "subject": "downloads",
+      "facet": "responsive container",
+      "behaviorFingerprint": "PX-ux-element-438-d4912563",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "region",
+          "label": "downloads responsive container",
+          "description": "responsive container for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 43
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-439",
+      "acceptanceId": "AT-PF-ux-element-439",
+      "category": "ux-element",
+      "ordinal": 439,
+      "release": 5,
+      "title": "downloads — reduced-motion state",
+      "subject": "downloads",
+      "facet": "reduced-motion state",
+      "behaviorFingerprint": "PX-ux-element-439-decc1162",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "downloads reduced-motion state",
+          "description": "reduced-motion state for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 106
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-440",
+      "acceptanceId": "AT-PF-ux-element-440",
+      "category": "ux-element",
+      "ordinal": 440,
+      "release": 5,
+      "title": "downloads — screen-reader description",
+      "subject": "downloads",
+      "facet": "screen-reader description",
+      "behaviorFingerprint": "PX-ux-element-440-88025992",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "definition",
+          "label": "downloads screen-reader description",
+          "description": "screen-reader description for downloads; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 58
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

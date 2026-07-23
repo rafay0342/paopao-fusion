@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 3,
+  "page": 3,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-221",
+      "acceptanceId": "AT-PF-animation-221",
+      "category": "animation",
+      "ordinal": 221,
+      "release": 3,
+      "title": "power charge — intro clip",
+      "subject": "power charge",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-221-064cc104",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge intro clip",
+          "accentHue": 324,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -15,
+              "y": -13,
+              "scale": 0.96,
+              "rotation": -0.16,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -21,
+              "y": -18,
+              "scale": 1.04,
+              "rotation": 0.16,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-222",
+      "acceptanceId": "AT-PF-animation-222",
+      "category": "animation",
+      "ordinal": 222,
+      "release": 3,
+      "title": "power charge — idle loop",
+      "subject": "power charge",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-222-3af841ac",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge idle loop",
+          "accentHue": 228,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Linear",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 17,
+              "y": 4,
+              "scale": 1.07,
+              "rotation": -0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 24,
+              "y": 6,
+              "scale": 0.9299999999999999,
+              "rotation": 0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-223",
+      "acceptanceId": "AT-PF-animation-223",
+      "category": "animation",
+      "ordinal": 223,
+      "release": 3,
+      "title": "power charge — anticipation clip",
+      "subject": "power charge",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-223-cb151215",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge anticipation clip",
+          "accentHue": 173,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": 11,
+              "scale": 0.86,
+              "rotation": 0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -1,
+              "y": 15,
+              "scale": 1.1400000000000001,
+              "rotation": -0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-224",
+      "acceptanceId": "AT-PF-animation-224",
+      "category": "animation",
+      "ordinal": 224,
+      "release": 3,
+      "title": "power charge — action clip",
+      "subject": "power charge",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-224-8f3df8b8",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge action clip",
+          "accentHue": 216,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": 2,
+              "scale": 1.05,
+              "rotation": -0.1,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -4,
+              "y": 3,
+              "scale": 0.95,
+              "rotation": 0.1,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-225",
+      "acceptanceId": "AT-PF-animation-225",
+      "category": "animation",
+      "ordinal": 225,
+      "release": 3,
+      "title": "power charge — contact effect",
+      "subject": "power charge",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-225-55dfe281",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge contact effect",
+          "accentHue": 33,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 270,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": 4,
+              "scale": 0.95,
+              "rotation": 0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": 6,
+              "scale": 1.05,
+              "rotation": -0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-226",
+      "acceptanceId": "AT-PF-animation-226",
+      "category": "animation",
+      "ordinal": 226,
+      "release": 3,
+      "title": "power charge — release effect",
+      "subject": "power charge",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-226-0984cae2",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge release effect",
+          "accentHue": 194,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 810,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": 15,
+              "scale": 1,
+              "rotation": 0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -5,
+              "y": 21,
+              "scale": 1,
+              "rotation": -0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-227",
+      "acceptanceId": "AT-PF-animation-227",
+      "category": "animation",
+      "ordinal": 227,
+      "release": 3,
+      "title": "power charge — success clip",
+      "subject": "power charge",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-227-74525b83",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge success clip",
+          "accentHue": 195,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 1,
+              "y": -10,
+              "scale": 1,
+              "rotation": -0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 2,
+              "y": -15,
+              "scale": 1,
+              "rotation": 0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-228",
+      "acceptanceId": "AT-PF-animation-228",
+      "category": "animation",
+      "ordinal": 228,
+      "release": 3,
+      "title": "power charge — failure clip",
+      "subject": "power charge",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-228-21e90690",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge failure clip",
+          "accentHue": 176,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -15,
+              "y": 9,
+              "scale": 0.9299999999999999,
+              "rotation": -0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -22,
+              "y": 13,
+              "scale": 1.07,
+              "rotation": 0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-229",
+      "acceptanceId": "AT-PF-animation-229",
+      "category": "animation",
+      "ordinal": 229,
+      "release": 3,
+      "title": "power charge — transition in",
+      "subject": "power charge",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-229-bbe8b4f6",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge transition in",
+          "accentHue": 230,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": 13,
+              "y": 4,
+              "scale": 0.92,
+              "rotation": -0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 18,
+              "y": 5,
+              "scale": 1.08,
+              "rotation": 0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-230",
+      "acceptanceId": "AT-PF-animation-230",
+      "category": "animation",
+      "ordinal": 230,
+      "release": 3,
+      "title": "power charge — transition out",
+      "subject": "power charge",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-230-b3a19bef",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "power charge transition out",
+          "accentHue": 239,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1080,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": -15,
+              "scale": 1.13,
+              "rotation": 0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -1,
+              "y": -22,
+              "scale": 0.8700000000000001,
+              "rotation": -0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

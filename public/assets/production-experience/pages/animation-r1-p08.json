@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 1,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-071",
+      "acceptanceId": "AT-PF-animation-071",
+      "category": "animation",
+      "ordinal": 71,
+      "release": 1,
+      "title": "bubble — camera effect",
+      "subject": "bubble",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-071-1d4ba36d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble camera effect",
+          "accentHue": 181,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 840,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 9,
+              "y": -14,
+              "scale": 1.1,
+              "rotation": 0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 13,
+              "y": -20,
+              "scale": 0.8999999999999999,
+              "rotation": -0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-072",
+      "acceptanceId": "AT-PF-animation-072",
+      "category": "animation",
+      "ordinal": 72,
+      "release": 1,
+      "title": "bubble — light effect",
+      "subject": "bubble",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-072-a5dabdb6",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble light effect",
+          "accentHue": 334,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -7,
+              "scale": 0.88,
+              "rotation": -0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -4,
+              "y": -10,
+              "scale": 1.12,
+              "rotation": 0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-073",
+      "acceptanceId": "AT-PF-animation-073",
+      "category": "animation",
+      "ordinal": 73,
+      "release": 1,
+      "title": "bubble — material effect",
+      "subject": "bubble",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-073-9149228f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble material effect",
+          "accentHue": 215,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 0,
+              "y": 15,
+              "scale": 1.09,
+              "rotation": -0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 0,
+              "y": 21,
+              "scale": 0.9099999999999999,
+              "rotation": 0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-074",
+      "acceptanceId": "AT-PF-animation-074",
+      "category": "animation",
+      "ordinal": 74,
+      "release": 1,
+      "title": "bubble — particle effect",
+      "subject": "bubble",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-074-0267762a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble particle effect",
+          "accentHue": 130,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -16,
+              "y": -13,
+              "scale": 1.01,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -23,
+              "y": -18,
+              "scale": 0.99,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-075",
+      "acceptanceId": "AT-PF-animation-075",
+      "category": "animation",
+      "ordinal": 75,
+      "release": 1,
+      "title": "bubble — audio-synced cue",
+      "subject": "bubble",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-075-101bc76f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble audio-synced cue",
+          "accentHue": 23,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1260,
+          "audioMarkerMs": 840,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -9,
+              "y": 1,
+              "scale": 1,
+              "rotation": -0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -13,
+              "y": 1,
+              "scale": 1,
+              "rotation": 0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-076",
+      "acceptanceId": "AT-PF-animation-076",
+      "category": "animation",
+      "ordinal": 76,
+      "release": 1,
+      "title": "bubble — pause-safe variant",
+      "subject": "bubble",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-076-e7d1a402",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble pause-safe variant",
+          "accentHue": 66,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 6,
+              "y": -10,
+              "scale": 0.97,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 9,
+              "y": -14,
+              "scale": 1.03,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-077",
+      "acceptanceId": "AT-PF-animation-077",
+      "category": "animation",
+      "ordinal": 77,
+      "release": 1,
+      "title": "bubble — reduced-motion variant",
+      "subject": "bubble",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-077-cbfa3d0d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble reduced-motion variant",
+          "accentHue": 77,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": 15,
+              "scale": 1,
+              "rotation": -0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -2,
+              "y": 21,
+              "scale": 1,
+              "rotation": 0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-078",
+      "acceptanceId": "AT-PF-animation-078",
+      "category": "animation",
+      "ordinal": 78,
+      "release": 1,
+      "title": "bubble — low-tier variant",
+      "subject": "bubble",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-078-ecdbd527",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble low-tier variant",
+          "accentHue": 167,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 540,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": -9,
+              "scale": 0.86,
+              "rotation": 0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 22,
+              "y": -13,
+              "scale": 1.1400000000000001,
+              "rotation": -0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-079",
+      "acceptanceId": "AT-PF-animation-079",
+      "category": "animation",
+      "ordinal": 79,
+      "release": 1,
+      "title": "bubble — replay marker",
+      "subject": "bubble",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-079-a779b516",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble replay marker",
+          "accentHue": 86,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1260,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -12,
+              "y": 13,
+              "scale": 1.05,
+              "rotation": 0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -17,
+              "y": 19,
+              "scale": 0.95,
+              "rotation": -0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-080",
+      "acceptanceId": "AT-PF-animation-080",
+      "category": "animation",
+      "ordinal": 80,
+      "release": 1,
+      "title": "bubble — golden capture",
+      "subject": "bubble",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-080-5a268e70",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bubble golden capture",
+          "accentHue": 352,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 7,
+              "y": 12,
+              "scale": 1.1400000000000001,
+              "rotation": 0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 10,
+              "y": 17,
+              "scale": 0.8599999999999999,
+              "rotation": -0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 2,
+  "page": 1,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-101",
+      "acceptanceId": "AT-PF-animation-101",
+      "category": "animation",
+      "ordinal": 101,
+      "release": 2,
+      "title": "aim trail — intro clip",
+      "subject": "aim trail",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-101-b487dcec",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail intro clip",
+          "accentHue": 36,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 16,
+              "y": 8,
+              "scale": 0.9299999999999999,
+              "rotation": -0.1,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 23,
+              "y": 12,
+              "scale": 1.07,
+              "rotation": 0.1,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-102",
+      "acceptanceId": "AT-PF-animation-102",
+      "category": "animation",
+      "ordinal": 102,
+      "release": 2,
+      "title": "aim trail — idle loop",
+      "subject": "aim trail",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-102-a6b67258",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail idle loop",
+          "accentHue": 40,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Linear",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 600,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": 0,
+              "scale": 1.1,
+              "rotation": 0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": 0,
+              "scale": 0.8999999999999999,
+              "rotation": -0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-103",
+      "acceptanceId": "AT-PF-animation-103",
+      "category": "animation",
+      "ordinal": 103,
+      "release": 2,
+      "title": "aim trail — anticipation clip",
+      "subject": "aim trail",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-103-97e13e95",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail anticipation clip",
+          "accentHue": 197,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1440,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -9,
+              "y": -8,
+              "scale": 1.08,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -13,
+              "y": -11,
+              "scale": 0.9199999999999999,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-104",
+      "acceptanceId": "AT-PF-animation-104",
+      "category": "animation",
+      "ordinal": 104,
+      "release": 2,
+      "title": "aim trail — action clip",
+      "subject": "aim trail",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-104-1214c834",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail action clip",
+          "accentHue": 20,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -7,
+              "y": 10,
+              "scale": 1,
+              "rotation": 0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -10,
+              "y": 14,
+              "scale": 1,
+              "rotation": -0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-105",
+      "acceptanceId": "AT-PF-animation-105",
+      "category": "animation",
+      "ordinal": 105,
+      "release": 2,
+      "title": "aim trail — contact effect",
+      "subject": "aim trail",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-105-d7b2ced1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail contact effect",
+          "accentHue": 73,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 960,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -11,
+              "y": -12,
+              "scale": 0.97,
+              "rotation": 0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -16,
+              "y": -17,
+              "scale": 1.03,
+              "rotation": -0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-106",
+      "acceptanceId": "AT-PF-animation-106",
+      "category": "animation",
+      "ordinal": 106,
+      "release": 2,
+      "title": "aim trail — release effect",
+      "subject": "aim trail",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-106-cb44a7be",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail release effect",
+          "accentHue": 358,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 660,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -2,
+              "y": -11,
+              "scale": 0.86,
+              "rotation": 0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -3,
+              "y": -16,
+              "scale": 1.1400000000000001,
+              "rotation": -0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-107",
+      "acceptanceId": "AT-PF-animation-107",
+      "category": "animation",
+      "ordinal": 107,
+      "release": 2,
+      "title": "aim trail — success clip",
+      "subject": "aim trail",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-107-e8038a5b",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail success clip",
+          "accentHue": 59,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": 5,
+              "scale": 1.04,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -18,
+              "y": 7,
+              "scale": 0.96,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-108",
+      "acceptanceId": "AT-PF-animation-108",
+      "category": "animation",
+      "ordinal": 108,
+      "release": 2,
+      "title": "aim trail — failure clip",
+      "subject": "aim trail",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-108-8a5bf68c",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail failure clip",
+          "accentHue": 180,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 1,
+              "scale": 0.97,
+              "rotation": -0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -8,
+              "y": 2,
+              "scale": 1.03,
+              "rotation": 0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-109",
+      "acceptanceId": "AT-PF-animation-109",
+      "category": "animation",
+      "ordinal": 109,
+      "release": 2,
+      "title": "aim trail — transition in",
+      "subject": "aim trail",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-109-5fe1b66e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail transition in",
+          "accentHue": 222,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": -9,
+              "y": -3,
+              "scale": 1.06,
+              "rotation": -0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -13,
+              "y": -5,
+              "scale": 0.94,
+              "rotation": 0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-110",
+      "acceptanceId": "AT-PF-animation-110",
+      "category": "animation",
+      "ordinal": 110,
+      "release": 2,
+      "title": "aim trail — transition out",
+      "subject": "aim trail",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-110-d1ff50d3",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "aim trail transition out",
+          "accentHue": 275,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 13,
+              "scale": 1,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 19,
+              "scale": 1,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": true,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

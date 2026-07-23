@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 2,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-151",
+      "acceptanceId": "AT-PF-animation-151",
+      "category": "animation",
+      "ordinal": 151,
+      "release": 2,
+      "title": "cell attach — camera effect",
+      "subject": "cell attach",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-151-b3daa508",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach camera effect",
+          "accentHue": 240,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 9,
+              "y": -1,
+              "scale": 1.06,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 13,
+              "y": -1,
+              "scale": 0.94,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-152",
+      "acceptanceId": "AT-PF-animation-152",
+      "category": "animation",
+      "ordinal": 152,
+      "release": 2,
+      "title": "cell attach — light effect",
+      "subject": "cell attach",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-152-37195ea9",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach light effect",
+          "accentHue": 73,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -8,
+              "y": 1,
+              "scale": 0.91,
+              "rotation": 0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -11,
+              "y": 2,
+              "scale": 1.0899999999999999,
+              "rotation": -0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-153",
+      "acceptanceId": "AT-PF-animation-153",
+      "category": "animation",
+      "ordinal": 153,
+      "release": 2,
+      "title": "cell attach — material effect",
+      "subject": "cell attach",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-153-f020e1d6",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach material effect",
+          "accentHue": 246,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 150,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": -8,
+              "scale": 1.02,
+              "rotation": 0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": -12,
+              "scale": 0.98,
+              "rotation": -0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-154",
+      "acceptanceId": "AT-PF-animation-154",
+      "category": "animation",
+      "ordinal": 154,
+      "release": 2,
+      "title": "cell attach — particle effect",
+      "subject": "cell attach",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-154-319555a3",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach particle effect",
+          "accentHue": 11,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 990,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -5,
+              "y": -7,
+              "scale": 1.07,
+              "rotation": 0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -7,
+              "y": -10,
+              "scale": 0.9299999999999999,
+              "rotation": -0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-155",
+      "acceptanceId": "AT-PF-animation-155",
+      "category": "animation",
+      "ordinal": 155,
+      "release": 2,
+      "title": "cell attach — audio-synced cue",
+      "subject": "cell attach",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-155-c12e0f60",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach audio-synced cue",
+          "accentHue": 320,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 630,
+          "audioMarkerMs": 420,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -2,
+              "y": -2,
+              "scale": 1.1400000000000001,
+              "rotation": 0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -3,
+              "y": -3,
+              "scale": 0.8599999999999999,
+              "rotation": -0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-156",
+      "acceptanceId": "AT-PF-animation-156",
+      "category": "animation",
+      "ordinal": 156,
+      "release": 2,
+      "title": "cell attach — pause-safe variant",
+      "subject": "cell attach",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-156-d886b65d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach pause-safe variant",
+          "accentHue": 85,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": -13,
+              "scale": 1.06,
+              "rotation": -0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": -19,
+              "scale": 0.94,
+              "rotation": 0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-157",
+      "acceptanceId": "AT-PF-animation-157",
+      "category": "animation",
+      "ordinal": 157,
+      "release": 2,
+      "title": "cell attach — reduced-motion variant",
+      "subject": "cell attach",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-157-162dd782",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach reduced-motion variant",
+          "accentHue": 202,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 960,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 5,
+              "y": -1,
+              "scale": 1.09,
+              "rotation": -0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 7,
+              "y": -2,
+              "scale": 0.9099999999999999,
+              "rotation": 0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-158",
+      "acceptanceId": "AT-PF-animation-158",
+      "category": "animation",
+      "ordinal": 158,
+      "release": 2,
+      "title": "cell attach — low-tier variant",
+      "subject": "cell attach",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-158-bb2c4024",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach low-tier variant",
+          "accentHue": 76,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -7,
+              "y": 10,
+              "scale": 0.98,
+              "rotation": 0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -10,
+              "y": 14,
+              "scale": 1.02,
+              "rotation": -0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-159",
+      "acceptanceId": "AT-PF-animation-159",
+      "category": "animation",
+      "ordinal": 159,
+      "release": 2,
+      "title": "cell attach — replay marker",
+      "subject": "cell attach",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-159-f5596263",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach replay marker",
+          "accentHue": 171,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 11,
+              "y": 4,
+              "scale": 1.04,
+              "rotation": -0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 15,
+              "y": 5,
+              "scale": 0.96,
+              "rotation": 0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-160",
+      "acceptanceId": "AT-PF-animation-160",
+      "category": "animation",
+      "ordinal": 160,
+      "release": 2,
+      "title": "cell attach — golden capture",
+      "subject": "cell attach",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-160-eb89684f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "cell attach golden capture",
+          "accentHue": 15,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 5,
+              "y": -15,
+              "scale": 0.94,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 7,
+              "y": -21,
+              "scale": 1.06,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

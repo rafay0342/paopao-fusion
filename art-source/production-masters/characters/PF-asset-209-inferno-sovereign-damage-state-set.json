@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-209",
+  "release": 3,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Inferno Sovereign",
+  "facet": "damage-state set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.128,
+          "y": -0.45,
+          "rotationDeg": -8.5,
+          "length": 0.242
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.293,
+          "y": -0.35,
+          "rotationDeg": -1.7,
+          "length": 0.218
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.306,
+          "y": -0.25,
+          "rotationDeg": -8.2,
+          "length": 0.097
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.34,
+          "y": -0.15,
+          "rotationDeg": -3.7,
+          "length": 0.176
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.18,
+          "y": -0.05,
+          "rotationDeg": -5.2,
+          "length": 0.28
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.305,
+          "y": 0.05,
+          "rotationDeg": -0.8,
+          "length": 0.098
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.399,
+          "y": 0.15,
+          "rotationDeg": 0.4,
+          "length": 0.207
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.075,
+          "y": 0.25,
+          "rotationDeg": -5.7,
+          "length": 0.265
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.2,
+          "y": 0.35,
+          "rotationDeg": 6.3,
+          "length": 0.228
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.152,
+          "y": 0.45,
+          "rotationDeg": -4.3,
+          "length": 0.121
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "damage-state-set-1",
+        "durationMs": 617,
+        "loop": true,
+        "emphasis": 0.64,
+        "silhouetteKey": "inferno-sovereign-3a9831d5-1"
+      },
+      {
+        "id": "damage-state-set-2",
+        "durationMs": 609,
+        "loop": false,
+        "emphasis": 0.03,
+        "silhouetteKey": "inferno-sovereign-3a9831d5-2"
+      },
+      {
+        "id": "damage-state-set-3",
+        "durationMs": 1130,
+        "loop": false,
+        "emphasis": 0.77,
+        "silhouetteKey": "inferno-sovereign-3a9831d5-3"
+      },
+      {
+        "id": "damage-state-set-4",
+        "durationMs": 459,
+        "loop": false,
+        "emphasis": 0.05,
+        "silhouetteKey": "inferno-sovereign-3a9831d5-4"
+      },
+      {
+        "id": "damage-state-set-5",
+        "durationMs": 918,
+        "loop": false,
+        "emphasis": 0.51,
+        "silhouetteKey": "inferno-sovereign-3a9831d5-5"
+      }
+    ]
+  }
+}

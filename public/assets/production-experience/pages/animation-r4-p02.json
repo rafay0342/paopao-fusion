@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 4,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-311",
+      "acceptanceId": "AT-PF-animation-311",
+      "category": "animation",
+      "ordinal": 311,
+      "release": 4,
+      "title": "artifact — camera effect",
+      "subject": "artifact",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-311-34f4eaa5",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact camera effect",
+          "accentHue": 125,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": -13,
+              "scale": 0.98,
+              "rotation": 0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": -19,
+              "scale": 1.02,
+              "rotation": -0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-312",
+      "acceptanceId": "AT-PF-animation-312",
+      "category": "animation",
+      "ordinal": 312,
+      "release": 4,
+      "title": "artifact — light effect",
+      "subject": "artifact",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-312-d7dc9c22",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact light effect",
+          "accentHue": 10,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 960,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 9,
+              "scale": 1.12,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 13,
+              "scale": 0.8799999999999999,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-313",
+      "acceptanceId": "AT-PF-animation-313",
+      "category": "animation",
+      "ordinal": 313,
+      "release": 4,
+      "title": "artifact — material effect",
+      "subject": "artifact",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-313-4627eb37",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact material effect",
+          "accentHue": 159,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 960,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 240,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 4,
+              "y": -10,
+              "scale": 0.96,
+              "rotation": 0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 6,
+              "y": -15,
+              "scale": 1.04,
+              "rotation": -0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-314",
+      "acceptanceId": "AT-PF-animation-314",
+      "category": "animation",
+      "ordinal": 314,
+      "release": 4,
+      "title": "artifact — particle effect",
+      "subject": "artifact",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-314-92320b06",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact particle effect",
+          "accentHue": 78,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 14,
+              "y": -5,
+              "scale": 1.09,
+              "rotation": -0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 20,
+              "y": -7,
+              "scale": 0.9099999999999999,
+              "rotation": 0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-315",
+      "acceptanceId": "AT-PF-animation-315",
+      "category": "animation",
+      "ordinal": 315,
+      "release": 4,
+      "title": "artifact — audio-synced cue",
+      "subject": "artifact",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-315-877dddf7",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact audio-synced cue",
+          "accentHue": 143,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 630,
+          "audioMarkerMs": 420,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -4,
+              "y": 6,
+              "scale": 0.92,
+              "rotation": 0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -6,
+              "y": 8,
+              "scale": 1.08,
+              "rotation": -0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-316",
+      "acceptanceId": "AT-PF-animation-316",
+      "category": "animation",
+      "ordinal": 316,
+      "release": 4,
+      "title": "artifact — pause-safe variant",
+      "subject": "artifact",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-316-e690a046",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact pause-safe variant",
+          "accentHue": 94,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 0,
+              "y": 11,
+              "scale": 1,
+              "rotation": -0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 0,
+              "y": 15,
+              "scale": 1,
+              "rotation": 0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-317",
+      "acceptanceId": "AT-PF-animation-317",
+      "category": "animation",
+      "ordinal": 317,
+      "release": 4,
+      "title": "artifact — reduced-motion variant",
+      "subject": "artifact",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-317-bf818aa5",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact reduced-motion variant",
+          "accentHue": 173,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1170,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": -13,
+              "scale": 1.03,
+              "rotation": 0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": -18,
+              "scale": 0.97,
+              "rotation": -0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-318",
+      "acceptanceId": "AT-PF-animation-318",
+      "category": "animation",
+      "ordinal": 318,
+      "release": 4,
+      "title": "artifact — low-tier variant",
+      "subject": "artifact",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-318-be443cbb",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact low-tier variant",
+          "accentHue": 355,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -9,
+              "y": -16,
+              "scale": 0.88,
+              "rotation": -0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -13,
+              "y": -23,
+              "scale": 1.12,
+              "rotation": 0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-319",
+      "acceptanceId": "AT-PF-animation-319",
+      "category": "animation",
+      "ordinal": 319,
+      "release": 4,
+      "title": "artifact — replay marker",
+      "subject": "artifact",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-319-5d88ce8e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact replay marker",
+          "accentHue": 22,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -11,
+              "y": 9,
+              "scale": 0.98,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -16,
+              "y": 13,
+              "scale": 1.02,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-320",
+      "acceptanceId": "AT-PF-animation-320",
+      "category": "animation",
+      "ordinal": 320,
+      "release": 4,
+      "title": "artifact — golden capture",
+      "subject": "artifact",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-320-820fba18",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "artifact golden capture",
+          "accentHue": 40,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 300,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 1,
+              "y": 15,
+              "scale": 0.99,
+              "rotation": 0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 1,
+              "y": 22,
+              "scale": 1.01,
+              "rotation": -0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

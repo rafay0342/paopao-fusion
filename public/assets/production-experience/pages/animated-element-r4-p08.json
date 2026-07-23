@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 4,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-371",
+      "acceptanceId": "AT-PF-animated-element-371",
+      "category": "animated-element",
+      "ordinal": 371,
+      "release": 4,
+      "title": "inventory card — progress response",
+      "subject": "inventory card",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-371-2f785cd9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card progress response",
+          "accentHue": 41,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -7,
+          "y": 11,
+          "scale": 1.07,
+          "rotation": -0.14,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-372",
+      "acceptanceId": "AT-PF-animated-element-372",
+      "category": "animated-element",
+      "ordinal": 372,
+      "release": 4,
+      "title": "inventory card — loading response",
+      "subject": "inventory card",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-372-5d586adc",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card loading response",
+          "accentHue": 12,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 15,
+          "y": 18,
+          "scale": 0.94,
+          "rotation": 0.1,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-373",
+      "acceptanceId": "AT-PF-animated-element-373",
+      "category": "animated-element",
+      "ordinal": 373,
+      "release": 4,
+      "title": "inventory card — disabled response",
+      "subject": "inventory card",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-373-ef4eec84",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card disabled response",
+          "accentHue": 340,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -18,
+          "y": 0,
+          "scale": 0.97,
+          "rotation": 0.11,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-374",
+      "acceptanceId": "AT-PF-animated-element-374",
+      "category": "animated-element",
+      "ordinal": 374,
+      "release": 4,
+      "title": "inventory card — reduced-motion substitute",
+      "subject": "inventory card",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-374-8f310a44",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card reduced-motion substitute",
+          "accentHue": 180,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 4,
+          "y": 12,
+          "scale": 0.97,
+          "rotation": 0.03,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-375",
+      "acceptanceId": "AT-PF-animated-element-375",
+      "category": "animated-element",
+      "ordinal": 375,
+      "release": 4,
+      "title": "inventory card — pause behavior",
+      "subject": "inventory card",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-375-ea133a25",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card pause behavior",
+          "accentHue": 213,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -12,
+          "y": -4,
+          "scale": 0.97,
+          "rotation": 0.07,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-376",
+      "acceptanceId": "AT-PF-animated-element-376",
+      "category": "animated-element",
+      "ordinal": 376,
+      "release": 4,
+      "title": "inventory card — resume behavior",
+      "subject": "inventory card",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-376-8bb2331a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card resume behavior",
+          "accentHue": 274,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -2,
+          "y": -7,
+          "scale": 1.05,
+          "rotation": 0.13,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-377",
+      "acceptanceId": "AT-PF-animated-element-377",
+      "category": "animated-element",
+      "ordinal": 377,
+      "release": 4,
+      "title": "inventory card — camera-relative behavior",
+      "subject": "inventory card",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-377-5dff8245",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card camera-relative behavior",
+          "accentHue": 37,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 0,
+          "y": 16,
+          "scale": 0.96,
+          "rotation": -0.04,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-378",
+      "acceptanceId": "AT-PF-animated-element-378",
+      "category": "animated-element",
+      "ordinal": 378,
+      "release": 4,
+      "title": "inventory card — offscreen culling",
+      "subject": "inventory card",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-378-f3b91418",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card offscreen culling",
+          "accentHue": 112,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 8,
+          "y": 13,
+          "scale": 1,
+          "rotation": -0.1,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-379",
+      "acceptanceId": "AT-PF-animated-element-379",
+      "category": "animated-element",
+      "ordinal": 379,
+      "release": 4,
+      "title": "inventory card — pool reset",
+      "subject": "inventory card",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-379-bdfc5988",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card pool reset",
+          "accentHue": 96,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 13,
+          "y": 9,
+          "scale": 1.1,
+          "rotation": 0.08,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-380",
+      "acceptanceId": "AT-PF-animated-element-380",
+      "category": "animated-element",
+      "ordinal": 380,
+      "release": 4,
+      "title": "inventory card — canonical timing marker",
+      "subject": "inventory card",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-380-ea6734d1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "inventory card canonical timing marker",
+          "accentHue": 193,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 9,
+          "y": 13,
+          "scale": 0.92,
+          "rotation": -0.03,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

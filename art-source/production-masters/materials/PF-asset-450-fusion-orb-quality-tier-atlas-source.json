@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-450",
+  "release": 5,
+  "allocation": "material-texture-vfx-packs",
+  "subject": "fusion orb",
+  "facet": "quality-tier atlas source",
+  "masterType": "phaser-material-source-pack",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "material": {
+    "colorSpace": "srgb",
+    "sourceResolution": [
+      8192,
+      8192
+    ],
+    "channels": {
+      "base": "#89218c",
+      "highlight": "#a3f09d",
+      "emission": "#e94e82",
+      "metalness": 0.37,
+      "roughness": 0.68,
+      "opacity": 1
+    },
+    "graph": [
+      {
+        "id": "uv",
+        "op": "polar-uv",
+        "scale": 4
+      },
+      {
+        "id": "facet",
+        "op": "voronoi",
+        "input": "uv",
+        "cells": 14
+      },
+      {
+        "id": "caustic",
+        "op": "sine-warp",
+        "input": "facet",
+        "frequency": 3,
+        "amplitude": 0.18
+      },
+      {
+        "id": "rim",
+        "op": "fresnel-2d",
+        "power": 3.56
+      },
+      {
+        "id": "output",
+        "op": "mix",
+        "inputs": [
+          "caustic",
+          "rim"
+        ],
+        "blend": "screen"
+      }
+    ],
+    "fragmentShader": "precision mediump float;\nuniform sampler2D uMainSampler;\nuniform float uTime;\nvarying vec2 outTexCoord;\nvoid main(){vec4 c=texture2D(uMainSampler,outTexCoord);float f=0.5+0.5*sin((outTexCoord.x+outTexCoord.y)*6.422+uTime*0.757);gl_FragColor=vec4(c.rgb*(0.82+f*0.18),c.a);}",
+    "qualityTiers": {
+      "performance": {
+        "textureEdge": 1024,
+        "animated": false
+      },
+      "balanced": {
+        "textureEdge": 2048,
+        "animated": false
+      },
+      "ultra": {
+        "textureEdge": 4096,
+        "animated": true
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 2,
+  "client": "classic",
+  "engine": "phaser-3.90.0",
+  "deliveryPolicy": "installable-web-app",
+  "generatedAt": "2026-07-22T14:00:00+05:00",
+  "channels": [
+    {
+      "id": "browser",
+      "platform": "Browser",
+      "delivery": "Production web client",
+      "available": true,
+      "statusLabel": "Live",
+      "href": "/classic/",
+      "actionLabel": "Play now",
+      "requirements": "Modern WebGL 2 browser; keyboard, pointer, touch and optional camera hand controls",
+      "note": "No installation required",
+      "icon": "◇"
+    },
+    {
+      "id": "windows",
+      "platform": "Windows",
+      "delivery": "Installable PWA",
+      "available": true,
+      "statusLabel": "Web app",
+      "href": "/classic/?install=pwa",
+      "actionLabel": "Install / open",
+      "requirements": "Windows 10/11 with a current Chromium-based browser and 4 GB RAM baseline",
+      "note": "Same Phaser runtime; no separate engine binary",
+      "icon": "▦"
+    },
+    {
+      "id": "android",
+      "platform": "Android",
+      "delivery": "Installable PWA",
+      "available": true,
+      "statusLabel": "Web app",
+      "href": "/classic/?install=pwa",
+      "actionLabel": "Install / open",
+      "requirements": "Current Chrome-class browser, WebGL 2 and 4 GB RAM baseline",
+      "note": "Same Phaser runtime; no APK sideload",
+      "icon": "◈"
+    }
+  ],
+  "nativeBinaries": {
+    "published": false,
+    "reason": "Native engine binaries are outside the single-client Phaser scope."
+  }
+}

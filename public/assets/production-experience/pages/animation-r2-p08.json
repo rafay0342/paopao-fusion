@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 2,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-171",
+      "acceptanceId": "AT-PF-animation-171",
+      "category": "animation",
+      "ordinal": 171,
+      "release": 2,
+      "title": "match burst — camera effect",
+      "subject": "match burst",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-171-56231c72",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst camera effect",
+          "accentHue": 98,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1350,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 9,
+              "scale": 0.87,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 13,
+              "scale": 1.13,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-172",
+      "acceptanceId": "AT-PF-animation-172",
+      "category": "animation",
+      "ordinal": 172,
+      "release": 2,
+      "title": "match burst — light effect",
+      "subject": "match burst",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-172-3e4ec3a7",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst light effect",
+          "accentHue": 7,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": -5,
+              "scale": 0.96,
+              "rotation": -0.12,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": -7,
+              "scale": 1.04,
+              "rotation": 0.12,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-173",
+      "acceptanceId": "AT-PF-animation-173",
+      "category": "animation",
+      "ordinal": 173,
+      "release": 2,
+      "title": "match burst — material effect",
+      "subject": "match burst",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-173-b44990a4",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst material effect",
+          "accentHue": 36,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 120,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 1,
+              "scale": 0.94,
+              "rotation": -0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -8,
+              "y": 2,
+              "scale": 1.06,
+              "rotation": 0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-174",
+      "acceptanceId": "AT-PF-animation-174",
+      "category": "animation",
+      "ordinal": 174,
+      "release": 2,
+      "title": "match burst — particle effect",
+      "subject": "match burst",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-174-155cd081",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst particle effect",
+          "accentHue": 105,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": 0,
+              "scale": 0.92,
+              "rotation": -0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 22,
+              "y": 0,
+              "scale": 1.08,
+              "rotation": 0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-175",
+      "acceptanceId": "AT-PF-animation-175",
+      "category": "animation",
+      "ordinal": 175,
+      "release": 2,
+      "title": "match burst — audio-synced cue",
+      "subject": "match burst",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-175-72c6e75e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst audio-synced cue",
+          "accentHue": 142,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": 720,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -6,
+              "y": 10,
+              "scale": 0.87,
+              "rotation": 0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -8,
+              "y": 14,
+              "scale": 1.13,
+              "rotation": -0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-176",
+      "acceptanceId": "AT-PF-animation-176",
+      "category": "animation",
+      "ordinal": 176,
+      "release": 2,
+      "title": "match burst — pause-safe variant",
+      "subject": "match burst",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-176-eb5fb41b",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst pause-safe variant",
+          "accentHue": 27,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": 13,
+              "scale": 0.92,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": 18,
+              "scale": 1.08,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-177",
+      "acceptanceId": "AT-PF-animation-177",
+      "category": "animation",
+      "ordinal": 177,
+      "release": 2,
+      "title": "match burst — reduced-motion variant",
+      "subject": "match burst",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-177-d9ae115c",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst reduced-motion variant",
+          "accentHue": 20,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1170,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 11,
+              "y": 8,
+              "scale": 0.95,
+              "rotation": 0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 15,
+              "y": 11,
+              "scale": 1.05,
+              "rotation": -0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-178",
+      "acceptanceId": "AT-PF-animation-178",
+      "category": "animation",
+      "ordinal": 178,
+      "release": 2,
+      "title": "match burst — low-tier variant",
+      "subject": "match burst",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-178-e8cf923a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst low-tier variant",
+          "accentHue": 298,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -17,
+              "y": -8,
+              "scale": 0.91,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -24,
+              "y": -12,
+              "scale": 1.0899999999999999,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-179",
+      "acceptanceId": "AT-PF-animation-179",
+      "category": "animation",
+      "ordinal": 179,
+      "release": 2,
+      "title": "match burst — replay marker",
+      "subject": "match burst",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-179-698d4139",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst replay marker",
+          "accentHue": 113,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 5,
+              "scale": 0.92,
+              "rotation": -0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 7,
+              "scale": 1.08,
+              "rotation": 0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-180",
+      "acceptanceId": "AT-PF-animation-180",
+      "category": "animation",
+      "ordinal": 180,
+      "release": 2,
+      "title": "match burst — golden capture",
+      "subject": "match burst",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-180-373f97a1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "match burst golden capture",
+          "accentHue": 145,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 8,
+              "y": 8,
+              "scale": 1.11,
+              "rotation": -0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 12,
+              "y": 11,
+              "scale": 0.8899999999999999,
+              "rotation": 0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

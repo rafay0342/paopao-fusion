@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 1,
+  "page": 5,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-041",
+      "acceptanceId": "AT-PF-animation-041",
+      "category": "animation",
+      "ordinal": 41,
+      "release": 1,
+      "title": "Lumi — intro clip",
+      "subject": "Lumi",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-041-d7fdf636",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi intro clip",
+          "accentHue": 198,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 270,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -10,
+              "y": 5,
+              "scale": 0.89,
+              "rotation": 0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -15,
+              "y": 7,
+              "scale": 1.1099999999999999,
+              "rotation": -0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-042",
+      "acceptanceId": "AT-PF-animation-042",
+      "category": "animation",
+      "ordinal": 42,
+      "release": 1,
+      "title": "Lumi — idle loop",
+      "subject": "Lumi",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-042-5e63933e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi idle loop",
+          "accentHue": 222,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Cubic.easeOut",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": -8,
+              "scale": 0.86,
+              "rotation": -0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": -12,
+              "scale": 1.1400000000000001,
+              "rotation": 0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-043",
+      "acceptanceId": "AT-PF-animation-043",
+      "category": "animation",
+      "ordinal": 43,
+      "release": 1,
+      "title": "Lumi — anticipation clip",
+      "subject": "Lumi",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-043-3a9c5597",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi anticipation clip",
+          "accentHue": 255,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 480,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 13,
+              "y": 8,
+              "scale": 0.86,
+              "rotation": -0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 18,
+              "y": 11,
+              "scale": 1.1400000000000001,
+              "rotation": 0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-044",
+      "acceptanceId": "AT-PF-animation-044",
+      "category": "animation",
+      "ordinal": 44,
+      "release": 1,
+      "title": "Lumi — action clip",
+      "subject": "Lumi",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-044-b5b27942",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi action clip",
+          "accentHue": 186,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 4,
+              "y": 3,
+              "scale": 0.9299999999999999,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 6,
+              "y": 4,
+              "scale": 1.07,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-045",
+      "acceptanceId": "AT-PF-animation-045",
+      "category": "animation",
+      "ordinal": 45,
+      "release": 1,
+      "title": "Lumi — contact effect",
+      "subject": "Lumi",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-045-477d657f",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi contact effect",
+          "accentHue": 199,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 240,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 1,
+              "y": 6,
+              "scale": 1.02,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 2,
+              "y": 9,
+              "scale": 0.98,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-046",
+      "acceptanceId": "AT-PF-animation-046",
+      "category": "animation",
+      "ordinal": 46,
+      "release": 1,
+      "title": "Lumi — release effect",
+      "subject": "Lumi",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-046-a14ca96c",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi release effect",
+          "accentHue": 244,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": 13,
+              "scale": 0.9299999999999999,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -19,
+              "y": 19,
+              "scale": 1.07,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-047",
+      "acceptanceId": "AT-PF-animation-047",
+      "category": "animation",
+      "ordinal": 47,
+      "release": 1,
+      "title": "Lumi — success clip",
+      "subject": "Lumi",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-047-3ef94d2d",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi success clip",
+          "accentHue": 133,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 240,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -10,
+              "y": -3,
+              "scale": 0.88,
+              "rotation": 0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -14,
+              "y": -5,
+              "scale": 1.12,
+              "rotation": -0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-048",
+      "acceptanceId": "AT-PF-animation-048",
+      "category": "animation",
+      "ordinal": 48,
+      "release": 1,
+      "title": "Lumi — failure clip",
+      "subject": "Lumi",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-048-0778a002",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi failure clip",
+          "accentHue": 274,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -2,
+              "y": 6,
+              "scale": 1.13,
+              "rotation": -0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -3,
+              "y": 9,
+              "scale": 0.8700000000000001,
+              "rotation": 0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-049",
+      "acceptanceId": "AT-PF-animation-049",
+      "category": "animation",
+      "ordinal": 49,
+      "release": 1,
+      "title": "Lumi — transition in",
+      "subject": "Lumi",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-049-ef72bcbc",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi transition in",
+          "accentHue": 204,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 960,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 240,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": 3,
+              "y": -15,
+              "scale": 1.13,
+              "rotation": 0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 4,
+              "y": -21,
+              "scale": 0.8700000000000001,
+              "rotation": -0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-050",
+      "acceptanceId": "AT-PF-animation-050",
+      "category": "animation",
+      "ordinal": 50,
+      "release": 1,
+      "title": "Lumi — transition out",
+      "subject": "Lumi",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-050-97999051",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "Lumi transition out",
+          "accentHue": 169,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": -2,
+              "scale": 0.97,
+              "rotation": 0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -2,
+              "y": -3,
+              "scale": 1.03,
+              "rotation": -0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

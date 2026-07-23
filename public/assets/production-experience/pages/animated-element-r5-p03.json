@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 5,
+  "page": 3,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-421",
+      "acceptanceId": "AT-PF-animated-element-421",
+      "category": "animated-element",
+      "ordinal": 421,
+      "release": 5,
+      "title": "season token — idle behavior",
+      "subject": "season token",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-421-747d3555",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token idle behavior",
+          "accentHue": 109,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 80,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 10,
+          "y": 8,
+          "scale": 1.05,
+          "rotation": 0.04,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-422",
+      "acceptanceId": "AT-PF-animated-element-422",
+      "category": "animated-element",
+      "ordinal": 422,
+      "release": 5,
+      "title": "season token — focus response",
+      "subject": "season token",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-422-59c199ee",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token focus response",
+          "accentHue": 238,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -17,
+          "y": -14,
+          "scale": 1.01,
+          "rotation": -0.04,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-423",
+      "acceptanceId": "AT-PF-animated-element-423",
+      "category": "animated-element",
+      "ordinal": 423,
+      "release": 5,
+      "title": "season token — hover response",
+      "subject": "season token",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-423-2c19fa2a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token hover response",
+          "accentHue": 226,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 13,
+          "y": 18,
+          "scale": 0.99,
+          "rotation": 0.04,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-424",
+      "acceptanceId": "AT-PF-animated-element-424",
+      "category": "animated-element",
+      "ordinal": 424,
+      "release": 5,
+      "title": "season token — press response",
+      "subject": "season token",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-424-964ef483",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token press response",
+          "accentHue": 3,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -8,
+          "y": 6,
+          "scale": 0.88,
+          "rotation": -0.1,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-425",
+      "acceptanceId": "AT-PF-animated-element-425",
+      "category": "animated-element",
+      "ordinal": 425,
+      "release": 5,
+      "title": "season token — entry motion",
+      "subject": "season token",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-425-6e174f65",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token entry motion",
+          "accentHue": 13,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 6,
+          "y": -11,
+          "scale": 0.97,
+          "rotation": -0.06,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-426",
+      "acceptanceId": "AT-PF-animated-element-426",
+      "category": "animated-element",
+      "ordinal": 426,
+      "release": 5,
+      "title": "season token — exit motion",
+      "subject": "season token",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-426-d8e46881",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token exit motion",
+          "accentHue": 17,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 15,
+          "y": -14,
+          "scale": 1.07,
+          "rotation": -0.07,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-427",
+      "acceptanceId": "AT-PF-animated-element-427",
+      "category": "animated-element",
+      "ordinal": 427,
+      "release": 5,
+      "title": "season token — state change",
+      "subject": "season token",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-427-701b9e94",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token state change",
+          "accentHue": 100,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -17,
+          "y": 14,
+          "scale": 0.98,
+          "rotation": -0.09,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-428",
+      "acceptanceId": "AT-PF-animated-element-428",
+      "category": "animated-element",
+      "ordinal": 428,
+      "release": 5,
+      "title": "season token — success response",
+      "subject": "season token",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-428-e88e02f7",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token success response",
+          "accentHue": 23,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 10,
+          "y": 17,
+          "scale": 0.9,
+          "rotation": 0.09,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-429",
+      "acceptanceId": "AT-PF-animated-element-429",
+      "category": "animated-element",
+      "ordinal": 429,
+      "release": 5,
+      "title": "season token — failure response",
+      "subject": "season token",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-429-06449b5a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token failure response",
+          "accentHue": 274,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -17,
+          "y": 5,
+          "scale": 1.05,
+          "rotation": -0.03,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-430",
+      "acceptanceId": "AT-PF-animated-element-430",
+      "category": "animated-element",
+      "ordinal": 430,
+      "release": 5,
+      "title": "season token — attention cue",
+      "subject": "season token",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-430-bbccdc1c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "season token attention cue",
+          "accentHue": 84,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -15,
+          "y": 5,
+          "scale": 0.92,
+          "rotation": -0.05,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

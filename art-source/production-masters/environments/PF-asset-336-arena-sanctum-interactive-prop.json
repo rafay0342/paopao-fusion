@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-336",
+  "release": 4,
+  "allocation": "environment-models-props",
+  "subject": "arena sanctum",
+  "facet": "interactive prop",
+  "masterType": "interactive-environment-prop",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "environment": {
+    "sourceCanvas": [
+      8192,
+      8192
+    ],
+    "origin": [
+      0.5,
+      1
+    ],
+    "bounds": {
+      "left": -1,
+      "right": 1,
+      "top": -1.2,
+      "bottom": 1.2
+    },
+    "polygons": [
+      {
+        "id": "PF-asset-336-surface-1",
+        "kind": "occluder",
+        "points": [
+          [
+            0.482,
+            -0.241
+          ],
+          [
+            -0.771,
+            -0.17
+          ],
+          [
+            0.183,
+            -0.257
+          ],
+          [
+            -0.223,
+            0.063
+          ],
+          [
+            0.707,
+            -0.608
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-336-surface-2",
+        "kind": "collision",
+        "points": [
+          [
+            0.781,
+            -0.647
+          ],
+          [
+            -0.702,
+            0.559
+          ],
+          [
+            -0.449,
+            -0.89
+          ],
+          [
+            0.714,
+            -0.376
+          ],
+          [
+            0.319,
+            -0.55
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-336-surface-3",
+        "kind": "interaction",
+        "points": [
+          [
+            -0.307,
+            0.334
+          ],
+          [
+            -0.465,
+            0.841
+          ],
+          [
+            0.822,
+            0.689
+          ],
+          [
+            -0.08,
+            0.671
+          ],
+          [
+            0.691,
+            -0.546
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-336-surface-4",
+        "kind": "occluder",
+        "points": [
+          [
+            -0.146,
+            0.817
+          ],
+          [
+            0.682,
+            0.029
+          ],
+          [
+            -0.017,
+            -0.111
+          ],
+          [
+            -0.302,
+            0.795
+          ],
+          [
+            0.561,
+            -0.138
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-336-surface-5",
+        "kind": "collision",
+        "points": [
+          [
+            0.437,
+            0.162
+          ],
+          [
+            0.437,
+            -0.889
+          ],
+          [
+            -0.019,
+            -0.048
+          ],
+          [
+            0.331,
+            -0.459
+          ],
+          [
+            0.081,
+            0.412
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-336-surface-6",
+        "kind": "interaction",
+        "points": [
+          [
+            0.141,
+            -0.095
+          ],
+          [
+            -0.188,
+            -0.818
+          ],
+          [
+            -0.079,
+            0.789
+          ],
+          [
+            0.148,
+            0.328
+          ],
+          [
+            -0.271,
+            -0.504
+          ]
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "name": "player",
+        "x": -0.747,
+        "y": 0.735,
+        "depth": 0
+      },
+      {
+        "name": "boss",
+        "x": 0.395,
+        "y": 0.809,
+        "depth": 10
+      },
+      {
+        "name": "portal-left",
+        "x": -0.627,
+        "y": 0.269,
+        "depth": 20
+      },
+      {
+        "name": "portal-right",
+        "x": -0.125,
+        "y": 0.749,
+        "depth": 30
+      },
+      {
+        "name": "foreground-fx",
+        "x": 0.403,
+        "y": 0.672,
+        "depth": 40
+      }
+    ]
+  }
+}

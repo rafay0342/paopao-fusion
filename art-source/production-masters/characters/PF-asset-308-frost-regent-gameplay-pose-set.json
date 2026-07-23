@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-308",
+  "release": 4,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Frost Regent",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.337,
+          "y": -0.45,
+          "rotationDeg": 5.8,
+          "length": 0.145
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.245,
+          "y": -0.35,
+          "rotationDeg": -2.6,
+          "length": 0.255
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.02,
+          "y": -0.25,
+          "rotationDeg": -10.3,
+          "length": 0.25
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.07,
+          "y": -0.15,
+          "rotationDeg": -11.9,
+          "length": 0.243
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.266,
+          "y": -0.05,
+          "rotationDeg": 10.2,
+          "length": 0.145
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.137,
+          "y": 0.05,
+          "rotationDeg": -4.5,
+          "length": 0.153
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.129,
+          "y": 0.15,
+          "rotationDeg": -3.1,
+          "length": 0.101
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.197,
+          "y": 0.25,
+          "rotationDeg": 5.5,
+          "length": 0.12
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.042,
+          "y": 0.35,
+          "rotationDeg": -4.2,
+          "length": 0.216
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.013,
+          "y": 0.45,
+          "rotationDeg": 4,
+          "length": 0.214
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 1245,
+        "loop": true,
+        "emphasis": 0.62,
+        "silhouetteKey": "frost-regent-2039c2d8-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 541,
+        "loop": false,
+        "emphasis": 0.74,
+        "silhouetteKey": "frost-regent-2039c2d8-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 1062,
+        "loop": false,
+        "emphasis": 0.19,
+        "silhouetteKey": "frost-regent-2039c2d8-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 957,
+        "loop": false,
+        "emphasis": 0.69,
+        "silhouetteKey": "frost-regent-2039c2d8-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1113,
+        "loop": false,
+        "emphasis": 0.22,
+        "silhouetteKey": "frost-regent-2039c2d8-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 621,
+        "loop": false,
+        "emphasis": 0.8,
+        "silhouetteKey": "frost-regent-2039c2d8-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 589,
+        "loop": false,
+        "emphasis": 0.36,
+        "silhouetteKey": "frost-regent-2039c2d8-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 743,
+        "loop": false,
+        "emphasis": 0.41,
+        "silhouetteKey": "frost-regent-2039c2d8-8"
+      }
+    ]
+  }
+}

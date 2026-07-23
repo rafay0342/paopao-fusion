@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-115",
+  "release": 2,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Heartwood Guardian",
+  "facet": "facial rig",
+  "masterType": "facial-rig",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.106,
+          "y": -0.45,
+          "rotationDeg": -8.2,
+          "length": 0.134
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.332,
+          "y": -0.35,
+          "rotationDeg": -9.6,
+          "length": 0.221
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.137,
+          "y": -0.25,
+          "rotationDeg": 9.1,
+          "length": 0.173
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.181,
+          "y": -0.15,
+          "rotationDeg": 1.7,
+          "length": 0.114
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.341,
+          "y": -0.05,
+          "rotationDeg": 1.3,
+          "length": 0.1
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.119,
+          "y": 0.05,
+          "rotationDeg": 5,
+          "length": 0.194
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.299,
+          "y": 0.15,
+          "rotationDeg": 10.4,
+          "length": 0.287
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.343,
+          "y": 0.25,
+          "rotationDeg": 8.4,
+          "length": 0.147
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.021,
+          "y": 0.35,
+          "rotationDeg": 7.3,
+          "length": 0.207
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.158,
+          "y": 0.45,
+          "rotationDeg": 4.3,
+          "length": 0.222
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "facial-rig-1",
+        "durationMs": 759,
+        "loop": true,
+        "emphasis": 0.1,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-1"
+      },
+      {
+        "id": "facial-rig-2",
+        "durationMs": 745,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-2"
+      },
+      {
+        "id": "facial-rig-3",
+        "durationMs": 554,
+        "loop": false,
+        "emphasis": 0.08,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-3"
+      },
+      {
+        "id": "facial-rig-4",
+        "durationMs": 443,
+        "loop": false,
+        "emphasis": 0.22,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-4"
+      },
+      {
+        "id": "facial-rig-5",
+        "durationMs": 568,
+        "loop": false,
+        "emphasis": 0.84,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-5"
+      },
+      {
+        "id": "facial-rig-6",
+        "durationMs": 958,
+        "loop": false,
+        "emphasis": 0.48,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-6"
+      },
+      {
+        "id": "facial-rig-7",
+        "durationMs": 930,
+        "loop": false,
+        "emphasis": 0.08,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-7"
+      },
+      {
+        "id": "facial-rig-8",
+        "durationMs": 1346,
+        "loop": false,
+        "emphasis": 0.19,
+        "silhouetteKey": "heartwood-guardian-4446ecc2-8"
+      }
+    ]
+  }
+}

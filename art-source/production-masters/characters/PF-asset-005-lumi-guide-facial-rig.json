@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-005",
+  "release": 1,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Lumi guide",
+  "facet": "facial rig",
+  "masterType": "facial-rig",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.16,
+          "y": -0.45,
+          "rotationDeg": 11.7,
+          "length": 0.165
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.277,
+          "y": -0.35,
+          "rotationDeg": -4.8,
+          "length": 0.168
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.058,
+          "y": -0.25,
+          "rotationDeg": 4,
+          "length": 0.241
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.293,
+          "y": -0.15,
+          "rotationDeg": 4.9,
+          "length": 0.266
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.39,
+          "y": -0.05,
+          "rotationDeg": 6.8,
+          "length": 0.189
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.346,
+          "y": 0.05,
+          "rotationDeg": 11.2,
+          "length": 0.236
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.142,
+          "y": 0.15,
+          "rotationDeg": 2.3,
+          "length": 0.093
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.189,
+          "y": 0.25,
+          "rotationDeg": 1.9,
+          "length": 0.193
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.072,
+          "y": 0.35,
+          "rotationDeg": 11.4,
+          "length": 0.184
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.398,
+          "y": 0.45,
+          "rotationDeg": -10.9,
+          "length": 0.187
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "facial-rig-1",
+        "durationMs": 1127,
+        "loop": true,
+        "emphasis": 0.1,
+        "silhouetteKey": "lumi-guide-9c821ea-1"
+      },
+      {
+        "id": "facial-rig-2",
+        "durationMs": 780,
+        "loop": false,
+        "emphasis": 0.91,
+        "silhouetteKey": "lumi-guide-9c821ea-2"
+      },
+      {
+        "id": "facial-rig-3",
+        "durationMs": 903,
+        "loop": false,
+        "emphasis": 0.83,
+        "silhouetteKey": "lumi-guide-9c821ea-3"
+      },
+      {
+        "id": "facial-rig-4",
+        "durationMs": 1166,
+        "loop": false,
+        "emphasis": 0.33,
+        "silhouetteKey": "lumi-guide-9c821ea-4"
+      },
+      {
+        "id": "facial-rig-5",
+        "durationMs": 765,
+        "loop": false,
+        "emphasis": 0.63,
+        "silhouetteKey": "lumi-guide-9c821ea-5"
+      },
+      {
+        "id": "facial-rig-6",
+        "durationMs": 983,
+        "loop": false,
+        "emphasis": 0.24,
+        "silhouetteKey": "lumi-guide-9c821ea-6"
+      },
+      {
+        "id": "facial-rig-7",
+        "durationMs": 799,
+        "loop": false,
+        "emphasis": 0.42,
+        "silhouetteKey": "lumi-guide-9c821ea-7"
+      },
+      {
+        "id": "facial-rig-8",
+        "durationMs": 435,
+        "loop": false,
+        "emphasis": 0.65,
+        "silhouetteKey": "lumi-guide-9c821ea-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-018",
+  "release": 1,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Aurora Crown",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.061,
+          "y": -0.45,
+          "rotationDeg": 8.4,
+          "length": 0.085
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.165,
+          "y": -0.35,
+          "rotationDeg": -8.9,
+          "length": 0.279
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.107,
+          "y": -0.25,
+          "rotationDeg": -12,
+          "length": 0.134
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.392,
+          "y": -0.15,
+          "rotationDeg": 8.9,
+          "length": 0.093
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.338,
+          "y": -0.05,
+          "rotationDeg": 4.1,
+          "length": 0.28
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.077,
+          "y": 0.05,
+          "rotationDeg": 0.3,
+          "length": 0.279
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.266,
+          "y": 0.15,
+          "rotationDeg": 11.8,
+          "length": 0.236
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.308,
+          "y": 0.25,
+          "rotationDeg": 6.6,
+          "length": 0.166
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.038,
+          "y": 0.35,
+          "rotationDeg": 3,
+          "length": 0.222
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.221,
+          "y": 0.45,
+          "rotationDeg": -0.7,
+          "length": 0.277
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 837,
+        "loop": true,
+        "emphasis": 0.86,
+        "silhouetteKey": "aurora-crown-bf2558ff-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 1259,
+        "loop": false,
+        "emphasis": 0.65,
+        "silhouetteKey": "aurora-crown-bf2558ff-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 1033,
+        "loop": false,
+        "emphasis": 0.92,
+        "silhouetteKey": "aurora-crown-bf2558ff-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 1318,
+        "loop": false,
+        "emphasis": 0.4,
+        "silhouetteKey": "aurora-crown-bf2558ff-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1086,
+        "loop": false,
+        "emphasis": 0.22,
+        "silhouetteKey": "aurora-crown-bf2558ff-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 632,
+        "loop": false,
+        "emphasis": 0.8,
+        "silhouetteKey": "aurora-crown-bf2558ff-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 1003,
+        "loop": false,
+        "emphasis": 0.68,
+        "silhouetteKey": "aurora-crown-bf2558ff-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 974,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "aurora-crown-bf2558ff-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 3,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-211",
+      "acceptanceId": "AT-PF-animation-211",
+      "category": "animation",
+      "ordinal": 211,
+      "release": 3,
+      "title": "combo — camera effect",
+      "subject": "combo",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-211-a183363b",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo camera effect",
+          "accentHue": 75,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1320,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 330,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": 9,
+              "scale": 0.87,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -19,
+              "y": 13,
+              "scale": 1.13,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-212",
+      "acceptanceId": "AT-PF-animation-212",
+      "category": "animation",
+      "ordinal": 212,
+      "release": 3,
+      "title": "combo — light effect",
+      "subject": "combo",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-212-974054f0",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo light effect",
+          "accentHue": 104,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 480,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -1,
+              "y": -6,
+              "scale": 1.01,
+              "rotation": -0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -2,
+              "y": -9,
+              "scale": 0.99,
+              "rotation": 0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-213",
+      "acceptanceId": "AT-PF-animation-213",
+      "category": "animation",
+      "ordinal": 213,
+      "release": 3,
+      "title": "combo — material effect",
+      "subject": "combo",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-213-0cfbdcf1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo material effect",
+          "accentHue": 289,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 780,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -14,
+              "y": 5,
+              "scale": 1.1,
+              "rotation": -0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -20,
+              "y": 7,
+              "scale": 0.8999999999999999,
+              "rotation": 0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-214",
+      "acceptanceId": "AT-PF-animation-214",
+      "category": "animation",
+      "ordinal": 214,
+      "release": 3,
+      "title": "combo — particle effect",
+      "subject": "combo",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-214-542efc44",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo particle effect",
+          "accentHue": 60,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -8,
+              "y": 14,
+              "scale": 1.03,
+              "rotation": -0.15,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -11,
+              "y": 20,
+              "scale": 0.97,
+              "rotation": 0.15,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-215",
+      "acceptanceId": "AT-PF-animation-215",
+      "category": "animation",
+      "ordinal": 215,
+      "release": 3,
+      "title": "combo — audio-synced cue",
+      "subject": "combo",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-215-7aba72a1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo audio-synced cue",
+          "accentHue": 313,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": 720,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": 1,
+              "scale": 1.01,
+              "rotation": 0.1,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -19,
+              "y": 1,
+              "scale": 0.99,
+              "rotation": -0.1,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-216",
+      "acceptanceId": "AT-PF-animation-216",
+      "category": "animation",
+      "ordinal": 216,
+      "release": 3,
+      "title": "combo — pause-safe variant",
+      "subject": "combo",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-216-8bbd14d4",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo pause-safe variant",
+          "accentHue": 260,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 900,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -9,
+              "y": -12,
+              "scale": 1.1400000000000001,
+              "rotation": -0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -13,
+              "y": -17,
+              "scale": 0.8599999999999999,
+              "rotation": 0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-217",
+      "acceptanceId": "AT-PF-animation-217",
+      "category": "animation",
+      "ordinal": 217,
+      "release": 3,
+      "title": "combo — reduced-motion variant",
+      "subject": "combo",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-217-fa953e03",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo reduced-motion variant",
+          "accentHue": 59,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1260,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 8,
+              "y": 16,
+              "scale": 1,
+              "rotation": 0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 12,
+              "y": 23,
+              "scale": 1,
+              "rotation": -0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-218",
+      "acceptanceId": "AT-PF-animation-218",
+      "category": "animation",
+      "ordinal": 218,
+      "release": 3,
+      "title": "combo — low-tier variant",
+      "subject": "combo",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-218-3cea1571",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo low-tier variant",
+          "accentHue": 113,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1350,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 6,
+              "y": -10,
+              "scale": 0.87,
+              "rotation": 0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 8,
+              "y": -14,
+              "scale": 1.13,
+              "rotation": -0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-219",
+      "acceptanceId": "AT-PF-animation-219",
+      "category": "animation",
+      "ordinal": 219,
+      "release": 3,
+      "title": "combo — replay marker",
+      "subject": "combo",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-219-98d75628",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo replay marker",
+          "accentHue": 88,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 960,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 13,
+              "y": 13,
+              "scale": 1.1400000000000001,
+              "rotation": -0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 18,
+              "y": 18,
+              "scale": 0.8599999999999999,
+              "rotation": 0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-220",
+      "acceptanceId": "AT-PF-animation-220",
+      "category": "animation",
+      "ordinal": 220,
+      "release": 3,
+      "title": "combo — golden capture",
+      "subject": "combo",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-220-ecec6eea",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "combo golden capture",
+          "accentHue": 186,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 10,
+              "y": 4,
+              "scale": 0.94,
+              "rotation": -0.16,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 14,
+              "y": 5,
+              "scale": 1.06,
+              "rotation": 0.16,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

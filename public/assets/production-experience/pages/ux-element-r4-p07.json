@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 4,
+  "page": 7,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-361",
+      "acceptanceId": "AT-PF-ux-element-361",
+      "category": "ux-element",
+      "ordinal": 361,
+      "release": 4,
+      "title": "season track — primary action",
+      "subject": "season track",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-361-9f3c5abb",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "season track primary action",
+          "description": "primary action for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 91
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-362",
+      "acceptanceId": "AT-PF-ux-element-362",
+      "category": "ux-element",
+      "ordinal": 362,
+      "release": 4,
+      "title": "season track — secondary action",
+      "subject": "season track",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-362-39ce585d",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "season track secondary action",
+          "description": "secondary action for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 189
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-363",
+      "acceptanceId": "AT-PF-ux-element-363",
+      "category": "ux-element",
+      "ordinal": 363,
+      "release": 4,
+      "title": "season track — status badge",
+      "subject": "season track",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-363-06286b46",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "season track status badge",
+          "description": "status badge for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 118
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-364",
+      "acceptanceId": "AT-PF-ux-element-364",
+      "category": "ux-element",
+      "ordinal": 364,
+      "release": 4,
+      "title": "season track — progress indicator",
+      "subject": "season track",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-364-a8299f0f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "season track progress indicator",
+          "description": "progress indicator for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 143
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-365",
+      "acceptanceId": "AT-PF-ux-element-365",
+      "category": "ux-element",
+      "ordinal": 365,
+      "release": 4,
+      "title": "season track — focus target",
+      "subject": "season track",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-365-fdbc6cea",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "season track focus target",
+          "description": "focus target for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 138
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-366",
+      "acceptanceId": "AT-PF-ux-element-366",
+      "category": "ux-element",
+      "ordinal": 366,
+      "release": 4,
+      "title": "season track — keyboard hint",
+      "subject": "season track",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-366-ae34e581",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "season track keyboard hint",
+          "description": "keyboard hint for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 89
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-367",
+      "acceptanceId": "AT-PF-ux-element-367",
+      "category": "ux-element",
+      "ordinal": 367,
+      "release": 4,
+      "title": "season track — controller hint",
+      "subject": "season track",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-367-4f035020",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "season track controller hint",
+          "description": "controller hint for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 344
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-368",
+      "acceptanceId": "AT-PF-ux-element-368",
+      "category": "ux-element",
+      "ordinal": 368,
+      "release": 4,
+      "title": "season track — touch hint",
+      "subject": "season track",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-368-1a2461c9",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "season track touch hint",
+          "description": "touch hint for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 345
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-369",
+      "acceptanceId": "AT-PF-ux-element-369",
+      "category": "ux-element",
+      "ordinal": 369,
+      "release": 4,
+      "title": "season track — hand hint",
+      "subject": "season track",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-369-dea9c81b",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "season track hand hint",
+          "description": "hand hint for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 243
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-370",
+      "acceptanceId": "AT-PF-ux-element-370",
+      "category": "ux-element",
+      "ordinal": 370,
+      "release": 4,
+      "title": "season track — loading skeleton",
+      "subject": "season track",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-370-6f8e0e90",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "season track loading skeleton",
+          "description": "loading skeleton for season track; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 216
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

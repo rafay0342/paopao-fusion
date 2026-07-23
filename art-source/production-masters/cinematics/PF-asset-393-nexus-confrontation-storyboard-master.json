@@ -1,0 +1,438 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-393",
+  "release": 4,
+  "allocation": "cinematic-sequences",
+  "subject": "Nexus confrontation",
+  "facet": "storyboard master",
+  "masterType": "phaser-cinematic-sequence",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "sequence": {
+    "durationMs": 30152,
+    "aspectRatio": "16:9",
+    "sourceCanvas": [
+      8192,
+      4608
+    ],
+    "deterministicSeed": 1065791706,
+    "shots": [
+      {
+        "id": "PF-asset-393-shot-01",
+        "startMs": 0,
+        "durationMs": 4186,
+        "camera": {
+          "framing": "wide",
+          "x": -0.711,
+          "y": 0.038,
+          "zoom": 1.106,
+          "ease": "sine-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.04
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.44
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.15
+          }
+        ],
+        "transition": "cut",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-02",
+        "startMs": 4186,
+        "durationMs": 4203,
+        "camera": {
+          "framing": "medium",
+          "x": 0.263,
+          "y": 0.426,
+          "zoom": 0.906,
+          "ease": "cubic-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.07
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.32
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.38
+          }
+        ],
+        "transition": "crystal-dissolve",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-03",
+        "startMs": 8389,
+        "durationMs": 2515,
+        "camera": {
+          "framing": "close",
+          "x": 0.64,
+          "y": -0.687,
+          "zoom": 1.035,
+          "ease": "quad-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.13
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.34
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.33
+          }
+        ],
+        "transition": "luminance-fade",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-04",
+        "startMs": 10904,
+        "durationMs": 3033,
+        "camera": {
+          "framing": "detail",
+          "x": 0.054,
+          "y": 0.578,
+          "zoom": 1.204,
+          "ease": "sine-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.04
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.32
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.11
+          }
+        ],
+        "transition": "cut",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-05",
+        "startMs": 13937,
+        "durationMs": 2440,
+        "camera": {
+          "framing": "extreme-wide",
+          "x": 0.446,
+          "y": 0.207,
+          "zoom": 1.336,
+          "ease": "cubic-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.13
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.35
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.38
+          }
+        ],
+        "transition": "crystal-dissolve",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-06",
+        "startMs": 16377,
+        "durationMs": 3181,
+        "camera": {
+          "framing": "wide",
+          "x": 0.869,
+          "y": 0.173,
+          "zoom": 1.1,
+          "ease": "quad-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.07
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.33
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.34
+          }
+        ],
+        "transition": "luminance-fade",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-07",
+        "startMs": 19558,
+        "durationMs": 2266,
+        "camera": {
+          "framing": "medium",
+          "x": 0.803,
+          "y": -0.434,
+          "zoom": 1.233,
+          "ease": "sine-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.1
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.23
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.47
+          }
+        ],
+        "transition": "cut",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-08",
+        "startMs": 21824,
+        "durationMs": 2330,
+        "camera": {
+          "framing": "close",
+          "x": -0.527,
+          "y": -0.042,
+          "zoom": 1.369,
+          "ease": "cubic-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.13
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.26
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.19
+          }
+        ],
+        "transition": "crystal-dissolve",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-09",
+        "startMs": 24154,
+        "durationMs": 2901,
+        "camera": {
+          "framing": "detail",
+          "x": 0.497,
+          "y": 0.29,
+          "zoom": 1.004,
+          "ease": "quad-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.04
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.19
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.18
+          }
+        ],
+        "transition": "luminance-fade",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      },
+      {
+        "id": "PF-asset-393-shot-10",
+        "startMs": 27055,
+        "durationMs": 3097,
+        "camera": {
+          "framing": "extreme-wide",
+          "x": 0.607,
+          "y": -0.146,
+          "zoom": 1.219,
+          "ease": "sine-in-out"
+        },
+        "layers": [
+          {
+            "role": "environment",
+            "depth": 0,
+            "parallax": 0.11
+          },
+          {
+            "role": "subject",
+            "depth": 10,
+            "parallax": 1
+          },
+          {
+            "role": "atmosphere",
+            "depth": 20,
+            "opacity": 0.19
+          },
+          {
+            "role": "foreground",
+            "depth": 30,
+            "parallax": 1.22
+          }
+        ],
+        "transition": "fade-to-gameplay",
+        "captionSafe": {
+          "x": 0.08,
+          "y": 0.74,
+          "width": 0.84,
+          "height": 0.18
+        }
+      }
+    ],
+    "reducedMotion": {
+      "replaceCameraMovesWith": "crossfade",
+      "maximumTransitionMs": 240
+    },
+    "audioCue": "nexus-confrontation-cinematic-stem"
+  }
+}

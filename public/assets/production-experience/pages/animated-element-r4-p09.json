@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 4,
+  "page": 9,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-381",
+      "acceptanceId": "AT-PF-animated-element-381",
+      "category": "animated-element",
+      "ordinal": 381,
+      "release": 4,
+      "title": "story portrait — idle behavior",
+      "subject": "story portrait",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-381-4477f257",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait idle behavior",
+          "accentHue": 111,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -16,
+          "y": -14,
+          "scale": 1.05,
+          "rotation": 0.07,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-382",
+      "acceptanceId": "AT-PF-animated-element-382",
+      "category": "animated-element",
+      "ordinal": 382,
+      "release": 4,
+      "title": "story portrait — focus response",
+      "subject": "story portrait",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-382-0d1af5e0",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait focus response",
+          "accentHue": 328,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -17,
+          "y": -4,
+          "scale": 0.92,
+          "rotation": -0.12,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-383",
+      "acceptanceId": "AT-PF-animated-element-383",
+      "category": "animated-element",
+      "ordinal": 383,
+      "release": 4,
+      "title": "story portrait — hover response",
+      "subject": "story portrait",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-383-388fc0d4",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait hover response",
+          "accentHue": 228,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -15,
+          "y": 5,
+          "scale": 1.05,
+          "rotation": 0.04,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-384",
+      "acceptanceId": "AT-PF-animated-element-384",
+      "category": "animated-element",
+      "ordinal": 384,
+      "release": 4,
+      "title": "story portrait — press response",
+      "subject": "story portrait",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-384-b014b475",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait press response",
+          "accentHue": 253,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -18,
+          "y": -14,
+          "scale": 1.08,
+          "rotation": -0.07,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-385",
+      "acceptanceId": "AT-PF-animated-element-385",
+      "category": "animated-element",
+      "ordinal": 385,
+      "release": 4,
+      "title": "story portrait — entry motion",
+      "subject": "story portrait",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-385-478cf37f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait entry motion",
+          "accentHue": 71,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 18,
+          "y": 18,
+          "scale": 0.95,
+          "rotation": -0.08,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-386",
+      "acceptanceId": "AT-PF-animated-element-386",
+      "category": "animated-element",
+      "ordinal": 386,
+      "release": 4,
+      "title": "story portrait — exit motion",
+      "subject": "story portrait",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-386-9f63d927",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait exit motion",
+          "accentHue": 319,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 1,
+          "y": 2,
+          "scale": 1.03,
+          "rotation": 0.07,
+          "alpha": 0.96
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-387",
+      "acceptanceId": "AT-PF-animated-element-387",
+      "category": "animated-element",
+      "ordinal": 387,
+      "release": 4,
+      "title": "story portrait — state change",
+      "subject": "story portrait",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-387-ac5de60e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait state change",
+          "accentHue": 254,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 13,
+          "y": -1,
+          "scale": 1.08,
+          "rotation": 0.03,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-388",
+      "acceptanceId": "AT-PF-animated-element-388",
+      "category": "animated-element",
+      "ordinal": 388,
+      "release": 4,
+      "title": "story portrait — success response",
+      "subject": "story portrait",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-388-98d6e2a1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait success response",
+          "accentHue": 33,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -12,
+          "y": 15,
+          "scale": 0.9299999999999999,
+          "rotation": 0.14,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-389",
+      "acceptanceId": "AT-PF-animated-element-389",
+      "category": "animated-element",
+      "ordinal": 389,
+      "release": 4,
+      "title": "story portrait — failure response",
+      "subject": "story portrait",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-389-b6b737ac",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait failure response",
+          "accentHue": 172,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 15,
+          "y": 18,
+          "scale": 1.1,
+          "rotation": -0.11,
+          "alpha": 0.74
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-390",
+      "acceptanceId": "AT-PF-animated-element-390",
+      "category": "animated-element",
+      "ordinal": 390,
+      "release": 4,
+      "title": "story portrait — attention cue",
+      "subject": "story portrait",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-390-24e9b41a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "story portrait attention cue",
+          "accentHue": 10,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 1,
+          "y": -2,
+          "scale": 1.09,
+          "rotation": -0.13,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

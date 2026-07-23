@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 3,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-271",
+      "acceptanceId": "AT-PF-animated-element-271",
+      "category": "animated-element",
+      "ordinal": 271,
+      "release": 3,
+      "title": "bomb orb — progress response",
+      "subject": "bomb orb",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-271-d4a916d4",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb progress response",
+          "accentHue": 300,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -5,
+          "y": -3,
+          "scale": 0.88,
+          "rotation": 0.06,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-272",
+      "acceptanceId": "AT-PF-animated-element-272",
+      "category": "animated-element",
+      "ordinal": 272,
+      "release": 3,
+      "title": "bomb orb — loading response",
+      "subject": "bomb orb",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-272-570ef74b",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb loading response",
+          "accentHue": 123,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 16,
+          "y": 9,
+          "scale": 0.91,
+          "rotation": -0.13,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-273",
+      "acceptanceId": "AT-PF-animated-element-273",
+      "category": "animated-element",
+      "ordinal": 273,
+      "release": 3,
+      "title": "bomb orb — disabled response",
+      "subject": "bomb orb",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-273-3e9440f1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb disabled response",
+          "accentHue": 65,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -15,
+          "y": 10,
+          "scale": 1.02,
+          "rotation": -0.12,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-274",
+      "acceptanceId": "AT-PF-animated-element-274",
+      "category": "animated-element",
+      "ordinal": 274,
+      "release": 3,
+      "title": "bomb orb — reduced-motion substitute",
+      "subject": "bomb orb",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-274-ee493601",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb reduced-motion substitute",
+          "accentHue": 201,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 9,
+          "y": 13,
+          "scale": 1.03,
+          "rotation": 0.07,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-275",
+      "acceptanceId": "AT-PF-animated-element-275",
+      "category": "animated-element",
+      "ordinal": 275,
+      "release": 3,
+      "title": "bomb orb — pause behavior",
+      "subject": "bomb orb",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-275-8d252616",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb pause behavior",
+          "accentHue": 358,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 5,
+          "y": -2,
+          "scale": 1.07,
+          "rotation": -0.07,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-276",
+      "acceptanceId": "AT-PF-animated-element-276",
+      "category": "animated-element",
+      "ordinal": 276,
+      "release": 3,
+      "title": "bomb orb — resume behavior",
+      "subject": "bomb orb",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-276-230a8f3b",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb resume behavior",
+          "accentHue": 187,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 15,
+          "y": -5,
+          "scale": 0.9,
+          "rotation": -0.09,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-277",
+      "acceptanceId": "AT-PF-animated-element-277",
+      "category": "animated-element",
+      "ordinal": 277,
+      "release": 3,
+      "title": "bomb orb — camera-relative behavior",
+      "subject": "bomb orb",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-277-9b8b5366",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb camera-relative behavior",
+          "accentHue": 14,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 9,
+          "y": 17,
+          "scale": 1.02,
+          "rotation": -0.07,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-278",
+      "acceptanceId": "AT-PF-animated-element-278",
+      "category": "animated-element",
+      "ordinal": 278,
+      "release": 3,
+      "title": "bomb orb — offscreen culling",
+      "subject": "bomb orb",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-278-5f3cabfd",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb offscreen culling",
+          "accentHue": 309,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -9,
+          "y": 1,
+          "scale": 0.95,
+          "rotation": -0.08,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-279",
+      "acceptanceId": "AT-PF-animated-element-279",
+      "category": "animated-element",
+      "ordinal": 279,
+      "release": 3,
+      "title": "bomb orb — pool reset",
+      "subject": "bomb orb",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-279-8499026f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb pool reset",
+          "accentHue": 143,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 9,
+          "y": 3,
+          "scale": 1.02,
+          "rotation": -0.07,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-280",
+      "acceptanceId": "AT-PF-animated-element-280",
+      "category": "animated-element",
+      "ordinal": 280,
+      "release": 3,
+      "title": "bomb orb — canonical timing marker",
+      "subject": "bomb orb",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-280-22502e58",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb orb canonical timing marker",
+          "accentHue": 128,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -7,
+          "y": -12,
+          "scale": 0.89,
+          "rotation": 0.02,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

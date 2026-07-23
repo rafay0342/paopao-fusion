@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paopao.local/schemas/ledger-evidence-receipts-v1.json",
+  "title": "PaoPao ledger machine evidence receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runner", "generatedAt", "ledgerContractSha256", "claimsSha256", "results"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "framework"],
+      "properties": {
+        "name": { "const": "paopao-ledger-evidence" },
+        "version": { "const": 1 },
+        "framework": { "const": "vitest" }
+      }
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "ledgerContractSha256": { "pattern": "^[a-f0-9]{64}$" },
+    "claimsSha256": { "pattern": "^[a-f0-9]{64}$" },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claimId", "assertionId", "itemId", "acceptanceId", "target", "status", "acceptanceSha256", "implementation", "test"],
+        "properties": {
+          "claimId": { "type": "string" },
+          "assertionId": { "type": "string" },
+          "itemId": { "type": "string" },
+          "acceptanceId": { "type": "string" },
+          "target": { "enum": ["shared", "phaser"] },
+          "status": { "enum": ["passed", "failed"] },
+          "acceptanceSha256": { "pattern": "^[a-f0-9]{64}$" },
+          "implementation": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/hashedFile" }
+          },
+          "test": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "fullName", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "fullName": { "type": "string", "minLength": 1 },
+              "sha256": { "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hashedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

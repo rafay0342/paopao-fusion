@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "description": "Timestamped MediaPipe landmark corpus. Each frame expands baseLandmarks then replaces thumb tip 4 and index tip 8; null tips represent camera loss. Coordinates are normalized image/world coordinates and no camera pixels are present.",
+  "imageWidth": 640,
+  "imageHeight": 480,
+  "baseLandmarks": [
+    [0.50, 0.82, 0.00], [0.43, 0.75, 0.00], [0.39, 0.64, 0.00], [0.40, 0.51, 0.00], [0.40, 0.31, 0.00],
+    [0.43, 0.55, 0.00], [0.43, 0.44, 0.00], [0.44, 0.36, 0.00], [0.60, 0.31, 0.00],
+    [0.50, 0.53, 0.00], [0.50, 0.40, 0.00], [0.50, 0.30, 0.00], [0.50, 0.23, 0.00],
+    [0.56, 0.55, 0.00], [0.57, 0.43, 0.00], [0.58, 0.34, 0.00], [0.59, 0.27, 0.00],
+    [0.62, 0.58, 0.00], [0.64, 0.48, 0.00], [0.66, 0.40, 0.00], [0.68, 0.34, 0.00]
+  ],
+  "cases": [
+    {
+      "id": "physical-double-tap",
+      "expectedFired": 1,
+      "expectedCancelled": 0,
+      "frames": [
+        { "timestampMs": 0, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 30, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 70, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 100, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 140, "thumbTip": [0.44, 0.31, 0.00], "indexTip": [0.56, 0.31, 0.00], "worldThumbTip": [0.44, 0.31, 0.00], "worldIndexTip": [0.56, 0.31, 0.00] },
+        { "timestampMs": 170, "thumbTip": [0.44, 0.31, 0.00], "indexTip": [0.56, 0.31, 0.00], "worldThumbTip": [0.44, 0.31, 0.00], "worldIndexTip": [0.56, 0.31, 0.00] },
+        { "timestampMs": 230, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 260, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 300, "thumbTip": [0.44, 0.31, 0.00], "indexTip": [0.56, 0.31, 0.00], "worldThumbTip": [0.44, 0.31, 0.00], "worldIndexTip": [0.56, 0.31, 0.00] },
+        { "timestampMs": 330, "thumbTip": [0.44, 0.31, 0.00], "indexTip": [0.56, 0.31, 0.00], "worldThumbTip": [0.44, 0.31, 0.00], "worldIndexTip": [0.56, 0.31, 0.00] }
+      ]
+    },
+    {
+      "id": "projected-overlap-depth-veto",
+      "expectedFired": 0,
+      "expectedCancelled": 0,
+      "frames": [
+        { "timestampMs": 0, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, -0.10], "worldIndexTip": [0.60, 0.31, 0.10] },
+        { "timestampMs": 30, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, -0.10], "worldIndexTip": [0.60, 0.31, 0.10] },
+        { "timestampMs": 70, "thumbTip": [0.49, 0.31, 0.00], "indexTip": [0.51, 0.31, 0.00], "worldThumbTip": [0.49, 0.31, -0.12], "worldIndexTip": [0.51, 0.31, 0.12] },
+        { "timestampMs": 100, "thumbTip": [0.49, 0.31, 0.00], "indexTip": [0.51, 0.31, 0.00], "worldThumbTip": [0.49, 0.31, -0.12], "worldIndexTip": [0.51, 0.31, 0.12] },
+        { "timestampMs": 140, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, -0.10], "worldIndexTip": [0.60, 0.31, 0.10] }
+      ]
+    },
+    {
+      "id": "one-frame-contact-noise",
+      "expectedFired": 0,
+      "expectedCancelled": 0,
+      "frames": [
+        { "timestampMs": 0, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 30, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 70, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 100, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] }
+      ]
+    },
+    {
+      "id": "camera-loss-after-first-contact",
+      "expectedFired": 0,
+      "expectedCancelled": 1,
+      "frames": [
+        { "timestampMs": 0, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 30, "thumbTip": [0.40, 0.31, 0.00], "indexTip": [0.60, 0.31, 0.00], "worldThumbTip": [0.40, 0.31, 0.00], "worldIndexTip": [0.60, 0.31, 0.00] },
+        { "timestampMs": 70, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 100, "thumbTip": [0.48, 0.31, 0.00], "indexTip": [0.52, 0.31, 0.00], "worldThumbTip": [0.48, 0.31, 0.00], "worldIndexTip": [0.52, 0.31, 0.00] },
+        { "timestampMs": 340, "thumbTip": null, "indexTip": null, "worldThumbTip": null, "worldIndexTip": null }
+      ]
+    }
+  ]
+}

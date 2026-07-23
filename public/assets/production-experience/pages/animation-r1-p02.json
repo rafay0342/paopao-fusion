@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 1,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-011",
+      "acceptanceId": "AT-PF-animation-011",
+      "category": "animation",
+      "ordinal": 11,
+      "release": 1,
+      "title": "portal — camera effect",
+      "subject": "portal",
+      "facet": "camera effect",
+      "behaviorFingerprint": "PX-animation-011-ba56f3d1",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal camera effect",
+          "accentHue": 169,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1200,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 600,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 2,
+              "y": 11,
+              "scale": 1.13,
+              "rotation": -0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 3,
+              "y": 16,
+              "scale": 0.8700000000000001,
+              "rotation": 0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-012",
+      "acceptanceId": "AT-PF-animation-012",
+      "category": "animation",
+      "ordinal": 12,
+      "release": 1,
+      "title": "portal — light effect",
+      "subject": "portal",
+      "facet": "light effect",
+      "behaviorFingerprint": "PX-animation-012-ac74212e",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal light effect",
+          "accentHue": 262,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1080,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 540,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 13,
+              "y": -1,
+              "scale": 1.06,
+              "rotation": -0.07,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 19,
+              "y": -1,
+              "scale": 0.94,
+              "rotation": 0.07,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-013",
+      "acceptanceId": "AT-PF-animation-013",
+      "category": "animation",
+      "ordinal": 13,
+      "release": 1,
+      "title": "portal — material effect",
+      "subject": "portal",
+      "facet": "material effect",
+      "behaviorFingerprint": "PX-animation-013-36902a63",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal material effect",
+          "accentHue": 339,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 150,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 13,
+              "y": -9,
+              "scale": 1.03,
+              "rotation": -0.03,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 18,
+              "y": -13,
+              "scale": 0.97,
+              "rotation": 0.03,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-014",
+      "acceptanceId": "AT-PF-animation-014",
+      "category": "animation",
+      "ordinal": 14,
+      "release": 1,
+      "title": "portal — particle effect",
+      "subject": "portal",
+      "facet": "particle effect",
+      "behaviorFingerprint": "PX-animation-014-b587a94a",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal particle effect",
+          "accentHue": 274,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 840,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -4,
+              "y": -15,
+              "scale": 0.94,
+              "rotation": 0.05,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -6,
+              "y": -22,
+              "scale": 1.06,
+              "rotation": -0.05,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-015",
+      "acceptanceId": "AT-PF-animation-015",
+      "category": "animation",
+      "ordinal": 15,
+      "release": 1,
+      "title": "portal — audio-synced cue",
+      "subject": "portal",
+      "facet": "audio-synced cue",
+      "behaviorFingerprint": "PX-animation-015-3207842b",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal audio-synced cue",
+          "accentHue": 67,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": 360,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 16,
+              "y": 4,
+              "scale": 1.07,
+              "rotation": 0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 23,
+              "y": 6,
+              "scale": 0.9299999999999999,
+              "rotation": -0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-016",
+      "acceptanceId": "AT-PF-animation-016",
+      "category": "animation",
+      "ordinal": 16,
+      "release": 1,
+      "title": "portal — pause-safe variant",
+      "subject": "portal",
+      "facet": "pause-safe variant",
+      "behaviorFingerprint": "PX-animation-016-209310d2",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal pause-safe variant",
+          "accentHue": 210,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": true,
+          "replayMarkerMs": 360,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -13,
+              "y": 5,
+              "scale": 1.12,
+              "rotation": -0.08,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -19,
+              "y": 7,
+              "scale": 0.8799999999999999,
+              "rotation": 0.08,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-017",
+      "acceptanceId": "AT-PF-animation-017",
+      "category": "animation",
+      "ordinal": 17,
+      "release": 1,
+      "title": "portal — reduced-motion variant",
+      "subject": "portal",
+      "facet": "reduced-motion variant",
+      "behaviorFingerprint": "PX-animation-017-c1872971",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal reduced-motion variant",
+          "accentHue": 137,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": 11,
+              "scale": 0.9299999999999999,
+              "rotation": -0.01,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -5,
+              "y": 15,
+              "scale": 1.07,
+              "rotation": 0.01,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-018",
+      "acceptanceId": "AT-PF-animation-018",
+      "category": "animation",
+      "ordinal": 18,
+      "release": 1,
+      "title": "portal — low-tier variant",
+      "subject": "portal",
+      "facet": "low-tier variant",
+      "behaviorFingerprint": "PX-animation-018-a1281cff",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal low-tier variant",
+          "accentHue": 79,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 2,
+              "y": 2,
+              "scale": 1.13,
+              "rotation": 0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 3,
+              "y": 3,
+              "scale": 0.8700000000000001,
+              "rotation": -0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-019",
+      "acceptanceId": "AT-PF-animation-019",
+      "category": "animation",
+      "ordinal": 19,
+      "release": 1,
+      "title": "portal — replay marker",
+      "subject": "portal",
+      "facet": "replay marker",
+      "behaviorFingerprint": "PX-animation-019-6ce64d82",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal replay marker",
+          "accentHue": 50,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1170,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 1,
+              "y": -15,
+              "scale": 0.87,
+              "rotation": 0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 2,
+              "y": -21,
+              "scale": 1.13,
+              "rotation": -0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-020",
+      "acceptanceId": "AT-PF-animation-020",
+      "category": "animation",
+      "ordinal": 20,
+      "release": 1,
+      "title": "portal — golden capture",
+      "subject": "portal",
+      "facet": "golden capture",
+      "behaviorFingerprint": "PX-animation-020-fceaa0b0",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "hex",
+          "label": "portal golden capture",
+          "accentHue": 312,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1560,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 390,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 0,
+              "y": -15,
+              "scale": 0.92,
+              "rotation": 0.06,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 0,
+              "y": -21,
+              "scale": 1.08,
+              "rotation": -0.06,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

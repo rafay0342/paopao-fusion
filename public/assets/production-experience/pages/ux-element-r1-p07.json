@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 1,
+  "page": 7,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-061",
+      "acceptanceId": "AT-PF-ux-element-061",
+      "category": "ux-element",
+      "ordinal": 61,
+      "release": 1,
+      "title": "profile — primary action",
+      "subject": "profile",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-061-1a440d0a",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "profile primary action",
+          "description": "primary action for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 42
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-062",
+      "acceptanceId": "AT-PF-ux-element-062",
+      "category": "ux-element",
+      "ordinal": 62,
+      "release": 1,
+      "title": "profile — secondary action",
+      "subject": "profile",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-062-f2e8eca0",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "profile secondary action",
+          "description": "secondary action for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 0
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-063",
+      "acceptanceId": "AT-PF-ux-element-063",
+      "category": "ux-element",
+      "ordinal": 63,
+      "release": 1,
+      "title": "profile — status badge",
+      "subject": "profile",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-063-cbd6af17",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "profile status badge",
+          "description": "status badge for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 255
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-064",
+      "acceptanceId": "AT-PF-ux-element-064",
+      "category": "ux-element",
+      "ordinal": 64,
+      "release": 1,
+      "title": "profile — progress indicator",
+      "subject": "profile",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-064-7bf23e96",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "profile progress indicator",
+          "description": "progress indicator for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 262
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-065",
+      "acceptanceId": "AT-PF-ux-element-065",
+      "category": "ux-element",
+      "ordinal": 65,
+      "release": 1,
+      "title": "profile — focus target",
+      "subject": "profile",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-065-6fb71127",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "profile focus target",
+          "description": "focus target for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 95
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-066",
+      "acceptanceId": "AT-PF-ux-element-066",
+      "category": "ux-element",
+      "ordinal": 66,
+      "release": 1,
+      "title": "profile — keyboard hint",
+      "subject": "profile",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-066-3509ad12",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "profile keyboard hint",
+          "description": "keyboard hint for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 178
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-067",
+      "acceptanceId": "AT-PF-ux-element-067",
+      "category": "ux-element",
+      "ordinal": 67,
+      "release": 1,
+      "title": "profile — controller hint",
+      "subject": "profile",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-067-4e1424fb",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "profile controller hint",
+          "description": "controller hint for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 235
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-068",
+      "acceptanceId": "AT-PF-ux-element-068",
+      "category": "ux-element",
+      "ordinal": 68,
+      "release": 1,
+      "title": "profile — touch hint",
+      "subject": "profile",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-068-41911a44",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "profile touch hint",
+          "description": "touch hint for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 244
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-069",
+      "acceptanceId": "AT-PF-ux-element-069",
+      "category": "ux-element",
+      "ordinal": 69,
+      "release": 1,
+      "title": "profile — hand hint",
+      "subject": "profile",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-069-1ffd7c0c",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "profile hand hint",
+          "description": "hand hint for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 60
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-070",
+      "acceptanceId": "AT-PF-ux-element-070",
+      "category": "ux-element",
+      "ordinal": 70,
+      "release": 1,
+      "title": "profile — loading skeleton",
+      "subject": "profile",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-070-f2b64da5",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "profile loading skeleton",
+          "description": "loading skeleton for profile; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 261
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 3,
+  "page": 5,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-241",
+      "acceptanceId": "AT-PF-ux-element-241",
+      "category": "ux-element",
+      "ordinal": 241,
+      "release": 3,
+      "title": "rewards — primary action",
+      "subject": "rewards",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-241-b3f3780d",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "rewards primary action",
+          "description": "primary action for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 285
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-242",
+      "acceptanceId": "AT-PF-ux-element-242",
+      "category": "ux-element",
+      "ordinal": 242,
+      "release": 3,
+      "title": "rewards — secondary action",
+      "subject": "rewards",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-242-86d819ab",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "rewards secondary action",
+          "description": "secondary action for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 171
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-243",
+      "acceptanceId": "AT-PF-ux-element-243",
+      "category": "ux-element",
+      "ordinal": 243,
+      "release": 3,
+      "title": "rewards — status badge",
+      "subject": "rewards",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-243-95c6be10",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "rewards status badge",
+          "description": "status badge for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 88
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-244",
+      "acceptanceId": "AT-PF-ux-element-244",
+      "category": "ux-element",
+      "ordinal": 244,
+      "release": 3,
+      "title": "rewards — progress indicator",
+      "subject": "rewards",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-244-735b6051",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "rewards progress indicator",
+          "description": "progress indicator for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 353
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-245",
+      "acceptanceId": "AT-PF-ux-element-245",
+      "category": "ux-element",
+      "ordinal": 245,
+      "release": 3,
+      "title": "rewards — focus target",
+      "subject": "rewards",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-245-cc4a1610",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "rewards focus target",
+          "description": "focus target for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 16
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-246",
+      "acceptanceId": "AT-PF-ux-element-246",
+      "category": "ux-element",
+      "ordinal": 246,
+      "release": 3,
+      "title": "rewards — keyboard hint",
+      "subject": "rewards",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-246-5af9fbef",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "rewards keyboard hint",
+          "description": "keyboard hint for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 79
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-247",
+      "acceptanceId": "AT-PF-ux-element-247",
+      "category": "ux-element",
+      "ordinal": 247,
+      "release": 3,
+      "title": "rewards — controller hint",
+      "subject": "rewards",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-247-d57d49a2",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "rewards controller hint",
+          "description": "controller hint for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 138
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-248",
+      "acceptanceId": "AT-PF-ux-element-248",
+      "category": "ux-element",
+      "ordinal": 248,
+      "release": 3,
+      "title": "rewards — touch hint",
+      "subject": "rewards",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-248-f429a59f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "rewards touch hint",
+          "description": "touch hint for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 279
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-249",
+      "acceptanceId": "AT-PF-ux-element-249",
+      "category": "ux-element",
+      "ordinal": 249,
+      "release": 3,
+      "title": "rewards — hand hint",
+      "subject": "rewards",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-249-e3df83c5",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "rewards hand hint",
+          "description": "hand hint for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 133
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-250",
+      "acceptanceId": "AT-PF-ux-element-250",
+      "category": "ux-element",
+      "ordinal": 250,
+      "release": 3,
+      "title": "rewards — loading skeleton",
+      "subject": "rewards",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-250-bb360d02",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "rewards loading skeleton",
+          "description": "loading skeleton for rewards; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 106
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

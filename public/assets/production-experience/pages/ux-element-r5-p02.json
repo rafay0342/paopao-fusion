@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 5,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-411",
+      "acceptanceId": "AT-PF-ux-element-411",
+      "category": "ux-element",
+      "ordinal": 411,
+      "release": 5,
+      "title": "accessibility — empty message",
+      "subject": "accessibility",
+      "facet": "empty message",
+      "behaviorFingerprint": "PX-ux-element-411-323f4833",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "accessibility empty message",
+          "description": "empty message for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 11
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-412",
+      "acceptanceId": "AT-PF-ux-element-412",
+      "category": "ux-element",
+      "ordinal": 412,
+      "release": 5,
+      "title": "accessibility — error message",
+      "subject": "accessibility",
+      "facet": "error message",
+      "behaviorFingerprint": "PX-ux-element-412-0fc0cd62",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "alert",
+          "label": "accessibility error message",
+          "description": "error message for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "assertive",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 90
+        },
+        "interaction": {
+          "event": "recover",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "error-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "error"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-413",
+      "acceptanceId": "AT-PF-ux-element-413",
+      "category": "ux-element",
+      "ordinal": 413,
+      "release": 5,
+      "title": "accessibility — confirmation",
+      "subject": "accessibility",
+      "facet": "confirmation",
+      "behaviorFingerprint": "PX-ux-element-413-ea6749fe",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "accessibility confirmation",
+          "description": "confirmation for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 214
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": true,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-414",
+      "acceptanceId": "AT-PF-ux-element-414",
+      "category": "ux-element",
+      "ordinal": 414,
+      "release": 5,
+      "title": "accessibility — undo notice",
+      "subject": "accessibility",
+      "facet": "undo notice",
+      "behaviorFingerprint": "PX-ux-element-414-9fa09859",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "accessibility undo notice",
+          "description": "undo notice for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "polite",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 185
+        },
+        "interaction": {
+          "event": "undo",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 5000
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "ui-confirm",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-415",
+      "acceptanceId": "AT-PF-ux-element-415",
+      "category": "ux-element",
+      "ordinal": 415,
+      "release": 5,
+      "title": "accessibility — tooltip",
+      "subject": "accessibility",
+      "facet": "tooltip",
+      "behaviorFingerprint": "PX-ux-element-415-34603a76",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "tooltip",
+          "label": "accessibility tooltip",
+          "description": "tooltip for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 174
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-416",
+      "acceptanceId": "AT-PF-ux-element-416",
+      "category": "ux-element",
+      "ordinal": 416,
+      "release": 5,
+      "title": "accessibility — numeric readout",
+      "subject": "accessibility",
+      "facet": "numeric readout",
+      "behaviorFingerprint": "PX-ux-element-416-73956d78",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "accessibility numeric readout",
+          "description": "numeric readout for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 328
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-417",
+      "acceptanceId": "AT-PF-ux-element-417",
+      "category": "ux-element",
+      "ordinal": 417,
+      "release": 5,
+      "title": "accessibility — icon label",
+      "subject": "accessibility",
+      "facet": "icon label",
+      "behaviorFingerprint": "PX-ux-element-417-2efeb0bc",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "icon",
+          "role": "img",
+          "label": "accessibility icon label",
+          "description": "icon label for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 124
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-418",
+      "acceptanceId": "AT-PF-ux-element-418",
+      "category": "ux-element",
+      "ordinal": 418,
+      "release": 5,
+      "title": "accessibility — responsive container",
+      "subject": "accessibility",
+      "facet": "responsive container",
+      "behaviorFingerprint": "PX-ux-element-418-4c7e8574",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "region",
+          "label": "accessibility responsive container",
+          "description": "responsive container for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 76
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-419",
+      "acceptanceId": "AT-PF-ux-element-419",
+      "category": "ux-element",
+      "ordinal": 419,
+      "release": 5,
+      "title": "accessibility — reduced-motion state",
+      "subject": "accessibility",
+      "facet": "reduced-motion state",
+      "behaviorFingerprint": "PX-ux-element-419-70aab361",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "accessibility reduced-motion state",
+          "description": "reduced-motion state for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 153
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-420",
+      "acceptanceId": "AT-PF-ux-element-420",
+      "category": "ux-element",
+      "ordinal": 420,
+      "release": 5,
+      "title": "accessibility — screen-reader description",
+      "subject": "accessibility",
+      "facet": "screen-reader description",
+      "behaviorFingerprint": "PX-ux-element-420-0328ff63",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "definition",
+          "label": "accessibility screen-reader description",
+          "description": "screen-reader description for accessibility; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 187
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

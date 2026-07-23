@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-497",
+  "release": 5,
+  "allocation": "tutorial-accessibility-promotion",
+  "subject": "release promotion",
+  "facet": "script and storyboard master",
+  "masterType": "tutorial-production-plan",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "guide": {
+    "deterministicSeed": 4134164354,
+    "readingLevel": "plain-language",
+    "steps": [
+      {
+        "id": "observe",
+        "action": "Open release promotion and wait for the ready state.",
+        "expected": "The primary affordance and current input mode are visible."
+      },
+      {
+        "id": "act",
+        "action": "Perform the guided release promotion action once.",
+        "expected": "Feedback confirms the action without changing unrelated state."
+      },
+      {
+        "id": "recover",
+        "action": "Cancel or interrupt the action, then resume.",
+        "expected": "The flow returns to a safe, understandable state."
+      },
+      {
+        "id": "complete",
+        "action": "Complete the action with reduced motion enabled.",
+        "expected": "Rules and timing remain identical while decorative motion is reduced."
+      }
+    ],
+    "narration": {
+      "en": "release promotion: follow the highlighted action, wait for confirmation, and use Back to cancel safely.",
+      "urLatn": "release promotion: highlight ki hui action karein, confirmation ka intezar karein, aur cancel ke liye Back use karein.",
+      "sdLatn": "release promotion: highlight kyal action karo, tasdeeq jo intezar karo, ain cancel lae Back istemal karo."
+    },
+    "accessibility": {
+      "captions": true,
+      "audioDescription": true,
+      "reducedMotionAlternative": true,
+      "minimumTargetCssPx": 44,
+      "minimumContrast": 4.5
+    }
+  }
+}

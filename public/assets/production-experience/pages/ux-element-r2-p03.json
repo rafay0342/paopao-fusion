@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 2,
+  "page": 3,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-121",
+      "acceptanceId": "AT-PF-ux-element-121",
+      "category": "ux-element",
+      "ordinal": 121,
+      "release": 2,
+      "title": "level detail — primary action",
+      "subject": "level detail",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-121-32d68e20",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "level detail primary action",
+          "description": "primary action for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 168
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-122",
+      "acceptanceId": "AT-PF-ux-element-122",
+      "category": "ux-element",
+      "ordinal": 122,
+      "release": 2,
+      "title": "level detail — secondary action",
+      "subject": "level detail",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-122-98702766",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "level detail secondary action",
+          "description": "secondary action for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 150
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-123",
+      "acceptanceId": "AT-PF-ux-element-123",
+      "category": "ux-element",
+      "ordinal": 123,
+      "release": 2,
+      "title": "level detail — status badge",
+      "subject": "level detail",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-123-f6bde8a5",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "level detail status badge",
+          "description": "status badge for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 277
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-124",
+      "acceptanceId": "AT-PF-ux-element-124",
+      "category": "ux-element",
+      "ordinal": 124,
+      "release": 2,
+      "title": "level detail — progress indicator",
+      "subject": "level detail",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-124-9d7ca560",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "level detail progress indicator",
+          "description": "progress indicator for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 52,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 152
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-125",
+      "acceptanceId": "AT-PF-ux-element-125",
+      "category": "ux-element",
+      "ordinal": 125,
+      "release": 2,
+      "title": "level detail — focus target",
+      "subject": "level detail",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-125-1ab0fe91",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "level detail focus target",
+          "description": "focus target for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 241
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-126",
+      "acceptanceId": "AT-PF-ux-element-126",
+      "category": "ux-element",
+      "ordinal": 126,
+      "release": 2,
+      "title": "level detail — keyboard hint",
+      "subject": "level detail",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-126-73f6adb8",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "level detail keyboard hint",
+          "description": "keyboard hint for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 328
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-127",
+      "acceptanceId": "AT-PF-ux-element-127",
+      "category": "ux-element",
+      "ordinal": 127,
+      "release": 2,
+      "title": "level detail — controller hint",
+      "subject": "level detail",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-127-8ab61fa1",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "level detail controller hint",
+          "description": "controller hint for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 257
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-128",
+      "acceptanceId": "AT-PF-ux-element-128",
+      "category": "ux-element",
+      "ordinal": 128,
+      "release": 2,
+      "title": "level detail — touch hint",
+      "subject": "level detail",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-128-c1331dc2",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "level detail touch hint",
+          "description": "touch hint for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 52,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 122
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-129",
+      "acceptanceId": "AT-PF-ux-element-129",
+      "category": "ux-element",
+      "ordinal": 129,
+      "release": 2,
+      "title": "level detail — hand hint",
+      "subject": "level detail",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-129-04f9f97a",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "level detail hand hint",
+          "description": "hand hint for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 354
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-130",
+      "acceptanceId": "AT-PF-ux-element-130",
+      "category": "ux-element",
+      "ordinal": 130,
+      "release": 2,
+      "title": "level detail — loading skeleton",
+      "subject": "level detail",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-130-e3cf0c5f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "level detail loading skeleton",
+          "description": "loading skeleton for level detail; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 271
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

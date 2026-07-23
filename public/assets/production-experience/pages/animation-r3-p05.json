@@ -1,0 +1,959 @@
+{
+  "schemaVersion": 1,
+  "category": "animation",
+  "release": 3,
+  "page": 5,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-241",
+      "acceptanceId": "AT-PF-animation-241",
+      "category": "animation",
+      "ordinal": 241,
+      "release": 3,
+      "title": "bomb blast — intro clip",
+      "subject": "bomb blast",
+      "facet": "intro clip",
+      "behaviorFingerprint": "PX-animation-241-7e12b717",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast intro clip",
+          "accentHue": 215,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 960,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 3,
+              "y": -2,
+              "scale": 1.12,
+              "rotation": 0.02,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 4,
+              "y": -3,
+              "scale": 0.8799999999999999,
+              "rotation": -0.02,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-242",
+      "acceptanceId": "AT-PF-animation-242",
+      "category": "animation",
+      "ordinal": 242,
+      "release": 3,
+      "title": "bomb blast — idle loop",
+      "subject": "bomb blast",
+      "facet": "idle loop",
+      "behaviorFingerprint": "PX-animation-242-0c791fb5",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast idle loop",
+          "accentHue": 165,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 840,
+          "ease": "Sine.easeInOut",
+          "loop": true,
+          "pauseSafe": false,
+          "replayMarkerMs": 210,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -11,
+              "scale": 1.08,
+              "rotation": 0.13,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -4,
+              "y": -16,
+              "scale": 0.9199999999999999,
+              "rotation": -0.13,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-243",
+      "acceptanceId": "AT-PF-animation-243",
+      "category": "animation",
+      "ordinal": 243,
+      "release": 3,
+      "title": "bomb blast — anticipation clip",
+      "subject": "bomb blast",
+      "facet": "anticipation clip",
+      "behaviorFingerprint": "PX-animation-243-68e6a128",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast anticipation clip",
+          "accentHue": 40,
+          "size": 52
+        },
+        "clip": {
+          "durationMs": 1440,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 720,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 14,
+              "y": 4,
+              "scale": 1.08,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 20,
+              "y": 6,
+              "scale": 0.9199999999999999,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-244",
+      "acceptanceId": "AT-PF-animation-244",
+      "category": "animation",
+      "ordinal": 244,
+      "release": 3,
+      "title": "bomb blast — action clip",
+      "subject": "bomb blast",
+      "facet": "action clip",
+      "behaviorFingerprint": "PX-animation-244-9e755731",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast action clip",
+          "accentHue": 321,
+          "size": 60
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 180,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -8,
+              "y": 6,
+              "scale": 0.86,
+              "rotation": -0.11,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -12,
+              "y": 8,
+              "scale": 1.1400000000000001,
+              "rotation": 0.11,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-245",
+      "acceptanceId": "AT-PF-animation-245",
+      "category": "animation",
+      "ordinal": 245,
+      "release": 3,
+      "title": "bomb blast — contact effect",
+      "subject": "bomb blast",
+      "facet": "contact effect",
+      "behaviorFingerprint": "PX-animation-245-60a1ae66",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast contact effect",
+          "accentHue": 158,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1800,
+          "ease": "Cubic.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1350,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -3,
+              "y": -3,
+              "scale": 0.86,
+              "rotation": -0.17,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -5,
+              "y": -4,
+              "scale": 1.1400000000000001,
+              "rotation": 0.17,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-246",
+      "acceptanceId": "AT-PF-animation-246",
+      "category": "animation",
+      "ordinal": 246,
+      "release": 3,
+      "title": "bomb blast — release effect",
+      "subject": "bomb blast",
+      "facet": "release effect",
+      "behaviorFingerprint": "PX-animation-246-ea9ed8cd",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast release effect",
+          "accentHue": 213,
+          "size": 76
+        },
+        "clip": {
+          "durationMs": 1680,
+          "ease": "Sine.easeInOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 420,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": -15,
+              "y": -4,
+              "scale": 1.1400000000000001,
+              "rotation": 0.14,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": -22,
+              "y": -6,
+              "scale": 0.8599999999999999,
+              "rotation": -0.14,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-247",
+      "acceptanceId": "AT-PF-animation-247",
+      "category": "animation",
+      "ordinal": 247,
+      "release": 3,
+      "title": "bomb blast — success clip",
+      "subject": "bomb blast",
+      "facet": "success clip",
+      "behaviorFingerprint": "PX-animation-247-a4a5e470",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast success clip",
+          "accentHue": 264,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 180,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 7,
+              "y": 12,
+              "scale": 1.12,
+              "rotation": 0.09,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 10,
+              "y": 17,
+              "scale": 0.8799999999999999,
+              "rotation": -0.09,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-248",
+      "acceptanceId": "AT-PF-animation-248",
+      "category": "animation",
+      "ordinal": 248,
+      "release": 3,
+      "title": "bomb blast — failure clip",
+      "subject": "bomb blast",
+      "facet": "failure clip",
+      "behaviorFingerprint": "PX-animation-248-0f027323",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast failure clip",
+          "accentHue": 227,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 1920,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 1440,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 15,
+              "y": 13,
+              "scale": 1.08,
+              "rotation": -0.04,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 21,
+              "y": 18,
+              "scale": 0.9199999999999999,
+              "rotation": 0.04,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-249",
+      "acceptanceId": "AT-PF-animation-249",
+      "category": "animation",
+      "ordinal": 249,
+      "release": 3,
+      "title": "bomb blast — transition in",
+      "subject": "bomb blast",
+      "facet": "transition in",
+      "behaviorFingerprint": "PX-animation-249-259802e7",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast transition in",
+          "accentHue": 287,
+          "size": 68
+        },
+        "clip": {
+          "durationMs": 600,
+          "ease": "Back.easeOut",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 450,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 0
+            },
+            {
+              "at": 0.34,
+              "x": 2,
+              "y": 2,
+              "scale": 0.97,
+              "rotation": -0.18,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 3,
+              "y": 3,
+              "scale": 1.03,
+              "rotation": 0.18,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animation-250",
+      "acceptanceId": "AT-PF-animation-250",
+      "category": "animation",
+      "ordinal": 250,
+      "release": 3,
+      "title": "bomb blast — transition out",
+      "subject": "bomb blast",
+      "facet": "transition out",
+      "behaviorFingerprint": "PX-animation-250-6d7bf3b8",
+      "specification": {
+        "kind": "clip",
+        "actor": {
+          "primitive": "circle",
+          "label": "bomb blast transition out",
+          "accentHue": 344,
+          "size": 84
+        },
+        "clip": {
+          "durationMs": 720,
+          "ease": "Linear",
+          "loop": false,
+          "pauseSafe": false,
+          "replayMarkerMs": 540,
+          "audioMarkerMs": null,
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 0.96,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.34,
+              "x": 12,
+              "y": 17,
+              "scale": 1.02,
+              "rotation": 0,
+              "alpha": 1
+            },
+            {
+              "at": 0.68,
+              "x": 17,
+              "y": 24,
+              "scale": 0.98,
+              "rotation": 0,
+              "alpha": 0.92
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0
+            }
+          ]
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "crossfade",
+          "keyframes": [
+            {
+              "at": 0,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 0.88
+            },
+            {
+              "at": 1,
+              "x": 0,
+              "y": 0,
+              "scale": 1,
+              "rotation": 0,
+              "alpha": 1
+            }
+          ]
+        },
+        "lifecycle": {
+          "pooled": false,
+          "resetFrame": {
+            "x": 0,
+            "y": 0,
+            "scale": 1,
+            "rotation": 0,
+            "alpha": 1
+          }
+        }
+      }
+    }
+  ]
+}

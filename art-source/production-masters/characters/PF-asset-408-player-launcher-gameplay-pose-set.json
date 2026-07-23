@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-408",
+  "release": 5,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "player launcher",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.363,
+          "y": -0.45,
+          "rotationDeg": -5.2,
+          "length": 0.128
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.01,
+          "y": -0.35,
+          "rotationDeg": 10.3,
+          "length": 0.242
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.043,
+          "y": -0.25,
+          "rotationDeg": 6.1,
+          "length": 0.17
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.236,
+          "y": -0.15,
+          "rotationDeg": -8.2,
+          "length": 0.221
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.204,
+          "y": -0.05,
+          "rotationDeg": -5.7,
+          "length": 0.217
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.085,
+          "y": 0.05,
+          "rotationDeg": 7.2,
+          "length": 0.275
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.29,
+          "y": 0.15,
+          "rotationDeg": 10,
+          "length": 0.088
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.323,
+          "y": 0.25,
+          "rotationDeg": -10.9,
+          "length": 0.114
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.216,
+          "y": 0.35,
+          "rotationDeg": 5.7,
+          "length": 0.206
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.256,
+          "y": 0.45,
+          "rotationDeg": -9.5,
+          "length": 0.171
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 980,
+        "loop": true,
+        "emphasis": 0.56,
+        "silhouetteKey": "player-launcher-68e7a2e6-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 860,
+        "loop": false,
+        "emphasis": 0.86,
+        "silhouetteKey": "player-launcher-68e7a2e6-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 430,
+        "loop": false,
+        "emphasis": 0.73,
+        "silhouetteKey": "player-launcher-68e7a2e6-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 1364,
+        "loop": false,
+        "emphasis": 0.33,
+        "silhouetteKey": "player-launcher-68e7a2e6-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1235,
+        "loop": false,
+        "emphasis": 0.52,
+        "silhouetteKey": "player-launcher-68e7a2e6-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 1153,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "player-launcher-68e7a2e6-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 621,
+        "loop": false,
+        "emphasis": 0.48,
+        "silhouetteKey": "player-launcher-68e7a2e6-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 791,
+        "loop": false,
+        "emphasis": 0.87,
+        "silhouetteKey": "player-launcher-68e7a2e6-8"
+      }
+    ]
+  }
+}

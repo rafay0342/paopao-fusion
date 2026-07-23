@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-07-22T12:16:02.945Z",
+  "origin": "https://rafayamir-1.tail372a9e.ts.net",
+  "releaseId": "r5-level100-production-20260722",
+  "apiSchemaVersion": 20,
+  "browser": "Microsoft Edge via Playwright",
+  "method": "fresh in-memory browser context; Navigation Timing plus Resource Timing encodedBodySize",
+  "limits": {
+    "classicInitialEncodedBytes": 78643200,
+    "classicInitialEncodedMiB": 75
+  },
+  "launcher": {
+    "url": "https://rafayamir-1.tail372a9e.ts.net/",
+    "entryCount": 7,
+    "transferBytes": 2829820,
+    "encodedBytes": 2827720
+  },
+  "classic": {
+    "url": "https://rafayamir-1.tail372a9e.ts.net/classic/",
+    "entryCount": 52,
+    "transferBytes": 9678944,
+    "encodedBytes": 58183826,
+    "encodedMiB": 55.488420486450195,
+    "decodedBytes": 58183826,
+    "entriesWithZeroEncodedBytes": 7,
+    "withinBudget": true,
+    "largestEncodedResource": {
+      "path": "/assets/cinematics/paopao-opening-final-light-1080.mp4",
+      "encodedBytes": 45954829
+    }
+  },
+  "runtimeSnapshot": {
+    "activeScenes": [
+      "Intro"
+    ],
+    "renderer": "webgl",
+    "averageFps": 177.2,
+    "p95FrameMs": 5.6,
+    "frameWindowSize": 600,
+    "frameWindowCapacity": 600,
+    "budget": "pass",
+    "jsHeapBytes": 14766233,
+    "peakJsHeapBytes": 17224973,
+    "textureCount": 50,
+    "gameObjectCount": 15,
+    "resourceGrowth": {
+      "textureCount": false,
+      "gameObjectCount": false,
+      "jsHeapBytes": null
+    }
+  },
+  "integrity": {
+    "applicationBundle": {
+      "path": "/assets/index-Dv3Ba6i1.js",
+      "sha256": "dd4d9c6da2d26b244fd503719831d04dd201acbd53b1139bd6450ed8ba6552f0",
+      "liveMatchesRelease": true
+    },
+    "handWorker": {
+      "path": "/assets/handtracking.worker-Dk3ViyOZ.js",
+      "sha256": "3cd57648a5cb7b69790777fe7e407017127b263daec8c8584fe6fce5535b27c9",
+      "liveMatchesRelease": true
+    }
+  },
+  "notes": [
+    "encodedBodySize is used for the 75 MiB acceptance boundary so cached or service-worker-served responses are still counted.",
+    "transferBytes is recorded separately and is not used to hide cached resources.",
+    "The MediaPipe XNNPACK delegate writes an INFO message through console.error; this third-party log is not an application exception."
+  ]
+}

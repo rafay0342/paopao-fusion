@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 2,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-171",
+      "acceptanceId": "AT-PF-animated-element-171",
+      "category": "animated-element",
+      "ordinal": 171,
+      "release": 2,
+      "title": "queued bubble — progress response",
+      "subject": "queued bubble",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-171-9c7f0968",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble progress response",
+          "accentHue": 96,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -13,
+          "y": 15,
+          "scale": 1.12,
+          "rotation": 0.13,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-172",
+      "acceptanceId": "AT-PF-animated-element-172",
+      "category": "animated-element",
+      "ordinal": 172,
+      "release": 2,
+      "title": "queued bubble — loading response",
+      "subject": "queued bubble",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-172-ad38ef4b",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble loading response",
+          "accentHue": 3,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -17,
+          "y": -9,
+          "scale": 1.01,
+          "rotation": -0.04,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-173",
+      "acceptanceId": "AT-PF-animated-element-173",
+      "category": "animated-element",
+      "ordinal": 173,
+      "release": 2,
+      "title": "queued bubble — disabled response",
+      "subject": "queued bubble",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-173-90cb8139",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble disabled response",
+          "accentHue": 113,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -4,
+          "y": 16,
+          "scale": 1.12,
+          "rotation": -0.06,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-174",
+      "acceptanceId": "AT-PF-animated-element-174",
+      "category": "animated-element",
+      "ordinal": 174,
+      "release": 2,
+      "title": "queued bubble — reduced-motion substitute",
+      "subject": "queued bubble",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-174-84e63565",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble reduced-motion substitute",
+          "accentHue": 21,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -16,
+          "y": 14,
+          "scale": 1.04,
+          "rotation": 0.14,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-175",
+      "acceptanceId": "AT-PF-animated-element-175",
+      "category": "animated-element",
+      "ordinal": 175,
+      "release": 2,
+      "title": "queued bubble — pause behavior",
+      "subject": "queued bubble",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-175-26dad9e2",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble pause behavior",
+          "accentHue": 354,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 12,
+          "y": 4,
+          "scale": 0.88,
+          "rotation": -0.05,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-176",
+      "acceptanceId": "AT-PF-animated-element-176",
+      "category": "animated-element",
+      "ordinal": 176,
+      "release": 2,
+      "title": "queued bubble — resume behavior",
+      "subject": "queued bubble",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-176-dccdf6cb",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble resume behavior",
+          "accentHue": 259,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 14,
+          "y": 18,
+          "scale": 1,
+          "rotation": 0.12,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-177",
+      "acceptanceId": "AT-PF-animated-element-177",
+      "category": "animated-element",
+      "ordinal": 177,
+      "release": 2,
+      "title": "queued bubble — camera-relative behavior",
+      "subject": "queued bubble",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-177-a90e1556",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble camera-relative behavior",
+          "accentHue": 230,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 8,
+          "y": 3,
+          "scale": 0.95,
+          "rotation": 0,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-178",
+      "acceptanceId": "AT-PF-animated-element-178",
+      "category": "animated-element",
+      "ordinal": 178,
+      "release": 2,
+      "title": "queued bubble — offscreen culling",
+      "subject": "queued bubble",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-178-064924e9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble offscreen culling",
+          "accentHue": 273,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 10,
+          "y": -10,
+          "scale": 1.01,
+          "rotation": -0.02,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-179",
+      "acceptanceId": "AT-PF-animated-element-179",
+      "category": "animated-element",
+      "ordinal": 179,
+      "release": 2,
+      "title": "queued bubble — pool reset",
+      "subject": "queued bubble",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-179-c71403d3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble pool reset",
+          "accentHue": 283,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -14,
+          "y": -4,
+          "scale": 0.89,
+          "rotation": 0.03,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-180",
+      "acceptanceId": "AT-PF-animated-element-180",
+      "category": "animated-element",
+      "ordinal": 180,
+      "release": 2,
+      "title": "queued bubble — canonical timing marker",
+      "subject": "queued bubble",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-180-13c71a8c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "queued bubble canonical timing marker",
+          "accentHue": 324,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -10,
+          "y": 1,
+          "scale": 1.06,
+          "rotation": 0,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 1,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-051",
+      "acceptanceId": "AT-PF-ux-element-051",
+      "category": "ux-element",
+      "ordinal": 51,
+      "release": 1,
+      "title": "recovery — empty message",
+      "subject": "recovery",
+      "facet": "empty message",
+      "behaviorFingerprint": "PX-ux-element-051-cb02b802",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "recovery empty message",
+          "description": "empty message for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 226
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-052",
+      "acceptanceId": "AT-PF-ux-element-052",
+      "category": "ux-element",
+      "ordinal": 52,
+      "release": 1,
+      "title": "recovery — error message",
+      "subject": "recovery",
+      "facet": "error message",
+      "behaviorFingerprint": "PX-ux-element-052-04769c2b",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "alert",
+          "label": "recovery error message",
+          "description": "error message for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "assertive",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 291
+        },
+        "interaction": {
+          "event": "recover",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "error-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "error"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-053",
+      "acceptanceId": "AT-PF-ux-element-053",
+      "category": "ux-element",
+      "ordinal": 53,
+      "release": 1,
+      "title": "recovery — confirmation",
+      "subject": "recovery",
+      "facet": "confirmation",
+      "behaviorFingerprint": "PX-ux-element-053-ad839191",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "recovery confirmation",
+          "description": "confirmation for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 249
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": true,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-054",
+      "acceptanceId": "AT-PF-ux-element-054",
+      "category": "ux-element",
+      "ordinal": 54,
+      "release": 1,
+      "title": "recovery — undo notice",
+      "subject": "recovery",
+      "facet": "undo notice",
+      "behaviorFingerprint": "PX-ux-element-054-7db1ec2c",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "recovery undo notice",
+          "description": "undo notice for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "polite",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 14,
+          "accentHue": 12
+        },
+        "interaction": {
+          "event": "undo",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 5000
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "ui-confirm",
+          "announcement": "on-change",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-055",
+      "acceptanceId": "AT-PF-ux-element-055",
+      "category": "ux-element",
+      "ordinal": 55,
+      "release": 1,
+      "title": "recovery — tooltip",
+      "subject": "recovery",
+      "facet": "tooltip",
+      "behaviorFingerprint": "PX-ux-element-055-5bab11db",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "tooltip",
+          "label": "recovery tooltip",
+          "description": "tooltip for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 243
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-056",
+      "acceptanceId": "AT-PF-ux-element-056",
+      "category": "ux-element",
+      "ordinal": 56,
+      "release": 1,
+      "title": "recovery — numeric readout",
+      "subject": "recovery",
+      "facet": "numeric readout",
+      "behaviorFingerprint": "PX-ux-element-056-1a87a4ad",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "recovery numeric readout",
+          "description": "numeric readout for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 14,
+          "radius": 15,
+          "accentHue": 333
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-057",
+      "acceptanceId": "AT-PF-ux-element-057",
+      "category": "ux-element",
+      "ordinal": 57,
+      "release": 1,
+      "title": "recovery — icon label",
+      "subject": "recovery",
+      "facet": "icon label",
+      "behaviorFingerprint": "PX-ux-element-057-77c5a57f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "icon",
+          "role": "img",
+          "label": "recovery icon label",
+          "description": "icon label for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 143
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-058",
+      "acceptanceId": "AT-PF-ux-element-058",
+      "category": "ux-element",
+      "ordinal": 58,
+      "release": 1,
+      "title": "recovery — responsive container",
+      "subject": "recovery",
+      "facet": "responsive container",
+      "behaviorFingerprint": "PX-ux-element-058-ea66f9d7",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "region",
+          "label": "recovery responsive container",
+          "description": "responsive container for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 144,
+          "maxWidth": 520,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 215
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-059",
+      "acceptanceId": "AT-PF-ux-element-059",
+      "category": "ux-element",
+      "ordinal": 59,
+      "release": 1,
+      "title": "recovery — reduced-motion state",
+      "subject": "recovery",
+      "facet": "reduced-motion state",
+      "behaviorFingerprint": "PX-ux-element-059-add702e2",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "recovery reduced-motion state",
+          "description": "reduced-motion state for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 346
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-060",
+      "acceptanceId": "AT-PF-ux-element-060",
+      "category": "ux-element",
+      "ordinal": 60,
+      "release": 1,
+      "title": "recovery — screen-reader description",
+      "subject": "recovery",
+      "facet": "screen-reader description",
+      "behaviorFingerprint": "PX-ux-element-060-cab6d56e",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "definition",
+          "label": "recovery screen-reader description",
+          "description": "screen-reader description for recovery; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 52,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 62
+        },
+        "interaction": {
+          "event": "inspect",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

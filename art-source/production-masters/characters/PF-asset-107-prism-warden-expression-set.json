@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-107",
+  "release": 2,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Prism Warden",
+  "facet": "expression set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.271,
+          "y": -0.45,
+          "rotationDeg": 7.1,
+          "length": 0.085
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.128,
+          "y": -0.35,
+          "rotationDeg": 3.7,
+          "length": 0.236
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.008,
+          "y": -0.25,
+          "rotationDeg": 6.1,
+          "length": 0.109
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.371,
+          "y": -0.15,
+          "rotationDeg": -11.2,
+          "length": 0.168
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.191,
+          "y": -0.05,
+          "rotationDeg": -7.4,
+          "length": 0.198
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.142,
+          "y": 0.05,
+          "rotationDeg": 4.8,
+          "length": 0.249
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.29,
+          "y": 0.15,
+          "rotationDeg": -6.2,
+          "length": 0.204
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.061,
+          "y": 0.25,
+          "rotationDeg": -8.7,
+          "length": 0.259
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.142,
+          "y": 0.35,
+          "rotationDeg": -10,
+          "length": 0.22
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.291,
+          "y": 0.45,
+          "rotationDeg": 10.4,
+          "length": 0.138
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "expression-set-1",
+        "durationMs": 801,
+        "loop": true,
+        "emphasis": 0.83,
+        "silhouetteKey": "prism-warden-67e0879-1"
+      },
+      {
+        "id": "expression-set-2",
+        "durationMs": 784,
+        "loop": false,
+        "emphasis": 0.13,
+        "silhouetteKey": "prism-warden-67e0879-2"
+      },
+      {
+        "id": "expression-set-3",
+        "durationMs": 441,
+        "loop": false,
+        "emphasis": 0.35,
+        "silhouetteKey": "prism-warden-67e0879-3"
+      },
+      {
+        "id": "expression-set-4",
+        "durationMs": 1057,
+        "loop": false,
+        "emphasis": 0.12,
+        "silhouetteKey": "prism-warden-67e0879-4"
+      },
+      {
+        "id": "expression-set-5",
+        "durationMs": 936,
+        "loop": false,
+        "emphasis": 0.15,
+        "silhouetteKey": "prism-warden-67e0879-5"
+      },
+      {
+        "id": "expression-set-6",
+        "durationMs": 761,
+        "loop": false,
+        "emphasis": 0.3,
+        "silhouetteKey": "prism-warden-67e0879-6"
+      },
+      {
+        "id": "expression-set-7",
+        "durationMs": 1396,
+        "loop": false,
+        "emphasis": 0.78,
+        "silhouetteKey": "prism-warden-67e0879-7"
+      },
+      {
+        "id": "expression-set-8",
+        "durationMs": 1387,
+        "loop": false,
+        "emphasis": 0.83,
+        "silhouetteKey": "prism-warden-67e0879-8"
+      }
+    ]
+  }
+}

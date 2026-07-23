@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-249",
+  "release": 3,
+  "allocation": "material-texture-vfx-packs",
+  "subject": "frostglass",
+  "facet": "atmosphere VFX source",
+  "masterType": "phaser-material-source-pack",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "material": {
+    "colorSpace": "srgb",
+    "sourceResolution": [
+      8192,
+      8192
+    ],
+    "channels": {
+      "base": "#214a8c",
+      "highlight": "#f0ce9d",
+      "emission": "#7f4ee9",
+      "metalness": 0.28,
+      "roughness": 0.48,
+      "opacity": 1
+    },
+    "graph": [
+      {
+        "id": "uv",
+        "op": "polar-uv",
+        "scale": 4
+      },
+      {
+        "id": "facet",
+        "op": "voronoi",
+        "input": "uv",
+        "cells": 12
+      },
+      {
+        "id": "caustic",
+        "op": "sine-warp",
+        "input": "facet",
+        "frequency": 6,
+        "amplitude": 0.17
+      },
+      {
+        "id": "rim",
+        "op": "fresnel-2d",
+        "power": 1.66
+      },
+      {
+        "id": "output",
+        "op": "mix",
+        "inputs": [
+          "caustic",
+          "rim"
+        ],
+        "blend": "screen"
+      }
+    ],
+    "fragmentShader": "precision mediump float;\nuniform sampler2D uMainSampler;\nuniform float uTime;\nvarying vec2 outTexCoord;\nvoid main(){vec4 c=texture2D(uMainSampler,outTexCoord);float f=0.5+0.5*sin((outTexCoord.x+outTexCoord.y)*6.813+uTime*0.910);gl_FragColor=vec4(c.rgb*(0.82+f*0.18),c.a);}",
+    "qualityTiers": {
+      "performance": {
+        "textureEdge": 1024,
+        "animated": false
+      },
+      "balanced": {
+        "textureEdge": 2048,
+        "animated": true
+      },
+      "ultra": {
+        "textureEdge": 4096,
+        "animated": true
+      }
+    }
+  }
+}

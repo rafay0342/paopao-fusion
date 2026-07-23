@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-218",
+  "release": 3,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Astral Sentinel",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.148,
+          "y": -0.45,
+          "rotationDeg": -3.1,
+          "length": 0.101
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.15,
+          "y": -0.35,
+          "rotationDeg": -11.2,
+          "length": 0.274
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.287,
+          "y": -0.25,
+          "rotationDeg": 3.8,
+          "length": 0.119
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.158,
+          "y": -0.15,
+          "rotationDeg": 5.2,
+          "length": 0.202
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.203,
+          "y": -0.05,
+          "rotationDeg": -0.9,
+          "length": 0.294
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.341,
+          "y": 0.05,
+          "rotationDeg": -7.5,
+          "length": 0.197
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.291,
+          "y": 0.15,
+          "rotationDeg": 5.3,
+          "length": 0.271
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.354,
+          "y": 0.25,
+          "rotationDeg": 1.7,
+          "length": 0.133
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.206,
+          "y": 0.35,
+          "rotationDeg": -9.4,
+          "length": 0.21
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.338,
+          "y": 0.45,
+          "rotationDeg": -7.2,
+          "length": 0.152
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 551,
+        "loop": true,
+        "emphasis": 0.74,
+        "silhouetteKey": "astral-sentinel-1fcb4836-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 1338,
+        "loop": false,
+        "emphasis": 0.35,
+        "silhouetteKey": "astral-sentinel-1fcb4836-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 571,
+        "loop": false,
+        "emphasis": 0.79,
+        "silhouetteKey": "astral-sentinel-1fcb4836-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 589,
+        "loop": false,
+        "emphasis": 0.91,
+        "silhouetteKey": "astral-sentinel-1fcb4836-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1143,
+        "loop": false,
+        "emphasis": 0.02,
+        "silhouetteKey": "astral-sentinel-1fcb4836-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 456,
+        "loop": false,
+        "emphasis": 0.72,
+        "silhouetteKey": "astral-sentinel-1fcb4836-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 1331,
+        "loop": false,
+        "emphasis": 0.25,
+        "silhouetteKey": "astral-sentinel-1fcb4836-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 1333,
+        "loop": false,
+        "emphasis": 0.45,
+        "silhouetteKey": "astral-sentinel-1fcb4836-8"
+      }
+    ]
+  }
+}

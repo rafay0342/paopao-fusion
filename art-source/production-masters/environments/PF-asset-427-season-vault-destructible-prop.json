@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-427",
+  "release": 5,
+  "allocation": "environment-models-props",
+  "subject": "season vault",
+  "facet": "destructible prop",
+  "masterType": "interactive-environment-prop",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "environment": {
+    "sourceCanvas": [
+      8192,
+      8192
+    ],
+    "origin": [
+      0.5,
+      1
+    ],
+    "bounds": {
+      "left": -1,
+      "right": 1,
+      "top": -1.2,
+      "bottom": 1.2
+    },
+    "polygons": [
+      {
+        "id": "PF-asset-427-surface-1",
+        "kind": "occluder",
+        "points": [
+          [
+            0.813,
+            0.578
+          ],
+          [
+            -0.005,
+            -0.006
+          ],
+          [
+            0.333,
+            -0.049
+          ],
+          [
+            0.607,
+            -0.389
+          ],
+          [
+            0.652,
+            -0.525
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-427-surface-2",
+        "kind": "collision",
+        "points": [
+          [
+            0.217,
+            0.78
+          ],
+          [
+            0.315,
+            -0.395
+          ],
+          [
+            0.492,
+            -0.525
+          ],
+          [
+            0.188,
+            -0.158
+          ],
+          [
+            -0.347,
+            -0.756
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-427-surface-3",
+        "kind": "interaction",
+        "points": [
+          [
+            0.128,
+            -0.214
+          ],
+          [
+            -0.781,
+            0.663
+          ],
+          [
+            0.541,
+            -0.358
+          ],
+          [
+            -0.187,
+            0.064
+          ],
+          [
+            -0.348,
+            -0.793
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-427-surface-4",
+        "kind": "occluder",
+        "points": [
+          [
+            0.408,
+            0.145
+          ],
+          [
+            -0.668,
+            -0.771
+          ],
+          [
+            0.165,
+            -0.56
+          ],
+          [
+            -0.882,
+            0.888
+          ],
+          [
+            -0.789,
+            0.501
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-427-surface-5",
+        "kind": "collision",
+        "points": [
+          [
+            -0.237,
+            -0.37
+          ],
+          [
+            -0.063,
+            -0.095
+          ],
+          [
+            -0.023,
+            -0.793
+          ],
+          [
+            0.517,
+            0.412
+          ],
+          [
+            0.231,
+            -0.546
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-427-surface-6",
+        "kind": "interaction",
+        "points": [
+          [
+            -0.47,
+            0.85
+          ],
+          [
+            -0.022,
+            0.522
+          ],
+          [
+            0.685,
+            -0.136
+          ],
+          [
+            0.123,
+            -0.163
+          ],
+          [
+            -0.772,
+            -0.863
+          ]
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "name": "player",
+        "x": 0.481,
+        "y": 0.817,
+        "depth": 0
+      },
+      {
+        "name": "boss",
+        "x": 0.607,
+        "y": 0.793,
+        "depth": 10
+      },
+      {
+        "name": "portal-left",
+        "x": -0.261,
+        "y": 0.3,
+        "depth": 20
+      },
+      {
+        "name": "portal-right",
+        "x": 0.663,
+        "y": 0.636,
+        "depth": 30
+      },
+      {
+        "name": "foreground-fx",
+        "x": -0.791,
+        "y": 0.65,
+        "depth": 40
+      }
+    ]
+  }
+}

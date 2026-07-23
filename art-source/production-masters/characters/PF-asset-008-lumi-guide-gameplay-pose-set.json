@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-008",
+  "release": 1,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Lumi guide",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.162,
+          "y": -0.45,
+          "rotationDeg": -11.1,
+          "length": 0.156
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.164,
+          "y": -0.35,
+          "rotationDeg": -1.2,
+          "length": 0.223
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.223,
+          "y": -0.25,
+          "rotationDeg": 0.5,
+          "length": 0.16
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.131,
+          "y": -0.15,
+          "rotationDeg": -1,
+          "length": 0.213
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.217,
+          "y": -0.05,
+          "rotationDeg": -3.8,
+          "length": 0.119
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.145,
+          "y": 0.05,
+          "rotationDeg": 10.7,
+          "length": 0.166
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.136,
+          "y": 0.15,
+          "rotationDeg": -5.2,
+          "length": 0.162
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.214,
+          "y": 0.25,
+          "rotationDeg": 9.2,
+          "length": 0.109
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.187,
+          "y": 0.35,
+          "rotationDeg": -2.4,
+          "length": 0.283
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.116,
+          "y": 0.45,
+          "rotationDeg": 0.2,
+          "length": 0.134
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 756,
+        "loop": true,
+        "emphasis": 0.11,
+        "silhouetteKey": "lumi-guide-b2f9637c-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 686,
+        "loop": false,
+        "emphasis": 0.24,
+        "silhouetteKey": "lumi-guide-b2f9637c-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 1279,
+        "loop": false,
+        "emphasis": 0.94,
+        "silhouetteKey": "lumi-guide-b2f9637c-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 987,
+        "loop": false,
+        "emphasis": 0.96,
+        "silhouetteKey": "lumi-guide-b2f9637c-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 902,
+        "loop": false,
+        "emphasis": 0.94,
+        "silhouetteKey": "lumi-guide-b2f9637c-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 670,
+        "loop": false,
+        "emphasis": 0.41,
+        "silhouetteKey": "lumi-guide-b2f9637c-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 675,
+        "loop": false,
+        "emphasis": 0.62,
+        "silhouetteKey": "lumi-guide-b2f9637c-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 486,
+        "loop": false,
+        "emphasis": 0.05,
+        "silhouetteKey": "lumi-guide-b2f9637c-8"
+      }
+    ]
+  }
+}

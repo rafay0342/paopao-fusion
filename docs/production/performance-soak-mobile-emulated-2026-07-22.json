@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "testType": "mobile-browser-emulated",
+  "status": "completed-with-host-scheduling-limitation",
+  "release": {
+    "id": "r5-level100-production-20260722",
+    "schemaVersion": 20,
+    "url": "https://rafayamir-1.tail372a9e.ts.net/classic/"
+  },
+  "wallClock": {
+    "shellStartedAt": "2026-07-22T17:35:00+05:00",
+    "shellEndedAt": "2026-07-22T18:20:13+05:00",
+    "shellDurationMs": 2713000,
+    "firstSampleAt": "2026-07-22T12:35:01.719Z",
+    "lastSampleAt": "2026-07-22T13:20:12.021Z",
+    "sampleSpanMs": 2710302
+  },
+  "environment": {
+    "engine": "Microsoft Edge Chromium",
+    "browserVersion": "150.0.4078.83",
+    "userAgent": "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.7922.10 Mobile Safari/537.36 PaoPao-Mobile-Emulation-Soak/2026-07-22",
+    "viewport": { "width": 360, "height": 732, "devicePixelRatio": 3 },
+    "touch": { "maxTouchPoints": 1, "coarsePointer": true },
+    "renderer": "webgl",
+    "quality": "ultra",
+    "scene": "Game",
+    "camera": {
+      "requested": false,
+      "activeMediaStreamCount": 0,
+      "liveVideoTrackCount": 0
+    },
+    "launchFlags": [
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-renderer-backgrounding"
+    ]
+  },
+  "method": {
+    "tool": "Playwright CLI wrapper",
+    "session": "paopao-final-mobile-soak",
+    "sampleCount": 46,
+    "sampleIndexes": "0-45",
+    "cadence": "one timestamped sample per target minute",
+    "inputExercise": "bounded pointer movement inside the 720x1280 game coordinate plane",
+    "warmedFromIndex": 4,
+    "physicalDevice": false
+  },
+  "summary": {
+    "sampleCount": 46,
+    "runtimeSamplesDelta": 444304,
+    "wallAverageRuntimeFps": 163.9315471117241,
+    "warmedAverageOfRollingFps": 175.56904761904767,
+    "warmedMinRollingFps": 109,
+    "warmedAverageRollingP95Ms": 5.664285714285713,
+    "warmedMaxRollingP95Ms": 6,
+    "maxPeakJsHeapBytes": 41828424,
+    "maxPeakJsHeapMiB": 39.89069366455078,
+    "finalJsHeapBytes": 16110332,
+    "finalTextureCount": 63,
+    "finalGameObjectCount": 76,
+    "allBudgetPass": true,
+    "allLongFramesZero": true,
+    "allFrameWindowBoundedAt600": true,
+    "allHealthR5Schema20": true,
+    "allGameWebglVisible": true,
+    "allWarmedGrowthFalse": true,
+    "finalGrowth": {
+      "textureCount": false,
+      "gameObjectCount": false,
+      "jsHeapBytes": false
+    }
+  },
+  "lateSchedulingObservation": {
+    "fromSampleIndex": 42,
+    "description": "The shared Windows host throttled the headed emulated window late in the run even though document.visibilityState remained visible and anti-background launch flags were present. The rolling in-app diagnostic stayed above the 30 FPS floor and budget remained pass, but the canvas run clock advanced about 42 minutes 32 seconds across the 45 minute wall-clock window. This is not physical Android certification and is not represented as one.",
+    "finalRollingAverageFps": 109,
+    "finalRollingP95Ms": 6,
+    "applicationRecoveryOrPageResetDuringOfficialRun": false
+  },
+  "screenshots": [
+    "docs/production/goldens/r5-mobile-emulated-soak-launcher-start-edge.png",
+    "docs/production/goldens/r5-mobile-emulated-soak-game-start.png",
+    "docs/production/goldens/r5-mobile-emulated-soak-game-final.png"
+  ],
+  "limitations": [
+    "This is browser emulation on desktop Microsoft Edge, not a physical Android device run.",
+    "Camera permission was not requested; no live camera stream or physical hand-condition matrix was exercised.",
+    "OS process-tree private memory could not be isolated reliably from other concurrent Edge sessions; the report uses in-app JS heap counters.",
+    "The final minutes experienced shared-host headed-window scheduling throttling; use a dedicated physical device for final mobile certification."
+  ],
+  "samples": [
+    {"index":0,"at":"2026-07-22T12:35:01.719Z","epochMs":1784723701719,"samplesObserved":21131,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":19641051,"peakJsHeapBytes":20992590,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":true,"gameObjectCount":true,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":1,"at":"2026-07-22T12:36:05.231Z","epochMs":1784723765231,"samplesObserved":32563,"averageFps":180.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":18948221,"peakJsHeapBytes":20992590,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":true,"gameObjectCount":true,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":2,"at":"2026-07-22T12:37:04.358Z","epochMs":1784723824358,"samplesObserved":43206,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":18326821,"peakJsHeapBytes":21955119,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":true,"gameObjectCount":true,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":3,"at":"2026-07-22T12:38:04.345Z","epochMs":1784723884345,"samplesObserved":54003,"averageFps":180.5,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":19265665,"peakJsHeapBytes":22149890,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":true,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":4,"at":"2026-07-22T12:39:04.550Z","epochMs":1784723944550,"samplesObserved":64840,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":15717545,"peakJsHeapBytes":22149890,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":5,"at":"2026-07-22T12:40:04.333Z","epochMs":1784724004333,"samplesObserved":75601,"averageFps":180,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":18426081,"peakJsHeapBytes":22149890,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":6,"at":"2026-07-22T12:41:04.345Z","epochMs":1784724064345,"samplesObserved":86403,"averageFps":180.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":20314158,"peakJsHeapBytes":22189962,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":7,"at":"2026-07-22T12:42:04.779Z","epochMs":1784724124779,"samplesObserved":97281,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":21345631,"peakJsHeapBytes":22258403,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":8,"at":"2026-07-22T12:43:04.572Z","epochMs":1784724184572,"samplesObserved":108044,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":17562431,"peakJsHeapBytes":22270679,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":9,"at":"2026-07-22T12:44:04.757Z","epochMs":1784724244757,"samplesObserved":118877,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":21232071,"peakJsHeapBytes":28330004,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":10,"at":"2026-07-22T12:45:04.732Z","epochMs":1784724304732,"samplesObserved":129672,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16678004,"peakJsHeapBytes":28355322,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":11,"at":"2026-07-22T12:46:04.770Z","epochMs":1784724364770,"samplesObserved":140479,"averageFps":180.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16730167,"peakJsHeapBytes":28398734,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":12,"at":"2026-07-22T12:47:05.164Z","epochMs":1784724425164,"samplesObserved":151296,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":24777039,"peakJsHeapBytes":28398734,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":13,"at":"2026-07-22T12:48:04.336Z","epochMs":1784724484336,"samplesObserved":161877,"averageFps":179.8,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":15763936,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":14,"at":"2026-07-22T12:49:04.142Z","epochMs":1784724544142,"samplesObserved":172639,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":22702550,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":15,"at":"2026-07-22T12:50:04.101Z","epochMs":1784724604101,"samplesObserved":183431,"averageFps":180.4,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16594556,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":16,"at":"2026-07-22T12:51:03.943Z","epochMs":1784724663943,"samplesObserved":194203,"averageFps":180.4,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":27469258,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":17,"at":"2026-07-22T12:52:04.678Z","epochMs":1784724724678,"samplesObserved":205135,"averageFps":180,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":23795892,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":18,"at":"2026-07-22T12:53:04.493Z","epochMs":1784724784493,"samplesObserved":215773,"averageFps":180.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":22643212,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":19,"at":"2026-07-22T12:54:04.352Z","epochMs":1784724844352,"samplesObserved":226438,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":25236620,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":20,"at":"2026-07-22T12:55:04.558Z","epochMs":1784724904558,"samplesObserved":237266,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":28661034,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":21,"at":"2026-07-22T12:56:05.202Z","epochMs":1784724965202,"samplesObserved":248119,"averageFps":177.8,"p95FrameMs":5.7,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":20910284,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":22,"at":"2026-07-22T12:57:04.626Z","epochMs":1784725024626,"samplesObserved":258782,"averageFps":178.7,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":20894484,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":23,"at":"2026-07-22T12:58:04.456Z","epochMs":1784725084456,"samplesObserved":269537,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":24377896,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":24,"at":"2026-07-22T12:59:04.524Z","epochMs":1784725144524,"samplesObserved":280293,"averageFps":179.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":15737092,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":25,"at":"2026-07-22T13:00:04.657Z","epochMs":1784725204657,"samplesObserved":291091,"averageFps":179.8,"p95FrameMs":5.7,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":25799614,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":26,"at":"2026-07-22T13:01:04.616Z","epochMs":1784725264616,"samplesObserved":301868,"averageFps":180,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":22432054,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":27,"at":"2026-07-22T13:02:04.543Z","epochMs":1784725324543,"samplesObserved":312618,"averageFps":179.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":20724766,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":28,"at":"2026-07-22T13:03:04.766Z","epochMs":1784725384766,"samplesObserved":323433,"averageFps":179.8,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":27034266,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":29,"at":"2026-07-22T13:04:04.669Z","epochMs":1784725444669,"samplesObserved":334171,"averageFps":179.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":27866918,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":30,"at":"2026-07-22T13:05:04.750Z","epochMs":1784725504750,"samplesObserved":344957,"averageFps":179.7,"p95FrameMs":5.7,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":20054794,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":31,"at":"2026-07-22T13:06:04.630Z","epochMs":1784725564630,"samplesObserved":355721,"averageFps":180.1,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":24689294,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":32,"at":"2026-07-22T13:07:04.986Z","epochMs":1784725624986,"samplesObserved":366582,"averageFps":180.2,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":22879514,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":33,"at":"2026-07-22T13:08:03.767Z","epochMs":1784725683767,"samplesObserved":377147,"averageFps":180.1,"p95FrameMs":5.7,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":27420824,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":34,"at":"2026-07-22T13:09:04.501Z","epochMs":1784725744501,"samplesObserved":388060,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":22879724,"peakJsHeapBytes":28917542,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":35,"at":"2026-07-22T13:10:04.630Z","epochMs":1784725804630,"samplesObserved":398741,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":36541172,"peakJsHeapBytes":40845062,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":36,"at":"2026-07-22T13:11:04.553Z","epochMs":1784725864553,"samplesObserved":409515,"averageFps":179,"p95FrameMs":5.8,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":35631332,"peakJsHeapBytes":40845062,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":37,"at":"2026-07-22T13:12:04.349Z","epochMs":1784725924349,"samplesObserved":420234,"averageFps":179.9,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":23554748,"peakJsHeapBytes":40845062,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":38,"at":"2026-07-22T13:13:04.609Z","epochMs":1784725984609,"samplesObserved":431045,"averageFps":180.1,"p95FrameMs":5.7,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":36699718,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":39,"at":"2026-07-22T13:14:04.704Z","epochMs":1784726044704,"samplesObserved":441850,"averageFps":179.8,"p95FrameMs":5.8,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":19920182,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":40,"at":"2026-07-22T13:15:04.528Z","epochMs":1784726104528,"samplesObserved":452618,"averageFps":180.3,"p95FrameMs":5.6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":23276048,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":41,"at":"2026-07-22T13:16:04.629Z","epochMs":1784726164629,"samplesObserved":463405,"averageFps":177.5,"p95FrameMs":5.8,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":37481152,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":42,"at":"2026-07-22T13:17:11.662Z","epochMs":1784726231662,"samplesObserved":465255,"averageFps":161.5,"p95FrameMs":6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":26552212,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":43,"at":"2026-07-22T13:18:11.773Z","epochMs":1784726291773,"samplesObserved":465315,"averageFps":143.6,"p95FrameMs":6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16902022,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":44,"at":"2026-07-22T13:19:12.910Z","epochMs":1784726352910,"samplesObserved":465376,"averageFps":125.7,"p95FrameMs":6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16380430,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20},
+    {"index":45,"at":"2026-07-22T13:20:12.021Z","epochMs":1784726412021,"samplesObserved":465435,"averageFps":109,"p95FrameMs":6,"longFrames":0,"frameWindowSize":600,"budget":"pass","quality":"ultra","jsHeapBytes":16110332,"peakJsHeapBytes":41828424,"textureCount":63,"gameObjectCount":76,"resourceGrowth":{"textureCount":false,"gameObjectCount":false,"jsHeapBytes":false},"scene":"Game","renderer":"webgl","release":"r5-level100-production-20260722","schemaVersion":20}
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-417",
+  "release": 5,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "fusion orb family",
+  "facet": "expression set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.031,
+          "y": -0.45,
+          "rotationDeg": -6.1,
+          "length": 0.213
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.243,
+          "y": -0.35,
+          "rotationDeg": -6.8,
+          "length": 0.224
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.277,
+          "y": -0.25,
+          "rotationDeg": -4.8,
+          "length": 0.197
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.212,
+          "y": -0.15,
+          "rotationDeg": -10,
+          "length": 0.15
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.171,
+          "y": -0.05,
+          "rotationDeg": -2.1,
+          "length": 0.199
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.048,
+          "y": 0.05,
+          "rotationDeg": -6.5,
+          "length": 0.276
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.09,
+          "y": 0.15,
+          "rotationDeg": -3.2,
+          "length": 0.131
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.152,
+          "y": 0.25,
+          "rotationDeg": 6.6,
+          "length": 0.214
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.019,
+          "y": 0.35,
+          "rotationDeg": -8.6,
+          "length": 0.112
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.115,
+          "y": 0.45,
+          "rotationDeg": -11.9,
+          "length": 0.273
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "expression-set-1",
+        "durationMs": 959,
+        "loop": true,
+        "emphasis": 0.42,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-1"
+      },
+      {
+        "id": "expression-set-2",
+        "durationMs": 642,
+        "loop": false,
+        "emphasis": 0.37,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-2"
+      },
+      {
+        "id": "expression-set-3",
+        "durationMs": 503,
+        "loop": false,
+        "emphasis": 0.58,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-3"
+      },
+      {
+        "id": "expression-set-4",
+        "durationMs": 646,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-4"
+      },
+      {
+        "id": "expression-set-5",
+        "durationMs": 1220,
+        "loop": false,
+        "emphasis": 0.72,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-5"
+      },
+      {
+        "id": "expression-set-6",
+        "durationMs": 421,
+        "loop": false,
+        "emphasis": 0.87,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-6"
+      },
+      {
+        "id": "expression-set-7",
+        "durationMs": 953,
+        "loop": false,
+        "emphasis": 0.71,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-7"
+      },
+      {
+        "id": "expression-set-8",
+        "durationMs": 899,
+        "loop": false,
+        "emphasis": 0.22,
+        "silhouetteKey": "fusion-orb-family-785a6dd5-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 4,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-351",
+      "acceptanceId": "AT-PF-animated-element-351",
+      "category": "animated-element",
+      "ordinal": 351,
+      "release": 4,
+      "title": "reward chest — progress response",
+      "subject": "reward chest",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-351-ffb6ebe9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest progress response",
+          "accentHue": 65,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -2,
+          "y": 7,
+          "scale": 0.94,
+          "rotation": 0.08,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-352",
+      "acceptanceId": "AT-PF-animated-element-352",
+      "category": "animated-element",
+      "ordinal": 352,
+      "release": 4,
+      "title": "reward chest — loading response",
+      "subject": "reward chest",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-352-4dce07b4",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest loading response",
+          "accentHue": 260,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -10,
+          "y": 1,
+          "scale": 1,
+          "rotation": -0.13,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-353",
+      "acceptanceId": "AT-PF-animated-element-353",
+      "category": "animated-element",
+      "ordinal": 353,
+      "release": 4,
+      "title": "reward chest — disabled response",
+      "subject": "reward chest",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-353-ee5a2f24",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest disabled response",
+          "accentHue": 156,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -4,
+          "y": 11,
+          "scale": 1.08,
+          "rotation": 0.04,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-354",
+      "acceptanceId": "AT-PF-animated-element-354",
+      "category": "animated-element",
+      "ordinal": 354,
+      "release": 4,
+      "title": "reward chest — reduced-motion substitute",
+      "subject": "reward chest",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-354-7b3ff33c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest reduced-motion substitute",
+          "accentHue": 84,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 0,
+          "y": -7,
+          "scale": 1.09,
+          "rotation": 0.08,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-355",
+      "acceptanceId": "AT-PF-animated-element-355",
+      "category": "animated-element",
+      "ordinal": 355,
+      "release": 4,
+      "title": "reward chest — pause behavior",
+      "subject": "reward chest",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-355-d371df15",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest pause behavior",
+          "accentHue": 133,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -18,
+          "y": -14,
+          "scale": 1.01,
+          "rotation": -0.13,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-356",
+      "acceptanceId": "AT-PF-animated-element-356",
+      "category": "animated-element",
+      "ordinal": 356,
+      "release": 4,
+      "title": "reward chest — resume behavior",
+      "subject": "reward chest",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-356-740b6792",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest resume behavior",
+          "accentHue": 346,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 5,
+          "y": 17,
+          "scale": 0.95,
+          "rotation": -0.05,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-357",
+      "acceptanceId": "AT-PF-animated-element-357",
+      "category": "animated-element",
+      "ordinal": 357,
+      "release": 4,
+      "title": "reward chest — camera-relative behavior",
+      "subject": "reward chest",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-357-f7a820e5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest camera-relative behavior",
+          "accentHue": 61,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -10,
+          "y": -13,
+          "scale": 0.94,
+          "rotation": -0.13,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-358",
+      "acceptanceId": "AT-PF-animated-element-358",
+      "category": "animated-element",
+      "ordinal": 358,
+      "release": 4,
+      "title": "reward chest — offscreen culling",
+      "subject": "reward chest",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-358-b1868560",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest offscreen culling",
+          "accentHue": 240,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -9,
+          "y": -3,
+          "scale": 1,
+          "rotation": 0.01,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-359",
+      "acceptanceId": "AT-PF-animated-element-359",
+      "category": "animated-element",
+      "ordinal": 359,
+      "release": 4,
+      "title": "reward chest — pool reset",
+      "subject": "reward chest",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-359-aebf6598",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest pool reset",
+          "accentHue": 168,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -3,
+          "y": 7,
+          "scale": 1.09,
+          "rotation": 0.08,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-360",
+      "acceptanceId": "AT-PF-animated-element-360",
+      "category": "animated-element",
+      "ordinal": 360,
+      "release": 4,
+      "title": "reward chest — canonical timing marker",
+      "subject": "reward chest",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-360-c932cd85",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "reward chest canonical timing marker",
+          "accentHue": 109,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -1,
+          "y": 2,
+          "scale": 1.04,
+          "rotation": -0.04,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

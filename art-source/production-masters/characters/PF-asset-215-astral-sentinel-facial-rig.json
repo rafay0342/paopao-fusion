@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-215",
+  "release": 3,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Astral Sentinel",
+  "facet": "facial rig",
+  "masterType": "facial-rig",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.326,
+          "y": -0.45,
+          "rotationDeg": 0.7,
+          "length": 0.102
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.267,
+          "y": -0.35,
+          "rotationDeg": -3.7,
+          "length": 0.086
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.218,
+          "y": -0.25,
+          "rotationDeg": -7.1,
+          "length": 0.249
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.341,
+          "y": -0.15,
+          "rotationDeg": 10,
+          "length": 0.107
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.209,
+          "y": -0.05,
+          "rotationDeg": 11.6,
+          "length": 0.295
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.245,
+          "y": 0.05,
+          "rotationDeg": -10.3,
+          "length": 0.164
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.239,
+          "y": 0.15,
+          "rotationDeg": 9.4,
+          "length": 0.162
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.388,
+          "y": 0.25,
+          "rotationDeg": 0.3,
+          "length": 0.154
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.374,
+          "y": 0.35,
+          "rotationDeg": 6.1,
+          "length": 0.166
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.312,
+          "y": 0.45,
+          "rotationDeg": -11.9,
+          "length": 0.138
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "facial-rig-1",
+        "durationMs": 1393,
+        "loop": true,
+        "emphasis": 0.18,
+        "silhouetteKey": "astral-sentinel-123bf0dd-1"
+      },
+      {
+        "id": "facial-rig-2",
+        "durationMs": 536,
+        "loop": false,
+        "emphasis": 0.55,
+        "silhouetteKey": "astral-sentinel-123bf0dd-2"
+      },
+      {
+        "id": "facial-rig-3",
+        "durationMs": 547,
+        "loop": false,
+        "emphasis": 0.83,
+        "silhouetteKey": "astral-sentinel-123bf0dd-3"
+      },
+      {
+        "id": "facial-rig-4",
+        "durationMs": 930,
+        "loop": false,
+        "emphasis": 0.86,
+        "silhouetteKey": "astral-sentinel-123bf0dd-4"
+      },
+      {
+        "id": "facial-rig-5",
+        "durationMs": 879,
+        "loop": false,
+        "emphasis": 0.93,
+        "silhouetteKey": "astral-sentinel-123bf0dd-5"
+      },
+      {
+        "id": "facial-rig-6",
+        "durationMs": 869,
+        "loop": false,
+        "emphasis": 0.44,
+        "silhouetteKey": "astral-sentinel-123bf0dd-6"
+      },
+      {
+        "id": "facial-rig-7",
+        "durationMs": 1058,
+        "loop": false,
+        "emphasis": 0.05,
+        "silhouetteKey": "astral-sentinel-123bf0dd-7"
+      },
+      {
+        "id": "facial-rig-8",
+        "durationMs": 852,
+        "loop": false,
+        "emphasis": 0.9,
+        "silhouetteKey": "astral-sentinel-123bf0dd-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 4,
+  "page": 1,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-301",
+      "acceptanceId": "AT-PF-animated-element-301",
+      "category": "animated-element",
+      "ordinal": 301,
+      "release": 4,
+      "title": "boss portrait — idle behavior",
+      "subject": "boss portrait",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-301-01ef67e9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait idle behavior",
+          "accentHue": 321,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -5,
+          "y": 2,
+          "scale": 1.08,
+          "rotation": 0.03,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-302",
+      "acceptanceId": "AT-PF-animated-element-302",
+      "category": "animated-element",
+      "ordinal": 302,
+      "release": 4,
+      "title": "boss portrait — focus response",
+      "subject": "boss portrait",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-302-d78adafa",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait focus response",
+          "accentHue": 26,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 10,
+          "y": 13,
+          "scale": 1.1,
+          "rotation": -0.13,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-303",
+      "acceptanceId": "AT-PF-animated-element-303",
+      "category": "animated-element",
+      "ordinal": 303,
+      "release": 4,
+      "title": "boss portrait — hover response",
+      "subject": "boss portrait",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-303-7ae69e8a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait hover response",
+          "accentHue": 18,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 13,
+          "y": 18,
+          "scale": 1.1,
+          "rotation": 0,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-304",
+      "acceptanceId": "AT-PF-animated-element-304",
+      "category": "animated-element",
+      "ordinal": 304,
+      "release": 4,
+      "title": "boss portrait — press response",
+      "subject": "boss portrait",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-304-39b554b3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait press response",
+          "accentHue": 291,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -1,
+          "y": -7,
+          "scale": 1.03,
+          "rotation": -0.02,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-305",
+      "acceptanceId": "AT-PF-animated-element-305",
+      "category": "animated-element",
+      "ordinal": 305,
+      "release": 4,
+      "title": "boss portrait — entry motion",
+      "subject": "boss portrait",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-305-dc80f711",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait entry motion",
+          "accentHue": 177,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -17,
+          "y": -18,
+          "scale": 1.03,
+          "rotation": -0.13,
+          "alpha": 0.74
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-306",
+      "acceptanceId": "AT-PF-animated-element-306",
+      "category": "animated-element",
+      "ordinal": 306,
+      "release": 4,
+      "title": "boss portrait — exit motion",
+      "subject": "boss portrait",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-306-b9d42ae5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait exit motion",
+          "accentHue": 293,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -5,
+          "y": -17,
+          "scale": 1.12,
+          "rotation": 0.06,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-307",
+      "acceptanceId": "AT-PF-animated-element-307",
+      "category": "animated-element",
+      "ordinal": 307,
+      "release": 4,
+      "title": "boss portrait — state change",
+      "subject": "boss portrait",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-307-6a93658c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait state change",
+          "accentHue": 284,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -18,
+          "y": 0,
+          "scale": 1.11,
+          "rotation": -0.07,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-308",
+      "acceptanceId": "AT-PF-animated-element-308",
+      "category": "animated-element",
+      "ordinal": 308,
+      "release": 4,
+      "title": "boss portrait — success response",
+      "subject": "boss portrait",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-308-5d6c7dff",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait success response",
+          "accentHue": 191,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -12,
+          "y": 5,
+          "scale": 1,
+          "rotation": -0.02,
+          "alpha": 0.78
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-309",
+      "acceptanceId": "AT-PF-animated-element-309",
+      "category": "animated-element",
+      "ordinal": 309,
+      "release": 4,
+      "title": "boss portrait — failure response",
+      "subject": "boss portrait",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-309-fccd2dd6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait failure response",
+          "accentHue": 326,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -14,
+          "y": -9,
+          "scale": 1.04,
+          "rotation": -0.08,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-310",
+      "acceptanceId": "AT-PF-animated-element-310",
+      "category": "animated-element",
+      "ordinal": 310,
+      "release": 4,
+      "title": "boss portrait — attention cue",
+      "subject": "boss portrait",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-310-a7b8622c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "boss portrait attention cue",
+          "accentHue": 28,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -13,
+          "y": -4,
+          "scale": 0.94,
+          "rotation": -0.05,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

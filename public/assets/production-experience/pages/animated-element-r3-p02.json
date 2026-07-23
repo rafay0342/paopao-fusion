@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 3,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-211",
+      "acceptanceId": "AT-PF-animated-element-211",
+      "category": "animated-element",
+      "ordinal": 211,
+      "release": 3,
+      "title": "match cluster — progress response",
+      "subject": "match cluster",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-211-bf94291c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster progress response",
+          "accentHue": 348,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -16,
+          "y": -9,
+          "scale": 1.08,
+          "rotation": 0.08,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-212",
+      "acceptanceId": "AT-PF-animated-element-212",
+      "category": "animated-element",
+      "ordinal": 212,
+      "release": 3,
+      "title": "match cluster — loading response",
+      "subject": "match cluster",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-212-c5ffa907",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster loading response",
+          "accentHue": 343,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 10,
+          "y": 17,
+          "scale": 1.02,
+          "rotation": 0.1,
+          "alpha": 0.75
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-213",
+      "acceptanceId": "AT-PF-animated-element-213",
+      "category": "animated-element",
+      "ordinal": 213,
+      "release": 3,
+      "title": "match cluster — disabled response",
+      "subject": "match cluster",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-213-567224a9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster disabled response",
+          "accentHue": 225,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 5,
+          "y": -6,
+          "scale": 1.04,
+          "rotation": 0.11,
+          "alpha": 0.87
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-214",
+      "acceptanceId": "AT-PF-animated-element-214",
+      "category": "animated-element",
+      "ordinal": 214,
+      "release": 3,
+      "title": "match cluster — reduced-motion substitute",
+      "subject": "match cluster",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-214-680d539d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster reduced-motion substitute",
+          "accentHue": 117,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 11,
+          "y": -15,
+          "scale": 1.1,
+          "rotation": 0.04,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-215",
+      "acceptanceId": "AT-PF-animated-element-215",
+      "category": "animated-element",
+      "ordinal": 215,
+      "release": 3,
+      "title": "match cluster — pause behavior",
+      "subject": "match cluster",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-215-40fae8b6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster pause behavior",
+          "accentHue": 278,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -10,
+          "y": 10,
+          "scale": 1.09,
+          "rotation": -0.13,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-216",
+      "acceptanceId": "AT-PF-animated-element-216",
+      "category": "animated-element",
+      "ordinal": 216,
+      "release": 3,
+      "title": "match cluster — resume behavior",
+      "subject": "match cluster",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-216-e9396767",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster resume behavior",
+          "accentHue": 31,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -8,
+          "y": -13,
+          "scale": 0.96,
+          "rotation": -0.06,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-217",
+      "acceptanceId": "AT-PF-animated-element-217",
+      "category": "animated-element",
+      "ordinal": 217,
+      "release": 3,
+      "title": "match cluster — camera-relative behavior",
+      "subject": "match cluster",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-217-d40a7dd6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster camera-relative behavior",
+          "accentHue": 6,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -4,
+          "y": -17,
+          "scale": 1.09,
+          "rotation": 0.05,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-218",
+      "acceptanceId": "AT-PF-animated-element-218",
+      "category": "animated-element",
+      "ordinal": 218,
+      "release": 3,
+      "title": "match cluster — offscreen culling",
+      "subject": "match cluster",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-218-c5634851",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster offscreen culling",
+          "accentHue": 89,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 7,
+          "y": -15,
+          "scale": 0.96,
+          "rotation": 0.04,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-219",
+      "acceptanceId": "AT-PF-animated-element-219",
+      "category": "animated-element",
+      "ordinal": 219,
+      "release": 3,
+      "title": "match cluster — pool reset",
+      "subject": "match cluster",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-219-59c70387",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster pool reset",
+          "accentHue": 351,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 14,
+          "y": -1,
+          "scale": 0.94,
+          "rotation": -0.07,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-220",
+      "acceptanceId": "AT-PF-animated-element-220",
+      "category": "animated-element",
+      "ordinal": 220,
+      "release": 3,
+      "title": "match cluster — canonical timing marker",
+      "subject": "match cluster",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-220-aca7cd2c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "match cluster canonical timing marker",
+          "accentHue": 108,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 7,
+          "y": 17,
+          "scale": 1.09,
+          "rotation": 0.08,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

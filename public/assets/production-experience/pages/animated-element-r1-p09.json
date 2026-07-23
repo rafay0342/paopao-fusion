@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 1,
+  "page": 9,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-081",
+      "acceptanceId": "AT-PF-animated-element-081",
+      "category": "animated-element",
+      "ordinal": 81,
+      "release": 1,
+      "title": "HUD score — idle behavior",
+      "subject": "HUD score",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-081-58422cc8",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score idle behavior",
+          "accentHue": 8,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 7,
+          "y": -1,
+          "scale": 0.98,
+          "rotation": -0.14,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-082",
+      "acceptanceId": "AT-PF-animated-element-082",
+      "category": "animated-element",
+      "ordinal": 82,
+      "release": 1,
+      "title": "HUD score — focus response",
+      "subject": "HUD score",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-082-95e942d9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score focus response",
+          "accentHue": 65,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -1,
+          "y": -16,
+          "scale": 1.03,
+          "rotation": -0.06,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-083",
+      "acceptanceId": "AT-PF-animated-element-083",
+      "category": "animated-element",
+      "ordinal": 83,
+      "release": 1,
+      "title": "HUD score — hover response",
+      "subject": "HUD score",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-083-956fbff9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score hover response",
+          "accentHue": 265,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 1,
+          "y": 12,
+          "scale": 1,
+          "rotation": 0.13,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-084",
+      "acceptanceId": "AT-PF-animated-element-084",
+      "category": "animated-element",
+      "ordinal": 84,
+      "release": 1,
+      "title": "HUD score — press response",
+      "subject": "HUD score",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-084-125ab458",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score press response",
+          "accentHue": 16,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 2,
+          "y": 3,
+          "scale": 1.11,
+          "rotation": -0.11,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-085",
+      "acceptanceId": "AT-PF-animated-element-085",
+      "category": "animated-element",
+      "ordinal": 85,
+      "release": 1,
+      "title": "HUD score — entry motion",
+      "subject": "HUD score",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-085-b6027026",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score entry motion",
+          "accentHue": 214,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 5,
+          "y": -2,
+          "scale": 0.92,
+          "rotation": -0.08,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-086",
+      "acceptanceId": "AT-PF-animated-element-086",
+      "category": "animated-element",
+      "ordinal": 86,
+      "release": 1,
+      "title": "HUD score — exit motion",
+      "subject": "HUD score",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-086-f56444a8",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score exit motion",
+          "accentHue": 296,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 3,
+          "y": 17,
+          "scale": 0.92,
+          "rotation": 0.05,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-087",
+      "acceptanceId": "AT-PF-animated-element-087",
+      "category": "animated-element",
+      "ordinal": 87,
+      "release": 1,
+      "title": "HUD score — state change",
+      "subject": "HUD score",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-087-ac74f9f3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score state change",
+          "accentHue": 315,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -15,
+          "y": -18,
+          "scale": 0.89,
+          "rotation": -0.02,
+          "alpha": 0.87
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-088",
+      "acceptanceId": "AT-PF-animated-element-088",
+      "category": "animated-element",
+      "ordinal": 88,
+      "release": 1,
+      "title": "HUD score — success response",
+      "subject": "HUD score",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-088-7e98d5ac",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score success response",
+          "accentHue": 108,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -3,
+          "y": -12,
+          "scale": 1.09,
+          "rotation": 0.11,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-089",
+      "acceptanceId": "AT-PF-animated-element-089",
+      "category": "animated-element",
+      "ordinal": 89,
+      "release": 1,
+      "title": "HUD score — failure response",
+      "subject": "HUD score",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-089-3d3deb51",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score failure response",
+          "accentHue": 33,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -1,
+          "y": -16,
+          "scale": 1.02,
+          "rotation": -0.12,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-090",
+      "acceptanceId": "AT-PF-animated-element-090",
+      "category": "animated-element",
+      "ordinal": 90,
+      "release": 1,
+      "title": "HUD score — attention cue",
+      "subject": "HUD score",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-090-01b7d1c5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "HUD score attention cue",
+          "accentHue": 245,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -12,
+          "y": -4,
+          "scale": 0.88,
+          "rotation": -0.07,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

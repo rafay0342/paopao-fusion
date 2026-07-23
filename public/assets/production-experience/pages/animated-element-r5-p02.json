@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 5,
+  "page": 2,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-411",
+      "acceptanceId": "AT-PF-animated-element-411",
+      "category": "animated-element",
+      "ordinal": 411,
+      "release": 5,
+      "title": "arena badge — progress response",
+      "subject": "arena badge",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-411-fa3b4acf",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge progress response",
+          "accentHue": 95,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 1,
+          "y": 2,
+          "scale": 1.03,
+          "rotation": -0.01,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-412",
+      "acceptanceId": "AT-PF-animated-element-412",
+      "category": "animated-element",
+      "ordinal": 412,
+      "release": 5,
+      "title": "arena badge — loading response",
+      "subject": "arena badge",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-412-2f56c566",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge loading response",
+          "accentHue": 342,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -3,
+          "y": -3,
+          "scale": 1.09,
+          "rotation": 0.07,
+          "alpha": 0.79
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-413",
+      "acceptanceId": "AT-PF-animated-element-413",
+      "category": "animated-element",
+      "ordinal": 413,
+      "release": 5,
+      "title": "arena badge — disabled response",
+      "subject": "arena badge",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-413-64ff72e6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge disabled response",
+          "accentHue": 294,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -17,
+          "y": -14,
+          "scale": 0.92,
+          "rotation": 0.03,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-414",
+      "acceptanceId": "AT-PF-animated-element-414",
+      "category": "animated-element",
+      "ordinal": 414,
+      "release": 5,
+      "title": "arena badge — reduced-motion substitute",
+      "subject": "arena badge",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-414-72feecb6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge reduced-motion substitute",
+          "accentHue": 246,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -4,
+          "y": -17,
+          "scale": 0.96,
+          "rotation": -0.05,
+          "alpha": 0.88
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-415",
+      "acceptanceId": "AT-PF-animated-element-415",
+      "category": "animated-element",
+      "ordinal": 415,
+      "release": 5,
+      "title": "arena badge — pause behavior",
+      "subject": "arena badge",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-415-475b6a47",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge pause behavior",
+          "accentHue": 159,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 6,
+          "y": -2,
+          "scale": 0.96,
+          "rotation": 0.03,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-416",
+      "acceptanceId": "AT-PF-animated-element-416",
+      "category": "animated-element",
+      "ordinal": 416,
+      "release": 5,
+      "title": "arena badge — resume behavior",
+      "subject": "arena badge",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-416-69f4eb28",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge resume behavior",
+          "accentHue": 264,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 10,
+          "y": 4,
+          "scale": 1.04,
+          "rotation": 0.08,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-417",
+      "acceptanceId": "AT-PF-animated-element-417",
+      "category": "animated-element",
+      "ordinal": 417,
+      "release": 5,
+      "title": "arena badge — camera-relative behavior",
+      "subject": "arena badge",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-417-d9cd1c1f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge camera-relative behavior",
+          "accentHue": 31,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -15,
+          "y": 0,
+          "scale": 0.9299999999999999,
+          "rotation": -0.04,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-418",
+      "acceptanceId": "AT-PF-animated-element-418",
+      "category": "animated-element",
+      "ordinal": 418,
+      "release": 5,
+      "title": "arena badge — offscreen culling",
+      "subject": "arena badge",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-418-ecaa528a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge offscreen culling",
+          "accentHue": 146,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -10,
+          "y": -8,
+          "scale": 1.07,
+          "rotation": 0,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-419",
+      "acceptanceId": "AT-PF-animated-element-419",
+      "category": "animated-element",
+      "ordinal": 419,
+      "release": 5,
+      "title": "arena badge — pool reset",
+      "subject": "arena badge",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-419-ecf34ace",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge pool reset",
+          "accentHue": 54,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -1,
+          "y": -12,
+          "scale": 1.03,
+          "rotation": 0.02,
+          "alpha": 0.96
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-420",
+      "acceptanceId": "AT-PF-animated-element-420",
+      "category": "animated-element",
+      "ordinal": 420,
+      "release": 5,
+      "title": "arena badge — canonical timing marker",
+      "subject": "arena badge",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-420-8fcf868f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "arena badge canonical timing marker",
+          "accentHue": 327,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -18,
+          "y": -5,
+          "scale": 1.11,
+          "rotation": -0.11,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

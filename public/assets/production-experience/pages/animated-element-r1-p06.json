@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 1,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-051",
+      "acceptanceId": "AT-PF-animated-element-051",
+      "category": "animated-element",
+      "ordinal": 51,
+      "release": 1,
+      "title": "world card — progress response",
+      "subject": "world card",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-051-3f2f700f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card progress response",
+          "accentHue": 207,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 11,
+          "y": -6,
+          "scale": 1.11,
+          "rotation": -0.13,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-052",
+      "acceptanceId": "AT-PF-animated-element-052",
+      "category": "animated-element",
+      "ordinal": 52,
+      "release": 1,
+      "title": "world card — loading response",
+      "subject": "world card",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-052-0410e63e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card loading response",
+          "accentHue": 342,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -18,
+          "y": 9,
+          "scale": 0.9299999999999999,
+          "rotation": -0.05,
+          "alpha": 0.79
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-053",
+      "acceptanceId": "AT-PF-animated-element-053",
+      "category": "animated-element",
+      "ordinal": 53,
+      "release": 1,
+      "title": "world card — disabled response",
+      "subject": "world card",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-053-7bfcb1b6",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card disabled response",
+          "accentHue": 14,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -14,
+          "y": -9,
+          "scale": 1.08,
+          "rotation": 0.1,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-054",
+      "acceptanceId": "AT-PF-animated-element-054",
+      "category": "animated-element",
+      "ordinal": 54,
+      "release": 1,
+      "title": "world card — reduced-motion substitute",
+      "subject": "world card",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-054-55145a6e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card reduced-motion substitute",
+          "accentHue": 110,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 1,
+          "y": 16,
+          "scale": 0.94,
+          "rotation": 0.14,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-055",
+      "acceptanceId": "AT-PF-animated-element-055",
+      "category": "animated-element",
+      "ordinal": 55,
+      "release": 1,
+      "title": "world card — pause behavior",
+      "subject": "world card",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-055-bc343717",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card pause behavior",
+          "accentHue": 183,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 5,
+          "y": -16,
+          "scale": 1.03,
+          "rotation": 0,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-056",
+      "acceptanceId": "AT-PF-animated-element-056",
+      "category": "animated-element",
+      "ordinal": 56,
+      "release": 1,
+      "title": "world card — resume behavior",
+      "subject": "world card",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-056-a22bf8e0",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card resume behavior",
+          "accentHue": 32,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -11,
+          "y": 6,
+          "scale": 0.9299999999999999,
+          "rotation": 0.12,
+          "alpha": 0.74
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-057",
+      "acceptanceId": "AT-PF-animated-element-057",
+      "category": "animated-element",
+      "ordinal": 57,
+      "release": 1,
+      "title": "world card — camera-relative behavior",
+      "subject": "world card",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-057-51c336ff",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card camera-relative behavior",
+          "accentHue": 135,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 13,
+          "y": -15,
+          "scale": 1.01,
+          "rotation": -0.13,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-058",
+      "acceptanceId": "AT-PF-animated-element-058",
+      "category": "animated-element",
+      "ordinal": 58,
+      "release": 1,
+      "title": "world card — offscreen culling",
+      "subject": "world card",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-058-9ae31f32",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card offscreen culling",
+          "accentHue": 162,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 7,
+          "y": 8,
+          "scale": 1.11,
+          "rotation": 0.1,
+          "alpha": 0.94
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-059",
+      "acceptanceId": "AT-PF-animated-element-059",
+      "category": "animated-element",
+      "ordinal": 59,
+      "release": 1,
+      "title": "world card — pool reset",
+      "subject": "world card",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-059-3590a5be",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card pool reset",
+          "accentHue": 102,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -14,
+          "y": -9,
+          "scale": 0.88,
+          "rotation": 0.08,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-060",
+      "acceptanceId": "AT-PF-animated-element-060",
+      "category": "animated-element",
+      "ordinal": 60,
+      "release": 1,
+      "title": "world card — canonical timing marker",
+      "subject": "world card",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-060-08e4ccdf",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "world card canonical timing marker",
+          "accentHue": 303,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -14,
+          "y": 14,
+          "scale": 1.06,
+          "rotation": -0.05,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

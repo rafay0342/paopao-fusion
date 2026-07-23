@@ -1,0 +1,91 @@
+{
+  "collection": "Aurora Crown Adaptive Score",
+  "composition": "Original deterministic synthesis from first principles; no samples, stock audio, or borrowed melodies.",
+  "seed": 72072026,
+  "synthesisSampleRate": 32000,
+  "deliverySampleRate": 48000,
+  "loopCrossfadeSeconds": 4.0,
+  "targetLoudnessLufs": -20,
+  "tracks": [
+    {
+      "mood": "menu",
+      "title": "Aurora Whispers",
+      "files": {
+        "ogg": {
+          "file": "aurora-whispers-menu.ogg",
+          "duration": 60.0,
+          "bitRate": 115381
+        },
+        "mp3": {
+          "file": "aurora-whispers-menu.mp3",
+          "duration": 60.0,
+          "bitRate": 112116
+        }
+      }
+    },
+    {
+      "mood": "story",
+      "title": "Crown Memory",
+      "files": {
+        "ogg": {
+          "file": "crown-memory-story.ogg",
+          "duration": 60.0,
+          "bitRate": 116151
+        },
+        "mp3": {
+          "file": "crown-memory-story.mp3",
+          "duration": 60.0,
+          "bitRate": 112116
+        }
+      }
+    },
+    {
+      "mood": "game",
+      "title": "Prism Pulse",
+      "files": {
+        "ogg": {
+          "file": "prism-pulse-game.ogg",
+          "duration": 60.0,
+          "bitRate": 114878
+        },
+        "mp3": {
+          "file": "prism-pulse-game.mp3",
+          "duration": 60.0,
+          "bitRate": 112116
+        }
+      }
+    },
+    {
+      "mood": "boss",
+      "title": "Nexus Awakens",
+      "files": {
+        "ogg": {
+          "file": "nexus-awakens-boss.ogg",
+          "duration": 60.0,
+          "bitRate": 112218
+        },
+        "mp3": {
+          "file": "nexus-awakens-boss.mp3",
+          "duration": 60.0,
+          "bitRate": 112116
+        }
+      }
+    },
+    {
+      "mood": "ending",
+      "title": "Crown Restored",
+      "files": {
+        "ogg": {
+          "file": "crown-restored-ending.ogg",
+          "duration": 60.0,
+          "bitRate": 116266
+        },
+        "mp3": {
+          "file": "crown-restored-ending.mp3",
+          "duration": 60.0,
+          "bitRate": 112116
+        }
+      }
+    }
+  ]
+}

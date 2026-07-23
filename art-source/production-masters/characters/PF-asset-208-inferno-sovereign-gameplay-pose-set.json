@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-208",
+  "release": 3,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Inferno Sovereign",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.165,
+          "y": -0.45,
+          "rotationDeg": -2.5,
+          "length": 0.183
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.204,
+          "y": -0.35,
+          "rotationDeg": -11.1,
+          "length": 0.226
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.294,
+          "y": -0.25,
+          "rotationDeg": -11.4,
+          "length": 0.182
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.39,
+          "y": -0.15,
+          "rotationDeg": 11.3,
+          "length": 0.261
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.072,
+          "y": -0.05,
+          "rotationDeg": -3.2,
+          "length": 0.296
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.006,
+          "y": 0.05,
+          "rotationDeg": 5.4,
+          "length": 0.295
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.071,
+          "y": 0.15,
+          "rotationDeg": -11.4,
+          "length": 0.269
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.391,
+          "y": 0.25,
+          "rotationDeg": 4.8,
+          "length": 0.196
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.255,
+          "y": 0.35,
+          "rotationDeg": 0.6,
+          "length": 0.187
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.058,
+          "y": 0.45,
+          "rotationDeg": 10.4,
+          "length": 0.192
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 586,
+        "loop": true,
+        "emphasis": 0.51,
+        "silhouetteKey": "inferno-sovereign-b431288-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 1063,
+        "loop": false,
+        "emphasis": 0.64,
+        "silhouetteKey": "inferno-sovereign-b431288-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 969,
+        "loop": false,
+        "emphasis": 1,
+        "silhouetteKey": "inferno-sovereign-b431288-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 1045,
+        "loop": false,
+        "emphasis": 0.72,
+        "silhouetteKey": "inferno-sovereign-b431288-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 588,
+        "loop": false,
+        "emphasis": 0.03,
+        "silhouetteKey": "inferno-sovereign-b431288-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 689,
+        "loop": false,
+        "emphasis": 0.08,
+        "silhouetteKey": "inferno-sovereign-b431288-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 1127,
+        "loop": false,
+        "emphasis": 0.43,
+        "silhouetteKey": "inferno-sovereign-b431288-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 656,
+        "loop": false,
+        "emphasis": 0.72,
+        "silhouetteKey": "inferno-sovereign-b431288-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-118",
+  "release": 2,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Heartwood Guardian",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.168,
+          "y": -0.45,
+          "rotationDeg": -7.3,
+          "length": 0.248
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.25,
+          "y": -0.35,
+          "rotationDeg": 11.6,
+          "length": 0.086
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.164,
+          "y": -0.25,
+          "rotationDeg": -10.3,
+          "length": 0.245
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.153,
+          "y": -0.15,
+          "rotationDeg": -4.6,
+          "length": 0.171
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.315,
+          "y": -0.05,
+          "rotationDeg": -2.7,
+          "length": 0.175
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.349,
+          "y": 0.05,
+          "rotationDeg": -11.6,
+          "length": 0.161
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.311,
+          "y": 0.15,
+          "rotationDeg": -10.1,
+          "length": 0.171
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.397,
+          "y": 0.25,
+          "rotationDeg": -3.4,
+          "length": 0.201
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.07,
+          "y": 0.35,
+          "rotationDeg": 4.1,
+          "length": 0.139
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.396,
+          "y": 0.45,
+          "rotationDeg": 8.2,
+          "length": 0.094
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 1230,
+        "loop": true,
+        "emphasis": 0.8,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 476,
+        "loop": false,
+        "emphasis": 0.27,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 1292,
+        "loop": false,
+        "emphasis": 0.06,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 624,
+        "loop": false,
+        "emphasis": 0.82,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1263,
+        "loop": false,
+        "emphasis": 0.47,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 966,
+        "loop": false,
+        "emphasis": 0.04,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 686,
+        "loop": false,
+        "emphasis": 0.38,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 1400,
+        "loop": false,
+        "emphasis": 0.7,
+        "silhouetteKey": "heartwood-guardian-4285bbc5-8"
+      }
+    ]
+  }
+}

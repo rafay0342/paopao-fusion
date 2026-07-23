@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-318",
+  "release": 4,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Nexus Architect",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.298,
+          "y": -0.45,
+          "rotationDeg": 7,
+          "length": 0.192
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.281,
+          "y": -0.35,
+          "rotationDeg": -2.9,
+          "length": 0.166
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.163,
+          "y": -0.25,
+          "rotationDeg": -4.4,
+          "length": 0.244
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.392,
+          "y": -0.15,
+          "rotationDeg": -7.9,
+          "length": 0.185
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.347,
+          "y": -0.05,
+          "rotationDeg": -8.1,
+          "length": 0.112
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.345,
+          "y": 0.05,
+          "rotationDeg": -11.9,
+          "length": 0.268
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.215,
+          "y": 0.15,
+          "rotationDeg": 3.1,
+          "length": 0.215
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.14,
+          "y": 0.25,
+          "rotationDeg": 1,
+          "length": 0.297
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.216,
+          "y": 0.35,
+          "rotationDeg": 5.8,
+          "length": 0.126
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.311,
+          "y": 0.45,
+          "rotationDeg": 8.4,
+          "length": 0.185
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 1031,
+        "loop": true,
+        "emphasis": 0.69,
+        "silhouetteKey": "nexus-architect-bb7ad47a-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 596,
+        "loop": false,
+        "emphasis": 0.53,
+        "silhouetteKey": "nexus-architect-bb7ad47a-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 934,
+        "loop": false,
+        "emphasis": 0.67,
+        "silhouetteKey": "nexus-architect-bb7ad47a-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 1043,
+        "loop": false,
+        "emphasis": 0.25,
+        "silhouetteKey": "nexus-architect-bb7ad47a-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 576,
+        "loop": false,
+        "emphasis": 0.16,
+        "silhouetteKey": "nexus-architect-bb7ad47a-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 424,
+        "loop": false,
+        "emphasis": 0.02,
+        "silhouetteKey": "nexus-architect-bb7ad47a-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 810,
+        "loop": false,
+        "emphasis": 0.09,
+        "silhouetteKey": "nexus-architect-bb7ad47a-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 733,
+        "loop": false,
+        "emphasis": 0.77,
+        "silhouetteKey": "nexus-architect-bb7ad47a-8"
+      }
+    ]
+  }
+}

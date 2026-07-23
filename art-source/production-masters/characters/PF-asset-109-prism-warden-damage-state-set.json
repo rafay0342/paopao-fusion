@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-109",
+  "release": 2,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Prism Warden",
+  "facet": "damage-state set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": -0.226,
+          "y": -0.45,
+          "rotationDeg": -5.7,
+          "length": 0.141
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.076,
+          "y": -0.35,
+          "rotationDeg": -6.2,
+          "length": 0.183
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.055,
+          "y": -0.25,
+          "rotationDeg": 0,
+          "length": 0.17
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.032,
+          "y": -0.15,
+          "rotationDeg": -6.5,
+          "length": 0.291
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.236,
+          "y": -0.05,
+          "rotationDeg": -7.6,
+          "length": 0.101
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.048,
+          "y": 0.05,
+          "rotationDeg": 0.5,
+          "length": 0.237
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.356,
+          "y": 0.15,
+          "rotationDeg": -1.4,
+          "length": 0.223
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.373,
+          "y": 0.25,
+          "rotationDeg": -5.5,
+          "length": 0.226
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.381,
+          "y": 0.35,
+          "rotationDeg": -3.8,
+          "length": 0.167
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.094,
+          "y": 0.45,
+          "rotationDeg": -2.2,
+          "length": 0.264
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "damage-state-set-1",
+        "durationMs": 642,
+        "loop": true,
+        "emphasis": 0.58,
+        "silhouetteKey": "prism-warden-aa0b2e4e-1"
+      },
+      {
+        "id": "damage-state-set-2",
+        "durationMs": 548,
+        "loop": false,
+        "emphasis": 0.6,
+        "silhouetteKey": "prism-warden-aa0b2e4e-2"
+      },
+      {
+        "id": "damage-state-set-3",
+        "durationMs": 1251,
+        "loop": false,
+        "emphasis": 0.14,
+        "silhouetteKey": "prism-warden-aa0b2e4e-3"
+      },
+      {
+        "id": "damage-state-set-4",
+        "durationMs": 541,
+        "loop": false,
+        "emphasis": 0.59,
+        "silhouetteKey": "prism-warden-aa0b2e4e-4"
+      },
+      {
+        "id": "damage-state-set-5",
+        "durationMs": 926,
+        "loop": false,
+        "emphasis": 0.35,
+        "silhouetteKey": "prism-warden-aa0b2e4e-5"
+      }
+    ]
+  }
+}

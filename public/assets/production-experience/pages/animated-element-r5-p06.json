@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 5,
+  "page": 6,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-451",
+      "acceptanceId": "AT-PF-animated-element-451",
+      "category": "animated-element",
+      "ordinal": 451,
+      "release": 5,
+      "title": "hand cursor — progress response",
+      "subject": "hand cursor",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-451-c7ee164e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor progress response",
+          "accentHue": 222,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -18,
+          "y": 9,
+          "scale": 0.95,
+          "rotation": -0.1,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-452",
+      "acceptanceId": "AT-PF-animated-element-452",
+      "category": "animated-element",
+      "ordinal": 452,
+      "release": 5,
+      "title": "hand cursor — loading response",
+      "subject": "hand cursor",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-452-114c55bd",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor loading response",
+          "accentHue": 277,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 40,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -7,
+          "y": -8,
+          "scale": 1.02,
+          "rotation": 0.07,
+          "alpha": 0.79
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-453",
+      "acceptanceId": "AT-PF-animated-element-453",
+      "category": "animated-element",
+      "ordinal": 453,
+      "release": 5,
+      "title": "hand cursor — disabled response",
+      "subject": "hand cursor",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-453-76f83bc3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor disabled response",
+          "accentHue": 35,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 8,
+          "y": 8,
+          "scale": 0.96,
+          "rotation": 0,
+          "alpha": 0.87
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-454",
+      "acceptanceId": "AT-PF-animated-element-454",
+      "category": "animated-element",
+      "ordinal": 454,
+      "release": 5,
+      "title": "hand cursor — reduced-motion substitute",
+      "subject": "hand cursor",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-454-a003035f",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor reduced-motion substitute",
+          "accentHue": 351,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -7,
+          "y": 1,
+          "scale": 0.88,
+          "rotation": -0.07,
+          "alpha": 0.78
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-455",
+      "acceptanceId": "AT-PF-animated-element-455",
+      "category": "animated-element",
+      "ordinal": 455,
+      "release": 5,
+      "title": "hand cursor — pause behavior",
+      "subject": "hand cursor",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-455-560ff6dc",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor pause behavior",
+          "accentHue": 252,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 15,
+          "y": 18,
+          "scale": 0.94,
+          "rotation": 0.01,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-456",
+      "acceptanceId": "AT-PF-animated-element-456",
+      "category": "animated-element",
+      "ordinal": 456,
+      "release": 5,
+      "title": "hand cursor — resume behavior",
+      "subject": "hand cursor",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-456-5d15ae81",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor resume behavior",
+          "accentHue": 57,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 560,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 5,
+          "y": -6,
+          "scale": 1.07,
+          "rotation": -0.06,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-457",
+      "acceptanceId": "AT-PF-animated-element-457",
+      "category": "animated-element",
+      "ordinal": 457,
+      "release": 5,
+      "title": "hand cursor — camera-relative behavior",
+      "subject": "hand cursor",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-457-35e0f070",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor camera-relative behavior",
+          "accentHue": 344,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -4,
+          "y": -7,
+          "scale": 1.07,
+          "rotation": -0.09,
+          "alpha": 0.86
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-458",
+      "acceptanceId": "AT-PF-animated-element-458",
+      "category": "animated-element",
+      "ordinal": 458,
+      "release": 5,
+      "title": "hand cursor — offscreen culling",
+      "subject": "hand cursor",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-458-696b93bb",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor offscreen culling",
+          "accentHue": 171,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 2,
+          "y": -2,
+          "scale": 0.91,
+          "rotation": 0.02,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-459",
+      "acceptanceId": "AT-PF-animated-element-459",
+      "category": "animated-element",
+      "ordinal": 459,
+      "release": 5,
+      "title": "hand cursor — pool reset",
+      "subject": "hand cursor",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-459-9fbb31f9",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor pool reset",
+          "accentHue": 329,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -10,
+          "y": 6,
+          "scale": 0.96,
+          "rotation": -0.07,
+          "alpha": 0.9099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-460",
+      "acceptanceId": "AT-PF-animated-element-460",
+      "category": "animated-element",
+      "ordinal": 460,
+      "release": 5,
+      "title": "hand cursor — canonical timing marker",
+      "subject": "hand cursor",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-460-5bd64a1e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "hand cursor canonical timing marker",
+          "accentHue": 214,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -1,
+          "y": -12,
+          "scale": 0.99,
+          "rotation": 0.02,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

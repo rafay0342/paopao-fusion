@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-015",
+  "release": 1,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Aurora Crown",
+  "facet": "facial rig",
+  "masterType": "facial-rig",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.334,
+          "y": -0.45,
+          "rotationDeg": -11.5,
+          "length": 0.258
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.324,
+          "y": -0.35,
+          "rotationDeg": -12,
+          "length": 0.135
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.092,
+          "y": -0.25,
+          "rotationDeg": -2.7,
+          "length": 0.287
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.319,
+          "y": -0.15,
+          "rotationDeg": -10.2,
+          "length": 0.122
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.289,
+          "y": -0.05,
+          "rotationDeg": -10.1,
+          "length": 0.136
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.238,
+          "y": 0.05,
+          "rotationDeg": -5,
+          "length": 0.227
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.144,
+          "y": 0.15,
+          "rotationDeg": -10.9,
+          "length": 0.224
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.048,
+          "y": 0.25,
+          "rotationDeg": -0.8,
+          "length": 0.284
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.308,
+          "y": 0.35,
+          "rotationDeg": -10.2,
+          "length": 0.082
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.031,
+          "y": 0.45,
+          "rotationDeg": 2,
+          "length": 0.159
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "facial-rig-1",
+        "durationMs": 1324,
+        "loop": true,
+        "emphasis": 0.86,
+        "silhouetteKey": "aurora-crown-205aa55d-1"
+      },
+      {
+        "id": "facial-rig-2",
+        "durationMs": 637,
+        "loop": false,
+        "emphasis": 0.95,
+        "silhouetteKey": "aurora-crown-205aa55d-2"
+      },
+      {
+        "id": "facial-rig-3",
+        "durationMs": 1071,
+        "loop": false,
+        "emphasis": 0.45,
+        "silhouetteKey": "aurora-crown-205aa55d-3"
+      },
+      {
+        "id": "facial-rig-4",
+        "durationMs": 1142,
+        "loop": false,
+        "emphasis": 0.04,
+        "silhouetteKey": "aurora-crown-205aa55d-4"
+      },
+      {
+        "id": "facial-rig-5",
+        "durationMs": 1203,
+        "loop": false,
+        "emphasis": 0.82,
+        "silhouetteKey": "aurora-crown-205aa55d-5"
+      },
+      {
+        "id": "facial-rig-6",
+        "durationMs": 575,
+        "loop": false,
+        "emphasis": 0.87,
+        "silhouetteKey": "aurora-crown-205aa55d-6"
+      },
+      {
+        "id": "facial-rig-7",
+        "durationMs": 1236,
+        "loop": false,
+        "emphasis": 0.92,
+        "silhouetteKey": "aurora-crown-205aa55d-7"
+      },
+      {
+        "id": "facial-rig-8",
+        "durationMs": 1227,
+        "loop": false,
+        "emphasis": 0.85,
+        "silhouetteKey": "aurora-crown-205aa55d-8"
+      }
+    ]
+  }
+}

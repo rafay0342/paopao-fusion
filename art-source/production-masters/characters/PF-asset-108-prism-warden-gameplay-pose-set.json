@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-108",
+  "release": 2,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "Prism Warden",
+  "facet": "gameplay pose set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.328,
+          "y": -0.45,
+          "rotationDeg": -5.6,
+          "length": 0.256
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.206,
+          "y": -0.35,
+          "rotationDeg": 2.8,
+          "length": 0.248
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.142,
+          "y": -0.25,
+          "rotationDeg": -8.2,
+          "length": 0.18
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.379,
+          "y": -0.15,
+          "rotationDeg": -9.2,
+          "length": 0.107
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.322,
+          "y": -0.05,
+          "rotationDeg": -11.5,
+          "length": 0.238
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.183,
+          "y": 0.05,
+          "rotationDeg": -5.7,
+          "length": 0.246
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.154,
+          "y": 0.15,
+          "rotationDeg": 4.7,
+          "length": 0.224
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.233,
+          "y": 0.25,
+          "rotationDeg": 1,
+          "length": 0.222
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.348,
+          "y": 0.35,
+          "rotationDeg": 11.2,
+          "length": 0.1
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.103,
+          "y": 0.45,
+          "rotationDeg": 6,
+          "length": 0.193
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "gameplay-pose-set-1",
+        "durationMs": 557,
+        "loop": true,
+        "emphasis": 0.16,
+        "silhouetteKey": "prism-warden-fb2e2cea-1"
+      },
+      {
+        "id": "gameplay-pose-set-2",
+        "durationMs": 1338,
+        "loop": false,
+        "emphasis": 0.58,
+        "silhouetteKey": "prism-warden-fb2e2cea-2"
+      },
+      {
+        "id": "gameplay-pose-set-3",
+        "durationMs": 1236,
+        "loop": false,
+        "emphasis": 0.99,
+        "silhouetteKey": "prism-warden-fb2e2cea-3"
+      },
+      {
+        "id": "gameplay-pose-set-4",
+        "durationMs": 936,
+        "loop": false,
+        "emphasis": 0.32,
+        "silhouetteKey": "prism-warden-fb2e2cea-4"
+      },
+      {
+        "id": "gameplay-pose-set-5",
+        "durationMs": 1001,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "prism-warden-fb2e2cea-5"
+      },
+      {
+        "id": "gameplay-pose-set-6",
+        "durationMs": 1035,
+        "loop": false,
+        "emphasis": 0.93,
+        "silhouetteKey": "prism-warden-fb2e2cea-6"
+      },
+      {
+        "id": "gameplay-pose-set-7",
+        "durationMs": 1018,
+        "loop": false,
+        "emphasis": 0.25,
+        "silhouetteKey": "prism-warden-fb2e2cea-7"
+      },
+      {
+        "id": "gameplay-pose-set-8",
+        "durationMs": 1277,
+        "loop": false,
+        "emphasis": 0.49,
+        "silhouetteKey": "prism-warden-fb2e2cea-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 1,
+  "page": 3,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-021",
+      "acceptanceId": "AT-PF-animated-element-021",
+      "category": "animated-element",
+      "ordinal": 21,
+      "release": 1,
+      "title": "profile crest — idle behavior",
+      "subject": "profile crest",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-021-158dad7d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest idle behavior",
+          "accentHue": 205,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 0,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -6,
+          "y": 6,
+          "scale": 0.89,
+          "rotation": 0.11,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-022",
+      "acceptanceId": "AT-PF-animated-element-022",
+      "category": "animated-element",
+      "ordinal": 22,
+      "release": 1,
+      "title": "profile crest — focus response",
+      "subject": "profile crest",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-022-50072c56",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest focus response",
+          "accentHue": 22,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -15,
+          "y": 14,
+          "scale": 1.03,
+          "rotation": -0.1,
+          "alpha": 0.79
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-023",
+      "acceptanceId": "AT-PF-animated-element-023",
+      "category": "animated-element",
+      "ordinal": 23,
+      "release": 1,
+      "title": "profile crest — hover response",
+      "subject": "profile crest",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-023-6bb54972",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest hover response",
+          "accentHue": 250,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -14,
+          "y": 10,
+          "scale": 1.08,
+          "rotation": 0.08,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-024",
+      "acceptanceId": "AT-PF-animated-element-024",
+      "category": "animated-element",
+      "ordinal": 24,
+      "release": 1,
+      "title": "profile crest — press response",
+      "subject": "profile crest",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-024-aaaf75d3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest press response",
+          "accentHue": 283,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 9,
+          "y": -15,
+          "scale": 0.89,
+          "rotation": 0.06,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-025",
+      "acceptanceId": "AT-PF-animated-element-025",
+      "category": "animated-element",
+      "ordinal": 25,
+      "release": 1,
+      "title": "profile crest — entry motion",
+      "subject": "profile crest",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-025-70cce46d",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest entry motion",
+          "accentHue": 293,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -5,
+          "y": -17,
+          "scale": 1,
+          "rotation": 0.04,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-026",
+      "acceptanceId": "AT-PF-animated-element-026",
+      "category": "animated-element",
+      "ordinal": 26,
+      "release": 1,
+      "title": "profile crest — exit motion",
+      "subject": "profile crest",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-026-8727b659",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest exit motion",
+          "accentHue": 145,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 5,
+          "y": -6,
+          "scale": 0.9299999999999999,
+          "rotation": 0.14,
+          "alpha": 0.9199999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-027",
+      "acceptanceId": "AT-PF-animated-element-027",
+      "category": "animated-element",
+      "ordinal": 27,
+      "release": 1,
+      "title": "profile crest — state change",
+      "subject": "profile crest",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-027-ba83ab8c",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest state change",
+          "accentHue": 28,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -16,
+          "y": -9,
+          "scale": 1.02,
+          "rotation": -0.05,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-028",
+      "acceptanceId": "AT-PF-animated-element-028",
+      "category": "animated-element",
+      "ordinal": 28,
+      "release": 1,
+      "title": "profile crest — success response",
+      "subject": "profile crest",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-028-b32d0b07",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest success response",
+          "accentHue": 167,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 5,
+          "y": -16,
+          "scale": 0.88,
+          "rotation": -0.01,
+          "alpha": 0.79
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-029",
+      "acceptanceId": "AT-PF-animated-element-029",
+      "category": "animated-element",
+      "ordinal": 29,
+      "release": 1,
+      "title": "profile crest — failure response",
+      "subject": "profile crest",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-029-c7c2b7d2",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest failure response",
+          "accentHue": 186,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 12,
+          "y": 4,
+          "scale": 1.1,
+          "rotation": 0.06,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-030",
+      "acceptanceId": "AT-PF-animated-element-030",
+      "category": "animated-element",
+      "ordinal": 30,
+      "release": 1,
+      "title": "profile crest — attention cue",
+      "subject": "profile crest",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-030-dc623b34",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "profile crest attention cue",
+          "accentHue": 204,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": 16,
+          "y": -5,
+          "scale": 1.06,
+          "rotation": -0.03,
+          "alpha": 0.76
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

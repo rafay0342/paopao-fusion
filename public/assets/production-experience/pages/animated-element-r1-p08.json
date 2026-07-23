@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 1,
+  "page": 8,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-071",
+      "acceptanceId": "AT-PF-animated-element-071",
+      "category": "animated-element",
+      "ordinal": 71,
+      "release": 1,
+      "title": "level medallion — progress response",
+      "subject": "level medallion",
+      "facet": "progress response",
+      "behaviorFingerprint": "PX-animated-element-071-ca8fa2d8",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion progress response",
+          "accentHue": 168,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 800,
+          "delayMs": 60,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -15,
+          "y": -13,
+          "scale": 1.09,
+          "rotation": -0.13,
+          "alpha": 0.8999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-072",
+      "acceptanceId": "AT-PF-animated-element-072",
+      "category": "animated-element",
+      "ordinal": 72,
+      "release": 1,
+      "title": "level medallion — loading response",
+      "subject": "level medallion",
+      "facet": "loading response",
+      "behaviorFingerprint": "PX-animated-element-072-c62f50d3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion loading response",
+          "accentHue": 131,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -12,
+          "y": -13,
+          "scale": 1.01,
+          "rotation": -0.09,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-073",
+      "acceptanceId": "AT-PF-animated-element-073",
+      "category": "animated-element",
+      "ordinal": 73,
+      "release": 1,
+      "title": "level medallion — disabled response",
+      "subject": "level medallion",
+      "facet": "disabled response",
+      "behaviorFingerprint": "PX-animated-element-073-81327895",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion disabled response",
+          "accentHue": 253,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 400,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -6,
+          "y": 6,
+          "scale": 0.96,
+          "rotation": 0.11,
+          "alpha": 0.7999999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-074",
+      "acceptanceId": "AT-PF-animated-element-074",
+      "category": "animated-element",
+      "ordinal": 74,
+      "release": 1,
+      "title": "level medallion — reduced-motion substitute",
+      "subject": "level medallion",
+      "facet": "reduced-motion substitute",
+      "behaviorFingerprint": "PX-animated-element-074-4994cb29",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion reduced-motion substitute",
+          "accentHue": 225,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -4,
+          "y": 16,
+          "scale": 0.89,
+          "rotation": 0.06,
+          "alpha": 0.77
+        },
+        "reducedMotion": {
+          "durationMs": 1,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-075",
+      "acceptanceId": "AT-PF-animated-element-075",
+      "category": "animated-element",
+      "ordinal": 75,
+      "release": 1,
+      "title": "level medallion — pause behavior",
+      "subject": "level medallion",
+      "facet": "pause behavior",
+      "behaviorFingerprint": "PX-animated-element-075-7acd6a3a",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion pause behavior",
+          "accentHue": 266,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 12,
+          "y": 4,
+          "scale": 1,
+          "rotation": -0.07,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-076",
+      "acceptanceId": "AT-PF-animated-element-076",
+      "category": "animated-element",
+      "ordinal": 76,
+      "release": 1,
+      "title": "level medallion — resume behavior",
+      "subject": "level medallion",
+      "facet": "resume behavior",
+      "behaviorFingerprint": "PX-animated-element-076-deaa8693",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion resume behavior",
+          "accentHue": 43,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -1,
+          "y": -7,
+          "scale": 0.99,
+          "rotation": -0.04,
+          "alpha": 0.95
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": true,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-077",
+      "acceptanceId": "AT-PF-animated-element-077",
+      "category": "animated-element",
+      "ordinal": 77,
+      "release": 1,
+      "title": "level medallion — camera-relative behavior",
+      "subject": "level medallion",
+      "facet": "camera-relative behavior",
+      "behaviorFingerprint": "PX-animated-element-077-03d56ad2",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion camera-relative behavior",
+          "accentHue": 202,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 8,
+          "y": -15,
+          "scale": 1.09,
+          "rotation": 0.08,
+          "alpha": 0.84
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-078",
+      "acceptanceId": "AT-PF-animated-element-078",
+      "category": "animated-element",
+      "ordinal": 78,
+      "release": 1,
+      "title": "level medallion — offscreen culling",
+      "subject": "level medallion",
+      "facet": "offscreen culling",
+      "behaviorFingerprint": "PX-animated-element-078-4e807de5",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion offscreen culling",
+          "accentHue": 245,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -8,
+          "y": 15,
+          "scale": 0.95,
+          "rotation": 0.07,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": true,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-079",
+      "acceptanceId": "AT-PF-animated-element-079",
+      "category": "animated-element",
+      "ordinal": 79,
+      "release": 1,
+      "title": "level medallion — pool reset",
+      "subject": "level medallion",
+      "facet": "pool reset",
+      "behaviorFingerprint": "PX-animated-element-079-0fb7c7f3",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion pool reset",
+          "accentHue": 355,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -18,
+          "y": 14,
+          "scale": 0.89,
+          "rotation": -0.11,
+          "alpha": 0.87
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": 0
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-080",
+      "acceptanceId": "AT-PF-animated-element-080",
+      "category": "animated-element",
+      "ordinal": 80,
+      "release": 1,
+      "title": "level medallion — canonical timing marker",
+      "subject": "level medallion",
+      "facet": "canonical timing marker",
+      "behaviorFingerprint": "PX-animated-element-080-92b9a838",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "diamond",
+          "label": "level medallion canonical timing marker",
+          "accentHue": 0,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 320,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.25
+        },
+        "channels": {
+          "x": -5,
+          "y": 16,
+          "scale": 0.99,
+          "rotation": -0.03,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": false,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

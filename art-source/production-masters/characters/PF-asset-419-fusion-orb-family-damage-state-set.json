@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-419",
+  "release": 5,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "fusion orb family",
+  "facet": "damage-state set",
+  "masterType": "animation-state-set",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.097,
+          "y": -0.45,
+          "rotationDeg": 7.4,
+          "length": 0.169
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": 0.092,
+          "y": -0.35,
+          "rotationDeg": -0.9,
+          "length": 0.288
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.232,
+          "y": -0.25,
+          "rotationDeg": -7.1,
+          "length": 0.24
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.104,
+          "y": -0.15,
+          "rotationDeg": -10.6,
+          "length": 0.273
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.066,
+          "y": -0.05,
+          "rotationDeg": 11.3,
+          "length": 0.129
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.082,
+          "y": 0.05,
+          "rotationDeg": 7,
+          "length": 0.189
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.313,
+          "y": 0.15,
+          "rotationDeg": 11.8,
+          "length": 0.084
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.028,
+          "y": 0.25,
+          "rotationDeg": -3.4,
+          "length": 0.205
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.389,
+          "y": 0.35,
+          "rotationDeg": 10.5,
+          "length": 0.183
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.289,
+          "y": 0.45,
+          "rotationDeg": -2.9,
+          "length": 0.209
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "damage-state-set-1",
+        "durationMs": 1245,
+        "loop": true,
+        "emphasis": 0.53,
+        "silhouetteKey": "fusion-orb-family-554629e5-1"
+      },
+      {
+        "id": "damage-state-set-2",
+        "durationMs": 1151,
+        "loop": false,
+        "emphasis": 0.41,
+        "silhouetteKey": "fusion-orb-family-554629e5-2"
+      },
+      {
+        "id": "damage-state-set-3",
+        "durationMs": 1212,
+        "loop": false,
+        "emphasis": 0.46,
+        "silhouetteKey": "fusion-orb-family-554629e5-3"
+      },
+      {
+        "id": "damage-state-set-4",
+        "durationMs": 1239,
+        "loop": false,
+        "emphasis": 0.38,
+        "silhouetteKey": "fusion-orb-family-554629e5-4"
+      },
+      {
+        "id": "damage-state-set-5",
+        "durationMs": 909,
+        "loop": false,
+        "emphasis": 0.92,
+        "silhouetteKey": "fusion-orb-family-554629e5-5"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "random": {
+    "algorithm": "mulberry32",
+    "seed": 305419896,
+    "uint32": [
+      455919406,
+      4042750857,
+      4036713555,
+      1004527575,
+      3885174651,
+      3342903291
+    ]
+  },
+  "aim": {
+    "minimumDegrees": -30,
+    "maximumDegrees": 30
+  },
+  "simulation": {
+    "numericFormat": "q16.16",
+    "fractionBits": 16
+  },
+  "endlessReplay": {
+    "rulesVersion": 1,
+    "replayVersion": 1,
+    "seed": 305419896,
+    "level": 17,
+    "modifier": "mirror-orbs",
+    "eventBoss": true,
+    "durationMs": 3400,
+    "shotTrace": [
+      { "sequence": 0, "atMs": 500, "angleMilliDegrees": -18000 },
+      { "sequence": 1, "atMs": 1100, "angleMilliDegrees": -12000 },
+      { "sequence": 2, "atMs": 1700, "angleMilliDegrees": 12000 },
+      { "sequence": 3, "atMs": 2300, "angleMilliDegrees": 24000 },
+      { "sequence": 4, "atMs": 2900, "angleMilliDegrees": -12000 }
+    ],
+    "result": {
+      "rulesVersion": 1,
+      "score": 1300,
+      "hits": 5,
+      "shots": 5,
+      "wave": 2,
+      "won": true,
+      "maxCombo": 5,
+      "seasonPoints": 73,
+      "boss": { "maxHp": 10, "hp": 0 },
+      "stateChecksum": "02d357507243d0fc"
+    }
+  }
+}

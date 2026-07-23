@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-404",
+  "release": 5,
+  "allocation": "characters-orbs-bosses-rigs",
+  "subject": "player launcher",
+  "facet": "skeleton rig",
+  "masterType": "skeleton-rig",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "rig": {
+    "coordinateSpace": "normalized-2d",
+    "bones": [
+      {
+        "name": "root",
+        "parent": null,
+        "rest": {
+          "x": 0.202,
+          "y": -0.45,
+          "rotationDeg": 0.3,
+          "length": 0.129
+        }
+      },
+      {
+        "name": "spine-low",
+        "parent": "root",
+        "rest": {
+          "x": -0.184,
+          "y": -0.35,
+          "rotationDeg": 8.3,
+          "length": 0.217
+        }
+      },
+      {
+        "name": "spine-high",
+        "parent": "spine-low",
+        "rest": {
+          "x": -0.176,
+          "y": -0.25,
+          "rotationDeg": -0.3,
+          "length": 0.13
+        }
+      },
+      {
+        "name": "crown",
+        "parent": "spine-high",
+        "rest": {
+          "x": -0.299,
+          "y": -0.15,
+          "rotationDeg": -4.7,
+          "length": 0.127
+        }
+      },
+      {
+        "name": "arm-left",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.3,
+          "y": -0.05,
+          "rotationDeg": -0.6,
+          "length": 0.278
+        }
+      },
+      {
+        "name": "arm-right",
+        "parent": "spine-low",
+        "rest": {
+          "x": 0.375,
+          "y": 0.05,
+          "rotationDeg": 0.2,
+          "length": 0.084
+        }
+      },
+      {
+        "name": "hand-left",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.216,
+          "y": 0.15,
+          "rotationDeg": -4.4,
+          "length": 0.293
+        }
+      },
+      {
+        "name": "hand-right",
+        "parent": "spine-high",
+        "rest": {
+          "x": 0.169,
+          "y": 0.25,
+          "rotationDeg": 4.1,
+          "length": 0.153
+        }
+      },
+      {
+        "name": "orb-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": -0.152,
+          "y": 0.35,
+          "rotationDeg": -2.1,
+          "length": 0.181
+        }
+      },
+      {
+        "name": "fx-anchor",
+        "parent": "crown",
+        "rest": {
+          "x": 0.377,
+          "y": 0.45,
+          "rotationDeg": 0.2,
+          "length": 0.256
+        }
+      }
+    ],
+    "constraints": [
+      {
+        "type": "ik",
+        "target": "orb-anchor",
+        "chain": [
+          "arm-right",
+          "hand-right"
+        ],
+        "mix": 0.86
+      },
+      {
+        "type": "look-at",
+        "target": "orb-anchor",
+        "bone": "crown",
+        "limitDeg": 32
+      },
+      {
+        "type": "spring",
+        "bone": "fx-anchor",
+        "damping": 0.78,
+        "stiffness": 0.42
+      }
+    ],
+    "states": [
+      {
+        "id": "skeleton-rig-1",
+        "durationMs": 776,
+        "loop": true,
+        "emphasis": 0.02,
+        "silhouetteKey": "player-launcher-d8e9cf2c-1"
+      },
+      {
+        "id": "skeleton-rig-2",
+        "durationMs": 818,
+        "loop": false,
+        "emphasis": 0.75,
+        "silhouetteKey": "player-launcher-d8e9cf2c-2"
+      },
+      {
+        "id": "skeleton-rig-3",
+        "durationMs": 758,
+        "loop": false,
+        "emphasis": 0.55,
+        "silhouetteKey": "player-launcher-d8e9cf2c-3"
+      },
+      {
+        "id": "skeleton-rig-4",
+        "durationMs": 486,
+        "loop": false,
+        "emphasis": 0.26,
+        "silhouetteKey": "player-launcher-d8e9cf2c-4"
+      },
+      {
+        "id": "skeleton-rig-5",
+        "durationMs": 1224,
+        "loop": false,
+        "emphasis": 0.71,
+        "silhouetteKey": "player-launcher-d8e9cf2c-5"
+      },
+      {
+        "id": "skeleton-rig-6",
+        "durationMs": 943,
+        "loop": false,
+        "emphasis": 0.59,
+        "silhouetteKey": "player-launcher-d8e9cf2c-6"
+      },
+      {
+        "id": "skeleton-rig-7",
+        "durationMs": 755,
+        "loop": false,
+        "emphasis": 0.66,
+        "silhouetteKey": "player-launcher-d8e9cf2c-7"
+      },
+      {
+        "id": "skeleton-rig-8",
+        "durationMs": 837,
+        "loop": false,
+        "emphasis": 0.15,
+        "silhouetteKey": "player-launcher-d8e9cf2c-8"
+      }
+    ]
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "PF-asset-327",
+  "release": 4,
+  "allocation": "environment-models-props",
+  "subject": "Aurora hub",
+  "facet": "destructible prop",
+  "masterType": "interactive-environment-prop",
+  "original": true,
+  "license": "PaoPao Fusion original production source",
+  "runtimePolicy": "Optimized exports are derived variants and never additional ledger masters.",
+  "environment": {
+    "sourceCanvas": [
+      8192,
+      8192
+    ],
+    "origin": [
+      0.5,
+      1
+    ],
+    "bounds": {
+      "left": -1,
+      "right": 1,
+      "top": -1.2,
+      "bottom": 1.2
+    },
+    "polygons": [
+      {
+        "id": "PF-asset-327-surface-1",
+        "kind": "occluder",
+        "points": [
+          [
+            0.063,
+            -0.867
+          ],
+          [
+            0.03,
+            -0.2
+          ],
+          [
+            0.379,
+            -0.847
+          ],
+          [
+            0.242,
+            -0.553
+          ],
+          [
+            0.727,
+            -0.802
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-327-surface-2",
+        "kind": "collision",
+        "points": [
+          [
+            -0.326,
+            -0.041
+          ],
+          [
+            -0.495,
+            -0.3
+          ],
+          [
+            -0.245,
+            0.349
+          ],
+          [
+            -0.441,
+            -0.896
+          ],
+          [
+            0.321,
+            0.839
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-327-surface-3",
+        "kind": "interaction",
+        "points": [
+          [
+            -0.714,
+            -0.356
+          ],
+          [
+            -0.714,
+            0.831
+          ],
+          [
+            0.431,
+            -0.866
+          ],
+          [
+            -0.319,
+            0.31
+          ],
+          [
+            0.521,
+            -0.291
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-327-surface-4",
+        "kind": "occluder",
+        "points": [
+          [
+            0.484,
+            -0.674
+          ],
+          [
+            0.497,
+            0.023
+          ],
+          [
+            -0.753,
+            0.878
+          ],
+          [
+            0.811,
+            0.526
+          ],
+          [
+            0.537,
+            0.894
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-327-surface-5",
+        "kind": "collision",
+        "points": [
+          [
+            -0.559,
+            0.875
+          ],
+          [
+            0.072,
+            0.058
+          ],
+          [
+            0.566,
+            -0.143
+          ],
+          [
+            0.226,
+            0.094
+          ],
+          [
+            0.743,
+            -0.229
+          ]
+        ]
+      },
+      {
+        "id": "PF-asset-327-surface-6",
+        "kind": "interaction",
+        "points": [
+          [
+            -0.794,
+            0.146
+          ],
+          [
+            0.478,
+            -0.229
+          ],
+          [
+            0.848,
+            -0.01
+          ],
+          [
+            0.087,
+            0.723
+          ],
+          [
+            0.409,
+            0.601
+          ]
+        ]
+      }
+    ],
+    "anchors": [
+      {
+        "name": "player",
+        "x": 0.64,
+        "y": 0.66,
+        "depth": 0
+      },
+      {
+        "name": "boss",
+        "x": 0.521,
+        "y": 0.899,
+        "depth": 10
+      },
+      {
+        "name": "portal-left",
+        "x": 0.023,
+        "y": 0.487,
+        "depth": 20
+      },
+      {
+        "name": "portal-right",
+        "x": 0.125,
+        "y": 0.243,
+        "depth": 30
+      },
+      {
+        "name": "foreground-fx",
+        "x": -0.434,
+        "y": 0.82,
+        "depth": 40
+      }
+    ]
+  }
+}

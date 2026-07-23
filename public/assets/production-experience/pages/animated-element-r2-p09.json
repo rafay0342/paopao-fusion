@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "category": "animated-element",
+  "release": 2,
+  "page": 9,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-181",
+      "acceptanceId": "AT-PF-animated-element-181",
+      "category": "animated-element",
+      "ordinal": 181,
+      "release": 2,
+      "title": "board bubble — idle behavior",
+      "subject": "board bubble",
+      "facet": "idle behavior",
+      "behaviorFingerprint": "PX-animated-element-181-2c5cd291",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble idle behavior",
+          "accentHue": 161,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 2,
+          "yoyo": true,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -12,
+          "y": 15,
+          "scale": 0.99,
+          "rotation": 0.05,
+          "alpha": 0.9299999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-182",
+      "acceptanceId": "AT-PF-animated-element-182",
+      "category": "animated-element",
+      "ordinal": 182,
+      "release": 2,
+      "title": "board bubble — focus response",
+      "subject": "board bubble",
+      "facet": "focus response",
+      "behaviorFingerprint": "PX-animated-element-182-3775c62e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble focus response",
+          "accentHue": 326,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 480,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 1,
+          "y": 16,
+          "scale": 1.08,
+          "rotation": -0.13,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-183",
+      "acceptanceId": "AT-PF-animated-element-183",
+      "category": "animated-element",
+      "ordinal": 183,
+      "release": 2,
+      "title": "board bubble — hover response",
+      "subject": "board bubble",
+      "facet": "hover response",
+      "behaviorFingerprint": "PX-animated-element-183-8a7a07da",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble hover response",
+          "accentHue": 50,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": -7,
+          "y": -3,
+          "scale": 0.94,
+          "rotation": -0.12,
+          "alpha": 0.82
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-184",
+      "acceptanceId": "AT-PF-animated-element-184",
+      "category": "animated-element",
+      "ordinal": 184,
+      "release": 2,
+      "title": "board bubble — press response",
+      "subject": "board bubble",
+      "facet": "press response",
+      "behaviorFingerprint": "PX-animated-element-184-d814dfc7",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble press response",
+          "accentHue": 223,
+          "size": 72
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 60,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 2,
+          "y": 16,
+          "scale": 0.92,
+          "rotation": -0.08,
+          "alpha": 0.85
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-185",
+      "acceptanceId": "AT-PF-animated-element-185",
+      "category": "animated-element",
+      "ordinal": 185,
+      "release": 2,
+      "title": "board bubble — entry motion",
+      "subject": "board bubble",
+      "facet": "entry motion",
+      "behaviorFingerprint": "PX-animated-element-185-c0e1d5a1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble entry motion",
+          "accentHue": 161,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 8,
+          "y": -1,
+          "scale": 0.9,
+          "rotation": 0.01,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-186",
+      "acceptanceId": "AT-PF-animated-element-186",
+      "category": "animated-element",
+      "ordinal": 186,
+      "release": 2,
+      "title": "board bubble — exit motion",
+      "subject": "board bubble",
+      "facet": "exit motion",
+      "behaviorFingerprint": "PX-animated-element-186-6fc022e1",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble exit motion",
+          "accentHue": 97,
+          "size": 64
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 40,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Sine.easeInOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": -17,
+          "y": -18,
+          "scale": 0.94,
+          "rotation": -0.03,
+          "alpha": 0.89
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-187",
+      "acceptanceId": "AT-PF-animated-element-187",
+      "category": "animated-element",
+      "ordinal": 187,
+      "release": 2,
+      "title": "board bubble — state change",
+      "subject": "board bubble",
+      "facet": "state change",
+      "behaviorFingerprint": "PX-animated-element-187-1156b034",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble state change",
+          "accentHue": 196,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 880,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Linear",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 6,
+          "y": 3,
+          "scale": 1.04,
+          "rotation": -0.01,
+          "alpha": 0.73
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-188",
+      "acceptanceId": "AT-PF-animated-element-188",
+      "category": "animated-element",
+      "ordinal": 188,
+      "release": 2,
+      "title": "board bubble — success response",
+      "subject": "board bubble",
+      "facet": "success response",
+      "behaviorFingerprint": "PX-animated-element-188-17d1605b",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble success response",
+          "accentHue": 179,
+          "size": 80
+        },
+        "timeline": {
+          "durationMs": 960,
+          "delayMs": 80,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Back.easeOut",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 9,
+          "y": -15,
+          "scale": 1.01,
+          "rotation": 0.02,
+          "alpha": 0.8099999999999999
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-189",
+      "acceptanceId": "AT-PF-animated-element-189",
+      "category": "animated-element",
+      "ordinal": 189,
+      "release": 2,
+      "title": "board bubble — failure response",
+      "subject": "board bubble",
+      "facet": "failure response",
+      "behaviorFingerprint": "PX-animated-element-189-ce950d3e",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble failure response",
+          "accentHue": 310,
+          "size": 48
+        },
+        "timeline": {
+          "durationMs": 640,
+          "delayMs": 0,
+          "repeat": 0,
+          "yoyo": false,
+          "ease": "Cubic.easeOut",
+          "canonicalMarker": 0.5
+        },
+        "channels": {
+          "x": 2,
+          "y": -7,
+          "scale": 1.05,
+          "rotation": 0.05,
+          "alpha": 0.72
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-animated-element-190",
+      "acceptanceId": "AT-PF-animated-element-190",
+      "category": "animated-element",
+      "ordinal": 190,
+      "release": 2,
+      "title": "board bubble — attention cue",
+      "subject": "board bubble",
+      "facet": "attention cue",
+      "behaviorFingerprint": "PX-animated-element-190-7cdd4778",
+      "specification": {
+        "kind": "motion",
+        "actor": {
+          "primitive": "circle",
+          "label": "board bubble attention cue",
+          "accentHue": 176,
+          "size": 56
+        },
+        "timeline": {
+          "durationMs": 720,
+          "delayMs": 20,
+          "repeat": 0,
+          "yoyo": true,
+          "ease": "Linear",
+          "canonicalMarker": 0.75
+        },
+        "channels": {
+          "x": 10,
+          "y": 4,
+          "scale": 1.08,
+          "rotation": -0.11,
+          "alpha": 0.83
+        },
+        "reducedMotion": {
+          "durationMs": 120,
+          "substitute": "opacity-only",
+          "x": 0,
+          "y": 0,
+          "scale": 1,
+          "rotation": 0,
+          "alpha": 1
+        },
+        "lifecycle": {
+          "pauseSafe": false,
+          "cullOffscreen": false,
+          "pooled": true,
+          "resetAtMs": null
+        }
+      }
+    }
+  ]
+}

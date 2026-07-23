@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "category": "ux-element",
+  "release": 4,
+  "page": 3,
+  "totalPages": 10,
+  "entries": [
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-321",
+      "acceptanceId": "AT-PF-ux-element-321",
+      "category": "ux-element",
+      "ordinal": 321,
+      "release": 4,
+      "title": "arena lobby — primary action",
+      "subject": "arena lobby",
+      "facet": "primary action",
+      "behaviorFingerprint": "PX-ux-element-321-9c78dbde",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "arena lobby primary action",
+          "description": "primary action for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 176,
+          "maxWidth": 584,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 16,
+          "accentHue": 222
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-322",
+      "acceptanceId": "AT-PF-ux-element-322",
+      "category": "ux-element",
+      "ordinal": 322,
+      "release": 4,
+      "title": "arena lobby — secondary action",
+      "subject": "arena lobby",
+      "facet": "secondary action",
+      "behaviorFingerprint": "PX-ux-element-322-5923fb18",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "action",
+          "role": "button",
+          "label": "arena lobby secondary action",
+          "description": "secondary action for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 264
+        },
+        "interaction": {
+          "event": "activate",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "pressed-confirmation",
+          "audio": "ui-confirm",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-323",
+      "acceptanceId": "AT-PF-ux-element-323",
+      "category": "ux-element",
+      "ordinal": 323,
+      "release": 4,
+      "title": "arena lobby — status badge",
+      "subject": "arena lobby",
+      "facet": "status badge",
+      "behaviorFingerprint": "PX-ux-element-323-e8544e5f",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "arena lobby status badge",
+          "description": "status badge for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 17,
+          "accentHue": 39
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-324",
+      "acceptanceId": "AT-PF-ux-element-324",
+      "category": "ux-element",
+      "ordinal": 324,
+      "release": 4,
+      "title": "arena lobby — progress indicator",
+      "subject": "arena lobby",
+      "facet": "progress indicator",
+      "behaviorFingerprint": "PX-ux-element-324-c5e3a162",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "meter",
+          "role": "progressbar",
+          "label": "arena lobby progress indicator",
+          "description": "progress indicator for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 98
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-325",
+      "acceptanceId": "AT-PF-ux-element-325",
+      "category": "ux-element",
+      "ordinal": 325,
+      "release": 4,
+      "title": "arena lobby — focus target",
+      "subject": "arena lobby",
+      "facet": "focus target",
+      "behaviorFingerprint": "PX-ux-element-325-b87b2e4b",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "arena lobby focus target",
+          "description": "focus target for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": true,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 52,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 323
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [
+            "Enter",
+            "Space"
+          ],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "focused",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-326",
+      "acceptanceId": "AT-PF-ux-element-326",
+      "category": "ux-element",
+      "ordinal": 326,
+      "release": 4,
+      "title": "arena lobby — keyboard hint",
+      "subject": "arena lobby",
+      "facet": "keyboard hint",
+      "behaviorFingerprint": "PX-ux-element-326-9a70d342",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "arena lobby keyboard hint",
+          "description": "keyboard hint for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 192,
+          "maxWidth": 616,
+          "minHeight": 44,
+          "padding": 16,
+          "radius": 12,
+          "accentHue": 138
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 70
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-327",
+      "acceptanceId": "AT-PF-ux-element-327",
+      "category": "ux-element",
+      "ordinal": 327,
+      "release": 4,
+      "title": "arena lobby — controller hint",
+      "subject": "arena lobby",
+      "facet": "controller hint",
+      "behaviorFingerprint": "PX-ux-element-327-6e6efb03",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "arena lobby controller hint",
+          "description": "controller hint for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 18,
+          "radius": 13,
+          "accentHue": 339
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 80
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-328",
+      "acceptanceId": "AT-PF-ux-element-328",
+      "category": "ux-element",
+      "ordinal": 328,
+      "release": 4,
+      "title": "arena lobby — touch hint",
+      "subject": "arena lobby",
+      "facet": "touch hint",
+      "behaviorFingerprint": "PX-ux-element-328-be4dc700",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "arena lobby touch hint",
+          "description": "touch hint for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 160,
+          "maxWidth": 552,
+          "minHeight": 48,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 256
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-329",
+      "acceptanceId": "AT-PF-ux-element-329",
+      "category": "ux-element",
+      "ordinal": 329,
+      "release": 4,
+      "title": "arena lobby — hand hint",
+      "subject": "arena lobby",
+      "facet": "hand hint",
+      "behaviorFingerprint": "PX-ux-element-329-9835f068",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "note",
+          "label": "arena lobby hand hint",
+          "description": "hand hint for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "off",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 44,
+          "padding": 12,
+          "radius": 10,
+          "accentHue": 264
+        },
+        "interaction": {
+          "event": "focus",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-focus",
+          "latencyBudgetMs": 50
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "id": "PF-ux-element-330",
+      "acceptanceId": "AT-PF-ux-element-330",
+      "category": "ux-element",
+      "ordinal": 330,
+      "release": 4,
+      "title": "arena lobby — loading skeleton",
+      "subject": "arena lobby",
+      "facet": "loading skeleton",
+      "behaviorFingerprint": "PX-ux-element-330-8cb665a1",
+      "specification": {
+        "kind": "ux",
+        "component": {
+          "primitive": "panel",
+          "role": "status",
+          "label": "arena lobby loading skeleton",
+          "description": "loading skeleton for arena lobby; deterministic feedback remains equivalent across pointer, keyboard, touch and hand input.",
+          "focusable": false,
+          "liveRegion": "polite",
+          "minWidth": 208,
+          "maxWidth": 648,
+          "minHeight": 52,
+          "padding": 14,
+          "radius": 11,
+          "accentHue": 89
+        },
+        "interaction": {
+          "event": "observe",
+          "keyboard": [],
+          "disabledPolicy": "block-action-announce-reason",
+          "confirmation": false,
+          "undoWindowMs": 0
+        },
+        "feedback": {
+          "visual": "state-emphasis",
+          "audio": "none",
+          "announcement": "on-change",
+          "latencyBudgetMs": 60
+        },
+        "states": [
+          "idle",
+          "observed",
+          "disabled",
+          "confirmed"
+        ]
+      }
+    }
+  ]
+}

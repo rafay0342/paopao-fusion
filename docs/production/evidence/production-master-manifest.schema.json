@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paopao.local/schemas/production-master-manifest-v1.json",
+  "title": "PaoPao 500 production source masters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "total", "entries"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "total": { "const": 500 },
+    "entries": {
+      "type": "array",
+      "minItems": 500,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "allocation", "release", "path", "format", "bytes", "sha256", "validation"],
+        "properties": {
+          "id": { "pattern": "^PF-asset-[0-9]{3}$" },
+          "allocation": {
+            "enum": [
+              "characters-orbs-bosses-rigs",
+              "environment-models-props",
+              "material-texture-vfx-packs",
+              "ui-icons-illustrations",
+              "music-ambience-sfx",
+              "cinematic-sequences",
+              "tutorial-accessibility-promotion"
+            ]
+          },
+          "release": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "path": { "pattern": "^art-source/production-masters/(?:[a-z0-9-]+/)*PF-asset-[0-9]{3}-.+\\.(svg|png|webp|avif|wav|mp3|ogg|mp4|webm|json|glb)$" },
+          "format": { "enum": ["svg", "png", "webp", "avif", "wav", "mp3", "ogg", "mp4", "webm", "json", "glb"] },
+          "bytes": { "type": "integer", "minimum": 32 },
+          "sha256": { "pattern": "^[a-f0-9]{64}$" },
+          "validation": {
+            "type": "array",
+            "minItems": 4,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
