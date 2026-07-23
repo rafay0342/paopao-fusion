@@ -337,12 +337,23 @@ app.post('/api/runs', { preHandler: authenticated, bodyLimit: 256_000, schema: {
     specialHits: { type: 'integer', minimum: 0, maximum: 5000 }, maxCombo: { type: 'integer', minimum: 0, maximum: 5000 },
     accuracy: { type: 'number', minimum: 0, maximum: 100 }, durationMs: { type: 'integer', minimum: 500, maximum: 14400000 },
     artifact: { type: 'string', maxLength: 40 }, challengeId: { type: 'string', maxLength: 80 }, challengeToken: { type: 'string', maxLength: 128 },
-    ghost: { type: 'array', maxItems: 250, items: { type: 'object', maxProperties: 8 } }, createdAt: { type: 'string', format: 'date-time', maxLength: 40 },
+    ghost: { type: 'array', maxItems: 250, items: {
+      type: 'object', required: ['atMs', 'angle', 'color'], properties: {
+        atMs: { type: 'integer', minimum: 0, maximum: 14400000 },
+        angle: { type: 'number', minimum: -180, maximum: 0 },
+        color: { enum: ['red', 'blue', 'green', 'yellow', 'purple', 'orange'] },
+      }, additionalProperties: false,
+    } }, createdAt: { type: 'string', format: 'date-time', maxLength: 40 },
   }, additionalProperties: false,
 } } }, async (request, reply) => {
   const run = request.body;
   if (run.challengeId && (!run.challengeToken || !safeEqual(sign(run.challengeId), run.challengeToken))) {
     return reply.code(403).send({ error: 'invalid-challenge-token' });
+  }
+  if (run.ghost?.some((shot, index) => (
+    shot.atMs > run.durationMs || (index > 0 && shot.atMs < run.ghost[index - 1].atMs)
+  ))) {
+    return reply.code(422).send({ error: 'invalid-ghost-trace' });
   }
   if (run.hits + run.misses > 5000 || run.score > Math.max(50000, (run.hits + (run.specialHits ?? 0) + 1) * 50000)) {
     return reply.code(422).send({ error: 'implausible-run' });

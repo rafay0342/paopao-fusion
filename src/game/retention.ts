@@ -11,6 +11,10 @@ export interface GhostShot {
   color: string;
 }
 
+const GHOST_COLORS = new Set(['red', 'blue', 'green', 'yellow', 'purple', 'orange']);
+const MAX_GHOST_SHOTS = 250;
+const MAX_GHOST_DURATION_MS = 14_400_000;
+
 export interface RunSummary {
   id: string;
   level: number;
@@ -247,20 +251,27 @@ function normalizeTotals(value: unknown): PlayerSaveV3['totals'] {
   return Object.fromEntries(QUEST_METRICS.map((metric) => [metric, safeInteger(source[metric])])) as PlayerSaveV3['totals'];
 }
 
-function normalizeGhost(value: unknown): GhostShot[] | undefined {
-  if (!Array.isArray(value)) return undefined;
-  const shots = value.flatMap((candidate): GhostShot[] => {
+export function normalizeGhostTrace(value: unknown, durationMs = MAX_GHOST_DURATION_MS): GhostShot[] | undefined {
+  if (!Array.isArray(value) || value.length === 0 || value.length > MAX_GHOST_SHOTS) return undefined;
+  const maximumAtMs = Math.min(
+    MAX_GHOST_DURATION_MS,
+    Math.max(0, Number.isFinite(durationMs) ? Math.trunc(durationMs) : 0),
+  );
+  const shots: GhostShot[] = [];
+  let previousAtMs = -1;
+  for (const candidate of value) {
     const shot = record(candidate);
-    const atMs = Number(shot.atMs);
-    const angle = Number(shot.angle);
-    if (!Number.isFinite(atMs) || !Number.isFinite(angle) || typeof shot.color !== 'string') return [];
-    return [{
-      atMs: Math.max(0, Math.min(MAX_SAFE_COUNT, Math.trunc(atMs))),
-      angle: Math.max(-360, Math.min(360, angle)),
-      color: shot.color.slice(0, 24),
-    }];
-  }).slice(0, 250);
-  return shots.length ? shots : undefined;
+    if (typeof shot.atMs !== 'number' || !Number.isInteger(shot.atMs)
+      || shot.atMs < previousAtMs || shot.atMs > maximumAtMs
+      || typeof shot.angle !== 'number' || !Number.isFinite(shot.angle)
+      || shot.angle < -180 || shot.angle > 0
+      || typeof shot.color !== 'string' || !GHOST_COLORS.has(shot.color)) {
+      return undefined;
+    }
+    shots.push({ atMs: shot.atMs, angle: shot.angle, color: shot.color });
+    previousAtMs = shot.atMs;
+  }
+  return shots;
 }
 
 function normalizeRun(value: unknown): RunSummary | null {
@@ -270,7 +281,8 @@ function normalizeRun(value: unknown): RunSummary | null {
   const mode = GAME_MODES.includes(run.mode as GameMode) ? run.mode as GameMode : 'classic';
   const artifact = ARTIFACT_IDS.includes(run.artifact as ArtifactId) ? run.artifact as ArtifactId : 'chrono';
   const createdAt = safeDate(run.createdAt, '');
-  const ghost = normalizeGhost(run.ghost);
+  const durationMs = safeInteger(run.durationMs);
+  const ghost = normalizeGhostTrace(run.ghost, durationMs);
   return {
     id,
     level: safeInteger(run.level, 0, 999),
@@ -282,7 +294,7 @@ function normalizeRun(value: unknown): RunSummary | null {
     specialHits: safeInteger(run.specialHits),
     maxCombo: safeInteger(run.maxCombo),
     accuracy: Math.min(100, Math.max(0, Number.isFinite(Number(run.accuracy)) ? Number(run.accuracy) : 0)),
-    durationMs: safeInteger(run.durationMs),
+    durationMs,
     artifact,
     ...(typeof run.challengeId === 'string' && run.challengeId.trim() ? { challengeId: run.challengeId.trim().slice(0, 128) } : {}),
     ...(typeof run.challengeToken === 'string' && run.challengeToken.trim() ? { challengeToken: run.challengeToken.trim().slice(0, 512) } : {}),

@@ -4,7 +4,13 @@ import {
   syncClassicProgressV4,
   type PlatformAccount,
 } from './platform';
-import { getDailyChallenge, getPlayerSave, type ChallengeDef, type RunSummary } from './retention';
+import {
+  getDailyChallenge,
+  getPlayerSave,
+  normalizeGhostTrace,
+  type ChallengeDef,
+  type RunSummary,
+} from './retention';
 
 /**
  * Browser online facade.
@@ -253,8 +259,28 @@ export async function getOnlineLeaderboard(challengeId = getDailyChallenge().id)
   } catch { return []; }
 }
 
+export function normalizeOnlineGhost(
+  value: unknown,
+): Pick<RunSummary, 'id' | 'ghost' | 'score' | 'durationMs'> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  const id = typeof raw.id === 'string' ? raw.id.trim() : '';
+  const score = raw.score;
+  const durationMs = raw.durationMs;
+  if (!/^[A-Za-z0-9._:-]{8,96}$/.test(id)
+    || typeof score !== 'number' || !Number.isInteger(score) || score < 0 || score > 10_000_000
+    || typeof durationMs !== 'number' || !Number.isInteger(durationMs)
+    || durationMs < 500 || durationMs > 14_400_000
+    || !Array.isArray(raw.ghost)) return null;
+  const ghost = normalizeGhostTrace(raw.ghost, durationMs);
+  if (raw.ghost.length > 0 && !ghost) return null;
+  return { id, score, durationMs, ...(ghost ? { ghost } : {}) };
+}
+
 export async function getOnlineGhost(runId: string): Promise<Pick<RunSummary, 'id' | 'ghost' | 'score' | 'durationMs'> | null> {
-  try { return await publicJson(`/api/ghosts/${encodeURIComponent(runId)}`); }
+  try {
+    return normalizeOnlineGhost(await publicJson(`/api/ghosts/${encodeURIComponent(runId)}`));
+  }
   catch { return null; }
 }
 

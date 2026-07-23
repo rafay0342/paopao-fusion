@@ -55,7 +55,7 @@ import {
   type PortalCooldown,
   type PortalPair,
 } from '../game/mechanics';
-import { campaignLevelScore, recordLevelClear } from '../game/progression';
+import { campaignLevelScore, getProgress, recordLevelClear } from '../game/progression';
 import {
   addCoins,
   addMysteryKeys,
@@ -81,10 +81,18 @@ import {
   UI_COLORS,
   UI_FONT,
 } from '../gfx/ui';
-import { createRunSummary, recordRunSummary, seededRandom, type ChallengeDef, type GhostShot } from '../game/retention';
+import {
+  createRunSummary,
+  normalizeGhostTrace,
+  recordRunSummary,
+  seededRandom,
+  type ChallengeDef,
+  type GhostShot,
+} from '../game/retention';
 import {
   flushGameplayTelemetry,
   trackGameplayEvent,
+  type GameplayInputMode,
   type GameplayTelemetryReason,
 } from '../game/gameplay-telemetry';
 import { consumeInventoryItem, getInventory, grantInventoryItem } from '../game/inventory';
@@ -106,6 +114,25 @@ import { scheduleOnlineSync } from '../game/online';
 import { startMusic } from '../game/music';
 import { storyBeatForLevel } from '../game/story';
 import { ARENA_REPLAY_RULES } from '../../shared/runtime/arena-replay.mjs';
+import {
+  advanceShotQueue,
+  buildCampaignOpening,
+  campaignMechanicSeed,
+  createCampaignShotQueue,
+  createShotQueue,
+  preloadShotQueue,
+  reconcileShotQueue,
+  swapShotQueue,
+  type ShotQueueState,
+} from '../game/campaign-generation';
+import {
+  LEVEL_ZERO_TUTORIAL_FIXTURE,
+  LevelZeroTutorialMachine,
+  TutorialProgressStore,
+  decideLevelZeroTutorialLaunch,
+  type TutorialSignal,
+  type TutorialStepId,
+} from '../game/tutorial';
 
 type PowerUp = 'bomb' | 'rainbow';
 
@@ -147,9 +174,11 @@ interface GameSceneData {
   challenge?: ChallengeDef;
   ghost?: GhostShot[];
   arena?: Partial<ArenaRunData>;
+  tutorialReplay?: boolean;
 }
 
 const ARENA_RESULT_WAIT_MS = 15_000;
+const GHOST_REPLAY_MAX_DELAY_MS = 30_000;
 const ARENA_ID_PATTERN = /^(?:match|usr)_[A-Za-z0-9_-]{8,120}$/;
 const telemetryReasonForTerminalMessage = (message: string): GameplayTelemetryReason => {
   if (message === 'TIME EXPIRED') return 'timer';
@@ -167,6 +196,20 @@ export class GameScene extends Phaser.Scene {
   private shooter = { x: 0, y: 0 };
   private loaded!: ColorKey;
   private loadedSprite!: Phaser.GameObjects.Sprite;
+  private shotQueue?: ShotQueueState;
+  private nextOrbSprite?: Phaser.GameObjects.Sprite;
+  private queueActionText?: Phaser.GameObjects.Text;
+  private replayQueueIndex = 0;
+  private tutorialMachine?: LevelZeroTutorialMachine;
+  private tutorialReplayRequested = false;
+  private tutorialPanel?: Phaser.GameObjects.Container;
+  private tutorialTitleText?: Phaser.GameObjects.Text;
+  private tutorialInstructionText?: Phaser.GameObjects.Text;
+  private tutorialProgressText?: Phaser.GameObjects.Text;
+  private tutorialActionText?: Phaser.GameObjects.Text;
+  private tutorialTargetRing?: Phaser.GameObjects.Arc;
+  private tutorialShotPending = false;
+  private tutorialInputMode: GameplayInputMode = 'unknown';
   private aimGfx!: Phaser.GameObjects.Graphics;
   private launcher!: Phaser.GameObjects.Image;
   private launcherFocus!: Phaser.GameObjects.Container;
@@ -242,6 +285,10 @@ export class GameScene extends Phaser.Scene {
   private classicAuthorityTerminalChallenge = '';
   private classicAuthorityTarget?: ClassicAuthorityTargetV3;
   private classicAuthorityShotPipeline: Promise<void> = Promise.resolve();
+  private classicAuthorityTrace: GhostShot[] = [];
+  private classicAuthorityStartedAt = 0;
+  private classicAuthorityHitsAtStart = 0;
+  private runGeneration = 0;
   private mechanicState!: MechanicRunState;
   private objectiveText?: Phaser.GameObjects.Text;
   private objectiveProgressText?: Phaser.GameObjects.Text;
@@ -297,6 +344,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   init(data: GameSceneData = {}): void {
+    this.runGeneration = (this.runGeneration + 1) >>> 0;
     const requestedLevel = Number(data.level);
     const requestedScore = Number(data.score);
     this.level = Number.isFinite(requestedLevel)
@@ -332,9 +380,25 @@ export class GameScene extends Phaser.Scene {
       : undefined;
     const handSettings = getHandSettings();
     this.pinchControl = new PinchDoubleTapControl(handSettings.pinchOn, handSettings.pinchOff);
-    this.rng = this.challenge ? seededRandom(this.challenge.seed) : this.arena ? seededRandom(this.arena.seed) : Math.random;
+    this.rng = this.challenge
+      ? seededRandom(this.challenge.seed)
+      : this.arena
+        ? seededRandom(this.arena.seed)
+        : seededRandom(campaignMechanicSeed({ level: this.level, mode: this.mode }));
     this.scoreMultiplier = this.challenge?.modifier === 'score_frenzy' ? 1.25 : 1;
-    this.replayTrace = data.ghost?.slice(0, 250);
+    this.replayTrace = normalizeGhostTrace(data.ghost);
+    this.shotQueue = undefined;
+    this.replayQueueIndex = 0;
+    this.tutorialMachine = undefined;
+    this.tutorialReplayRequested = data.tutorialReplay === true;
+    this.tutorialPanel = undefined;
+    this.tutorialTitleText = undefined;
+    this.tutorialInstructionText = undefined;
+    this.tutorialProgressText = undefined;
+    this.tutorialActionText = undefined;
+    this.tutorialTargetRing = undefined;
+    this.tutorialShotPending = false;
+    this.tutorialInputMode = 'unknown';
   }
 
   create(): void {
@@ -358,11 +422,12 @@ export class GameScene extends Phaser.Scene {
     const def = LEVELS[Math.min(this.level, LEVELS.length - 1)];
     startMusic(def.goal === 'boss' ? 'boss' : 'game');
     this.palette = COLOR_KEYS.slice(0, def.colors);
+    this.configureTutorialSession();
 
     this.geom = computeGeom(width);
     // The unified HUD ends at y=118. Keep one quiet visual gap before the
     // first bubble row instead of reserving space for stacked card rows.
-    this.geom.topPad = 154;
+    this.geom.topPad = this.isTutorialActive() ? 288 : 154;
     this.shooter.x = width / 2;
     this.shooter.y = height - Math.max(110, height * 0.14);
     this.loseLineY = this.shooter.y - this.geom.radius * 2.6;
@@ -428,6 +493,9 @@ export class GameScene extends Phaser.Scene {
     this.classicAuthorityTerminalChallenge = '';
     this.classicAuthorityTarget = undefined;
     this.classicAuthorityShotPipeline = Promise.resolve();
+    this.classicAuthorityTrace = [];
+    this.classicAuthorityStartedAt = 0;
+    this.classicAuthorityHitsAtStart = 0;
     this.objectiveText = undefined;
     this.objectiveProgressText = undefined;
     this.bossHpFill = undefined;
@@ -475,7 +543,12 @@ export class GameScene extends Phaser.Scene {
       bossHp: def.boss?.hp,
     });
 
-    this.buildGrid(def.rows);
+    const campaignOpening = this.isTutorialActive()
+      ? LEVEL_ZERO_TUTORIAL_FIXTURE.opening
+      : !this.challenge && !this.arena && !this.replayTrace
+        ? buildCampaignOpening({ level: this.level, mode: this.mode })
+        : undefined;
+    this.buildGrid(def.rows, campaignOpening?.grid);
     if (def.goal !== 'boss') this.seedLevelMechanics(def.mechanicCount);
     if (runMechanic === 'portal') this.createPortalPair();
 
@@ -516,7 +589,8 @@ export class GameScene extends Phaser.Scene {
     focusFrame.strokePath();
     focusFrame.setAlpha(0.5);
     this.launcherFocus.add([focusGlow, focusFrame]);
-    this.loaded = this.randColor();
+    this.initializeShotQueue();
+    this.loaded = this.currentQueueColor();
     const muzzle = this.muzzlePosition();
     this.loadedSprite = this.makeSprite(this.loaded, muzzle.x, muzzle.y).setDepth(5);
     this.pulse(this.loadedSprite);
@@ -619,6 +693,24 @@ export class GameScene extends Phaser.Scene {
     rainbowHit.on('pointerdown', () => { this.suppressNextShot = true; void this.usePowerUp('rainbow'); });
     superHit.on('pointerdown', () => { this.suppressNextShot = true; this.useArtifactSuper(); });
 
+    const queueCard = this.addSlimHudStrip(width - 148, powerY, 128, 68, theme.accent, 19);
+    const nextLabel = this.add.text(-46, -15, 'NEXT', {
+      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#aeefff', fontStyle: 'bold', letterSpacing: 1,
+    }).setOrigin(0, 0.5);
+    this.nextOrbSprite = this.makeSprite(this.nextQueueColor(), 25, -6)
+      .setScale(this.scaleFor() * 0.54)
+      .setDepth(20);
+    this.queueActionText = fitText(this.add.text(-46, 17, '', {
+      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffe08a', fontStyle: 'bold', letterSpacing: 1,
+    }).setOrigin(0, 0.5), 78, 0.76);
+    queueCard.add([nextLabel, this.nextOrbSprite, this.queueActionText]);
+    queueCard.setSize(128, 68).setInteractive({ useHandCursor: true });
+    queueCard.on('pointerdown', () => {
+      this.suppressNextShot = true;
+      this.handleQueueCardPressed();
+    });
+    this.updateQueueHud();
+
     const handCard = this.addSlimHudStrip(width - 44, powerY, 72, 68, theme.accent, 19);
     const trackerGlyph = this.add.graphics();
     trackerGlyph.lineStyle(2, 0x8ff6ff, 0.9);
@@ -641,6 +733,7 @@ export class GameScene extends Phaser.Scene {
       this.suppressNextShot = true;
       void this.toggleHand();
     });
+    if (this.isTutorialActive()) this.createTutorialHud(theme.accent);
 
     // input: aim on move/down, fire on release (mouse + touch)
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
@@ -687,7 +780,7 @@ export class GameScene extends Phaser.Scene {
 
     this.running = !this.arena || this.arenaElapsedMs() >= 0;
     if (this.running && usesAuthoritativePlatformEconomy()
-      && !this.challenge && !this.arena && !this.replayTrace) {
+      && !this.challenge && !this.arena && !this.replayTrace && !this.isTutorialActive()) {
       this.beginClassicAuthority();
     }
     if (this.arena && !this.running) {
@@ -933,6 +1026,264 @@ export class GameScene extends Phaser.Scene {
       case 'polarity':
         return 'POLARITY NODES  •  DISCHARGE THEM BEFORE THE FIELD SHIFTS AGAIN';
     }
+  }
+
+  private configureTutorialSession(): void {
+    if (this.level !== 0 || this.challenge || this.arena || this.replayTrace) return;
+    const progress = getProgress();
+    const isReturningPlayer = progress.unlocked > 1
+      || progress.cleared.length > 0
+      || progress.bestScores.some((score) => score > 0)
+      || progress.stars.some((stars) => stars > 0);
+    let storage: Storage | undefined;
+    try {
+      storage = window.localStorage;
+    } catch {
+      storage = undefined;
+    }
+    const progressStore = new TutorialProgressStore({ storage });
+    const decision = decideLevelZeroTutorialLaunch(progressStore.read(), {
+      isReturningPlayer,
+      forceReplay: this.tutorialReplayRequested,
+    });
+    if (!decision.shouldStart || !decision.runMode) return;
+    this.tutorialInputMode = getHandTracker().isWanted()
+      ? 'hand'
+      : navigator.maxTouchPoints > 0
+        ? 'touch'
+        : 'mouse';
+    this.tutorialMachine = new LevelZeroTutorialMachine({
+      inputMode: this.tutorialInputMode,
+      runMode: decision.runMode,
+      progressStore,
+    });
+    const transition = this.tutorialMachine.start();
+    const firstStep = transition.snapshot.currentStep;
+    if (firstStep) {
+      trackGameplayEvent({
+        type: 'tutorial-step',
+        level: 0,
+        mode: 'tutorial',
+        inputMode: this.tutorialInputMode,
+        step: firstStep,
+        outcome: 'started',
+      });
+    }
+  }
+
+  private isTutorialActive(): boolean {
+    return this.tutorialMachine?.snapshot().status === 'active';
+  }
+
+  private createTutorialHud(accent: number): void {
+    const panel = this.addHudPlate(VIEW.width / 2, 190, VIEW.width - 36, 132, accent, 24);
+    this.tutorialPanel = panel;
+    this.tutorialTitleText = fitText(this.add.text(-318, -46, '', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.label,
+      color: '#ffe7a6',
+      fontStyle: 'bold',
+      letterSpacing: 1,
+    }).setOrigin(0, 0.5), 470, 0.78);
+    this.tutorialInstructionText = this.add.text(-318, -13, '', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.caption,
+      color: '#dce8f7',
+      fontStyle: 'bold',
+      lineSpacing: 2,
+      wordWrap: { width: 470, useAdvancedWrap: true },
+    }).setOrigin(0, 0);
+    this.tutorialProgressText = this.add.text(-318, 51, '', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.caption,
+      color: '#8fefff',
+      fontStyle: 'bold',
+      letterSpacing: 1,
+    }).setOrigin(0, 0.5);
+    this.tutorialActionText = this.add.text(250, 35, '', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.caption,
+      color: '#06101a',
+      backgroundColor: '#ffe08a',
+      padding: { x: 11, y: 7 },
+      fontStyle: 'bold',
+      letterSpacing: 1,
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const skip = this.add.text(316, -46, 'SKIP', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.caption,
+      color: '#aebdd0',
+      fontStyle: 'bold',
+      letterSpacing: 1,
+    }).setOrigin(1, 0.5).setInteractive({ useHandCursor: true });
+    this.tutorialActionText.on('pointerdown', () => {
+      this.suppressNextShot = true;
+      this.handleTutorialPanelAction();
+    });
+    skip.on('pointerdown', () => {
+      this.suppressNextShot = true;
+      this.skipTutorial();
+    });
+    panel.add([
+      this.tutorialTitleText,
+      this.tutorialInstructionText,
+      this.tutorialProgressText,
+      this.tutorialActionText,
+      skip,
+    ]);
+    const target = LEVEL_ZERO_TUTORIAL_FIXTURE.guaranteedShot.target;
+    const position = cellPos(this.geom, target.row, target.col, this.offsetY);
+    this.tutorialTargetRing = this.add.circle(position.x, position.y, this.geom.radius * 1.12, 0x000000, 0)
+      .setStrokeStyle(4, 0xffdf78, 0.96)
+      .setDepth(15)
+      .setVisible(false);
+    this.tweens.add({
+      targets: this.tutorialTargetRing,
+      scale: 1.18,
+      alpha: 0.52,
+      duration: 620,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+    this.renderTutorialHud();
+  }
+
+  private tutorialActionLabel(step: TutorialStepId): string {
+    if (step === 'objective') return 'SHOW OBJECTIVE';
+    if (step === 'danger-line') return 'SHOW DANGER';
+    if (step === 'next-orb') return 'USE NEXT CARD';
+    if (step === 'swap') return 'USE NEXT CARD';
+    if (step === 'aim') return 'AIM AT RING';
+    if (step === 'fire') return this.tutorialInputMode === 'hand' ? 'DOUBLE TAP' : 'RELEASE TO FIRE';
+    if (step === 'hand-touch-one') return 'TOUCH + RELEASE';
+    if (step === 'hand-touch-two') return 'TOUCH + RELEASE';
+    return 'WATCH RESULT';
+  }
+
+  private renderTutorialHud(): void {
+    const snapshot = this.tutorialMachine?.snapshot();
+    const prompt = snapshot?.currentPrompt;
+    if (!snapshot || snapshot.status !== 'active' || !prompt) return;
+    this.tutorialTitleText?.setText(prompt.title.toUpperCase());
+    this.tutorialInstructionText?.setText(prompt.instruction);
+    this.tutorialProgressText?.setText(
+      `TRAINING  ${snapshot.stepIndex + 1}/${snapshot.stepCount}  •  ${snapshot.runMode === 'replay' ? 'REPLAY' : 'FIRST RUN'}`,
+    );
+    this.tutorialActionText?.setText(this.tutorialActionLabel(prompt.step));
+    fitText(this.tutorialActionText!, 142, 0.7);
+    const showTarget = prompt.step === 'aim'
+      || prompt.step === 'fire'
+      || prompt.step === 'hand-touch-one'
+      || prompt.step === 'hand-touch-two';
+    this.tutorialTargetRing?.setVisible(showTarget);
+    this.updateQueueHud();
+  }
+
+  private handleTutorialPanelAction(): void {
+    const step = this.tutorialMachine?.snapshot().currentStep;
+    if (step === 'objective') {
+      this.dispatchTutorial({
+        type: 'objective-viewed',
+        visible: true,
+        kind: LEVEL_ZERO_TUTORIAL_FIXTURE.objective.kind,
+        current: LEVEL_ZERO_TUTORIAL_FIXTURE.objective.current,
+        target: LEVEL_ZERO_TUTORIAL_FIXTURE.objective.target,
+      });
+      this.objectiveText?.setScale(1.04);
+      this.tweens.add({ targets: [this.objectiveText, this.objectiveProgressText], alpha: 0.42, duration: 130, yoyo: true });
+      return;
+    }
+    if (step === 'danger-line') {
+      this.dispatchTutorial({
+        type: 'danger-line-viewed',
+        visible: true,
+        row: LEVEL_ZERO_TUTORIAL_FIXTURE.dangerLineRow,
+      });
+      this.cameras.main.flash(90, 255, 92, 112, false);
+      return;
+    }
+    if (step === 'next-orb' || step === 'swap') {
+      this.toast('TAP THE NEXT ORB CARD AT THE BOTTOM RIGHT');
+      return;
+    }
+    if (step) this.toast(this.tutorialMachine?.snapshot().currentPrompt?.instruction ?? 'FOLLOW THE GUIDE');
+  }
+
+  private skipTutorial(): void {
+    const machine = this.tutorialMachine;
+    if (!machine || !this.isTutorialActive()) return;
+    const step = machine.snapshot().currentStep;
+    machine.skip();
+    if (step) {
+      trackGameplayEvent({
+        type: 'tutorial-step',
+        level: 0,
+        mode: 'tutorial',
+        inputMode: this.tutorialInputMode,
+        step,
+        outcome: 'quit',
+        reason: 'player-exit',
+      });
+    }
+    SFX.click();
+    this.scene.restart({ level: 0, score: this.levelStartScore, mode: this.mode });
+  }
+
+  private dispatchTutorial(signal: TutorialSignal): boolean {
+    const machine = this.tutorialMachine;
+    if (!machine || !this.isTutorialActive()) return false;
+    const transition = machine.dispatch(signal);
+    if (!transition.accepted) return false;
+    for (const step of transition.completedSteps) {
+      trackGameplayEvent({
+        type: 'tutorial-step',
+        level: 0,
+        mode: 'tutorial',
+        inputMode: this.tutorialInputMode,
+        step,
+        outcome: 'completed',
+      });
+    }
+    if (transition.snapshot.status === 'completed') {
+      if (this.tutorialTargetRing) {
+        this.tweens.killTweensOf(this.tutorialTargetRing);
+        this.tutorialTargetRing.destroy();
+      }
+      this.tutorialTargetRing = undefined;
+      const panel = this.tutorialPanel;
+      this.tutorialPanel = undefined;
+      if (panel) {
+        this.tweens.add({
+          targets: panel,
+          y: panel.y - 18,
+          alpha: 0,
+          duration: 260,
+          ease: 'Quad.easeIn',
+          onComplete: () => panel.destroy(true),
+        });
+      }
+      this.toast('TRAINING COMPLETE  •  CLEAR THE REMAINING ORBS');
+      this.updateQueueHud();
+      if (usesAuthoritativePlatformEconomy()
+        && !this.challenge && !this.arena && !this.replayTrace) {
+        this.beginClassicAuthority();
+      }
+      return true;
+    }
+    const nextStep = transition.snapshot.currentStep;
+    if (nextStep) {
+      trackGameplayEvent({
+        type: 'tutorial-step',
+        level: 0,
+        mode: 'tutorial',
+        inputMode: this.tutorialInputMode,
+        step: nextStep,
+        outcome: 'started',
+      });
+    }
+    this.renderTutorialHud();
+    return true;
   }
 
   private seedLevelMechanics(count: number): void {
@@ -1357,7 +1708,18 @@ export class GameScene extends Phaser.Scene {
 
     const failure = ht.getLastFailure();
     this.setHandBtn(failure === 'permission-denied' ? 'denied' : 'error');
+    this.fallbackTutorialToPointerInput();
     if (showError) this.toast(this.handFailureMessage(failure));
+  }
+
+  private fallbackTutorialToPointerInput(): void {
+    if (!this.isTutorialActive() || this.tutorialInputMode !== 'hand') return;
+    const pointerMode: GameplayInputMode = navigator.maxTouchPoints > 0 ? 'touch' : 'mouse';
+    const transition = this.tutorialMachine?.fallbackToPointer(pointerMode);
+    if (!transition?.accepted) return;
+    this.tutorialInputMode = pointerMode;
+    this.renderTutorialHud();
+    this.toast('HAND UNAVAILABLE  •  TRAINING CONTINUES WITH POINTER CONTROLS');
   }
 
   private async toggleHand(): Promise<void> {
@@ -1373,6 +1735,7 @@ export class GameScene extends Phaser.Scene {
       this.handLockedAim = null;
       this.handCursor?.setVisible(false);
       this.setHandBtn('off');
+      this.fallbackTutorialToPointerInput();
       return;
     }
     await this.startHandTracking(true);
@@ -1403,6 +1766,12 @@ export class GameScene extends Phaser.Scene {
         this.handPinching = false;
         this.handBtn?.setText('SHOW').setColor('#ffc56f');
         this.handStatusText?.setColor('#ffc56f');
+        if (this.isTutorialActive() && this.tutorialInputMode === 'hand') {
+          getHandTracker().disable();
+          this.handOn = false;
+          this.fallbackTutorialToPointerInput();
+          return;
+        }
       }
       return;
     }
@@ -1451,11 +1820,18 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    const handAim = this.handSmooth ?? this.handTarget;
+    this.observeTutorialAim(this.aimVectorXY(handAim.x, handAim.y));
     const pinchEvent = this.pinchControl.update(s);
     this.handPinching = this.pinchControl.isContacting();
     if (pinchEvent === 'aim-locked') {
       this.handLockedAim = { ...(this.handSmooth ?? this.handTarget) };
       this.handSmooth = { ...this.handLockedAim };
+      this.dispatchTutorial({
+        type: 'hand-touch-one',
+        reliable: true,
+        releaseConfirmed: true,
+      });
     } else if (pinchEvent === 'cancelled') {
       this.handLockedAim = null;
     }
@@ -1463,6 +1839,11 @@ export class GameScene extends Phaser.Scene {
       this.handPinching = false;
       const aim = this.handLockedAim ?? this.handSmooth ?? this.handTarget;
       this.handLockedAim = null;
+      this.dispatchTutorial({
+        type: 'hand-touch-two',
+        reliable: true,
+        releaseConfirmed: true,
+      });
       this.shootAt(aim.x, aim.y);
     }
 
@@ -1523,6 +1904,7 @@ export class GameScene extends Phaser.Scene {
 
   private updateModeClock(delta: number): void {
     if (!this.running) return;
+    if (this.isTutorialActive()) return;
     this.elapsedMs += delta;
     if (MODE_DEFS[this.mode].timerSeconds != null && this.time.now >= this.timerFrozenUntil) {
       this.timerMs = Math.max(0, this.timerMs - delta);
@@ -1603,17 +1985,21 @@ export class GameScene extends Phaser.Scene {
 
   private beginClassicAuthority(): void {
     if (this.classicAuthorityStarting || this.classicAuthority || this.classicAuthorityFailed) return;
+    const generation = this.runGeneration;
     this.classicAuthorityStarting = true;
     this.serverRewardMessage = 'SERVER RUN AUTHORITY STARTING…';
     void beginClassicRunAuthorityV3({ level: this.level, mode: this.mode }).then((ticket) => {
-      if (!this.scene.isActive() || this.runRecorded) return;
+      if (!this.scene.isActive() || this.runRecorded || generation !== this.runGeneration) return;
       this.classicAuthority = ticket;
       this.classicAuthorityTarget = ticket.target;
-      this.runStartedAt = Date.now();
+      this.classicAuthorityTrace = [];
+      this.classicAuthorityStartedAt = Date.now();
+      this.classicAuthorityHitsAtStart = this.hits;
       this.serverRewardMessage = `SERVER RUN VERIFIED  •  ${ticket.requiredShots} INPUTS MIN`;
       const targetDegrees = Math.round(ticket.target.angleMilliDegrees / 1_000);
       this.toast(`SERVER RUN READY  •  AIM NEAR ${targetDegrees > 0 ? '+' : ''}${targetDegrees}° ON ONE SHOT`);
     }).catch((error) => {
+      if (!this.scene.isActive() || generation !== this.runGeneration) return;
       this.classicAuthorityFailed = true;
       const reason = error instanceof Error ? error.message : 'server-run-unavailable';
       this.serverRewardMessage = reason === 'classic-authority-prerequisite-required'
@@ -1621,7 +2007,7 @@ export class GameScene extends Phaser.Scene {
         : 'SERVER REWARD OFFLINE  •  GAMEPLAY CONTINUES';
       this.toast(this.serverRewardMessage);
     }).finally(() => {
-      this.classicAuthorityStarting = false;
+      if (generation === this.runGeneration) this.classicAuthorityStarting = false;
     });
   }
 
@@ -1632,9 +2018,11 @@ export class GameScene extends Phaser.Scene {
   }): void {
     const ticket = this.classicAuthority;
     if (!ticket || this.classicAuthorityFailed) return;
+    const generation = this.runGeneration;
     this.classicAuthorityShotPending = true;
     const pending = this.classicAuthorityShotPipeline.then(async () => {
       const receipt = await recordClassicAuthorityShotV3(ticket, shot, this.classicAuthorityAck);
+      if (!this.scene.isActive() || generation !== this.runGeneration) return;
       this.classicAuthorityAck = receipt.ack;
       this.classicAuthorityTarget = receipt.nextTarget ?? undefined;
       if (receipt.terminalChallenge) this.classicAuthorityTerminalChallenge = receipt.terminalChallenge;
@@ -1643,13 +2031,14 @@ export class GameScene extends Phaser.Scene {
       }
     });
     this.classicAuthorityShotPipeline = pending.catch((error) => {
+      if (!this.scene.isActive() || generation !== this.runGeneration) return;
       this.classicAuthorityFailed = true;
       this.classicAuthorityTerminalChallenge = '';
       this.serverRewardMessage = 'SERVER INPUT PROOF LOST  •  RESTART FOR FIRST-CLEAR COINS';
       if (this.scene.isActive()) this.toast(this.serverRewardMessage);
       console.warn('Classic server input proof failed closed.', error);
     }).finally(() => {
-      this.classicAuthorityShotPending = false;
+      if (generation === this.runGeneration) this.classicAuthorityShotPending = false;
     });
   }
 
@@ -1694,9 +2083,12 @@ export class GameScene extends Phaser.Scene {
           score: summary.score,
           durationMs: Math.max(summary.durationMs, Date.now() - this.runStartedAt),
           won: summary.won,
-          shots: this.shots,
-          hits: this.hits,
-          shotTrace: this.shotTrace.map((shot) => ({
+          shots: this.classicAuthorityTrace.length,
+          hits: Math.min(
+            this.classicAuthorityTrace.length,
+            Math.max(0, this.hits - this.classicAuthorityHitsAtStart),
+          ),
+          shotTrace: this.classicAuthorityTrace.map((shot) => ({
             atMs: Math.round(shot.atMs),
             angleMilliDegrees: Math.round(Phaser.Math.Clamp(shot.angle + 90, -30, 30) * 1_000),
           })),
@@ -1733,6 +2125,7 @@ export class GameScene extends Phaser.Scene {
     mode: GameMode;
     challenge?: ChallengeDef;
     ghost?: GhostShot[];
+    tutorialReplay?: boolean;
   } {
     return {
       level: this.level,
@@ -1740,6 +2133,7 @@ export class GameScene extends Phaser.Scene {
       mode: this.mode,
       ...(this.challenge ? { challenge: this.challenge } : {}),
       ...(this.replayTrace ? { ghost: this.replayTrace.slice() } : {}),
+      ...(this.tutorialReplayRequested ? { tutorialReplay: true } : {}),
     };
   }
 
@@ -1780,11 +2174,177 @@ export class GameScene extends Phaser.Scene {
     return from[(this.rng() * from.length) | 0];
   }
 
-  private buildGrid(rows: number): void {
+  private activeBoardColors(): ColorKey[] {
+    const present = new Set(this.bubbles.filter((bubble) => bubble.active).map((bubble) => bubble.color));
+    const active = this.palette.filter((color) => present.has(color));
+    return active.length ? active : [...this.palette];
+  }
+
+  private replayColorAt(index: number): ColorKey | undefined {
+    const color = this.replayTrace?.[index]?.color;
+    return COLOR_KEYS.includes(color as ColorKey) ? color as ColorKey : undefined;
+  }
+
+  private initializeShotQueue(): void {
+    const active = this.activeBoardColors();
+    if (!this.challenge && !this.arena) {
+      this.shotQueue = createCampaignShotQueue({ level: this.level, mode: this.mode }, active);
+    } else {
+      const authoritySeed = this.challenge?.seed ?? this.arena?.seed ?? 0;
+      this.shotQueue = createShotQueue((authoritySeed ^ 0x51f15e5d) >>> 0, active);
+    }
+    if (this.replayTrace?.length) {
+      this.shotQueue = {
+        ...this.shotQueue,
+        current: this.replayColorAt(0) ?? this.shotQueue.current,
+        next: this.replayColorAt(1) ?? this.shotQueue.next,
+      };
+    }
+    if (this.isTutorialActive()) {
+      this.shotQueue = preloadShotQueue(
+        this.shotQueue,
+        LEVEL_ZERO_TUTORIAL_FIXTURE.initialQueue,
+      );
+    }
+  }
+
+  private currentQueueColor(): ColorKey {
+    return this.replayColorAt(this.replayQueueIndex) ?? this.shotQueue?.current ?? this.randColor();
+  }
+
+  private nextQueueColor(): ColorKey {
+    return this.replayColorAt(this.replayQueueIndex + 1) ?? this.shotQueue?.next ?? this.randColor();
+  }
+
+  private canSwapPreShotOrbs(): boolean {
+    return !this.challenge && !this.arena && !this.replayTrace;
+  }
+
+  private reconcilePreShotQueueWithBoard(): void {
+    if (!this.shotQueue || this.flying || this.replayTrace) return;
+    this.shotQueue = reconcileShotQueue(this.shotQueue, this.activeBoardColors());
+    this.loaded = this.shotQueue.current;
+    if (this.loadedSprite?.active) this.setOrbTexture(this.loadedSprite, this.loaded);
+    this.updateQueueHud();
+  }
+
+  private setOrbTexture(sprite: Phaser.GameObjects.Sprite, color: ColorKey): void {
+    const texture = orbTexture(this.skinId, color);
+    if (ATLAS_KEY) sprite.setTexture(ATLAS_KEY, texture);
+    else sprite.setTexture(texture);
+  }
+
+  private updateQueueHud(): void {
+    if (this.nextOrbSprite) {
+      this.setOrbTexture(this.nextOrbSprite, this.nextQueueColor());
+      this.nextOrbSprite.setAlpha(this.flying ? 0.72 : 1);
+    }
+    if (!this.queueActionText) return;
+    const tutorialStep = this.isTutorialActive()
+      ? this.tutorialMachine?.snapshot().currentStep
+      : null;
+    if (tutorialStep === 'next-orb') {
+      this.queueActionText.setText('TAP TO VIEW').setColor('#8ff6ff');
+    } else if (tutorialStep === 'swap') {
+      this.queueActionText.setText('TAP TO SWAP').setColor('#ffe08a');
+    } else if (tutorialStep) {
+      this.queueActionText.setText('WAIT').setColor('#92a2b8');
+    } else if (!this.canSwapPreShotOrbs()) {
+      this.queueActionText.setText('LOCKED').setColor('#92a2b8');
+    } else if (this.flying) {
+      this.queueActionText.setText('IN FLIGHT').setColor('#92a2b8');
+    } else if (this.shotQueue?.swappedThisShot) {
+      this.queueActionText.setText('SWAP USED').setColor('#ffbd7a');
+    } else {
+      this.queueActionText.setText('TAP SWAP').setColor('#ffe08a');
+    }
+    fitText(this.queueActionText, 78, 0.72);
+  }
+
+  private handleQueueCardPressed(): void {
+    const step = this.isTutorialActive()
+      ? this.tutorialMachine?.snapshot().currentStep
+      : null;
+    if (step === 'next-orb') {
+      const accepted = this.dispatchTutorial({
+        type: 'next-orb-viewed',
+        visible: true,
+        currentColor: this.loaded,
+        nextColor: this.nextQueueColor(),
+      });
+      if (accepted) {
+        SFX.click();
+        this.tweens.add({
+          targets: this.nextOrbSprite,
+          scale: this.scaleFor() * 0.64,
+          duration: 110,
+          yoyo: true,
+          ease: 'Back.easeOut',
+        });
+      }
+      return;
+    }
+    if (step === 'swap') {
+      const beforeCurrent = this.loaded;
+      const beforeNext = this.nextQueueColor();
+      this.swapPreShotOrbs();
+      this.dispatchTutorial({
+        type: 'orb-swapped',
+        beforeCurrent,
+        beforeNext,
+        afterCurrent: this.loaded,
+        afterNext: this.nextQueueColor(),
+      });
+      return;
+    }
+    if (step) {
+      this.toast(this.tutorialMachine?.snapshot().currentPrompt?.instruction ?? 'FOLLOW THE TRAINING GUIDE');
+      return;
+    }
+    this.swapPreShotOrbs();
+  }
+
+  private swapPreShotOrbs(): void {
+    if (!this.running || this.flying || this.powerUsePending || !this.shotQueue) return;
+    if (!this.canSwapPreShotOrbs()) {
+      this.toast('NEXT ORB PREVIEW  •  SWAP IS LOCKED IN VERIFIED RUNS');
+      return;
+    }
+    const result = swapShotQueue(this.shotQueue, this.activeBoardColors());
+    this.shotQueue = result.state;
+    if (!result.applied) {
+      this.toast('ONE SAFE SWAP PER SHOT  •  FIRE TO RECHARGE');
+      this.updateQueueHud();
+      return;
+    }
+    this.loaded = this.shotQueue.current;
+    this.setOrbTexture(this.loadedSprite, this.loaded);
+    this.updateQueueHud();
+    SFX.click();
+    this.tweens.add({
+      targets: [this.loadedSprite, this.nextOrbSprite],
+      scaleX: (target: Phaser.GameObjects.Sprite) => target === this.loadedSprite
+        ? this.scaleFor() * 1.12
+        : this.scaleFor() * 0.62,
+      scaleY: (target: Phaser.GameObjects.Sprite) => target === this.loadedSprite
+        ? this.scaleFor() * 1.12
+        : this.scaleFor() * 0.62,
+      duration: 95,
+      yoyo: true,
+      ease: 'Quad.easeOut',
+    });
+  }
+
+  private buildGrid(
+    rows: number,
+    authoredGrid?: readonly (readonly (ColorKey | null)[])[],
+  ): void {
     for (let r = 0; r < rows; r++) {
       const n = colsInRow(this.geom, r);
       for (let c = 0; c < n; c++) {
-        const color = this.palette[(this.rng() * this.palette.length) | 0];
+        const authoredColor = authoredGrid?.[r]?.[c];
+        if (authoredColor === null) continue;
+        const color = authoredColor ?? this.palette[(this.rng() * this.palette.length) | 0];
         const p = cellPos(this.geom, r, c, this.offsetY);
         const sprite = this.makeSprite(color, p.x, p.y).setDepth(4);
         const finalScale = this.scaleFor();
@@ -1842,10 +2402,30 @@ export class GameScene extends Phaser.Scene {
     };
   }
 
+  private tutorialTargetPoint(): { x: number; y: number } {
+    const target = LEVEL_ZERO_TUTORIAL_FIXTURE.guaranteedShot.target;
+    return cellPos(this.geom, target.row, target.col, this.offsetY);
+  }
+
+  private observeTutorialAim(direction: { x: number; y: number }): void {
+    if (!this.isTutorialActive() || this.tutorialMachine?.snapshot().currentStep !== 'aim') return;
+    const targetPoint = this.tutorialTargetPoint();
+    const expected = this.aimVectorXY(targetPoint.x, targetPoint.y);
+    const actualAngle = Phaser.Math.RadToDeg(Math.atan2(direction.x, -direction.y));
+    const expectedAngle = Phaser.Math.RadToDeg(Math.atan2(expected.x, -expected.y));
+    const angularErrorDegrees = Math.abs(Phaser.Math.Angle.WrapDegrees(actualAngle - expectedAngle));
+    this.dispatchTutorial({
+      type: 'aim-targeted',
+      target: LEVEL_ZERO_TUTORIAL_FIXTURE.guaranteedShot.target,
+      angularErrorDegrees,
+    });
+  }
+
   private updateAimAt(x: number, y: number, handInput = false): void {
     if (this.flying || this.powerUsePending || !this.running) return;
     this.lastAim = { x, y };
     const d = this.aimVectorXY(x, y);
+    this.observeTutorialAim(d);
     const rawAngle = Phaser.Math.RadToDeg(Math.atan2(d.y, d.x)) + 90;
     const targetAngle = Phaser.Math.Clamp(rawAngle, -30, 30);
     // Camera aim is already adaptively filtered and interpolated above. A
@@ -1882,6 +2462,11 @@ export class GameScene extends Phaser.Scene {
 
   private shootAt(x: number, y: number): void {
     if (this.flying || this.powerUsePending || !this.running) return;
+    if (!this.replayTrace) this.reconcilePreShotQueueWithBoard();
+    if (this.isTutorialActive() && !this.tutorialMachine?.canPerform('fire')) {
+      this.toast(this.tutorialMachine?.snapshot().currentPrompt?.instruction ?? 'COMPLETE THE CURRENT TRAINING STEP');
+      return;
+    }
     if (usesAuthoritativePlatformEconomy() && !this.challenge && !this.arena && !this.replayTrace) {
       if (this.classicAuthorityStarting) {
         this.toast('SERVER RUN AUTHORITY STARTING  •  ONE MOMENT');
@@ -1891,12 +2476,14 @@ export class GameScene extends Phaser.Scene {
         this.toast('SERVER INPUT RECEIPT VERIFYING  •  ONE MOMENT');
         return;
       }
-      if (this.classicAuthority && this.shotTrace.length === 0 && Date.now() - this.runStartedAt < 140) {
+      if (this.classicAuthority && this.classicAuthorityTrace.length === 0
+        && Date.now() - this.classicAuthorityStartedAt < 140) {
         this.toast('SERVER AIM CALIBRATING  •  HOLD FOR A MOMENT');
         return;
       }
     }
-    const d = this.aimVectorXY(x, y);
+    const tutorialTarget = this.isTutorialActive() ? this.tutorialTargetPoint() : null;
+    const d = this.aimVectorXY(tutorialTarget?.x ?? x, tutorialTarget?.y ?? y);
     const authorityAngleMilliDegrees = Math.round(Phaser.Math.Clamp(
       Phaser.Math.RadToDeg(Math.atan2(d.y, d.x)) + 90,
       -30,
@@ -1924,6 +2511,19 @@ export class GameScene extends Phaser.Scene {
       this.arenaInputSeq = seq;
       this.arenaLastSubmittedAtMs = atMs;
     }
+    if (this.isTutorialActive()) {
+      const accepted = this.dispatchTutorial({
+        type: 'shot-fired',
+        fixtureId: LEVEL_ZERO_TUTORIAL_FIXTURE.id,
+        color: this.loaded,
+        target: LEVEL_ZERO_TUTORIAL_FIXTURE.guaranteedShot.target,
+      });
+      if (!accepted) {
+        this.toast('SWAP TO RED AND AIM AT THE GOLD GUIDE BEFORE FIRING');
+        return;
+      }
+      this.tutorialShotPending = true;
+    }
     this.pinchControl.resetForShot();
     this.handLockedAim = null;
     this.handPinching = false;
@@ -1938,9 +2538,15 @@ export class GameScene extends Phaser.Scene {
       color: this.loaded,
     });
     if (this.classicAuthority && !this.classicAuthorityFailed && !this.challenge && !this.arena && !this.replayTrace) {
+      const authorityTraceAtMs = Math.max(0, Date.now() - this.classicAuthorityStartedAt);
+      this.classicAuthorityTrace.push({
+        atMs: authorityTraceAtMs,
+        angle: Math.round(Phaser.Math.RadToDeg(Math.atan2(d.y, d.x)) * 100) / 100,
+        color: this.loaded,
+      });
       this.recordClassicAuthorityShot({
-        sequence: this.shotTrace.length - 1,
-        atMs: Math.round(traceAtMs),
+        sequence: this.classicAuthorityTrace.length - 1,
+        atMs: Math.round(authorityTraceAtMs),
         angleMilliDegrees: authorityAngleMilliDegrees,
       });
     }
@@ -1949,6 +2555,7 @@ export class GameScene extends Phaser.Scene {
     const speed = 920;
     this.vel = { x: d.x * speed, y: d.y * speed };
     this.flying = true;
+    this.updateQueueHud();
     SFX.shoot();
     this.tweens.killTweensOf(this.loadedSprite);
     this.loadedSprite.setScale(this.scaleFor()).setAlpha(1).setAngle(0);
@@ -1993,15 +2600,38 @@ export class GameScene extends Phaser.Scene {
     const trace = this.replayTrace ?? [];
     this.input.enabled = false;
     this.time.delayedCall(350, () => this.toast(`GHOST REPLAY  •  ${trace.length} RECORDED SHOTS`));
-    trace.forEach((shot) => {
-      this.time.delayedCall(Math.max(400, shot.atMs + 400), () => {
-        if (!this.running || this.flying) return;
+    const playSequentially = (index: number, delayMs: number): void => {
+      this.time.delayedCall(delayMs, () => {
+        if (!this.scene.isActive() || this.terminalLatch.isEntered() || index >= trace.length) return;
+        if (!this.running || this.flying || this.replayQueueIndex !== index) {
+          playSequentially(index, 32);
+          return;
+        }
+        const shot = trace[index];
         const radians = Phaser.Math.DegToRad(shot.angle);
         const distance = 620;
         this.updateAimAt(this.shooter.x + Math.cos(radians) * distance, this.shooter.y + Math.sin(radians) * distance);
         this.shootAt(this.shooter.x + Math.cos(radians) * distance, this.shooter.y + Math.sin(radians) * distance);
+        if (!this.flying) {
+          playSequentially(index, 32);
+          return;
+        }
+        const next = trace[index + 1];
+        if (next) {
+          playSequentially(
+            index + 1,
+            Math.min(GHOST_REPLAY_MAX_DELAY_MS, Math.max(100, next.atMs - shot.atMs)),
+          );
+        }
       });
-    });
+    };
+    const first = trace[0];
+    if (first) {
+      playSequentially(
+        0,
+        Math.min(GHOST_REPLAY_MAX_DELAY_MS, Math.max(400, first.atMs + 400)),
+      );
+    }
   }
 
   private refreshPowerButtons(): void {
@@ -2015,6 +2645,10 @@ export class GameScene extends Phaser.Scene {
 
   private async usePowerUp(kind: PowerUp): Promise<void> {
     if (!this.running || this.flying || this.powerUsePending || this.powerUps[kind] < 1) return;
+    if (this.isTutorialActive()) {
+      this.toast('COMPLETE TRAINING BEFORE USING SUPPLIES');
+      return;
+    }
     const active = this.bubbles.filter((b) => b.active);
     const bombAnchor = active.reduce<Bub | undefined>((closest, bubble) => {
       if (!closest) return bubble;
@@ -2128,11 +2762,16 @@ export class GameScene extends Phaser.Scene {
     this.applyBossDamageEvent({ bomb: kind === 'bomb' && affected.length > 0, floaters: fell.length });
     this.updateStatsHud();
     this.bubbles = this.bubbles.filter((b) => b.active || b.sprite.active);
+    this.reconcilePreShotQueueWithBoard();
     this.checkBoardState();
   }
 
   private useArtifactSuper(): void {
     if (!this.running || this.flying) return;
+    if (this.isTutorialActive()) {
+      this.toast('COMPLETE TRAINING BEFORE USING ARTIFACT POWERS');
+      return;
+    }
     if (this.superCharge < 100) {
       this.toast(`${this.artifact.superName}  •  ${Math.floor(this.superCharge)}% CHARGED`);
       return;
@@ -2215,6 +2854,7 @@ export class GameScene extends Phaser.Scene {
     if (targets.length) this.addRunCoins(Math.max(4, targets.length * 2 + fell.length));
     this.scoreText.setText(this.visibleScore().toLocaleString());
     this.bubbles = this.bubbles.filter((bubble) => bubble.active || bubble.sprite.active);
+    this.reconcilePreShotQueueWithBoard();
     this.updateStatsHud();
     SFX.pop(Math.max(1, this.combo + 2));
     if (fell.length) SFX.drop();
@@ -2281,7 +2921,9 @@ export class GameScene extends Phaser.Scene {
   private land(): void {
     if (!this.ballSprite) return;
     this.flying = false;
-    const cell = this.snap(this.ballSprite.x, this.ballSprite.y);
+    const cell = this.tutorialShotPending
+      ? { ...LEVEL_ZERO_TUTORIAL_FIXTURE.guaranteedShot.target }
+      : this.snap(this.ballSprite.x, this.ballSprite.y);
     const p = cellPos(this.geom, cell.row, cell.col, this.offsetY);
     const placed: Bub = {
       id: this.idc++,
@@ -2387,6 +3029,23 @@ export class GameScene extends Phaser.Scene {
       this.streak = 0;
     }
 
+    if (this.tutorialShotPending) {
+      this.tutorialShotPending = false;
+      const tutorialResolution: TutorialSignal = {
+        type: 'shot-resolved',
+        fixtureId: LEVEL_ZERO_TUTORIAL_FIXTURE.id,
+        matched: matched ? cluster.length : 0,
+        dropped: fell.length,
+      };
+      this.dispatchTutorial({ ...tutorialResolution, dropped: 0 });
+      if (matched && fell.length > 0) {
+        this.time.delayedCall(680, () => {
+          if (!this.scene.isActive()
+            || this.tutorialMachine?.snapshot().currentStep !== 'drop-cluster') return;
+          this.dispatchTutorial(tutorialResolution);
+        });
+      }
+    }
     this.scoreText.setText(this.visibleScore().toLocaleString());
     this.bubbles = this.bubbles.filter((b) => b.active || b.sprite.active);
     const emberErupted = this.advanceEmbersAfterShot();
@@ -2685,10 +3344,19 @@ export class GameScene extends Phaser.Scene {
   }
 
   private loadNext(): void {
-    this.loaded = this.randColor();
+    if (this.shotQueue) {
+      this.shotQueue = advanceShotQueue(this.shotQueue, this.activeBoardColors());
+    }
+    if (this.replayTrace?.length) this.replayQueueIndex += 1;
+    this.loaded = this.currentQueueColor();
+    if (this.shotQueue && !this.replayTrace) {
+      this.shotQueue = reconcileShotQueue(this.shotQueue, this.activeBoardColors());
+      this.loaded = this.shotQueue.current;
+    }
     const muzzle = this.muzzlePosition();
     this.launcherFocus.setPosition(muzzle.x, muzzle.y).setAngle(this.launcher.angle * 0.16);
     this.loadedSprite = this.makeSprite(this.loaded, muzzle.x, muzzle.y).setDepth(5).setScale(0);
+    this.updateQueueHud();
     this.tweens.add({
       targets: this.loadedSprite,
       scale: this.scaleFor(),
@@ -2923,7 +3591,12 @@ export class GameScene extends Phaser.Scene {
         this.scene.restart(this.restartRunData());
         return;
       }
-      this.scene.restart({ level: won ? 0 : this.level, score: won ? 0 : this.levelStartScore, mode: this.mode });
+      this.scene.restart({
+        level: won ? 0 : this.level,
+        score: won ? 0 : this.levelStartScore,
+        mode: this.mode,
+        ...(this.tutorialReplayRequested ? { tutorialReplay: true } : {}),
+      });
     }, 320, 76, 33);
     addArtButton(this, width / 2, height * 0.745, 'ADVENTURE MAP', () => {
       SFX.click();

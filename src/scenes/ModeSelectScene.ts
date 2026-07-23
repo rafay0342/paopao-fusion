@@ -100,13 +100,13 @@ export class ModeSelectScene extends Phaser.Scene {
       this.scene.start('Menu');
     }, 145, 50, 18);
 
-    const cardY = [350, 650, 950];
+    const cardY = [365, 660, 955];
     const availableModes = PHASER_RELEASE_FEATURES.completeGameplay ? MODE_ORDER : MODE_ORDER.slice(0, 1);
     availableModes.forEach((mode, index) => {
       const def = MODE_DEFS[mode];
       const selected = meta.mode === mode;
       const y = cardY[index];
-      addArtPanel(this, width / 2, y, 600, 244, 8, selected ? 1 : 0.91);
+      addArtPanel(this, width / 2, y, 600, 270, 8, selected ? 1 : 0.91);
       addModeCrystalIdentity(this, y, def.accent, index, selected);
       addIconFrame(this, 115, y, 116, def.accent, 10, selected);
       if (mode === 'classic') {
@@ -127,13 +127,25 @@ export class ModeSelectScene extends Phaser.Scene {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe5a0', fontStyle: 'bold', letterSpacing: 2,
       }).setDepth(12);
       this.add.text(195, y - 10, def.description, {
-        fontFamily: UI_FONT, fontSize: TYPE.control, color: '#d4dfef', lineSpacing: 2, wordWrap: { width: 370 },
+        fontFamily: UI_FONT, fontSize: TYPE.control, color: '#d4dfef', lineSpacing: 2, wordWrap: { width: 420 },
       }).setDepth(12);
       const timer = def.timerSeconds == null ? 'NO TIMER' : `${def.timerSeconds} SEC`;
-      this.add.text(195, y + 67, `${timer}   •   ◆ ×${def.coinMultiplier}`, {
+      this.add.text(195, y + 54, `${timer}   •   ◆ ×${def.coinMultiplier}`, {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#b9c8df', fontStyle: 'bold', letterSpacing: 1,
       }).setDepth(12);
-      addArtButton(this, 548, y + 88, selected ? 'SELECTED' : 'PLAY MODE', () => {
+      if (mode === 'classic') {
+        addArtButton(this, 348, y + 108, 'LEARN CONTROLS', () => {
+          setMode('classic');
+          SFX.click();
+          this.scene.start('Game', {
+            level: 0,
+            score: 0,
+            mode: 'classic',
+            tutorialReplay: true,
+          });
+        }, 190, 52, 14);
+      }
+      addArtButton(this, 548, y + 108, selected ? 'SELECTED' : 'PLAY MODE', () => {
         setMode(mode);
         SFX.click();
         const progress = getProgress();

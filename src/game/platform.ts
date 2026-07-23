@@ -91,6 +91,7 @@ let classicProgressSyncInFlight: Promise<PlayerSaveV4> | undefined;
 let volatileClassicRunQueue: PendingClassicRunV3[] = [];
 let classicRunFlushInFlight: Promise<ClassicRunSettlementResult> | undefined;
 let classicRunFlushOwner = '';
+let classicAuthorityStartSerial: Promise<void> = Promise.resolve();
 
 interface PendingClassicRunV3 {
   ownerUserId: string;
@@ -497,14 +498,20 @@ export async function beginClassicRunAuthorityV3(input: {
   mode: 'classic' | 'rush' | 'precision';
   idempotencyKey?: string;
 }): Promise<ClassicAuthorityTicketV3> {
-  return api<ClassicAuthorityTicketV3>('/api/v3/classic/runs/start', {
-    method: 'POST',
-    body: JSON.stringify({
-      level: boundedInteger(input.level, 0, 29),
-      mode: input.mode,
-      idempotencyKey: input.idempotencyKey ?? idempotencyKey('classic-authority'),
-    }),
-  });
+  // The server permits one active ticket per player. Preserve request order so
+  // a slow, stale scene start cannot arrive after and abandon the newer ticket.
+  const request = classicAuthorityStartSerial.then(() => (
+    api<ClassicAuthorityTicketV3>('/api/v3/classic/runs/start', {
+      method: 'POST',
+      body: JSON.stringify({
+        level: boundedInteger(input.level, 0, 29),
+        mode: input.mode,
+        idempotencyKey: input.idempotencyKey ?? idempotencyKey('classic-authority'),
+      }),
+    })
+  ));
+  classicAuthorityStartSerial = request.then(() => undefined, () => undefined);
+  return request;
 }
 
 /** Persist one chronological aim receipt on the server; claims are not inputs. */
