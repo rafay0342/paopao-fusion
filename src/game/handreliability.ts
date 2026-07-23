@@ -41,6 +41,27 @@ export interface HandConfidenceResult {
   usableForGesture: boolean;
 }
 
+export type HandWorkerResultFreshness =
+  | 'fresh'
+  | 'wrong-generation'
+  | 'invalid-timestamp'
+  | 'duplicate'
+  | 'out-of-order'
+  | 'future'
+  | 'stale';
+
+export interface HandWorkerResultFreshnessInput {
+  generation: number;
+  activeGeneration: number;
+  captureTimestampMs: number;
+  lastAcceptedCaptureTimestampMs: number;
+  receivedTimestampMs: number;
+  targetFps: 15 | 20 | 30;
+}
+
+/** A recognition older than two requested capture periods cannot drive play. */
+export const HAND_RESULT_MAX_FRAME_BUDGETS = 2;
+
 export type HandCameraLifecycleState =
   | 'off'
   | 'warming'
@@ -203,6 +224,28 @@ export function classifyHandConfidence(input: HandConfidenceInput): HandConfiden
     score,
     usableForGesture,
   };
+}
+
+/**
+ * Validates a worker result against the capture clock before any landmark
+ * filter, cursor or gesture state consumes it. The strict timestamp watermark
+ * also protects same-generation results if a browser delivers an old worker
+ * message after a newer capture has already been accepted.
+ */
+export function classifyHandWorkerResultFreshness(
+  input: HandWorkerResultFreshnessInput,
+): HandWorkerResultFreshness {
+  if (input.generation !== input.activeGeneration) return 'wrong-generation';
+  if (!Number.isFinite(input.captureTimestampMs)
+    || !Number.isFinite(input.receivedTimestampMs)
+    || Number.isNaN(input.lastAcceptedCaptureTimestampMs)) return 'invalid-timestamp';
+  if (input.captureTimestampMs === input.lastAcceptedCaptureTimestampMs) return 'duplicate';
+  if (input.captureTimestampMs < input.lastAcceptedCaptureTimestampMs) return 'out-of-order';
+
+  const ageMs = input.receivedTimestampMs - input.captureTimestampMs;
+  if (ageMs < 0) return 'future';
+  const maximumAgeMs = (1_000 / input.targetFps) * HAND_RESULT_MAX_FRAME_BUDGETS;
+  return ageMs <= maximumAgeMs ? 'fresh' : 'stale';
 }
 
 /** Pure transition contract shared by camera events, diagnostics and tests. */

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
-import { LEVELS, mapNodeForLevel, VIEW, WORLD_THEMES } from '../config';
+import { LEVELS, mapNodeForLevel, mapRewardLabel, VIEW, WORLD_THEMES } from '../config';
 import { getProgress, isLevelCleared, isLevelUnlocked, totalStars } from '../game/progression';
+import { hasPlatformAccountBinding } from '../game/platform';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
 import { getArtifact, getMeta, MODE_DEFS } from '../game/meta';
@@ -36,6 +37,7 @@ export class WorldMapScene extends Phaser.Scene {
     startMusic('story');
     const theme = WORLD_THEMES[this.world];
     const progress = getProgress();
+    const accountBound = hasPlatformAccountBinding();
     const meta = getMeta();
     const mode = MODE_DEFS[meta.mode];
     const artifact = getArtifact(meta.equippedArtifact);
@@ -139,7 +141,16 @@ export class WorldMapScene extends Phaser.Scene {
       }).setOrigin(0.5);
       const rewardChest = this.add.image(51, -48, 'mystery_chest_closed').setDisplaySize(44, 44);
       if (!unlocked) rewardChest.setTint(0x59606d).setAlpha(0.5);
-      const rewardText = cleared ? 'CLEARED' : mapNode.reward.diamonds ? `+${mapNode.reward.diamonds} ◈` : mapNode.reward.mysteryKey ? '+1 KEY' : `+${mapNode.reward.coins}`;
+      const rewardAvailability = progress.claimedFirstClears.includes(level)
+        ? 'claimed'
+        : !unlocked
+          ? 'locked'
+          : !accountBound
+            ? 'account-required'
+            : cleared
+              ? 'verification-pending'
+              : 'available';
+      const rewardText = mapRewardLabel(mapNode.reward, rewardAvailability);
       const rewardLabel = this.add.text(51, -28, rewardText, {
         fontFamily: UI_FONT, fontSize: TYPE.caption, color: unlocked ? '#ffe29a' : '#858d9b', fontStyle: 'bold',
         stroke: '#0a0d18', strokeThickness: 3,
@@ -205,7 +216,9 @@ export class WorldMapScene extends Phaser.Scene {
       }
     });
 
-    fitText(this.add.text(width / 2, height - 54, 'SELECT A MEDALLION  •  EVERY CLEAR AWARDS +1 MYSTERY KEY', {
+    fitText(this.add.text(width / 2, height - 54, accountBound
+      ? 'VERIFIED FIRST-CLEAR COINS  •  ONE ACCOUNT CLAIM PER LEVEL'
+      : 'SIGN IN FOR VERIFIED FIRST-CLEAR COINS  •  LOCAL PLAY REMAINS AVAILABLE', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#d6deec', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(14).setShadow(0, 2, '#000000', 5), 610);
     sharpenSceneText(this);

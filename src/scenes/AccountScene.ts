@@ -10,6 +10,10 @@ import { getPlayerSave } from '../game/retention';
 import { getPlatformAccount, logoutPlatform, requestEmailOtp, verifyEmailOtp, type PlatformAccount } from '../game/platform';
 import { requestTextInput } from '../gfx/dom';
 import { SFX } from '../game/sfx';
+import {
+  hasGameplayTelemetryConsent,
+  setGameplayTelemetryConsent,
+} from '../game/gameplay-telemetry';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { addAmbientMotes, addArtButton, addArtPanel, addWorldBackground, DISPLAY_FONT, fitText, sharpenSceneText, TYPE, UI_FONT } from '../gfx/ui';
 
@@ -67,13 +71,23 @@ export class AccountScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#c4d0e1', align: 'center', lineSpacing: 5,
     }).setOrigin(0.5).setDepth(10);
     addArtButton(this, width / 2, 936, 'EMAIL SIGN-IN', () => void this.emailLogin(), 390, 62, 12);
+    const analyticsEnabled = hasGameplayTelemetryConsent();
+    addArtButton(this, width / 2, 1012, `ANONYMOUS GAMEPLAY DATA  ${analyticsEnabled ? 'ON' : 'OFF'}`, () => {
+      SFX.click();
+      setGameplayTelemetryConsent(!hasGameplayTelemetryConsent());
+      this.scene.restart();
+    }, 430, 54, 12);
+    this.add.text(width / 2, 1049, 'Optional and anonymous • never camera frames, landmarks, aim coordinates or email', {
+      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#9facc0', fontStyle: 'bold', align: 'center',
+      wordWrap: { width: 610 },
+    }).setOrigin(0.5).setDepth(10);
 
     if (PHASER_RELEASE_FEATURES.completeGameplay) {
-      addArtButton(this, 190, 1090, 'MY INVENTORY', () => {
+      addArtButton(this, 190, 1110, 'MY INVENTORY', () => {
         SFX.click();
         this.scene.start('Inventory');
       }, 290, 62, 12);
-      addArtButton(this, 530, 1090, 'RELIC STORE', () => {
+      addArtButton(this, 530, 1110, 'RELIC STORE', () => {
         SFX.click();
         this.scene.start('Store');
       }, 290, 62, 12);

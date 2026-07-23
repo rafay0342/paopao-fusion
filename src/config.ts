@@ -5,6 +5,11 @@
  * if a deployed image cannot be loaded.
  */
 import campaignFixture from '../shared/fixtures/campaign-v1.json';
+import {
+  CLASSIC_FIRST_CLEAR_REWARD_CURRENCY,
+  CLASSIC_FIRST_CLEAR_REWARD_SOURCE,
+  classicFirstClearReward,
+} from '../shared/runtime/classic-economy.mjs';
 
 export const COLORS = {
   red:    { hex: 0xff5a6e, name: 'Red' },
@@ -304,8 +309,16 @@ export interface MapNodeDef {
   level: number;
   kind: MapNodeKind;
   requires: readonly number[];
-  reward: { coins: number; diamonds: number; mysteryKey: number };
+  reward: {
+    source: typeof CLASSIC_FIRST_CLEAR_REWARD_SOURCE;
+    currency: typeof CLASSIC_FIRST_CLEAR_REWARD_CURRENCY;
+    amount: number;
+    firstClearOnly: true;
+    accountRequired: true;
+  };
 }
+
+export type MapRewardAvailability = 'claimed' | 'locked' | 'account-required' | 'verification-pending' | 'available';
 
 export interface WorldTheme {
   id: string;
@@ -349,12 +362,27 @@ export const MAP_NODES: readonly MapNodeDef[] = WORLD_THEMES.flatMap((world) => 
   kind: (index === 4 ? 'boss' : index === 3 ? 'elite' : index === 1 ? 'mystery' : index === 2 ? 'challenge' : 'standard') as MapNodeKind,
   requires: index === 0
     ? (world.levels[0] === 0 ? [] : [WORLD_THEMES[LEVELS[level].world - 1].levels[4]])
-    : index === 2 ? [world.levels[0]] : [world.levels[index - 1]],
-  reward: { coins: index === 4 ? 700 : index === 3 ? 450 : 250, diamonds: index === 4 ? 15 : index === 1 ? 5 : 0, mysteryKey: index === 1 ? 1 : 0 },
+    : [world.levels[index - 1]],
+  reward: {
+    source: CLASSIC_FIRST_CLEAR_REWARD_SOURCE,
+    currency: CLASSIC_FIRST_CLEAR_REWARD_CURRENCY,
+    amount: classicFirstClearReward(level),
+    firstClearOnly: true,
+    accountRequired: true,
+  },
 }))) as readonly MapNodeDef[];
 
 export function mapNodeForLevel(level: number): MapNodeDef {
   return MAP_NODES.find((node) => node.level === level) ?? MAP_NODES[0];
+}
+
+export function mapRewardLabel(reward: MapNodeDef['reward'], availability: MapRewardAvailability): string {
+  if (availability === 'claimed') return 'CLAIMED';
+  const amount = `◆ ${reward.amount}`;
+  if (availability === 'account-required') return `SIGN IN ${amount}`;
+  if (availability === 'verification-pending') return `VERIFY ${amount}`;
+  if (availability === 'available') return `1ST CLEAR ${amount}`;
+  return `LOCKED ${amount}`;
 }
 
 export function nextStoryLevel(level: number): number | null {

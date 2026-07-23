@@ -690,6 +690,12 @@ export class EndlessScene extends Phaser.Scene {
       this.handStatus?.setText('HAND STABILIZING').setColor('#ffe083');
       return;
     }
+    if (!sample.usableForGesture) {
+      this.pinchControl.resetForContinuity();
+      this.handLockedLane = null;
+      this.handStatus?.setText('HAND UNCERTAIN — HOLD STILL').setColor('#ffe083');
+      return;
+    }
     const event = this.pinchControl.update(sample);
     if (event === 'aim-locked') this.handLockedLane = this.selectedLane;
     else if (event === 'cancelled') this.handLockedLane = null;

@@ -18,6 +18,7 @@ import {
   classicAuthorityTarget,
   evaluateClassicAuthorityTrace,
 } from '../shared/runtime/classic-authority.mjs';
+import { classicFirstClearReward } from '../shared/runtime/classic-economy.mjs';
 import { signPublicPayload } from './signing-keyring.mjs';
 
 const nowIso = () => new Date().toISOString();
@@ -402,11 +403,6 @@ const CATALOG = [
   ['frostglass_optical_skin', 'FROST OPTICAL', 'diamonds', 720, 'entitlement', 'skin:frostglass_optical', 1],
   ['nexus_crown_optical_skin', 'NEXUS OPTICAL', 'diamonds', 880, 'entitlement', 'skin:nexus_crown_optical', 1],
 ];
-
-// Classic first-clear amounts are deterministic, but wallet settlement fails
-// closed until the full board can be recomputed by a shared server simulator.
-// A client trace or campaign-save claim alone can never authorize currency.
-const classicFirstClearReward = (level) => 120 + finiteInteger(level, 0, MAX_PROGRESS_LEVELS - 1) * 8;
 
 const V3_CONTENT = Object.freeze({
   schemaVersion: 3,
@@ -1757,16 +1753,78 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
     };
   });
 
-  const acceptTelemetry = async (request) => {
-    const safe = request.body.events.map((event) => ({ type: String(event.type ?? 'unknown').slice(0, 40), averageFps: Number(event.averageFps) || undefined, p95FrameMs: Number(event.p95FrameMs) || undefined, longFrames: Number(event.longFrames) || undefined, quality: String(event.quality ?? '').slice(0, 20), displayHz: Number(event.displayHz) || undefined, inferenceMs: Number(event.inferenceMs) || undefined, trackingFps: Number(event.trackingFps) || undefined, at: nowIso() }));
+  const productTelemetryTypes = new Set([
+    'tutorial-step', 'level-start', 'level-end', 'level-exit', 'shot-result',
+    'boss-phase', 'reward-claim', 'hand-state', 'session-exit', 'next-action',
+  ]);
+  const telemetryEventTypes = ['performance', 'frame-health', ...productTelemetryTypes];
+  const telemetryModes = ['classic', 'rush', 'precision', 'endless', 'arena', 'tutorial'];
+  const telemetryInputModes = ['touch', 'mouse', 'keyboard', 'gamepad', 'hand', 'unknown'];
+  const telemetrySteps = [
+    'aim', 'fire', 'match-three', 'drop-cluster', 'next-orb', 'swap',
+    'danger-line', 'objective', 'hand-touch-one', 'hand-touch-two',
+  ];
+  const telemetryOutcomes = [
+    'started', 'completed', 'failed', 'quit', 'won', 'lost', 'hit', 'miss',
+    'claimed', 'denied', 'ready', 'uncertain', 'recovered', 'selected',
+  ];
+  const telemetryReasons = [
+    'completed', 'danger-line', 'shot-limit', 'timer', 'player-exit', 'tracking-loss',
+    'camera-loss', 'renderer-loss', 'offline', 'authority-denied', 'unknown',
+  ];
+  let lastTelemetryPurgeAt = 0;
+  const acceptTelemetry = async (request, reply) => {
+    const containsProductEvents = request.body.events.some((event) => productTelemetryTypes.has(event.type));
+    if (containsProductEvents && (
+      request.body.anonymous !== true
+      || request.body.consentVersion !== 'product-telemetry-v1'
+      || request.body.events.some((event) => (
+        productTelemetryTypes.has(event.type)
+        && (!event.eventId || !event.sessionId || !Number.isInteger(event.occurredAtMs))
+      ))
+    )) return reply.code(400).send({ error: 'product-telemetry-consent-required' });
+    const safe = request.body.events.map((event) => ({
+      type: event.type,
+      ...(event.eventId === undefined ? {} : { eventId: event.eventId }),
+      ...(event.sessionId === undefined ? {} : { sessionId: event.sessionId }),
+      ...(event.occurredAtMs === undefined ? {} : { occurredAtMs: event.occurredAtMs }),
+      ...(event.averageFps === undefined ? {} : { averageFps: event.averageFps }),
+      ...(event.p95FrameMs === undefined ? {} : { p95FrameMs: event.p95FrameMs }),
+      ...(event.longFrames === undefined ? {} : { longFrames: event.longFrames }),
+      ...(event.quality === undefined ? {} : { quality: event.quality }),
+      ...(event.displayHz === undefined ? {} : { displayHz: event.displayHz }),
+      ...(event.inferenceMs === undefined ? {} : { inferenceMs: event.inferenceMs }),
+      ...(event.trackingFps === undefined ? {} : { trackingFps: event.trackingFps }),
+      ...(event.level === undefined ? {} : { level: event.level }),
+      ...(event.mode === undefined ? {} : { mode: event.mode }),
+      ...(event.inputMode === undefined ? {} : { inputMode: event.inputMode }),
+      ...(event.step === undefined ? {} : { step: event.step }),
+      ...(event.outcome === undefined ? {} : { outcome: event.outcome }),
+      ...(event.reason === undefined ? {} : { reason: event.reason }),
+      ...(event.bossPhase === undefined ? {} : { bossPhase: event.bossPhase }),
+      ...(event.shots === undefined ? {} : { shots: event.shots }),
+      ...(event.hits === undefined ? {} : { hits: event.hits }),
+      ...(event.won === undefined ? {} : { won: event.won }),
+      ...(event.bankShot === undefined ? {} : { bankShot: event.bankShot }),
+      at: nowIso(),
+    }));
     const batchId = request.body.batchId ?? id('tel');
+    if (Date.now() - lastTelemetryPurgeAt >= 60 * 60_000) {
+      lastTelemetryPurgeAt = Date.now();
+      const retentionCutoff = new Date(Date.now() - 30 * 24 * 60 * 60_000).toISOString();
+      db.prepare('DELETE FROM telemetry_batches WHERE created_at < ?').run(retentionCutoff);
+    }
     const inserted = db.prepare('INSERT OR IGNORE INTO telemetry_batches(batch_id,user_id,events_json,created_at) VALUES(?,?,?,?)')
-      .run(batchId, accountFor(request)?.userId ?? null, JSON.stringify(safe), nowIso());
+      .run(batchId, request.body.anonymous === true ? null : accountFor(request)?.userId ?? null, JSON.stringify(safe), nowIso());
     if (!request.body.batchId) return { accepted: safe.length };
     return { accepted: inserted.changes === 1 ? safe.length : 0, duplicate: inserted.changes === 0, batchId };
   };
   const rejectUnknownTelemetryFields = async (request, reply) => {
-    const allowed = new Set(['type', 'averageFps', 'p95FrameMs', 'longFrames', 'quality', 'displayHz', 'inferenceMs', 'trackingFps']);
+    const allowed = new Set([
+      'type', 'eventId', 'sessionId', 'occurredAtMs',
+      'averageFps', 'p95FrameMs', 'longFrames', 'quality', 'displayHz', 'inferenceMs', 'trackingFps',
+      'level', 'mode', 'inputMode', 'step', 'outcome', 'reason', 'bossPhase', 'shots', 'hits', 'won', 'bankShot',
+    ]);
     for (const event of request.body?.events ?? []) {
       if (Object.keys(event).some((key) => !allowed.has(key))) return reply.code(400).send({ error: 'telemetry-field-invalid' });
     }
@@ -1777,14 +1835,31 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
     properties: {
       batchId: { type: 'string', minLength: 8, maxLength: 96, pattern: '^[A-Za-z0-9._:-]+$' },
       client: { const: 'classic' },
+      anonymous: { type: 'boolean' },
+      consentVersion: { const: 'product-telemetry-v1' },
       events: {
         type: 'array', minItems: 1, maxItems: 50,
         items: {
           type: 'object', required: ['type'], properties: {
-            type: { type: 'string', minLength: 1, maxLength: 40 }, averageFps: { type: 'number', minimum: 0, maximum: 360 },
+            type: { enum: telemetryEventTypes },
+            eventId: { type: 'string', minLength: 8, maxLength: 96, pattern: '^[A-Za-z0-9._:-]+$' },
+            sessionId: { type: 'string', minLength: 8, maxLength: 96, pattern: '^[A-Za-z0-9._:-]+$' },
+            occurredAtMs: { type: 'integer', minimum: 0, maximum: 4_000_000_000_000 },
+            averageFps: { type: 'number', minimum: 0, maximum: 360 },
             p95FrameMs: { type: 'number', minimum: 0, maximum: 10000 }, longFrames: { type: 'integer', minimum: 0, maximum: 1000000 },
-            quality: { type: 'string', maxLength: 20 }, displayHz: { type: 'number', minimum: 0, maximum: 1000 },
+            quality: { enum: ['ultra', 'balanced', 'performance'] }, displayHz: { type: 'number', minimum: 0, maximum: 1000 },
             inferenceMs: { type: 'number', minimum: 0, maximum: 10000 }, trackingFps: { type: 'number', minimum: 0, maximum: 240 },
+            level: { type: 'integer', minimum: 0, maximum: 999 },
+            mode: { enum: telemetryModes },
+            inputMode: { enum: telemetryInputModes },
+            step: { enum: telemetrySteps },
+            outcome: { enum: telemetryOutcomes },
+            reason: { enum: telemetryReasons },
+            bossPhase: { type: 'integer', minimum: 0, maximum: 20 },
+            shots: { type: 'integer', minimum: 0, maximum: 10000 },
+            hits: { type: 'integer', minimum: 0, maximum: 10000 },
+            won: { type: 'boolean' },
+            bankShot: { type: 'boolean' },
           }, additionalProperties: false,
         },
       },

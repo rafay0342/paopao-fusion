@@ -269,7 +269,7 @@ class RuntimePerformanceMonitor {
       this.lastTelemetryAt = now;
       void fetch('/api/telemetry/batch', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
-        body: JSON.stringify({ events: [{
+        body: JSON.stringify({ client: 'classic', anonymous: true, events: [{
           type: 'performance',
           averageFps: this.snapshot.averageFps,
           p95FrameMs: this.snapshot.p95FrameMs,

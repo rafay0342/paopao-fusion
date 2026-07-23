@@ -93,6 +93,17 @@ export function persistGameProgress(value: unknown): GameProgress {
   return progress;
 }
 
+/**
+ * A story session carries its cumulative campaign score between levels. Stars,
+ * per-level bests and level leaderboards must use only the delta earned after
+ * the current level started.
+ */
+export function campaignLevelScore(campaignScore: number, levelStartScore: number): number {
+  const total = safeInteger(campaignScore, 0, 1_000_000_000, 0);
+  const start = safeInteger(levelStartScore, 0, 1_000_000_000, 0);
+  return safeInteger(total - start, 0, 10_000_000, 0);
+}
+
 function starsFor(level: number, score: number): number {
   const target = LEVELS[level]?.targetScore ?? 1;
   if (score >= target) return 3;
@@ -102,8 +113,9 @@ function starsFor(level: number, score: number): number {
 
 export function recordLevelClear(level: number, score: number): GameProgress {
   const progress = getProgress();
-  progress.bestScores[level] = Math.max(progress.bestScores[level] ?? 0, score);
-  progress.stars[level] = Math.max(progress.stars[level] ?? 0, starsFor(level, score));
+  const levelScore = safeInteger(score, 0, 10_000_000, 0);
+  progress.bestScores[level] = Math.max(progress.bestScores[level] ?? 0, levelScore);
+  progress.stars[level] = Math.max(progress.stars[level] ?? 0, starsFor(level, levelScore));
   if (!progress.cleared.includes(level)) progress.cleared.push(level);
   if ((progress.stars[level] ?? 0) >= 3 && !progress.mastered.includes(level)) progress.mastered.push(level);
   progress.unlocked = MAP_NODES.filter((node) => isLevelUnlocked(node.level, progress)).length;
@@ -111,6 +123,9 @@ export function recordLevelClear(level: number, score: number): GameProgress {
 }
 
 export function isLevelUnlocked(level: number, progress = getProgress()): boolean {
+  // A stricter route must never relock a level already cleared by a legacy
+  // branch-shaped map or migrated save.
+  if (progress.cleared.includes(level)) return true;
   const node = mapNodeForLevel(level);
   return node.requires.length === 0 || node.requires.every((required) => progress.cleared.includes(required));
 }

@@ -10,6 +10,7 @@ import {
   HandCameraLifecycle,
   HandIdentityStabilizer,
   classifyHandConfidence,
+  classifyHandWorkerResultFreshness,
   isCompleteHandLandmarkSet,
   type HandCameraLifecycleState,
   type HandConfidenceState,
@@ -128,6 +129,8 @@ export interface HandSample {
   /** Explicit fail-closed synthesis of visibility, confidence and latency. */
   confidenceState: HandConfidenceState;
   confidence: number;
+  /** Only true when this capture may advance contact/release gameplay state. */
+  usableForGesture: boolean;
   /** False for the first two valid frames after a lighting-pipeline transition. */
   gestureStable: boolean;
 }
@@ -217,6 +220,7 @@ class HandTracker {
   private lastVideoProgressAt = 0;
   private videoFrameCallbackId: number | null = null;
   private lastTimestampMs = -1;
+  private lastAcceptedCaptureTimestampMs = Number.NEGATIVE_INFINITY;
   private captureGeneration = 0;
 
   private latestSample: HandSample | null = null;
@@ -437,15 +441,29 @@ class HandTracker {
     }
 
     if (message.generation !== this.captureGeneration || message.frameId !== this.pendingFrameId) return;
+    const receivedTimestampMs = performance.now();
     this.clearPendingFrame();
     if (!this.wanted || !this.camReady) return;
     this.frameErrors = 0;
     this.lastInferenceMs = message.inferenceMs;
     this.observeDetailPerformance(message.inferenceMs);
+    const freshness = classifyHandWorkerResultFreshness({
+      generation: message.generation,
+      activeGeneration: this.captureGeneration,
+      captureTimestampMs: message.timestampMs,
+      lastAcceptedCaptureTimestampMs: this.lastAcceptedCaptureTimestampMs,
+      receivedTimestampMs,
+      targetFps: this.settings.targetFps,
+    });
+    if (freshness !== 'fresh') {
+      this.scheduleFrame(receivedTimestampMs);
+      return;
+    }
+    this.lastAcceptedCaptureTimestampMs = message.timestampMs;
     this.processResult(message);
     // Backpressure is already guaranteed by one frame in flight. Capture the
     // newest camera frame immediately instead of adding inference time again.
-    this.scheduleFrame(performance.now());
+    this.scheduleFrame(receivedTimestampMs);
   }
 
   private observeDetailPerformance(inferenceMs: number): void {
@@ -617,6 +635,7 @@ class HandTracker {
   private clearTrackingState(): void {
     this.latestSample = null;
     this.latestSampleAt = 0;
+    this.lastAcceptedCaptureTimestampMs = Number.NEGATIVE_INFINITY;
     this.consumedSequence = this.sampleSequence;
     this.trackingFps = 0;
     this.lastResultAt = 0;
@@ -1158,6 +1177,7 @@ class HandTracker {
       enhanced: result.enhanced,
       confidenceState: confidence.state,
       confidence: confidence.score,
+      usableForGesture: confidence.usableForGesture,
       gestureStable: this.lightingStableFrames >= 3,
     };
     this.sampleSequence++;

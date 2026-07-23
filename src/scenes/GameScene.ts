@@ -55,7 +55,7 @@ import {
   type PortalCooldown,
   type PortalPair,
 } from '../game/mechanics';
-import { recordLevelClear } from '../game/progression';
+import { campaignLevelScore, recordLevelClear } from '../game/progression';
 import {
   addCoins,
   addMysteryKeys,
@@ -82,6 +82,11 @@ import {
   UI_FONT,
 } from '../gfx/ui';
 import { createRunSummary, recordRunSummary, seededRandom, type ChallengeDef, type GhostShot } from '../game/retention';
+import {
+  flushGameplayTelemetry,
+  trackGameplayEvent,
+  type GameplayTelemetryReason,
+} from '../game/gameplay-telemetry';
 import { consumeInventoryItem, getInventory, grantInventoryItem } from '../game/inventory';
 import {
   ArenaConnection,
@@ -146,6 +151,12 @@ interface GameSceneData {
 
 const ARENA_RESULT_WAIT_MS = 15_000;
 const ARENA_ID_PATTERN = /^(?:match|usr)_[A-Za-z0-9_-]{8,120}$/;
+const telemetryReasonForTerminalMessage = (message: string): GameplayTelemetryReason => {
+  if (message === 'TIME EXPIRED') return 'timer';
+  if (message === 'OUT OF SHOTS' || message === 'PRECISION BROKEN') return 'shot-limit';
+  if (message === 'GRID OVERRUN') return 'danger-line';
+  return message === 'YOU WON!' ? 'completed' : 'unknown';
+};
 
 export class GameScene extends Phaser.Scene {
   private geom!: HexGeom;
@@ -429,6 +440,13 @@ export class GameScene extends Phaser.Scene {
     this.runRecorded = false;
     this.runStartedAt = Date.now();
     this.shotTrace = [];
+    trackGameplayEvent({
+      type: 'level-start',
+      level: this.level,
+      mode: this.arena ? 'arena' : this.mode,
+      inputMode: 'unknown',
+      outcome: 'started',
+    });
     if (this.challenge?.modifier === 'short_fuse' && modeDef.timerSeconds != null) this.timerMs = Math.floor(this.timerMs * 0.8);
 
     const runMechanic: MechanicKind = def.mechanic === 'none'
@@ -1421,6 +1439,18 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
+    // Confidence may be too low for a physical contact/release edge while the
+    // filtered fingertip position is still useful for live aiming. Keep the
+    // cursor responsive, but fail closed and discard every partial double-tap.
+    if (!s.usableForGesture) {
+      this.pinchControl.resetForContinuity();
+      this.handLockedAim = null;
+      this.handPinching = false;
+      this.handBtn?.setText('UNCERTAIN').setColor('#ffd970');
+      this.handStatusText?.setColor('#ffd970');
+      return;
+    }
+
     const pinchEvent = this.pinchControl.update(s);
     this.handPinching = this.pinchControl.isContacting();
     if (pinchEvent === 'aim-locked') {
@@ -1550,7 +1580,7 @@ export class GameScene extends Phaser.Scene {
     if (this.replayTrace) return 0;
     if (this.rewardClaimed) return 0;
     this.rewardClaimed = true;
-    const scoreDelta = Math.max(0, this.score - this.levelStartScore);
+    const scoreDelta = this.currentLevelScore();
     const base = this.runCoins + Math.floor(scoreDelta / 500) + (success ? 60 + this.level * 8 : 12);
     const modeReward = Math.round(base * MODE_DEFS[this.mode].coinMultiplier);
     const artifactReward = this.artifact.id === 'fortune' ? modeReward * 2 : modeReward;
@@ -1631,7 +1661,7 @@ export class GameScene extends Phaser.Scene {
     const summary = createRunSummary({
       level: this.level,
       mode: this.mode,
-      score: Math.max(0, this.score - this.levelStartScore),
+      score: this.currentLevelScore(),
       won,
       hits: this.hits,
       misses: this.misses,
@@ -2440,12 +2470,24 @@ export class GameScene extends Phaser.Scene {
     this.handOn = false;
     this.handCursor?.setVisible(false);
     getHandTracker().suspend();
-    const progress = recordLevelClear(this.level, this.score);
+    const progress = recordLevelClear(this.level, this.currentLevelScore());
     this.recordCompletedRun(true);
     const shardAwarded = this.claimStoryShard();
     const stars = progress.stars[this.level] ?? 1;
     const coinsAwarded = this.claimCoinReward(true);
     const accuracy = this.shots ? Math.round((this.hits / this.shots) * 100) : 0;
+    trackGameplayEvent({
+      type: 'level-end',
+      level: this.level,
+      mode: this.mode,
+      inputMode: 'unknown',
+      outcome: 'won',
+      reason: 'completed',
+      shots: this.shots,
+      hits: this.hits,
+      won: true,
+    });
+    void flushGameplayTelemetry();
     const { width, height } = VIEW;
     const reveal = (text: Phaser.GameObjects.Text, delay: number, rise = 14): Phaser.GameObjects.Text => {
       const y = text.y;
@@ -2777,13 +2819,27 @@ export class GameScene extends Phaser.Scene {
     const storyAftermath = won && !this.challenge && !this.arena && !this.replayTrace
       ? storyBeatForLevel(this.level).aftermath
       : '';
-    if (won && !this.challenge && !this.arena && !this.replayTrace) recordLevelClear(this.level, this.score);
+    if (won && !this.challenge && !this.arena && !this.replayTrace) {
+      recordLevelClear(this.level, this.currentLevelScore());
+    }
     this.recordCompletedRun(won);
     const shardAwarded = won ? this.claimStoryShard() : 0;
     const coinsAwarded = this.claimCoinReward(won);
     const accuracy = this.shots ? Math.round((this.hits / this.shots) * 100) : 0;
-    if (!this.replayTrace && !this.scoreSubmitted && this.score > 0) {
-      submitScore(this.score, this.level);
+    trackGameplayEvent({
+      type: 'level-end',
+      level: this.level,
+      mode: this.arena ? 'arena' : this.mode,
+      inputMode: 'unknown',
+      outcome: won ? 'won' : draw ? 'completed' : 'lost',
+      reason: telemetryReasonForTerminalMessage(msg),
+      shots: this.shots,
+      hits: this.hits,
+      won,
+    });
+    void flushGameplayTelemetry();
+    if (!this.replayTrace && !this.scoreSubmitted && this.currentLevelScore() > 0) {
+      submitScore(this.currentLevelScore(), this.level);
       this.scoreSubmitted = true;
     }
     const { width, height } = VIEW;
@@ -2883,7 +2939,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   private visibleScore(): number {
-    return this.arena ? this.arenaVerifiedScore : this.score;
+    return this.currentLevelScore();
+  }
+
+  private currentLevelScore(): number {
+    return this.arena
+      ? Math.max(0, this.arenaVerifiedScore)
+      : campaignLevelScore(this.score, this.levelStartScore);
   }
 
   private arenaElapsedMs(): number {
