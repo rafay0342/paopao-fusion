@@ -1,4 +1,4 @@
-# PaoPao · Fusion — Phaser 3.90.0 Bubble Shooter
+# PaoPao · Fusion — Phaser 3.90.0 Bubble Shooter.
 
 A production Phaser 3 + TypeScript + Vite bubble-shooter with six worlds, 30
 deterministic campaign levels, six bosses, three classic modes, authoritative
