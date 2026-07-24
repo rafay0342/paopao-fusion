@@ -247,6 +247,8 @@ export interface HandGridDragFrame {
   palmX: number;
   palmY: number;
   palmScale: number;
+  /** True when raw camera X must be mirrored to match the on-screen cursor. */
+  mirrorX: boolean;
 }
 
 export interface HandGridSwap {
@@ -330,8 +332,9 @@ export class HandDragSwapController {
       return null;
     }
     const scale = Math.max(0.001, (this.anchor.scale + frame.palmScale) * 0.5);
-    // Camera landmarks are unmirrored while the on-screen hand cursor is.
-    const dx = -(frame.palmX - this.anchor.x) / scale;
+    // Palm landmarks stay in camera space. Respect the same horizontal mirror
+    // contract as the cursor so drag direction never changes between settings.
+    const dx = (frame.mirrorX ? -1 : 1) * (frame.palmX - this.anchor.x) / scale;
     const dy = (frame.palmY - this.anchor.y) / scale;
     const absoluteX = Math.abs(dx);
     const absoluteY = Math.abs(dy);

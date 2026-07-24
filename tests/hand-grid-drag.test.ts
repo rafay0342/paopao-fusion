@@ -7,7 +7,8 @@ const frame = (
   palmX = 0.5,
   palmY = 0.5,
   palmScale = 0.2,
-): HandGridDragFrame => ({ timestampMs, cell, palmX, palmY, palmScale });
+  mirrorX = true,
+): HandGridDragFrame => ({ timestampMs, cell, palmX, palmY, palmScale, mirrorX });
 
 describe('measured-palm hand grid swaps', () => {
   it('locks the source from the three measured open-hand observations', () => {
@@ -39,6 +40,17 @@ describe('measured-palm hand grid swaps', () => {
     expect(control.updateContact(frame(80, { row: 3, col: 4 }, 0.42))).toEqual({ row: 3, col: 4 });
     expect(control.release()).toEqual({ from: { row: 3, col: 3 }, to: { row: 3, col: 4 } });
     expect(control.release()).toBeNull();
+  });
+
+  it('keeps horizontal drag aligned when camera mirroring is disabled', () => {
+    const control = new HandDragSwapController();
+    control.observeOpen(frame(0, { row: 3, col: 3 }, 0.5, 0.5, 0.2, false));
+    control.observeOpen(frame(20, { row: 3, col: 3 }, 0.5, 0.5, 0.2, false));
+    control.latch(frame(40, { row: 3, col: 3 }, 0.5, 0.5, 0.2, false));
+    expect(control.updateContact(frame(60, { row: 3, col: 4 }, 0.57, 0.5, 0.2, false))).toBeNull();
+    expect(control.updateContact(frame(80, { row: 3, col: 4 }, 0.58, 0.5, 0.2, false)))
+      .toEqual({ row: 3, col: 4 });
+    expect(control.release()).toEqual({ from: { row: 3, col: 3 }, to: { row: 3, col: 4 } });
   });
 
   it('cancels diagonal ambiguity and out-of-bounds drags', () => {

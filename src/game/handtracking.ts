@@ -90,7 +90,7 @@ export type HandDirection = 'left' | 'right' | 'up' | 'down' | 'steady';
 export interface HandSample {
   /** Capture clock shared with the worker; gesture timing must use this. */
   timestampMs: number;
-  /** Normalised 0..1, mirrored for natural selfie controls. */
+  /** Normalised 0..1 after applying the active mirror preference. */
   x: number;
   y: number;
   /** Thumb/index distance divided by palm width; smaller means pinched. */
@@ -99,6 +99,8 @@ export interface HandSample {
   filteredPinch: number;
   palmX: number;
   palmY: number;
+  /** True when camera-space palm X is mirrored by the on-screen controls. */
+  mirrorX: boolean;
   /** Unfiltered palm size for geometry validation. */
   rawPalmScale: number;
   palmScale: number;
@@ -1153,6 +1155,7 @@ class HandTracker {
       filteredPinch: smoothPinch,
       palmX: smoothGeometry.palmCenter.x,
       palmY: smoothGeometry.palmCenter.y,
+      mirrorX: settings.mirror,
       rawPalmScale: rawGeometry.palmScale,
       palmScale: smoothGeometry.palmScale,
       palmPixels,

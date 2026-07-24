@@ -42,6 +42,11 @@ describe('Prism Cascade delivery wiring', () => {
     expect(scene).toContain("event === 'latched'");
     expect(scene).toContain('this.handDrag.updateContact(frame)');
     expect(scene).toContain('this.pinchControl.holdForUncertainty(sample.timestampMs)');
+    expect(scene.indexOf("if (continuity !== 'usable')")).toBeLessThan(
+      scene.indexOf('this.handDrag.observeOpen(frame)'),
+    );
+    expect(scene).toContain('sample.pinch >= this.handReleaseThreshold');
+    expect(scene).toContain('if (!this.handOn || this.inputLocked');
     expect(scene).toContain('HAND_LOSS_RESET_MS');
     expect(scene).not.toMatch(/\b(?:addCoins|grantCoins|setCoins|submitRunV3)\s*\(/);
   });
@@ -53,6 +58,8 @@ describe('Prism Cascade delivery wiring', () => {
     expect(scene).toContain("window.removeEventListener('paopao:render-context-boundary'");
     expect(scene).toContain("this.events.off('paopao:back-request'");
     expect(scene).toContain('getHandTracker().suspend()');
+    expect(scene).toContain('if (tracker.isWanted()) void this.startHandTracking()');
+    expect(scene).toContain('this.suspendHandTracking()');
     expect(scene).toContain('this.handDrag.cancel()');
   });
 

@@ -6,6 +6,7 @@ import {
   HandGestureContinuityGate,
   PinchDoubleTapControl,
   type HandGridCell,
+  type HandGridDragFrame,
 } from '../game/handcontrol';
 import { getHandSettings } from '../game/handsettings';
 import { getHandTracker, type HandSample, type HandTrackingFailure } from '../game/handtracking';
@@ -111,6 +112,8 @@ export class Match3Scene extends Phaser.Scene {
 
   private handOn = false;
   private handStarting = false;
+  private handActivationGeneration = 0;
+  private handReleaseThreshold = 0.5;
   private handLastSeenAt = 0;
   private handCursor?: Phaser.GameObjects.Arc;
   private handButton?: Phaser.GameObjects.Container;
@@ -168,6 +171,7 @@ export class Match3Scene extends Phaser.Scene {
     this.handContinuity.reset();
     this.handDrag.cancel();
     const settings = getHandSettings();
+    this.handReleaseThreshold = settings.pinchOff;
     this.pinchControl = new PinchDoubleTapControl(
       settings.pinchOn,
       settings.pinchOff,
@@ -283,14 +287,19 @@ export class Match3Scene extends Phaser.Scene {
       this.handAimPredictor.reset();
       this.handContinuity.reset();
       this.handDrag.cancel();
+      this.handActivationGeneration += 1;
+      this.handStarting = false;
+      this.handOn = false;
       getHandTracker().suspend();
     });
-    void getHandTracker().prepare().catch(() => undefined);
+    const tracker = getHandTracker();
+    if (tracker.isWanted()) void this.startHandTracking();
+    else void tracker.prepare().catch(() => undefined);
     sharpenSceneText(this);
   }
 
   update(): void {
-    if (!this.handOn || this.pauseShown || this.terminalShown) return;
+    if (!this.handOn || this.inputLocked || this.pauseShown || this.terminalShown) return;
     this.pollHand();
     this.advanceHandCursor();
   }
@@ -794,6 +803,7 @@ export class Match3Scene extends Phaser.Scene {
     this.inputLocked = true;
     this.clearSelection();
     this.handCursor?.setVisible(false);
+    this.suspendHandTracking();
     if (won) {
       recordMatch3Clear(this.level, this.state.score);
       SFX.win();
@@ -840,6 +850,7 @@ export class Match3Scene extends Phaser.Scene {
     this.pauseShown = true;
     this.inputLocked = true;
     this.handCursor?.setVisible(false);
+    this.suspendHandTracking();
     const overlay: Phaser.GameObjects.GameObject[] = [];
     const shield = this.add.rectangle(VIEW.width / 2, VIEW.height / 2, VIEW.width, VIEW.height, 0x02040c, 0.78)
       .setDepth(60)
@@ -855,6 +866,7 @@ export class Match3Scene extends Phaser.Scene {
       this.pauseShown = false;
       this.inputLocked = false;
       this.setStatus('READY — CONTINUE THE CASCADE', '#aebdd1');
+      if (getHandTracker().isWanted()) void this.startHandTracking();
     }, 330, 66, 70);
     const leave = addArtButton(this, VIEW.width / 2, 730, 'RETURN TO MAP', () => {
       SFX.click();
@@ -867,6 +879,7 @@ export class Match3Scene extends Phaser.Scene {
     if (this.handStarting) return;
     const tracker = getHandTracker();
     if (this.handOn) {
+      this.handActivationGeneration += 1;
       tracker.disable();
       this.handOn = false;
       this.pinchControl.reset();
@@ -878,12 +891,21 @@ export class Match3Scene extends Phaser.Scene {
       this.setStatus('POINTER, TOUCH AND KEYBOARD READY', '#aebdd1');
       return;
     }
+    await this.startHandTracking();
+  }
+
+  private async startHandTracking(): Promise<void> {
+    if (this.handStarting || this.handOn || this.pauseShown || this.terminalShown) return;
+    const tracker = getHandTracker();
+    const activation = ++this.handActivationGeneration;
     this.handStarting = true;
     this.setHandButton('HAND  •  STARTING', '#ffe083');
     const enabled = await tracker.enable();
+    if (activation !== this.handActivationGeneration) return;
     this.handStarting = false;
-    if (!this.sys.isActive()) {
+    if (!this.sys.isActive() || this.pauseShown || this.terminalShown) {
       tracker.suspend();
+      this.handOn = false;
       return;
     }
     this.handOn = enabled;
@@ -898,23 +920,32 @@ export class Match3Scene extends Phaser.Scene {
     }
   }
 
+  private suspendHandTracking(): void {
+    this.handActivationGeneration += 1;
+    this.handStarting = false;
+    this.handOn = false;
+    this.pinchControl.reset();
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
+    this.handDrag.cancel();
+    this.handBoosterTarget = null;
+    this.clearSelection();
+    this.handCursor?.setVisible(false);
+    getHandTracker().suspend();
+  }
+
   private setHandButton(label: string, color: string): void {
     this.handButtonText?.setText(label).setColor(color);
   }
 
-  private handFrame(sample: HandSample, cell: Match3Coordinate | null): {
-    timestampMs: number;
-    cell: HandGridCell | null;
-    palmX: number;
-    palmY: number;
-    palmScale: number;
-  } {
+  private handFrame(sample: HandSample, cell: Match3Coordinate | null): HandGridDragFrame {
     return {
       timestampMs: sample.timestampMs,
       cell,
       palmX: sample.palmX,
       palmY: sample.palmY,
       palmScale: sample.palmScale,
+      mirrorX: sample.mirrorX,
     };
   }
 
@@ -959,7 +990,6 @@ export class Match3Scene extends Phaser.Scene {
     }
 
     const frame = this.handFrame(sample, measuredCell);
-    if (!this.pinchControl.isEngaged()) this.handDrag.observeOpen(frame);
     const continuity = this.handContinuity.observe(
       sample.gestureStable && sample.usableForGesture,
       sample.timestampMs,
@@ -975,6 +1005,12 @@ export class Match3Scene extends Phaser.Scene {
       }
       this.setStatus(sample.gestureStable ? 'HAND UNCERTAIN — HOLD POSITION' : 'HAND STABILIZING', '#ffe083');
       return;
+    }
+
+    if (!this.pinchControl.isEngaged()
+      && sample.confidenceState === 'tracked'
+      && sample.pinch >= this.handReleaseThreshold) {
+      this.handDrag.observeOpen(frame);
     }
 
     const wasLatched = this.pinchControl.isLatched();
