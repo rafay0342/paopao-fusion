@@ -1,0 +1,86 @@
+:root {
+  color-scheme: dark;
+  background: #050713;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    radial-gradient(circle at 50% 36%, rgba(93, 66, 188, 0.42), transparent 34rem),
+    linear-gradient(160deg, #050713, #10102e);
+  color: #fff8df;
+  font-family: Inter, ui-rounded, "Segoe UI", sans-serif;
+}
+
+.launch-shell {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.launch-card {
+  display: grid;
+  max-width: 34rem;
+  justify-items: center;
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.launch-orb {
+  width: 4.5rem;
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 239, 184, 0.76);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 25%, #fff, #bfa5ff 30%, #623fbd 68%, #24155a);
+  box-shadow: 0 0 2.5rem rgba(176, 136, 255, 0.7);
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+.launch-card p {
+  margin: 0.35rem 0 0;
+  color: #e9d492;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.24em;
+}
+
+.launch-card h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 5vw, 2.6rem);
+  line-height: 1.05;
+}
+
+.launch-card a {
+  margin-top: 0.55rem;
+  border: 1px solid rgba(255, 234, 164, 0.72);
+  border-radius: 999px;
+  padding: 0.8rem 1.5rem;
+  background: rgba(101, 67, 187, 0.62);
+  color: #fff8df;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+@keyframes pulse {
+  to {
+    transform: scale(1.06);
+    filter: brightness(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launch-orb {
+    animation: none;
+  }
+}
