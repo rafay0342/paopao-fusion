@@ -5,6 +5,10 @@ root `dist/` directory. The root route immediately opens
 `/classic/index.html`; all game assets, the MediaPipe worker and models are
 served by OpenAI Sites instead of a local server.
 
+`GAME_SOURCE_COMMIT` pins the exact canonical GitHub game source used for the
+packaged build. The Sites source repository contains only this deployable
+wrapper so it does not duplicate hundreds of megabytes of authored masters.
+
 ## Build
 
 Use Node.js 22 or newer. Build the Phaser client first so the wrapper can never
