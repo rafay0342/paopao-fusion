@@ -24,8 +24,10 @@ describe('measured hand aim authority', () => {
     const latch = section(handPoll, "if (pinchEvent === 'latched')", "} else if (pinchEvent === 'aim-locked')");
     const release = section(handPoll, "if (pinchEvent === 'released')", '    const phase =');
 
-    expect(latch).toContain('const measuredAim = this.handTarget');
+    expect(latch).toContain('const measuredAim = this.handOpenAim');
+    expect(latch).toContain(': this.handTarget');
     expect(latch).toContain('this.handLockedAim = measuredAim ? { ...measuredAim } : null');
+    expect(latch).not.toContain('predict(');
     expect(release).toContain('const aim = this.handLockedAim;');
     expect(release).toContain('this.shootAt(aim.x, aim.y)');
     expect(release).not.toContain('this.shootAt(predicted');
@@ -38,7 +40,10 @@ describe('measured hand aim authority', () => {
     const release = section(handPoll, "else if (event === 'released')", '    const phase =');
     const advance = section(endless, '  private advanceHandAim(): void {', '  private failClosed');
 
-    expect(latch).toContain('this.handLockedLane = lane');
+    expect(latch).toContain('const lockedLane = this.handOpenLane');
+    expect(latch).toContain(': lane');
+    expect(latch).toContain('this.handLockedLane = lockedLane');
+    expect(latch).not.toContain('predict(');
     expect(release).toContain('const lockedLane = this.handLockedLane');
     expect(release).toContain('this.selectedLane = lockedLane');
     expect(release).toContain("this.fireSelectedLane('hand')");

@@ -8,7 +8,12 @@ import {
   type PlayerSaveV4,
   type ProgressEnvelopeV3,
 } from './contracts';
-import { getHandSettings, updateHandSettings } from './handsettings';
+import {
+  HAND_CALIBRATION_ALGORITHM_REVISION,
+  HAND_CALIBRATION_PROFILE_REVISION_FLOOR,
+  getHandSettings,
+  updateHandSettings,
+} from './handsettings';
 import { getInventoryState } from './inventory';
 import { getMeta } from './meta';
 import { getProgress, mergeGameProgress, persistGameProgress } from './progression';
@@ -16,7 +21,8 @@ import { getPlayerSave } from './retention';
 import { subscribeLocalSaveChanges } from './save-events';
 
 export const PLAYER_SAVE_V4_CORRUPT_STORAGE_KEY = `${PLAYER_SAVE_V4_STORAGE_KEY}.corrupt`;
-export const CLASSIC_CLIENT_BUILD = 'classic-web-2026.07.22-r1';
+export const CLASSIC_CLIENT_BUILD = 'classic-web-2026.07.24-r2';
+export { HAND_CALIBRATION_ALGORITHM_REVISION };
 
 let volatileSave: PlayerSaveV4 | null = null;
 let observedStorage: Storage | null = null;
@@ -96,7 +102,7 @@ function localHandProfile(previous?: HandProfileV4): HandProfileV4 {
     aimSensitivity: hand.sensitivity,
     pinchContactRatio: hand.pinchOn,
     pinchReleaseRatio: hand.pinchOff,
-    calibrationRevision: Math.max(previous?.calibrationRevision ?? 0, hand.calibrated ? 1 : 0),
+    calibrationRevision: hand.calibrated ? hand.calibrationRevision : 0,
   });
 }
 
@@ -180,15 +186,16 @@ export function mergeProgressEnvelopeIntoClassicSaveV4(
 ): PlayerSaveV4 {
   const local = mirrorClassicPlayerSaveV4(now);
   const progress = persistGameProgress(mergeGameProgress(local.progress, envelope.progress));
-  const handSettings = getHandSettings();
-  const useRemoteCalibration = envelope.handProfile.calibrationRevision > local.handProfile.calibrationRevision;
+  const useRemoteCalibration = envelope.handProfile.calibrationRevision >= HAND_CALIBRATION_PROFILE_REVISION_FLOOR
+    && envelope.handProfile.calibrationRevision > local.handProfile.calibrationRevision;
   if (useRemoteCalibration) {
     updateHandSettings({
       dominantHand: envelope.handProfile.handedness === 'auto' ? 'either' : envelope.handProfile.handedness,
       sensitivity: envelope.handProfile.aimSensitivity,
       pinchOn: envelope.handProfile.pinchContactRatio,
       pinchOff: envelope.handProfile.pinchReleaseRatio,
-      calibrated: envelope.handProfile.calibrationRevision > 0,
+      calibrated: true,
+      calibrationRevision: envelope.handProfile.calibrationRevision,
     });
   }
   const appliedHand = useRemoteCalibration
@@ -229,11 +236,7 @@ export function mergeProgressEnvelopeIntoClassicSaveV4(
         ...appliedHand,
         enabled: envelope.handProfile.enabled,
         smoothing: envelope.handProfile.smoothing,
-        calibrationRevision: Math.max(
-          envelope.handProfile.calibrationRevision,
-          appliedHand.calibrationRevision,
-          handSettings.calibrated ? 1 : 0,
-        ),
+        calibrationRevision: appliedHand.calibrationRevision,
       }),
     },
   );

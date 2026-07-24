@@ -143,9 +143,10 @@ describe('Level-0 tutorial gameplay adapter', () => {
       '  private pollHand(): void {',
       '  /** Interpolate every Phaser frame',
     );
-    expect(poll).toContain('lostFor > 650');
-    expect(poll).toContain('getHandTracker().disable()');
-    expect(poll).toContain('this.fallbackTutorialToPointerInput()');
+    expect(poll).toContain('if (!this.handHasSeen)');
+    expect(poll).toContain("this.handBtn?.setText('SEARCH')");
+    expect(poll).not.toContain('getHandTracker().disable()');
+    expect(poll).not.toContain('this.fallbackTutorialToPointerInput()');
 
     const create = section('  create(): void {', '  /** Build a faceted crystal command plate');
     expect(create).toContain('!this.isTutorialActive()');

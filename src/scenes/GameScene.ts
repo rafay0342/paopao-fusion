@@ -238,10 +238,13 @@ export class GameScene extends Phaser.Scene {
 
   private handOn = false;
   private handStarting = false;
+  private handHasSeen = false;
   private handLastSeenAt = 0;
+  private handReleaseThreshold = 0.5;
   private handSmooth: { x: number; y: number } | null = null;
   private handTarget: { x: number; y: number } | null = null;
   private handLockedAim: { x: number; y: number } | null = null;
+  private handOpenAim: { x: number; y: number; timestampMs: number } | null = null;
   private pinchControl = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
   private readonly handAimPredictor = new HandAimPredictor();
   private readonly handContinuity = new HandGestureContinuityGate();
@@ -336,10 +339,12 @@ export class GameScene extends Phaser.Scene {
     if (!this.scene.isActive()) return;
     const phase = (event as CustomEvent<{ phase?: string }>).detail?.phase;
     this.pinchControl.resetForContinuity();
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     this.handSmooth = null;
     this.handTarget = null;
     this.handLockedAim = null;
+    this.handOpenAim = null;
     this.handAimPredictor.reset();
     this.handContinuity.reset();
     this.handPinching = false;
@@ -388,6 +393,7 @@ export class GameScene extends Phaser.Scene {
       ? { matchId, userId, seed, startsAt, serverTime, clientReceivedAt }
       : undefined;
     const handSettings = getHandSettings();
+    this.handReleaseThreshold = handSettings.pinchOff;
     this.pinchControl = new PinchDoubleTapControl(
       handSettings.pinchOn,
       handSettings.pinchOff,
@@ -474,10 +480,12 @@ export class GameScene extends Phaser.Scene {
     this.scoreSubmitted = false;
     this.handOn = false;
     this.handStarting = false;
+    this.handHasSeen = false;
     this.handLastSeenAt = 0;
     this.handSmooth = null;
     this.handTarget = null;
     this.handLockedAim = null;
+    this.handOpenAim = null;
     this.pinchControl.reset();
     this.handPinching = false;
     this.suppressNextShot = false;
@@ -1714,12 +1722,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.handOn = ok;
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     if (ok) {
       // Gameplay keeps camera decoding/inference but removes the preview and
       // skeleton paint cost. Hand Control Lab remains the explicit preview UI.
       ht.setPreviewVisible(false);
-      this.setHandBtn('on');
+      this.setHandBtn('loading');
       if (showError) this.toast('HAND  •  AIM → TOUCH THUMB + INDEX → SEPARATE SLIGHTLY TO FIRE');
       return;
     }
@@ -1751,6 +1760,7 @@ export class GameScene extends Phaser.Scene {
       this.handSmooth = null;
       this.handTarget = null;
       this.handLockedAim = null;
+      this.handOpenAim = null;
       this.handAimPredictor.reset();
       this.handContinuity.reset();
       this.handCursor?.setVisible(false);
@@ -1766,6 +1776,11 @@ export class GameScene extends Phaser.Scene {
     const now = performance.now();
     const s = getHandTracker().sample();
     if (!s) {
+      if (!this.handHasSeen) {
+        this.handBtn?.setText('SEARCH').setColor('#ffe083');
+        this.handStatusText?.setColor('#ffe083');
+        return;
+      }
       const lostFor = now - this.handLastSeenAt;
       if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
         this.handPinching = false;
@@ -1773,33 +1788,31 @@ export class GameScene extends Phaser.Scene {
         this.handBtn?.setText('LOST').setColor('#ffc56f');
         this.handStatusText?.setColor('#ffc56f');
       }
-      if (lostFor > 320) {
+      if (lostFor > 450) {
         this.handTarget = null;
         this.handAimPredictor.reset();
         this.handCursor?.setVisible(false);
       }
-      if (lostFor > 650) {
+      if (lostFor > 1_200) {
         this.handCursor?.setVisible(false);
         this.handSmooth = null;
         this.handTarget = null;
         this.handLockedAim = null;
+        this.handOpenAim = null;
         this.handAimPredictor.reset();
         this.handContinuity.reset();
         this.pinchControl.reset();
         this.handPinching = false;
         this.handBtn?.setText('SHOW').setColor('#ffc56f');
         this.handStatusText?.setColor('#ffc56f');
-        if (this.isTutorialActive() && this.tutorialInputMode === 'hand') {
-          getHandTracker().disable();
-          this.handOn = false;
-          this.fallbackTutorialToPointerInput();
-          return;
-        }
       }
       return;
     }
+    this.handHasSeen = true;
     this.handLastSeenAt = now;
-    this.handAimPredictor.push({ x: s.x, y: s.y }, s.timestampMs, now);
+    if (s.rawPinch >= this.handReleaseThreshold) {
+      this.handAimPredictor.push({ x: s.x, y: s.y }, s.timestampMs, now);
+    }
     this.handTarget = mapHandToAim(
       { x: s.x, y: s.y },
       VIEW.width,
@@ -1822,9 +1835,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     // An uncertain result can still move the cursor but can never progress a
-    // contact/release edge. Two brief dips preserve a real pinch; sustained
+    // contact/release edge. Brief dips preserve a real pinch; sustained
     // uncertainty cancels fail-closed.
-    const continuity = this.handContinuity.observe(s.gestureStable && s.usableForGesture, now);
+    const continuity = this.handContinuity.observe(s.gestureStable && s.usableForGesture, s.timestampMs);
     if (continuity !== 'usable') {
       if (continuity === 'cancel') {
         this.pinchControl.resetForContinuity();
@@ -1840,13 +1853,21 @@ export class GameScene extends Phaser.Scene {
 
     const handAim = this.handSmooth ?? this.handTarget;
     this.observeTutorialAim(this.aimVectorXY(handAim.x, handAim.y));
+    if (!this.pinchControl.isEngaged()
+      && s.rawPinch >= this.handReleaseThreshold
+      && this.handTarget) {
+      this.handOpenAim = { ...this.handTarget, timestampMs: s.timestampMs };
+    }
     const pinchEvent = this.pinchControl.update(s);
     this.handPinching = this.pinchControl.isContacting();
     if (pinchEvent === 'latched') {
       // The confirmed contact frame is the shot's authority boundary. Lock the
       // measured aim and make the display agree with it; render prediction may
       // keep an open-hand cursor fluid, but it can never choose a shot target.
-      const measuredAim = this.handTarget;
+      const measuredAim = this.handOpenAim
+        && s.timestampMs - this.handOpenAim.timestampMs <= 260
+        ? this.handOpenAim
+        : this.handTarget;
       this.handLockedAim = measuredAim ? { ...measuredAim } : null;
       if (!this.handLockedAim) {
         this.pinchControl.resetForContinuity();

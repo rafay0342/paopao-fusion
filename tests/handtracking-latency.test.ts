@@ -136,7 +136,7 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.isEngaged()).toBe(true);
   });
 
-  it('does not bridge release confirmation across an uncertain frame', () => {
+  it('preserves one release sample across a single uncertain fingertip frame', () => {
     const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
     [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
     expect(control.update(gestureFrame(CLOSED, 120))).toBe('none');
@@ -144,8 +144,8 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
     expect(control.update(gestureFrame(CONTACT_BROKEN, 240))).toBe('none');
     control.holdForUncertainty(280);
-    expect(control.update(gestureFrame(CONTACT_BROKEN, 320))).toBe('none');
-    expect(control.update(gestureFrame(CONTACT_BROKEN, 360))).toBe('released');
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 320))).toBe('released');
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 360))).toBe('none');
   });
 
   it('treats a small real fingertip gap as separated without requiring an open palm', () => {
@@ -226,10 +226,45 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.update(gestureFrame(CLOSED, 600))).toBe('latched');
   });
 
+  it('does not let one hard pinch narrow the next softer gameplay pinch', () => {
+    const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+    [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
+    expect(control.update(gestureFrame(0.05, 120))).toBe('none');
+    expect(control.update(gestureFrame(0.05, 160))).toBe('latched');
+    expect(control.update(gestureFrame(0.05, 200))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 240))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 280))).toBe('released');
+
+    expect(control.update(gestureFrame(0.12, 320))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 360))).toBe('none');
+    expect(control.getPhase()).toBe('ready');
+    expect(control.update(gestureFrame(SEPARATED, 400))).toBe('none');
+    expect(control.update(gestureFrame(0.32, 440))).toBe('none');
+    expect(control.update(gestureFrame(0.32, 480))).toBe('latched');
+  });
+
+  it('never turns an unchanged small release gap into an automatic next shot', () => {
+    const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+    expect(control.update(gestureFrame(0.5, 0))).toBe('none');
+    expect(control.update(gestureFrame(0.5, 40))).toBe('none');
+    expect(control.update(gestureFrame(0.05, 80))).toBe('none');
+    expect(control.update(gestureFrame(0.05, 120))).toBe('latched');
+    expect(control.update(gestureFrame(0.12, 160))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 200))).toBe('released');
+    expect(control.update(gestureFrame(0.12, 240))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 280))).toBe('none');
+    expect(control.getPhase()).toBe('ready');
+    expect(control.update(gestureFrame(0.12, 320))).toBe('none');
+    expect(control.update(gestureFrame(0.12, 360))).toBe('none');
+    expect(control.isContacting()).toBe(false);
+    expect(control.getPhase()).toBe('ready');
+  });
+
   it('keeps the learned small release gap through a brief loss or missed tap two', () => {
     const lost = new PinchDoubleTapControl();
     enterSecondTap(lost);
-    expect(lost.cancelForLoss(540, 280)).toBe('cancelled');
+    expect(lost.cancelForLoss(609, 280)).toBe('none');
+    expect(lost.cancelForLoss(610, 280)).toBe('cancelled');
     expect(lost.update(gestureFrame(CONTACT_BROKEN, 580))).toBe('none');
     expect(lost.update(gestureFrame(CONTACT_BROKEN, 620))).toBe('none');
     expect(lost.getPhase()).toBe('ready');
@@ -294,6 +329,19 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.update(gestureFrame(0.6, 160, angledTouch))).toBe('latched');
   });
 
+  it('has no dead band for a 0.48 angled fingertip touch', () => {
+    const control = new PinchDoubleTapControl();
+    [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
+    const angledTouch = {
+      filteredPinch: 0.48,
+      pinchDepth: 0.18,
+      pinch3d: 0.38,
+      depthSource: 'world' as const,
+    };
+    expect(control.update(gestureFrame(0.48, 120, angledTouch))).toBe('none');
+    expect(control.update(gestureFrame(0.48, 160, angledTouch))).toBe('latched');
+  });
+
   it('supports the same world-space angled touch for tap two', () => {
     const control = new PinchDoubleTapControl();
     enterSecondTap(control);
@@ -312,8 +360,8 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
       depthSource: 'world' as const,
     };
     expect(control.update(gestureFrame(0.6, 400, angledRelease))).toBe('none');
-    expect(control.update(gestureFrame(0.6, 440, angledRelease))).toBe('none');
-    expect(control.update(gestureFrame(0.6, 480, angledRelease))).toBe('released');
+    expect(control.update(gestureFrame(0.6, 440, angledRelease))).toBe('released');
+    expect(control.update(gestureFrame(0.6, 480, angledRelease))).toBe('none');
   });
 
   it('keeps reliable world contact continuous across angled raw ratios', () => {
@@ -361,8 +409,8 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
 
   it('rearms from cold or full reset using sustained world-only separation, never image-z', () => {
     const worldSeparated = {
-      pinchDepth: 0.4,
-      pinch3d: 0.55,
+      pinchDepth: 0.8,
+      pinch3d: 0.95,
       depthSource: 'world' as const,
     };
     const control = new PinchDoubleTapControl();
@@ -396,21 +444,21 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     const imageContact = { depthSource: 'image' as const };
     expect(control.update(gestureFrame(CLOSED, 120, imageContact))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 160, imageContact))).toBe('latched');
-    // One reliable-world contact is enough to establish conservative release
-    // margins; release itself still requires three fresh world observations.
+    // One reliable-world contact establishes conservative release margins;
+    // the ordinary state edge then requires two fresh release observations.
     expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
     const sideRelease = { pinchDepth: 0.4, pinch3d: 0.55, depthSource: 'world' as const };
     expect(control.update(gestureFrame(CLOSED, 240, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 280, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 320, sideRelease))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 280, sideRelease))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 320, sideRelease))).toBe('none');
 
     // Tap two begins on image-z and switches directly to separated world data,
     // exercising the no-baseline fallback without granting image-z release.
     expect(control.update(gestureFrame(CLOSED, 360, imageContact))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 400, imageContact))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 440, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 480, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 520, sideRelease))).toBe('released');
+    expect(control.update(gestureFrame(CLOSED, 480, sideRelease))).toBe('released');
+    expect(control.update(gestureFrame(CLOSED, 520, sideRelease))).toBe('none');
 
     const imageRelease = new PinchDoubleTapControl();
     [0, 40, 80].forEach((time) => imageRelease.update(gestureFrame(SEPARATED, time)));
@@ -449,7 +497,7 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(undersampled.isContacting()).toBe(false);
   });
 
-  it('vetoes false depth overlap and requires three world frames for a side-view release', () => {
+  it('vetoes repeated extreme depth contradiction and needs two side-view release frames', () => {
     const control = new PinchDoubleTapControl();
     const depthSeparated = { pinchDepth: 0.78, pinch3d: 0.94 };
     [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
@@ -462,8 +510,8 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.update(gestureFrame(CLOSED, 240))).toBe('latched');
     expect(control.update(gestureFrame(CLOSED, 280))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 320, depthSeparated))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 360, depthSeparated))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 400, depthSeparated))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 360, depthSeparated))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 400, depthSeparated))).toBe('none');
     expect(control.getPhase()).toBe('tap-two');
     expect(control.isContacting()).toBe(false);
   });
@@ -476,24 +524,24 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
     const sideRelease = { pinchDepth: 0.4, pinch3d: 0.55, depthSource: 'world' as const };
     expect(control.update(gestureFrame(CLOSED, 240, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 280, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 320, sideRelease))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 280, sideRelease))).toBe('aim-locked');
+    expect(control.update(gestureFrame(CLOSED, 320, sideRelease))).toBe('none');
 
     expect(control.update(gestureFrame(CLOSED, 360))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 400))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 440, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 480, sideRelease))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 520, sideRelease))).toBe('released');
+    expect(control.update(gestureFrame(CLOSED, 480, sideRelease))).toBe('released');
+    expect(control.update(gestureFrame(CLOSED, 520, sideRelease))).toBe('none');
   });
 
-  it('never latches two tips that only overlap in the image while world depth is apart', () => {
+  it('lets repeated strong 2D contact win over moderate world-depth jitter', () => {
     const control = new PinchDoubleTapControl();
     [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
     const projectedOverlap = { pinchDepth: 0.4, pinch3d: 0.55, depthSource: 'world' as const };
     expect(control.update(gestureFrame(CLOSED, 120, projectedOverlap))).toBe('none');
-    expect(control.update(gestureFrame(CLOSED, 160, projectedOverlap))).toBe('none');
-    expect(control.isContacting()).toBe(false);
-    expect(control.getPhase()).toBe('ready');
+    expect(control.update(gestureFrame(CLOSED, 160, projectedOverlap))).toBe('latched');
+    expect(control.isContacting()).toBe(true);
+    expect(control.getPhase()).toBe('aim');
   });
 
   it('tolerates one brief neutral frame but ignores duplicate or old frames', () => {
@@ -501,7 +549,11 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     [0, 40, 80, 120, 160].forEach((time) => control.update(gestureFrame(OPEN, time)));
 
     expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
-    expect(control.update(gestureFrame(NEUTRAL, 240))).toBe('none');
+    expect(control.update(gestureFrame(NEUTRAL, 240, {
+      depthSource: 'image',
+      pinchDepth: 0.45,
+      pinch3d: 0.62,
+    }))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 280))).toBe('latched');
     expect(control.update(gestureFrame(CLOSED, 300, { filteredPinch: OPEN }))).toBe('none');
     expect(control.update(gestureFrame(CLOSED, 280))).toBe('none');
@@ -555,8 +607,8 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     [0, 40, 80, 120, 160].forEach((time) => control.update(gestureFrame(OPEN, time)));
     control.update(gestureFrame(CLOSED, 200));
     expect(control.update(gestureFrame(CLOSED, 240))).toBe('latched');
-    expect(control.cancelForLoss(439, 240)).toBe('none');
-    expect(control.cancelForLoss(440, 240)).toBe('cancelled');
+    expect(control.cancelForLoss(569, 240)).toBe('none');
+    expect(control.cancelForLoss(570, 240)).toBe('cancelled');
     expect(control.update(gestureFrame(CLOSED, 540))).toBe('none');
     expect(control.update(gestureFrame(SEPARATED, 580))).toBe('none');
     expect(control.update(gestureFrame(SEPARATED, 620))).toBe('none');
@@ -627,7 +679,8 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(ensureModel.indexOf('if (this.workerReady)')).toBeLessThan(ensureModel.indexOf('new Worker'));
     expect(ensureModel.indexOf('if (this.workerInitPromise)')).toBeLessThan(ensureModel.indexOf('new Worker'));
     expect(worker).toContain('function primeRecognizer(): void');
-    expect(worker).toContain('recognizer.recognizeForVideo(canvas, 0)');
+    expect(worker).toContain('recognizer.detectForVideo(canvas, 0)');
+    expect(tracking).toContain("mediapipe/models/hand_landmarker.task");
     expect(worker.indexOf('primeRecognizer();')).toBeGreaterThan(worker.indexOf("options('CPU')"));
   });
 
@@ -670,13 +723,17 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(tracking).toContain('handFarDetailMode(this.farDetailMode, this.lastPalmScale)');
     expect(tracking).toContain('new HandInferenceGovernor()');
     expect(tracking).toContain('this.inferenceGovernor.observe(pipelineMs');
-    expect(tracking).toContain('Math.min(requestedEdge, this.inferenceGovernor.edgeCap())');
+    expect(tracking).toContain('const acquisitionOverride = this.detailAcquisitionSamples < 3');
+    expect(tracking).toContain('Math.max(HAND_DETAIL_FALLBACK_EDGE, this.inferenceGovernor.edgeCap())');
+    expect(tracking).toContain('Math.min(requestedEdge, adaptiveCap)');
     expect(tracking).toContain('width: { ideal: 640, max: 640 }');
     expect(tracking).toContain('requestDefaultCamera()');
     expect(tracking).toContain('void this.optimiseCameraTrack(track)');
-    expect(tracking).toContain("await apply({ focusMode: 'continuous' })");
-    expect(tracking).toContain("await apply({ exposureMode: 'continuous' })");
-    expect(tracking).toContain("await apply({ whiteBalanceMode: 'continuous' })");
+    expect(tracking).toContain("controls.push({ focusMode: 'continuous' })");
+    expect(tracking).toContain("controls.push({ exposureMode: 'continuous' })");
+    expect(tracking).toContain("controls.push({ whiteBalanceMode: 'continuous' })");
+    expect(tracking).toContain('await track.applyConstraints({ advanced: [Object.assign({}, ...controls)] })');
+    expect(tracking).toContain('await track.applyConstraints({ advanced: [control] })');
     expect(worker).toContain('handLightingProfile');
     expect(worker).toContain('inferenceSource(bitmap, startedAt)');
     expect(game).toContain('this.pinchControl.isLatched() ? 14 : 12');
@@ -688,15 +745,15 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(worker).toContain('return { source: bitmap, enhanced: false }');
     expect(worker).toContain('HandEnhancementBudget');
     expect(worker).toContain('enhancementBudget.observe(totalFrameMs, enhanced)');
-    expect(worker).toContain('result = recognizer.recognizeForVideo(bitmap, timestampMs)');
+    expect(worker).toContain('result = recognizer.detectForVideo(bitmap, timestampMs)');
     expect(worker).toContain('enhanced,');
-    expect(worker).toContain('minHandDetectionConfidence: 0.45');
-    expect(worker).toContain('minHandPresenceConfidence: 0.4');
-    expect(worker).toContain('minTrackingConfidence: 0.5');
+    expect(worker).toContain('minHandDetectionConfidence: 0.35');
+    expect(worker).toContain('minHandPresenceConfidence: 0.35');
+    expect(worker).toContain('minTrackingConfidence: 0.4');
     const frameHandler = worker.slice(worker.indexOf('const { bitmap, timestampMs'));
     expect(frameHandler).toContain('finally {\n    bitmap.close();');
-    expect(tracking).toContain('gestureStable: this.lightingStableFrames >= 3');
-    expect(tracking).toContain('result.enhanced !== this.gestureEnhanced');
+    expect(tracking).toContain('gestureStable: this.lightingStableFrames >= 1');
+    expect(tracking).not.toContain('result.enhanced !== this.gestureEnhanced');
     expect(game).toContain('this.handContinuity.observe(s.gestureStable && s.usableForGesture');
     expect(game).toContain('this.pinchControl.resetForContinuity()');
     expect(game).toContain("continuity === 'cancel'");

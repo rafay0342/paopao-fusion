@@ -11,12 +11,12 @@ const frame = (
 ): HandGridDragFrame => ({ timestampMs, cell, palmX, palmY, palmScale, mirrorX });
 
 describe('measured-palm hand grid swaps', () => {
-  it('locks the source from the three measured open-hand observations', () => {
+  it('uses the current cell when the latest two open observations disagree', () => {
     const control = new HandDragSwapController();
     control.observeOpen(frame(0, { row: 3, col: 3 }));
     control.observeOpen(frame(20, { row: 3, col: 3 }));
     control.observeOpen(frame(40, { row: 3, col: 4 }));
-    expect(control.latch(frame(60, { row: 3, col: 4 }))).toEqual({ row: 3, col: 3 });
+    expect(control.latch(frame(60, { row: 3, col: 4 }))).toEqual({ row: 3, col: 4 });
   });
 
   it('ignores fingertip cell drift when the palm stays still', () => {
@@ -39,6 +39,55 @@ describe('measured-palm hand grid swaps', () => {
     expect(control.updateContact(frame(60, { row: 3, col: 4 }, 0.43))).toBeNull();
     expect(control.updateContact(frame(80, { row: 3, col: 4 }, 0.42))).toEqual({ row: 3, col: 4 });
     expect(control.release()).toEqual({ from: { row: 3, col: 3 }, to: { row: 3, col: 4 } });
+    expect(control.release()).toBeNull();
+  });
+
+  it('retains a confirmed swipe while the palm relaxes for fingertip release', () => {
+    const control = new HandDragSwapController();
+    control.observeOpen(frame(0));
+    control.observeOpen(frame(20));
+    control.latch(frame(40));
+    expect(control.updateContact(frame(60, { row: 3, col: 4 }, 0.43))).toBeNull();
+    expect(control.updateContact(frame(80, { row: 3, col: 4 }, 0.42))).toEqual({ row: 3, col: 4 });
+    expect(control.updateContact(frame(100, { row: 3, col: 3 }, 0.49))).toEqual({ row: 3, col: 4 });
+    expect(control.release()).toEqual({ from: { row: 3, col: 3 }, to: { row: 3, col: 4 } });
+  });
+
+  it('cancels a confirmed swipe after sustained diagonal or reversed motion', () => {
+    const diagonal = new HandDragSwapController();
+    diagonal.observeOpen(frame(0));
+    diagonal.observeOpen(frame(20));
+    diagonal.latch(frame(40));
+    diagonal.updateContact(frame(60, { row: 3, col: 4 }, 0.43));
+    expect(diagonal.updateContact(frame(80, { row: 3, col: 4 }, 0.42)))
+      .toEqual({ row: 3, col: 4 });
+    expect(diagonal.updateContact(frame(100, { row: 4, col: 4 }, 0.42, 0.58)))
+      .toEqual({ row: 3, col: 4 });
+    expect(diagonal.updateContact(frame(120, { row: 4, col: 4 }, 0.41, 0.59))).toBeNull();
+    expect(diagonal.release()).toBeNull();
+
+    const reversed = new HandDragSwapController();
+    reversed.observeOpen(frame(0));
+    reversed.observeOpen(frame(20));
+    reversed.latch(frame(40));
+    reversed.updateContact(frame(60, { row: 3, col: 4 }, 0.43));
+    reversed.updateContact(frame(80, { row: 3, col: 4 }, 0.42));
+    expect(reversed.updateContact(frame(100, { row: 3, col: 2 }, 0.58)))
+      .toEqual({ row: 3, col: 4 });
+    expect(reversed.updateContact(frame(120, { row: 3, col: 2 }, 0.59))).toBeNull();
+    expect(reversed.release()).toBeNull();
+  });
+
+  it('retains only one uncertain frame after a confirmed swipe', () => {
+    const control = new HandDragSwapController();
+    control.observeOpen(frame(0));
+    control.observeOpen(frame(20));
+    control.latch(frame(40));
+    control.updateContact(frame(60, { row: 3, col: 4 }, 0.43));
+    control.updateContact(frame(80, { row: 3, col: 4 }, 0.42));
+    expect(control.updateContact(frame(100, { row: 3, col: 4 }, Number.NaN)))
+      .toEqual({ row: 3, col: 4 });
+    expect(control.updateContact(frame(120, { row: 3, col: 4 }, Number.NaN))).toBeNull();
     expect(control.release()).toBeNull();
   });
 

@@ -5,7 +5,10 @@ import {
   parsePlayerSaveV4,
   parseProgressEnvelopeV3,
 } from '../src/game/contracts';
-import { updateHandSettings } from '../src/game/handsettings';
+import {
+  HAND_CALIBRATION_PROFILE_REVISION_FLOOR,
+  updateHandSettings,
+} from '../src/game/handsettings';
 import { setQuality } from '../src/game/meta';
 import {
   CLASSIC_CLIENT_BUILD,
@@ -66,7 +69,7 @@ describe('Classic PlayerSaveV4 migration and mirror', () => {
     initializeClassicPlayerSaveV4(new Date('2026-07-22T10:00:00.000Z'));
     setQuality('performance');
     updateHandSettings({
-      dominantHand: 'left', sensitivity: 1.35, pinchOn: 0.29, pinchOff: 0.36, calibrated: true,
+      dominantHand: 'left', sensitivity: 1.35, pinchOn: 0.4, pinchOff: 0.47, calibrated: true,
     });
     await Promise.resolve();
     await Promise.resolve();
@@ -75,8 +78,10 @@ describe('Classic PlayerSaveV4 migration and mirror', () => {
     expect(mirrored?.deviceSettings.quality).toBe('performance');
     expect(mirrored?.handProfile).toMatchObject({
       handedness: 'left', aimSensitivity: 1.35,
-      pinchContactRatio: 0.29, pinchReleaseRatio: 0.36, calibrationRevision: 1,
+      pinchContactRatio: 0.4, pinchReleaseRatio: 0.47,
     });
+    expect(mirrored?.handProfile.calibrationRevision)
+      .toBeGreaterThanOrEqual(HAND_CALIBRATION_PROFILE_REVISION_FLOOR);
   });
 
   it('builds an exact non-authoritative Classic PUT DTO and rejects malformed envelopes', () => {

@@ -33,6 +33,8 @@ export interface HandConfidenceInput {
   inferenceMs: number;
   targetFps: 15 | 20 | 30;
   lightingMode: HandLightingMode;
+  /** False when this result may update aim but is too old for a contact edge. */
+  gestureTimely?: boolean;
 }
 
 export interface HandConfidenceResult {
@@ -42,7 +44,8 @@ export interface HandConfidenceResult {
 }
 
 export type HandWorkerResultFreshness =
-  | 'fresh'
+  | 'fresh-action'
+  | 'visual-only'
   | 'wrong-generation'
   | 'invalid-timestamp'
   | 'duplicate'
@@ -63,8 +66,10 @@ export interface HandWorkerResultFreshnessInput {
 
 /** Ordinary fast-path budget before measured slow-device adaptation is needed. */
 export const HAND_RESULT_MAX_FRAME_BUDGETS = 2;
-/** No recognition older than this may drive aim or gesture state. */
-export const HAND_RESULT_HARD_MAX_AGE_MS = 180;
+/** No recognition older than this may advance contact or release state. */
+export const HAND_RESULT_ACTION_MAX_AGE_MS = 180;
+/** A newest single-in-flight slow result may still recover the visual cursor. */
+export const HAND_RESULT_HARD_MAX_AGE_MS = 350;
 
 export type HandCameraLifecycleState =
   | 'off'
@@ -201,9 +206,11 @@ export function classifyHandConfidence(input: HandConfidenceInput): HandConfiden
   if (!input.landmarksComplete) return { state: 'lost', score: 0, usableForGesture: false };
 
   const frameBudget = 1_000 / input.targetFps;
-  const geometry = input.fingertipsVisible && input.palmAnchorsVisible && input.palmPixels >= 14 ? 1 : 0;
+  // A usable far palm is commonly only 12–14px tall at the 320px low-power
+  // tier. Geometry and temporal continuity authorise input; handedness stays
+  // advisory because its label is least reliable at side angles and contact.
+  const geometry = input.fingertipsVisible && input.palmAnchorsVisible && input.palmPixels >= 12 ? 1 : 0;
   const identity = clamp01(input.handednessScore);
-  const gesture = clamp01(input.gestureScore);
   const temporal = clamp01(input.stableFrames / 3);
   const latency = clamp01(1 - Math.max(0, input.inferenceMs - frameBudget) / Math.max(1, frameBudget * 3));
   const lighting = input.lightingMode === 'normal'
@@ -212,17 +219,16 @@ export function classifyHandConfidence(input: HandConfidenceInput): HandConfiden
       ? 0.72
       : 0.82;
   const score = clamp01(
-    geometry * 0.34
-    + identity * 0.22
-    + gesture * 0.12
-    + temporal * 0.2
-    + latency * 0.08
-    + lighting * 0.04,
+    geometry * 0.5
+    + temporal * 0.28
+    + latency * 0.1
+    + lighting * 0.08
+    + identity * 0.04,
   );
   const usableForGesture = geometry === 1
     && input.stableFrames >= 2
-    && identity >= (input.lightingMode === 'normal' ? 0.65 : 0.75)
-    && score >= 0.72;
+    && input.gestureTimely !== false
+    && score >= 0.64;
   return {
     state: usableForGesture ? 'tracked' : 'uncertain',
     score,
@@ -257,11 +263,12 @@ export function classifyHandWorkerResultFreshness(
     // on a slower CPU.
     ? input.inferenceMs! + Math.max(frameBudgetMs, 50)
     : fastPathAgeMs;
-  const maximumAgeMs = Math.min(
-    HAND_RESULT_HARD_MAX_AGE_MS,
+  const actionAgeMs = Math.min(
+    HAND_RESULT_ACTION_MAX_AGE_MS,
     Math.max(fastPathAgeMs, measuredAgeMs),
   );
-  return ageMs <= maximumAgeMs ? 'fresh' : 'stale';
+  if (ageMs <= actionAgeMs) return 'fresh-action';
+  return ageMs <= HAND_RESULT_HARD_MAX_AGE_MS ? 'visual-only' : 'stale';
 }
 
 /** Pure transition contract shared by camera events, diagnostics and tests. */

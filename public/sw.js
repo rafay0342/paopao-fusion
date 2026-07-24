@@ -5,7 +5,7 @@
  * response can never masquerade as current cloud state.
  */
 const CACHE_PREFIX = 'paopao-fusion-';
-const CACHE_VERSION = 'shattered-crown-2026-07-22-v15-phaser-only';
+const CACHE_VERSION = 'hand-landmarker-2026-07-24-v16';
 const SHELL_CACHE = `${CACHE_PREFIX}shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-${CACHE_VERSION}`;
 const CURRENT_CACHES = new Set([SHELL_CACHE, RUNTIME_CACHE]);
@@ -49,6 +49,9 @@ const CORE_SHELL_PATHS = [
   'assets/sprites/v3/power-bomb-hd.png',
   'assets/sprites/v3/power-rainbow-hd.png',
   'assets/sprites/v3/crystal-launcher-hd.png',
+  'mediapipe/models/hand_landmarker.task',
+  'mediapipe/wasm/vision_wasm_internal.js',
+  'mediapipe/wasm/vision_wasm_internal.wasm',
 ];
 
 const STATIC_DESTINATIONS = new Set([
@@ -74,6 +77,15 @@ function isStaticRequest(request, url) {
 
 function discoverShellUrls(html, responseUrl) {
   const urls = new Set();
+  const baseMatch = /<base\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/i.exec(html);
+  let documentBase = responseUrl;
+  if (baseMatch) {
+    try {
+      documentBase = new URL(baseMatch[1], responseUrl).href;
+    } catch {
+      // A malformed optional base falls back to the response URL.
+    }
+  }
   const attributePatterns = [
     /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi,
     /<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi,
@@ -83,7 +95,7 @@ function discoverShellUrls(html, responseUrl) {
     let match;
     while ((match = pattern.exec(html)) !== null) {
       try {
-        const url = new URL(match[1], responseUrl);
+        const url = new URL(match[1], documentBase);
         if (url.origin === self.location.origin && !isApiRequest(url)) urls.add(url.href);
       } catch {
         // Ignore malformed optional markup; the fetched index remains cached.

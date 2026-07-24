@@ -63,8 +63,8 @@ const CELL_SIZE = 72;
 const BOARD_WIDTH = CELL_SIZE * MATCH3_COLUMNS;
 const BOARD_HEIGHT = CELL_SIZE * MATCH3_ROWS;
 const BOARD_BOTTOM = BOARD_Y + BOARD_HEIGHT;
-const HAND_LOSS_HIDE_MS = 320;
-const HAND_LOSS_RESET_MS = 650;
+const HAND_LOSS_HIDE_MS = 450;
+const HAND_LOSS_RESET_MS = 1_200;
 
 const coordinateKey = ({ row, col }: Match3Coordinate): string => `${row}:${col}`;
 
@@ -112,6 +112,7 @@ export class Match3Scene extends Phaser.Scene {
 
   private handOn = false;
   private handStarting = false;
+  private handHasSeen = false;
   private handActivationGeneration = 0;
   private handReleaseThreshold = 0.5;
   private handLastSeenAt = 0;
@@ -137,7 +138,8 @@ export class Match3Scene extends Phaser.Scene {
     this.handContinuity.reset();
     this.handDrag.cancel();
     this.handBoosterTarget = null;
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     this.handCursor?.setVisible(false);
     this.clearSelection();
     this.setStatus('HAND STABILIZING', '#ffe083');
@@ -164,6 +166,7 @@ export class Match3Scene extends Phaser.Scene {
     this.pauseShown = false;
     this.handOn = false;
     this.handStarting = false;
+    this.handHasSeen = false;
     this.handLastSeenAt = 0;
     this.handBoosterTarget = null;
     this.tileViews.clear();
@@ -909,11 +912,12 @@ export class Match3Scene extends Phaser.Scene {
       return;
     }
     this.handOn = enabled;
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     if (enabled) {
       tracker.setPreviewVisible(false);
       this.setHandButton('HAND  •  ON', '#76f0c7');
-      this.setStatus('OPEN HAND TO AIM  •  PINCH, PALM-SWIPE, RELEASE', '#76f0c7');
+      this.setStatus('SEARCHING FOR HAND  •  KEEP PALM IN FRAME', '#ffe083');
     } else {
       this.setHandButton('HAND  •  ERROR', '#ff9a99');
       this.setStatus(handFailureMessage(tracker.getLastFailure()), '#ff9a99');
@@ -924,6 +928,7 @@ export class Match3Scene extends Phaser.Scene {
     this.handActivationGeneration += 1;
     this.handStarting = false;
     this.handOn = false;
+    this.handHasSeen = false;
     this.pinchControl.reset();
     this.handAimPredictor.reset();
     this.handContinuity.reset();
@@ -960,6 +965,10 @@ export class Match3Scene extends Phaser.Scene {
     const now = performance.now();
     const sample = getHandTracker().sample();
     if (!sample) {
+      if (!this.handHasSeen) {
+        this.setStatus('SEARCHING FOR HAND  •  KEEP PALM IN FRAME', '#ffe083');
+        return;
+      }
       const lostFor = now - this.handLastSeenAt;
       if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
         this.handDrag.cancel();
@@ -980,12 +989,12 @@ export class Match3Scene extends Phaser.Scene {
       return;
     }
 
+    this.handHasSeen = true;
     this.handLastSeenAt = now;
     const measuredPoint = this.measuredHandPoint(sample);
     const measuredCell = this.cellAtPoint(measuredPoint.x, measuredPoint.y);
-    // Only a tracked result updates the predictor. Uncertain geometry holds the
-    // last visual pose and can never jerk the cursor or cross a logical cell.
-    if (sample.confidenceState === 'tracked') {
+    const visuallyOpen = sample.rawPinch >= this.handReleaseThreshold;
+    if (visuallyOpen) {
       this.handAimPredictor.push({ x: sample.x, y: sample.y }, sample.timestampMs, now);
     }
 
@@ -1026,6 +1035,8 @@ export class Match3Scene extends Phaser.Scene {
       const source = this.handDrag.latch(frame);
       if (!source) return;
       this.selected = { ...source };
+      const sourcePoint = cellCenter(source);
+      this.handCursor?.setVisible(true).setPosition(sourcePoint.x, sourcePoint.y);
       this.handBoosterTarget = this.activeBooster ? { ...source } : null;
       this.candidate = null;
       this.drawSelection();
@@ -1052,6 +1063,8 @@ export class Match3Scene extends Phaser.Scene {
         this.clearSelection();
         this.setStatus('NO DOMINANT PALM SWIPE — NO MOVE SPENT', '#aebdd1');
       }
+    } else if (!this.pinchControl.isLatched()) {
+      this.setStatus('HAND READY  •  PINCH, SWIPE ONE CELL, RELEASE', '#76f0c7');
     }
   }
 

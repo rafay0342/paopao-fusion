@@ -95,8 +95,11 @@ export class EndlessScene extends Phaser.Scene {
   private bossHpWidth = 0;
   private handOn = false;
   private handStarting = false;
+  private handHasSeen = false;
   private handLastSeenAt = 0;
+  private handReleaseThreshold = 0.5;
   private handLockedLane: number | null = null;
+  private handOpenLane: { lane: number; timestampMs: number } | null = null;
   private requireFreshPointerAfterContext = false;
   private pinchControl = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
   private readonly handAimPredictor = new HandAimPredictor();
@@ -105,8 +108,10 @@ export class EndlessScene extends Phaser.Scene {
     if (!this.scene.isActive()) return;
     const phase = (event as CustomEvent<{ phase?: string }>).detail?.phase;
     this.pinchControl.resetForContinuity();
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     this.handLockedLane = null;
+    this.handOpenLane = null;
     this.handAimPredictor.reset();
     this.handContinuity.reset();
     this.handCursor?.setVisible(false);
@@ -133,11 +138,15 @@ export class EndlessScene extends Phaser.Scene {
     this.targetHalo = undefined;
     this.handOn = false;
     this.handStarting = false;
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     this.handLockedLane = null;
+    this.handOpenLane = null;
     this.handAimPredictor.reset();
     this.handContinuity.reset();
     this.requireFreshPointerAfterContext = false;
     const settings = getHandSettings();
+    this.handReleaseThreshold = settings.pinchOff;
     this.pinchControl = new PinchDoubleTapControl(
       settings.pinchOn,
       settings.pinchOff,
@@ -651,9 +660,10 @@ export class EndlessScene extends Phaser.Scene {
       return;
     }
     this.handOn = ok;
-    this.handLastSeenAt = performance.now();
+    this.handHasSeen = false;
+    this.handLastSeenAt = 0;
     if (ok) tracker.setPreviewVisible(false);
-    this.handStatus?.setText(ok ? 'HAND READY' : 'HAND ERROR').setColor(ok ? '#76f0c7' : '#ff8fa2');
+    this.handStatus?.setText(ok ? 'HAND SEARCHING' : 'HAND ERROR').setColor(ok ? '#ffe083' : '#ff8fa2');
     if (showError && !ok) this.toast(failureMessage(tracker.getLastFailure()));
   }
 
@@ -663,7 +673,9 @@ export class EndlessScene extends Phaser.Scene {
     if (this.handOn) {
       tracker.disable();
       this.handOn = false;
+      this.handHasSeen = false;
       this.handLockedLane = null;
+      this.handOpenLane = null;
       this.pinchControl.reset();
       this.handAimPredictor.reset();
       this.handContinuity.reset();
@@ -679,17 +691,22 @@ export class EndlessScene extends Phaser.Scene {
     const now = performance.now();
     const sample = getHandTracker().sample();
     if (!sample) {
+      if (!this.handHasSeen) {
+        this.handStatus?.setText('HAND SEARCHING').setColor('#ffe083');
+        return;
+      }
       const lostFor = now - this.handLastSeenAt;
       if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
         this.handLockedLane = null;
         this.handStatus?.setText('HAND LOST').setColor('#ffb075');
       }
-      if (lostFor > 320) {
+      if (lostFor > 450) {
         this.handAimPredictor.reset();
         this.handCursor?.setVisible(false);
       }
-      if (lostFor > 650) {
+      if (lostFor > 1_200) {
         this.handLockedLane = null;
+        this.handOpenLane = null;
         this.pinchControl.reset();
         this.handAimPredictor.reset();
         this.handContinuity.reset();
@@ -697,15 +714,19 @@ export class EndlessScene extends Phaser.Scene {
       }
       return;
     }
+    this.handHasSeen = true;
     this.handLastSeenAt = now;
-    this.handAimPredictor.push({ x: sample.x, y: sample.y }, sample.timestampMs, now);
+    const visuallyOpen = sample.rawPinch >= this.handReleaseThreshold;
+    if (visuallyOpen) {
+      this.handAimPredictor.push({ x: sample.x, y: sample.y }, sample.timestampMs, now);
+    }
     const point = mapHandToAim({ x: sample.x, y: sample.y }, VIEW.width, BOARD_TOP, LAUNCHER_Y);
     const lane = endlessLaneForBoardX(this.grid, point.x);
-    if (this.handLockedLane === null && !this.flying) {
+    if (visuallyOpen && this.handLockedLane === null && !this.flying) {
       this.selectedLane = lane;
       this.drawAim();
     }
-    if (this.handLockedLane === null) {
+    if (visuallyOpen && this.handLockedLane === null) {
       this.handCursor?.setVisible(true).setPosition(point.x, point.y);
     }
     if (this.flying) {
@@ -716,7 +737,7 @@ export class EndlessScene extends Phaser.Scene {
     }
     const continuity = this.handContinuity.observe(
       sample.gestureStable && sample.usableForGesture,
-      now,
+      sample.timestampMs,
     );
     if (continuity !== 'usable') {
       if (continuity === 'cancel') {
@@ -729,12 +750,19 @@ export class EndlessScene extends Phaser.Scene {
         .setColor('#ffe083');
       return;
     }
+    if (!this.pinchControl.isEngaged() && visuallyOpen) {
+      this.handOpenLane = { lane, timestampMs: sample.timestampMs };
+    }
     const event = this.pinchControl.update(sample);
     if (event === 'latched') {
       // Lock the lane from this measured contact frame. Prediction remains a
       // render-only cursor aid and cannot alter the verified replay input.
-      this.handLockedLane = lane;
-      this.selectedLane = lane;
+      const lockedLane = this.handOpenLane
+        && sample.timestampMs - this.handOpenLane.timestampMs <= 260
+        ? this.handOpenLane.lane
+        : lane;
+      this.handLockedLane = lockedLane;
+      this.selectedLane = lockedLane;
       this.drawAim();
     } else if (event === 'aim-locked') {
       // Double-tap mode can report this phase, but gameplay's first-release

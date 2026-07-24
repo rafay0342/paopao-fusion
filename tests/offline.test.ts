@@ -53,12 +53,14 @@ describe('service worker routing invariants', () => {
     expect(workerSource).toContain('await cache.put(launcherRequest, launcherResponse)');
     expect(workerSource).toContain('await cache.put(indexRequest, indexResponse)');
     expect(workerSource).toContain('/<script\\b[^>]*\\bsrc');
+    expect(workerSource).toContain('const baseMatch = /<base\\b');
+    expect(workerSource).toContain('new URL(match[1], documentBase)');
     expect(workerSource).toContain('name.startsWith(CACHE_PREFIX) && !CURRENT_CACHES.has(name)');
     expect(workerSource).toContain('self.clients.claim()');
   });
 
   it('ships every explicit core shell resource from the public directory', () => {
-    const quotedPaths = [...workerSource.matchAll(/'((?:assets|manifest)[^']+)'/g)]
+    const quotedPaths = [...workerSource.matchAll(/'((?:assets|manifest|mediapipe)[^']+)'/g)]
       .map((match) => match[1])
       .filter((path) => !path.includes('${'));
 
@@ -68,6 +70,8 @@ describe('service worker routing invariants', () => {
     expect(quotedPaths).toContain('assets/icons/icon-maskable-512.png');
     expect(quotedPaths).toContain('assets/cinematics/previews-v2/frame-00750ms.jpg');
     expect(quotedPaths).toContain('assets/worlds/v3/world-crystal-hd.jpg');
+    expect(quotedPaths).toContain('mediapipe/models/hand_landmarker.task');
+    expect(quotedPaths).toContain('mediapipe/wasm/vision_wasm_internal.wasm');
     for (const path of new Set(quotedPaths)) {
       expect(() => readFileSync(projectFile(`public/${path}`))).not.toThrow();
     }
@@ -79,7 +83,7 @@ describe('service worker routing invariants', () => {
     expect(shellPaths).not.toContain('assets/audio/');
     expect(workerSource).toContain('mp4');
     expect(workerSource).toContain('ogg');
-    expect(workerSource).toContain("CACHE_VERSION = 'shattered-crown-2026-07-22-v15-phaser-only'");
+    expect(workerSource).toContain("CACHE_VERSION = 'hand-landmarker-2026-07-24-v16'");
     expect(workerSource).not.toContain('const FULL_MEDIA_WARMUPS = new Map()');
     expect(workerSource).toContain('rangeHeader && isStreamedMediaRequest(request, url)');
     expect(workerSource).toContain("request.destination === 'audio'");

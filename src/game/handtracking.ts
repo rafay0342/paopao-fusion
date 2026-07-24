@@ -17,6 +17,7 @@ import {
 } from './handreliability';
 import {
   HAND_DETAIL_EDGE,
+  HAND_DETAIL_FALLBACK_EDGE,
   HAND_FAR_PALM_SCALE,
   HandInferenceGovernor,
   handFarDetailMode,
@@ -27,7 +28,7 @@ import {
 
 const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
 const WASM_URL = assetUrl('mediapipe/wasm');
-const MODEL_URL = assetUrl('mediapipe/models/gesture_recognizer.task');
+const MODEL_URL = assetUrl('mediapipe/models/hand_landmarker.task');
 
 // Hand input is gameplay-critical and must not be throttled by visual quality.
 // Players can still choose 15/20/30 FPS explicitly in Hand Control Lab.
@@ -37,6 +38,7 @@ const BITMAP_TIMEOUT_MS = 700;
 const VIDEO_STALL_MS = 1_200;
 const WORKER_INIT_TIMEOUT_MS = 25_000;
 const CAPTURE_EARLY_TOLERANCE_MS = 8;
+const CAMERA_PARK_GRACE_MS = 5_000;
 
 const HAND_CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
   [0, 1], [1, 2], [2, 3], [3, 4],
@@ -133,7 +135,7 @@ export interface HandSample {
   confidence: number;
   /** Only true when this capture may advance contact/release gameplay state. */
   usableForGesture: boolean;
-  /** False for the first two valid frames after a lighting-pipeline transition. */
+  /** False for delayed results and until a fresh frame confirms a lighting transition. */
   gestureStable: boolean;
 }
 
@@ -201,6 +203,7 @@ class HandTracker {
   private cameraRecoveryPromise: Promise<void> | null = null;
   private cameraRetryAt = 0;
   private cameraRetryDelay = 500;
+  private parkedCameraTimer: ReturnType<typeof setTimeout> | null = null;
   private mutedSince = 0;
   private lastFailure: HandTrackingFailure = 'none';
 
@@ -261,11 +264,12 @@ class HandTracker {
   private stableGesture: HandGesture = 'other';
   private stableGestureAt = 0;
   private stableHandFrames = 0;
+  /** Valid landmark frames used only to end the temporary 512px detail boost. */
+  private detailAcquisitionSamples = 0;
   private lastPalmScale = 0;
   private lightingMode: HandLightingMode = 'normal';
   private gestureLightingMode: HandLightingMode = 'normal';
-  private gestureEnhanced = false;
-  private lightingStableFrames = 3;
+  private lightingStableFrames = 1;
   private farDetailMode = true;
   private lastCaptureEdge = HAND_DETAIL_EDGE;
   private lastCaptureWidth = 0;
@@ -476,13 +480,13 @@ class HandTracker {
       targetFps: this.settings.targetFps,
       inferenceMs: message.inferenceMs,
     });
-    if (freshness !== 'fresh') {
+    if (freshness !== 'fresh-action' && freshness !== 'visual-only') {
       this.droppedResults++;
       this.scheduleFrame(receivedTimestampMs);
       return;
     }
     this.lastAcceptedCaptureTimestampMs = message.timestampMs;
-    this.processResult(message);
+    this.processResult(message, freshness === 'fresh-action');
     // Backpressure is already guaranteed by one frame in flight. Capture the
     // newest camera frame immediately instead of adding inference time again.
     this.scheduleFrame(receivedTimestampMs);
@@ -586,19 +590,24 @@ class HandTracker {
   private async optimiseCameraTrack(track: MediaStreamTrack): Promise<void> {
     try {
       const capabilities = track.getCapabilities() as CameraControlCapabilities;
-      const accepted: CameraControlSet = {};
-      const apply = async (controls: CameraControlSet): Promise<void> => {
-        const cumulative = { ...accepted, ...controls };
+      const controls: CameraControlSet[] = [];
+      if (capabilities.focusMode?.includes('continuous')) controls.push({ focusMode: 'continuous' });
+      if (capabilities.exposureMode?.includes('continuous')) controls.push({ exposureMode: 'continuous' });
+      if (capabilities.whiteBalanceMode?.includes('continuous')) controls.push({ whiteBalanceMode: 'continuous' });
+      if (!controls.length) return;
+      try {
+        await track.applyConstraints({ advanced: [Object.assign({}, ...controls)] });
+        return;
+      } catch {
+        // Some cameras advertise a control that they reject when combined.
+      }
+      for (const control of controls) {
         try {
-          await track.applyConstraints({ advanced: [cumulative] });
-          Object.assign(accepted, controls);
+          await track.applyConstraints({ advanced: [control] });
         } catch {
-          // One optional driver control must not prevent the remaining controls.
+          // Each optional control fails independently; supported controls stay active.
         }
-      };
-      if (capabilities.focusMode?.includes('continuous')) await apply({ focusMode: 'continuous' });
-      if (capabilities.exposureMode?.includes('continuous')) await apply({ exposureMode: 'continuous' });
-      if (capabilities.whiteBalanceMode?.includes('continuous')) await apply({ whiteBalanceMode: 'continuous' });
+      }
     } catch {
       // Camera controls are hardware/browser optional; the bounded image path
       // below remains fully functional when a webcam rejects them.
@@ -606,6 +615,8 @@ class HandTracker {
   }
 
   private stopCamera(invalidateRequest = true): void {
+    if (this.parkedCameraTimer) clearTimeout(this.parkedCameraTimer);
+    this.parkedCameraTimer = null;
     if (invalidateRequest) this.cameraRequestId++;
     this.stopVideoPump();
     this.stream?.getTracks().forEach((track) => {
@@ -661,11 +672,11 @@ class HandTracker {
     this.stableGesture = 'other';
     this.stableGestureAt = 0;
     this.stableHandFrames = 0;
+    this.detailAcquisitionSamples = 0;
     this.lastPalmScale = 0;
     this.lightingMode = 'normal';
     this.gestureLightingMode = 'normal';
-    this.gestureEnhanced = false;
-    this.lightingStableFrames = 3;
+    this.lightingStableFrames = 1;
     this.farDetailMode = true;
     this.lastCaptureEdge = HAND_DETAIL_EDGE;
     this.lastCaptureWidth = 0;
@@ -748,6 +759,8 @@ class HandTracker {
     this.lastFailure = 'none';
     this.wanted = true;
     this.activeDesired = true;
+    if (this.parkedCameraTimer) clearTimeout(this.parkedCameraTimer);
+    this.parkedCameraTimer = null;
     this.resumeAfterVisibility = false;
     this.cameraLifecycle.dispatch('enable');
     try {
@@ -797,14 +810,24 @@ class HandTracker {
     this.stopCamera();
   }
 
-  /** Release only the camera between levels; keep the worker/model warm. */
+  /** Park the live camera briefly between scenes; keep worker/model warm. */
   suspend(): void {
     this.enableRequestId++;
     this.activeDesired = false;
     this.resumeAfterVisibility = false;
     this.cameraLifecycle.dispatch('suspend');
     this.setPreviewVisible(false);
-    this.stopCamera();
+    this.stopVideoPump();
+    this.captureGeneration++;
+    this.clearPendingFrame();
+    this.nextCaptureAt = 0;
+    this.lastVideoTime = -1;
+    this.clearTrackingState();
+    if (this.parkedCameraTimer) clearTimeout(this.parkedCameraTimer);
+    this.parkedCameraTimer = setTimeout(() => {
+      this.parkedCameraTimer = null;
+      if (!this.activeDesired) this.stopCamera();
+    }, CAMERA_PARK_GRACE_MS);
   }
 
   private startVideoPump(): void {
@@ -901,7 +924,17 @@ class HandTracker {
       stableFrames: this.stableHandFrames,
       palmScale: this.farDetailMode ? 0 : Math.max(HAND_FAR_PALM_SCALE, this.lastPalmScale),
     });
-    const inferenceEdge = Math.min(requestedEdge, this.inferenceGovernor.edgeCap());
+    // Do not make a new player wait for the governor's eight-second recovery
+    // before MediaPipe receives enough fingertip detail. The first three valid
+    // hands use the full acquisition frame; far-hand recovery retains a 416px
+    // floor, then ordinary stable tracking follows the learned device tier.
+    const acquisitionOverride = this.detailAcquisitionSamples < 3;
+    const adaptiveCap = acquisitionOverride
+      ? HAND_DETAIL_EDGE
+      : this.farDetailMode
+        ? Math.max(HAND_DETAIL_FALLBACK_EDGE, this.inferenceGovernor.edgeCap())
+        : this.inferenceGovernor.edgeCap();
+    const inferenceEdge = Math.min(requestedEdge, adaptiveCap);
     const inferenceSize = handInferenceSize(sourceWidth, sourceHeight, inferenceEdge);
     const resizeWidth = inferenceSize.width;
     const resizeHeight = inferenceSize.height;
@@ -1033,7 +1066,7 @@ class HandTracker {
     return { gesture: this.stableGesture, score };
   }
 
-  private processResult(result: WorkerResultMessage): void {
+  private processResult(result: WorkerResultMessage, gestureTimely: boolean): void {
     const now = performance.now();
     if (this.lastResultAt > 0) {
       const instantFps = 1000 / Math.max(1, now - this.lastResultAt);
@@ -1043,9 +1076,8 @@ class HandTracker {
     // Diagnostics must reflect the actual frame even when lighting prevents
     // MediaPipe from returning a usable hand.
     this.lightingMode = result.lightingMode;
-    if (result.lightingMode !== this.gestureLightingMode || result.enhanced !== this.gestureEnhanced) {
+    if (result.lightingMode !== this.gestureLightingMode) {
       this.gestureLightingMode = result.lightingMode;
-      this.gestureEnhanced = result.enhanced;
       this.lightingStableFrames = 0;
     }
 
@@ -1074,7 +1106,15 @@ class HandTracker {
     this.missingFrames = 0;
     this.lossFiltersReset = false;
     this.lastValidResultAt = now;
-    this.lightingStableFrames = Math.min(3, this.lightingStableFrames + 1);
+    this.detailAcquisitionSamples = Math.min(3, this.detailAcquisitionSamples + 1);
+    if (gestureTimely) {
+      this.lightingStableFrames = Math.min(1, this.lightingStableFrames + 1);
+    } else {
+      // A delayed frame may draw the cursor, but it cannot pre-qualify the
+      // next fresh frame for a contact/release edge.
+      this.lightingStableFrames = 0;
+      this.stableHandFrames = 0;
+    }
     const smoothLm = this.landmarkFilter.filter(lm, result.timestampMs);
     this.drawLandmarks(smoothLm);
 
@@ -1088,7 +1128,7 @@ class HandTracker {
       worldLandmarks: result.worldLandmarks,
     });
     this.lastPalmScale = smoothGeometry.palmScale;
-    this.stableHandFrames = Math.min(120, this.stableHandFrames + 1);
+    if (gestureTimely) this.stableHandFrames = Math.min(120, this.stableHandFrames + 1);
     const rawPinch = rawGeometry.rawPinch;
     const settings = this.settings;
     const smoothPinch = this.pinchFilter.filter(rawPinch, result.timestampMs);
@@ -1144,6 +1184,7 @@ class HandTracker {
       inferenceMs: result.inferenceMs,
       targetFps: settings.targetFps,
       lightingMode: result.lightingMode,
+      gestureTimely,
     });
 
     this.latestSample = {
@@ -1179,7 +1220,7 @@ class HandTracker {
       confidenceState: confidence.state,
       confidence: confidence.score,
       usableForGesture: confidence.usableForGesture,
-      gestureStable: this.lightingStableFrames >= 3,
+      gestureStable: this.lightingStableFrames >= 1,
     };
     this.sampleSequence++;
     this.latestSampleAt = now;

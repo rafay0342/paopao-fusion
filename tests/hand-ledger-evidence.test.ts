@@ -578,9 +578,10 @@ function assertPinchContact(facet: Facet, target: EvidenceTarget): void {
     const control = new PinchDoubleTapControl();
     armControl(control);
     const quality = confidence(mode, { handednessScore: 0.7 });
-    expect(quality.usableForGesture).toBe(false);
+    expect(quality.usableForGesture).toBe(true);
     expect(control.update(gestureFrame(CLOSED, 120, { fingertipsVisible: quality.usableForGesture }))).toBe('none');
-    if (target === 'phaser') expect(control.getPhase()).toBe('ready');
+    expect(control.update(gestureFrame(CLOSED, 160, { fingertipsVisible: quality.usableForGesture }))).toBe('latched');
+    if (target === 'phaser') expect(control.getPhase()).toBe('aim');
     return;
   }
   if (facet === 'uncertainty closure') {
@@ -641,11 +642,11 @@ function assertPinchRelease(facet: Facet, target: EvidenceTarget): void {
     control.update(gestureFrame(CLOSED, 200));
     const side = { pinchDepth: 0.4, pinch3d: 0.55, depthSource: 'world' as const };
     const firstRelease = [240, 280, 320].map((time) => control.update(gestureFrame(CLOSED, time, side)));
-    expect(firstRelease.at(-1)).toBe('aim-locked');
+    expect(firstRelease.filter((event) => event === 'aim-locked')).toHaveLength(1);
     control.update(gestureFrame(CLOSED, 360));
     control.update(gestureFrame(CLOSED, 400));
     const secondRelease = [440, 480, 520].map((time) => control.update(gestureFrame(CLOSED, time, side)));
-    expect(secondRelease.at(-1)).toBe('released');
+    expect(secondRelease.filter((event) => event === 'released')).toHaveLength(1);
     if (target === 'phaser') expect(control.isEngaged()).toBe(false);
     return;
   }
@@ -666,7 +667,7 @@ function assertPinchRelease(facet: Facet, target: EvidenceTarget): void {
       fingertipsVisible: quality.usableForGesture,
     })));
     expect(events).not.toContain('released');
-    if (target === 'phaser') expect(quality.state).toBe('uncertain');
+    if (target === 'phaser') expect(quality.state).toBe('tracked');
     return;
   }
   if (facet === 'uncertainty closure') {
@@ -872,8 +873,8 @@ function assertConfidenceState(facet: Facet, target: EvidenceTarget): void {
     return;
   }
   if (facet === 'distance normalization') {
-    expect(confidence('normal', { palmPixels: 13.9 }).state).toBe('uncertain');
-    expect(confidence('normal', { palmPixels: 14 }).state).toBe('tracked');
+    expect(confidence('normal', { palmPixels: 11.9 }).state).toBe('uncertain');
+    expect(confidence('normal', { palmPixels: 12 }).state).toBe('tracked');
     if (target === 'phaser') expect(confidence('normal', { palmPixels: 270 }).state).toBe('tracked');
     return;
   }
@@ -881,7 +882,7 @@ function assertConfidenceState(facet: Facet, target: EvidenceTarget): void {
     const mode: HandLightingMode = facet === 'blur handling' ? 'blurred' : facet === 'dark-scene handling' ? 'dark' : 'backlit';
     const low = confidence(mode, { handednessScore: 0.7 });
     const recovered = confidence(mode, { handednessScore: 0.9 });
-    expect(low.state).toBe('uncertain');
+    expect(low.state).toBe('tracked');
     expect(recovered.state).toBe('tracked');
     if (target === 'phaser') expect(recovered.score).toBeGreaterThan(low.score);
     return;
@@ -918,8 +919,8 @@ function assertConfidenceState(facet: Facet, target: EvidenceTarget): void {
     confidence('dark', { handednessScore: 0.7 }).state,
     confidence('dark', { handednessScore: 0.9 }).state,
   ];
-  expect(corpus).toEqual(['lost', 'uncertain', 'uncertain', 'tracked', 'uncertain', 'tracked']);
-  if (target === 'phaser') expect(corpus.filter((state) => state === 'tracked')).toHaveLength(2);
+  expect(corpus).toEqual(['lost', 'uncertain', 'uncertain', 'tracked', 'tracked', 'tracked']);
+  if (target === 'phaser') expect(corpus.filter((state) => state === 'tracked')).toHaveLength(3);
 }
 
 function lifecycleTrace(events: readonly HandCameraLifecycleEvent[]): HandCameraLifecycleState[] {

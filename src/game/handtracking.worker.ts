@@ -1,4 +1,4 @@
-import { FilesetResolver, GestureRecognizer, type GestureRecognizerResult } from '@mediapipe/tasks-vision';
+import { FilesetResolver, HandLandmarker, type HandLandmarkerResult } from '@mediapipe/tasks-vision';
 import {
   HandEnhancementBudget,
   handLightingProfile,
@@ -32,7 +32,7 @@ const workerScope = self as unknown as {
   postMessage: (message: unknown) => void;
 };
 
-let recognizer: GestureRecognizer | null = null;
+let recognizer: HandLandmarker | null = null;
 const PROBE_WIDTH = 32;
 const PROBE_HEIGHT = 24;
 const PROBE_INTERVAL_MS = 180;
@@ -217,14 +217,14 @@ function primeRecognizer(): void {
     // The first call initializes graph kernels and the selected delegate. Run
     // it on a tiny neutral frame during background startup so the first real
     // camera frame only pays ordinary inference cost.
-    recognizer.recognizeForVideo(canvas, 0);
+    recognizer.detectForVideo(canvas, 0);
     canvasInputSupported = true;
   } catch (error) {
     // Warm-up is an optimization. The initialized recognizer is still valid
     // and the first real camera frame can retry on implementations that reject
     // OffscreenCanvas as a direct input.
     canvasInputSupported = false;
-    console.warn('Gesture recognizer warm-up skipped; lighting canvas disabled.', error);
+    console.warn('Hand landmarker warm-up skipped; lighting canvas disabled.', error);
   }
 }
 
@@ -233,30 +233,26 @@ async function createRecognizer(wasmUrl: string, modelUrl: string): Promise<void
     FilesetResolver.forVisionTasks(wasmUrl, true),
     fetch(modelUrl),
   ]);
-  if (!modelResponse.ok) throw new Error(`Gesture model HTTP ${modelResponse.status}`);
+  if (!modelResponse.ok) throw new Error(`Hand model HTTP ${modelResponse.status}`);
   const model = new Uint8Array(await modelResponse.arrayBuffer());
 
   const options = (delegate: 'CPU' | 'GPU') => ({
     baseOptions: { modelAssetBuffer: model, delegate },
     runningMode: 'VIDEO' as const,
     numHands: 1,
-    minHandDetectionConfidence: 0.45,
-    minHandPresenceConfidence: 0.4,
-    minTrackingConfidence: 0.5,
-    cannedGesturesClassifierOptions: {
-      maxResults: 1,
-      scoreThreshold: 0.4,
-    },
+    minHandDetectionConfidence: 0.35,
+    minHandPresenceConfidence: 0.35,
+    minTrackingConfidence: 0.4,
   });
 
   // GPU first removes the CPU bottleneck that causes visibly stepped controls
   // on laptops and phones. The worker owns its context; CPU remains the broad
   // compatibility fallback when a worker GPU delegate is unavailable.
   try {
-    recognizer = await GestureRecognizer.createFromOptions(vision, options('GPU'));
+    recognizer = await HandLandmarker.createFromOptions(vision, options('GPU'));
   } catch (gpuError) {
-    console.warn('Gesture GPU delegate unavailable; trying CPU.', gpuError);
-    recognizer = await GestureRecognizer.createFromOptions(vision, options('CPU'));
+    console.warn('Hand GPU delegate unavailable; trying CPU.', gpuError);
+    recognizer = await HandLandmarker.createFromOptions(vision, options('CPU'));
   }
   primeRecognizer();
 }
@@ -286,18 +282,18 @@ workerScope.onmessage = async (event): Promise<void> => {
   const { bitmap, timestampMs, generation, frameId } = message;
   if (!recognizer) {
     bitmap.close();
-    workerScope.postMessage({ type: 'FRAME_ERROR', generation, frameId, error: 'Gesture recognizer is not ready' });
+    workerScope.postMessage({ type: 'FRAME_ERROR', generation, frameId, error: 'Hand landmarker is not ready' });
     return;
   }
 
   const startedAt = performance.now();
   try {
     const prepared = inferenceSource(bitmap, startedAt);
-    let result: GestureRecognizerResult;
+    let result: HandLandmarkerResult;
     let enhanced = prepared.enhanced;
     let enhancedFallback = false;
     try {
-      result = recognizer.recognizeForVideo(prepared.source, timestampMs);
+      result = recognizer.detectForVideo(prepared.source, timestampMs);
     } catch (error) {
       if (!prepared.enhanced) throw error;
       // Some browsers expose OffscreenCanvas and its filters but MediaPipe's
@@ -306,7 +302,7 @@ workerScope.onmessage = async (event): Promise<void> => {
       canvasInputSupported = false;
       enhanced = false;
       enhancedFallback = true;
-      result = recognizer.recognizeForVideo(bitmap, timestampMs);
+      result = recognizer.detectForVideo(bitmap, timestampMs);
     }
     const totalFrameMs = performance.now() - startedAt;
     if (!enhancedFallback && enhancementBudget.observe(totalFrameMs, enhanced)) {
@@ -315,7 +311,6 @@ workerScope.onmessage = async (event): Promise<void> => {
     }
     const landmarks = result.landmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null;
     const worldLandmarks = result.worldLandmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null;
-    const gesture = result.gestures?.[0]?.[0];
     const handedness = result.handedness?.[0]?.[0];
     workerScope.postMessage({
       type: 'RESULT',
@@ -325,8 +320,8 @@ workerScope.onmessage = async (event): Promise<void> => {
       inferenceMs: totalFrameMs,
       landmarks,
       worldLandmarks,
-      gesture: gesture?.categoryName ?? 'None',
-      gestureScore: gesture?.score ?? 0,
+      gesture: 'None',
+      gestureScore: 0,
       handedness: handedness?.categoryName ?? handedness?.displayName ?? '',
       handednessScore: handedness?.score ?? 0,
       lightingMode: activeLighting.mode,

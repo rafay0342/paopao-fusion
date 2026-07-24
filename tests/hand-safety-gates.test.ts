@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  HAND_RESULT_ACTION_MAX_AGE_MS,
   HAND_RESULT_HARD_MAX_AGE_MS,
   HAND_RESULT_MAX_FRAME_BUDGETS,
   classifyHandWorkerResultFreshness,
@@ -25,18 +26,21 @@ const freshness = (
 describe('hand worker and gameplay safety gates', () => {
   it('accepts the newest slow-CPU result within a hard bounded adaptive age', () => {
     expect(HAND_RESULT_MAX_FRAME_BUDGETS).toBe(2);
-    expect(HAND_RESULT_HARD_MAX_AGE_MS).toBe(180);
-    expect(freshness()).toBe('fresh');
-    expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) - 0.001 })).toBe('fresh');
-    expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) + 0.001 })).toBe('stale');
-    expect(freshness({ inferenceMs: 90, receivedTimestampMs: 1_120 })).toBe('fresh');
-    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_165 })).toBe('fresh');
-    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170 })).toBe('fresh');
-    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170.001 })).toBe('stale');
-    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180 })).toBe('fresh');
-    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180.001 })).toBe('stale');
-    expect(freshness({ targetFps: 15, receivedTimestampMs: 1_133 })).toBe('fresh');
-    expect(freshness({ targetFps: 15, receivedTimestampMs: 1_134 })).toBe('stale');
+    expect(HAND_RESULT_ACTION_MAX_AGE_MS).toBe(180);
+    expect(HAND_RESULT_HARD_MAX_AGE_MS).toBe(350);
+    expect(freshness()).toBe('fresh-action');
+    expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) - 0.001 })).toBe('fresh-action');
+    expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) + 0.001 })).toBe('visual-only');
+    expect(freshness({ inferenceMs: 90, receivedTimestampMs: 1_120 })).toBe('fresh-action');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_165 })).toBe('fresh-action');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170 })).toBe('fresh-action');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170.001 })).toBe('visual-only');
+    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180 })).toBe('fresh-action');
+    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180.001 })).toBe('visual-only');
+    expect(freshness({ targetFps: 15, receivedTimestampMs: 1_133 })).toBe('fresh-action');
+    expect(freshness({ targetFps: 15, receivedTimestampMs: 1_134 })).toBe('visual-only');
+    expect(freshness({ receivedTimestampMs: 1_349 })).toBe('visual-only');
+    expect(freshness({ receivedTimestampMs: 1_351 })).toBe('stale');
     expect(freshness({ generation: 6 })).toBe('wrong-generation');
   });
 
@@ -55,6 +59,8 @@ describe('hand worker and gameplay safety gates', () => {
     expect(tracking).toContain('usableForGesture: confidence.usableForGesture');
     expect(tracking).toContain('classifyHandWorkerResultFreshness({');
     expect(tracking).toContain('lastAcceptedCaptureTimestampMs: this.lastAcceptedCaptureTimestampMs');
+    expect(tracking).toContain('if (gestureTimely) this.stableHandFrames = Math.min(120, this.stableHandFrames + 1)');
+    expect(tracking).toContain('this.stableHandFrames = 0;');
 
     for (const [source, sampleName] of [[game, 's'], [endless, 'sample']] as const) {
       const gate = source.indexOf(`this.handContinuity.observe(`);
@@ -74,5 +80,23 @@ describe('hand worker and gameplay safety gates', () => {
     expect(endless.indexOf('const point = mapHandToAim(')).toBeLessThan(
       endless.indexOf('this.handContinuity.observe('),
     );
+  });
+
+  it('keeps first acquisition searching instead of declaring loss or disabling hand mode', () => {
+    for (const path of [
+      'src/scenes/GameScene.ts',
+      'src/scenes/EndlessScene.ts',
+      'src/scenes/Match3Scene.ts',
+    ]) {
+      const source = readText(path);
+      const poll = source.slice(source.indexOf('private pollHand(): void'));
+      expect(poll).toContain('if (!this.handHasSeen)');
+      expect(poll).toContain('SEARCH');
+    }
+    const gamePoll = readText('src/scenes/GameScene.ts').slice(
+      readText('src/scenes/GameScene.ts').indexOf('private pollHand(): void'),
+      readText('src/scenes/GameScene.ts').indexOf('private advanceHandAim('),
+    );
+    expect(gamePoll).not.toContain('getHandTracker().disable()');
   });
 });

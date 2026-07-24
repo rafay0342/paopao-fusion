@@ -98,7 +98,7 @@ describe('adaptive hand motion filters', () => {
     expect(predictor.predict(401)).toBeNull();
   });
 
-  it('holds two uncertain frames but cancels a sustained confidence loss', () => {
+  it('holds brief uncertainty but cancels five-frame sustained confidence loss', () => {
     const gate = new HandGestureContinuityGate();
     expect(gate.observe(true, 0)).toBe('usable');
     expect(gate.observe(false, 40)).toBe('hold');
@@ -106,6 +106,8 @@ describe('adaptive hand motion filters', () => {
     expect(gate.observe(true, 120)).toBe('usable');
     expect(gate.observe(false, 160)).toBe('hold');
     expect(gate.observe(false, 200)).toBe('hold');
-    expect(gate.observe(false, 240)).toBe('cancel');
+    expect(gate.observe(false, 240)).toBe('hold');
+    expect(gate.observe(false, 280)).toBe('hold');
+    expect(gate.observe(false, 320)).toBe('cancel');
   });
 });

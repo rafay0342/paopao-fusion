@@ -71,8 +71,8 @@ export class HandAimFilter {
   // Fast motion opens the filter aggressively while a still fingertip remains
   // damped. This avoids stacking a full recognition-frame of aim lag on top of
   // MediaPipe and the final Phaser interpolation.
-  private readonly x = new OneEuroFilter(2.2, 8, 1.2);
-  private readonly y = new OneEuroFilter(2, 7.5, 1.2);
+  private readonly x = new OneEuroFilter(2.4, 4.2, 1.2);
+  private readonly y = new OneEuroFilter(2.2, 4, 1.2);
 
   filter(point: HandPoint, timeMs: number): HandPoint {
     return {
@@ -102,8 +102,8 @@ export class HandAimPredictor {
   private receivedAtMs = Number.NEGATIVE_INFINITY;
 
   constructor(
-    private readonly maximumHorizonMs = 45,
-    private readonly maximumLead = 0.065,
+    private readonly maximumHorizonMs = 30,
+    private readonly maximumLead = 0.035,
     private readonly staleAfterMs = 180,
   ) {}
 
@@ -167,8 +167,8 @@ export type HandGestureContinuityDecision = 'usable' | 'hold' | 'cancel';
 
 /**
  * A single uncertain recognition may not create an edge, but it also should not
- * destroy a real pinch already in progress. Three consecutive uncertain frames
- * (or 180 ms) cancel fail-closed.
+ * destroy a real pinch already in progress. Five consecutive uncertain frames
+ * (or 320 ms) cancel fail-closed.
  */
 export class HandGestureContinuityGate {
   private uncertainFrames = 0;
@@ -185,7 +185,7 @@ export class HandGestureContinuityGate {
     }
     if (this.uncertainFrames === 0) this.uncertainSinceMs = timestampMs;
     this.uncertainFrames++;
-    if (this.uncertainFrames >= 3 || timestampMs - this.uncertainSinceMs >= 180) {
+    if (this.uncertainFrames >= 5 || timestampMs - this.uncertainSinceMs >= 320) {
       this.reset();
       return 'cancel';
     }
@@ -276,6 +276,8 @@ export class HandDragSwapController {
   private candidate: HandGridCell | null = null;
   private candidateFrames = 0;
   private candidateAtMs = 0;
+  private candidateUncertainFrames = 0;
+  private candidateContradictionFrames = 0;
 
   constructor(
     private readonly engageThreshold = 0.3,
@@ -293,23 +295,16 @@ export class HandDragSwapController {
   }
 
   latch(frame: HandGridDragFrame): HandGridCell | null {
-    const recent = this.openHistory.filter(({ timestampMs }) => frame.timestampMs - timestampMs <= 240);
     const fallback = frame.cell ? { ...frame.cell } : null;
     let source = fallback;
-    if (recent.length) {
-      const counts = new Map<string, { cell: HandGridCell; count: number; latest: number }>();
-      recent.forEach(({ cell, timestampMs }) => {
-        const key = `${cell.row}:${cell.col}`;
-        const current = counts.get(key);
-        counts.set(key, {
-          cell,
-          count: (current?.count ?? 0) + 1,
-          latest: Math.max(current?.latest ?? 0, timestampMs),
-        });
-      });
-      source = [...counts.values()].sort((first, second) => (
-        second.count - first.count || second.latest - first.latest
-      ))[0]?.cell ?? fallback;
+    // Fingertips shift while closing. Use only the last two genuinely recent,
+    // agreeing open observations; a stale three-frame majority must never
+    // override the cell currently under the hand.
+    const recent = this.openHistory
+      .filter(({ timestampMs }) => frame.timestampMs - timestampMs <= 100)
+      .slice(-2);
+    if (recent.length === 2 && sameGridCell(recent[0].cell, recent[1].cell)) {
+      source = { ...recent[1].cell };
     }
     if (!source
       || ![frame.palmX, frame.palmY, frame.palmScale].every(Number.isFinite)
@@ -322,14 +317,15 @@ export class HandDragSwapController {
     this.candidate = null;
     this.candidateFrames = 0;
     this.candidateAtMs = 0;
+    this.candidateUncertainFrames = 0;
+    this.candidateContradictionFrames = 0;
     return { ...this.source };
   }
 
   updateContact(frame: HandGridDragFrame): HandGridCell | null {
     if (!this.source || !this.anchor) return null;
     if (![frame.timestampMs, frame.palmX, frame.palmY, frame.palmScale].every(Number.isFinite)) {
-      this.clearCandidate();
-      return null;
+      return this.holdConfirmedCandidateThroughUncertainty();
     }
     const scale = Math.max(0.001, (this.anchor.scale + frame.palmScale) * 0.5);
     // Palm landmarks stay in camera space. Respect the same horizontal mirror
@@ -340,10 +336,21 @@ export class HandDragSwapController {
     const absoluteY = Math.abs(dy);
     const magnitude = Math.max(absoluteX, absoluteY);
     if (magnitude <= this.releaseThreshold) {
+      // Once a deliberate one-cell swipe is confirmed, relaxing the palm while
+      // separating the fingertips must not erase the pending move.
+      if (this.candidateFrames >= 2 && this.candidate) {
+        this.candidateUncertainFrames = 0;
+        this.candidateContradictionFrames = 0;
+        return { ...this.candidate };
+      }
       this.clearCandidate();
       return null;
     }
-    if (magnitude < this.engageThreshold) return this.candidate ? { ...this.candidate } : null;
+    if (magnitude < this.engageThreshold) {
+      this.candidateUncertainFrames = 0;
+      this.candidateContradictionFrames = 0;
+      return this.candidate ? { ...this.candidate } : null;
+    }
 
     let next: HandGridCell | null = null;
     if (absoluteX >= absoluteY * this.dominanceRatio) {
@@ -352,16 +359,22 @@ export class HandDragSwapController {
       next = { row: this.source.row + (dy > 0 ? 1 : -1), col: this.source.col };
     }
     if (!next || next.row < 0 || next.row >= 8 || next.col < 0 || next.col >= 8) {
-      this.clearCandidate();
-      return null;
+      return this.rejectConfirmedCandidateDirection();
+    }
+    if (this.candidateFrames >= 2 && this.candidate && !sameGridCell(next, this.candidate)) {
+      return this.rejectConfirmedCandidateDirection();
     }
     if (!sameGridCell(next, this.candidate)
-      || (this.candidateAtMs > 0 && frame.timestampMs - this.candidateAtMs > 170)) {
+      || (this.candidateFrames < 2
+        && this.candidateAtMs > 0
+        && frame.timestampMs - this.candidateAtMs > 170)) {
       this.candidate = next;
       this.candidateFrames = 1;
     } else {
       this.candidateFrames += 1;
     }
+    this.candidateUncertainFrames = 0;
+    this.candidateContradictionFrames = 0;
     this.candidateAtMs = frame.timestampMs;
     return this.candidateFrames >= 2 ? { ...next } : null;
   }
@@ -384,6 +397,35 @@ export class HandDragSwapController {
     this.candidate = null;
     this.candidateFrames = 0;
     this.candidateAtMs = 0;
+    this.candidateUncertainFrames = 0;
+    this.candidateContradictionFrames = 0;
+  }
+
+  private holdConfirmedCandidateThroughUncertainty(): HandGridCell | null {
+    if (this.candidateFrames < 2 || !this.candidate) {
+      this.clearCandidate();
+      return null;
+    }
+    this.candidateUncertainFrames++;
+    if (this.candidateUncertainFrames >= 2) {
+      this.clearCandidate();
+      return null;
+    }
+    return { ...this.candidate };
+  }
+
+  private rejectConfirmedCandidateDirection(): HandGridCell | null {
+    if (this.candidateFrames < 2 || !this.candidate) {
+      this.clearCandidate();
+      return null;
+    }
+    this.candidateUncertainFrames = 0;
+    this.candidateContradictionFrames++;
+    if (this.candidateContradictionFrames >= 2) {
+      this.clearCandidate();
+      return null;
+    }
+    return { ...this.candidate };
   }
 }
 
@@ -457,7 +499,7 @@ const DEFAULT_PINCH_TIMING: PinchTiming = {
   tapContactMinMs: 20,
   tapContactMaxMs: 450,
   sequenceMaxMs: 1_400,
-  lossCancelMs: 200,
+  lossCancelMs: 330,
   // One neutral recognition is tolerated even at 15 FPS, but it never counts
   // as an edge sample and a longer ambiguous pose restarts confirmation.
   neutralGraceMs: 140,
@@ -483,8 +525,10 @@ type PinchEvidence = 'contact' | 'world-contact' | 'separated' | 'world-separate
 // deliberately excluded from this path.
 const WORLD_FALLBACK_RELEASE_DEPTH = 0.38;
 const WORLD_FALLBACK_RELEASE_3D = 0.52;
-const WORLD_ANGLED_CONTACT_RAW_MIN = 0.52;
 const WORLD_ANGLED_CONTACT_RAW_MAX = 0.72;
+const CONTACT_EDGE_MIN_RAW_DROP = 0.015;
+const CONTACT_EDGE_MIN_WORLD_DEPTH_DROP = 0.06;
+const CONTACT_EDGE_MIN_WORLD_DISTANCE_DROP = 0.08;
 
 /**
  * Conservative camera gesture recogniser:
@@ -513,12 +557,9 @@ export class PinchDoubleTapControl {
   private contactDistances: number[] = [];
   private contactDepths: number[] = [];
   private contactDistances3d: number[] = [];
-  private adaptiveContactOn: number | null = null;
+  /** Last confirmed release gap, used only to rearm—not to narrow the next touch. */
   private adaptiveReleaseOff: number | null = null;
-  private adaptiveWorldReleaseDepth: number | null = null;
-  private adaptiveWorldRelease3d: number | null = null;
-  private worldSeparationFrames = 0;
-  private lastWorldSeparationAt = 0;
+  private worldContradictionFrames = 0;
   private worldContactFrames = 0;
   private lastWorldContactAt = 0;
   private worldAngleActive = false;
@@ -531,6 +572,13 @@ export class PinchDoubleTapControl {
     handedness: string;
   } | null = null;
   private physicalContact = false;
+  private armedOpen: {
+    rawPinch: number;
+    pinchDepth: number;
+    pinch3d: number;
+    depthSource: PinchGestureFrame['depthSource'];
+  } | null = null;
+  private freshContactEdgeRequired = false;
   private readonly pinchOn: number;
   private readonly pinchOff: number;
   private readonly timing: PinchTiming;
@@ -564,8 +612,6 @@ export class PinchDoubleTapControl {
     this.contactDistances = [];
     this.contactDepths = [];
     this.contactDistances3d = [];
-    this.worldSeparationFrames = 0;
-    this.lastWorldSeparationAt = 0;
     this.worldAngleActive = false;
     this.clearWorldContactCandidate();
   }
@@ -601,16 +647,17 @@ export class PinchDoubleTapControl {
   }
 
   private contactReleaseThreshold(): number {
-    const configured = this.adaptiveReleaseOff ?? this.pinchOff;
+    const configured = this.pinchOff;
     if (this.contactDistances.length < 2) return configured;
     const center = this.median(this.contactDistances);
     const deviation = this.median(this.contactDistances.map((value) => Math.abs(value - center)));
     const liveMargin = clamp(Math.max(0.045, deviation * 4), 0.045, 0.09);
+    if (center >= this.pinchOff - 0.02) return Math.min(0.74, center + liveMargin);
     return Math.min(configured, center + liveMargin);
   }
 
   private contactEntryThreshold(): number {
-    return this.adaptiveContactOn ?? this.pinchOn;
+    return this.pinchOn;
   }
 
   private worldReleaseThresholds(): { depth: number; distance3d: number } | null {
@@ -624,25 +671,15 @@ export class PinchDoubleTapControl {
         distance3d: distanceCenter + clamp(Math.max(0.12, distanceDeviation * 5), 0.12, 0.25),
       };
     }
-    if (this.adaptiveWorldReleaseDepth != null && this.adaptiveWorldRelease3d != null) {
-      return { depth: this.adaptiveWorldReleaseDepth, distance3d: this.adaptiveWorldRelease3d };
-    }
     return null;
   }
 
   private rememberContactModel(): void {
     if (this.contactDistances.length >= 2) {
-      const center = this.median(this.contactDistances);
-      const deviation = this.median(this.contactDistances.map((value) => Math.abs(value - center)));
-      const entryMargin = clamp(Math.max(0.02, deviation * 2.5), 0.02, 0.04);
-      const releaseOff = this.contactReleaseThreshold();
-      this.adaptiveContactOn = Math.min(this.pinchOn, center + entryMargin);
-      this.adaptiveReleaseOff = Math.max(this.adaptiveContactOn + 0.015, releaseOff);
-    }
-    const worldRelease = this.worldReleaseThresholds();
-    if (worldRelease && this.contactDepths.length >= 1 && this.contactDistances3d.length >= 1) {
-      this.adaptiveWorldReleaseDepth = worldRelease.depth;
-      this.adaptiveWorldRelease3d = worldRelease.distance3d;
+      // Carry the physical gap just long enough to rearm after this release.
+      // Never feed it back into the next contact threshold: doing so made one
+      // unusually hard pinch permanently reject every softer later pinch.
+      this.adaptiveReleaseOff = this.contactReleaseThreshold();
     }
   }
 
@@ -655,7 +692,7 @@ export class PinchDoubleTapControl {
       || this.state === 'tap-opening';
   }
 
-  private clearSequence(preserveClock: boolean, preserveAdaptiveContact = false): void {
+  private clearSequence(preserveClock: boolean, preserveAdaptiveRelease = false): void {
     this.state = 'rearming';
     this.phaseSince = 0;
     this.phaseSamples = 0;
@@ -668,19 +705,48 @@ export class PinchDoubleTapControl {
     this.handednessMismatches = 0;
     this.lockedPalm = null;
     this.physicalContact = false;
+    this.armedOpen = null;
+    this.freshContactEdgeRequired = true;
+    this.worldContradictionFrames = 0;
     this.clearContactBaseline();
-    if (!preserveAdaptiveContact) {
-      this.adaptiveContactOn = null;
+    if (!preserveAdaptiveRelease) {
       this.adaptiveReleaseOff = null;
-      this.adaptiveWorldReleaseDepth = null;
-      this.adaptiveWorldRelease3d = null;
     }
     if (!preserveClock) this.lastTimestampMs = Number.NEGATIVE_INFINITY;
   }
 
-  private cancel(preserveAdaptiveContact = true): PinchControlEvent {
-    this.clearSequence(true, preserveAdaptiveContact);
+  private cancel(preserveAdaptiveRelease = true): PinchControlEvent {
+    this.clearSequence(true, preserveAdaptiveRelease);
     return 'cancelled';
+  }
+
+  private rememberArmedOpen(frame: PinchGestureFrame): void {
+    this.armedOpen = {
+      rawPinch: frame.rawPinch,
+      pinchDepth: frame.pinchDepth,
+      pinch3d: frame.pinch3d,
+      depthSource: frame.depthSource,
+    };
+  }
+
+  /**
+   * Rearming proves that the fingers separated; it must not itself become the
+   * next contact. A new latch needs a measurable downward edge from that exact
+   * open pose in normalized image distance or reliable world depth.
+   */
+  private hasFreshContactEdge(frame: PinchGestureFrame): boolean {
+    if (!this.armedOpen) return false;
+    const rawEdge = frame.rawPinch <= Math.min(
+      this.pinchOn,
+      this.armedOpen.rawPinch - CONTACT_EDGE_MIN_RAW_DROP,
+    );
+    const worldEdge = frame.depthSource === 'world'
+      && this.armedOpen.depthSource === 'world'
+      && frame.pinchDepth <= 0.3
+      && frame.pinch3d <= 0.46
+      && frame.pinchDepth <= this.armedOpen.pinchDepth - CONTACT_EDGE_MIN_WORLD_DEPTH_DROP
+      && frame.pinch3d <= this.armedOpen.pinch3d - CONTACT_EDGE_MIN_WORLD_DISTANCE_DROP;
+    return rawEdge || worldEdge;
   }
 
   private evidence(frame: PinchGestureFrame): PinchEvidence {
@@ -698,7 +764,7 @@ export class PinchDoubleTapControl {
     if (!finite
       || !frame.fingertipsVisible
       || !frame.palmAnchorsVisible
-      || frame.palmPixels < 14
+      || frame.palmPixels < 12
       || frame.rawPalmScale < 0.035
       || frame.rawPalmScale > 0.75
       || frame.palmScale < 0.035
@@ -710,78 +776,73 @@ export class PinchDoubleTapControl {
     const currentRawContact = frame.rawPinch <= contactOn;
     const filteredContact = frame.filteredPinch <= contactOn + 0.035;
     const decisiveRawContact = frame.rawPinch <= contactOn - 0.02;
-    // Metric world landmarks can distinguish a real tip touch from two tips
-    // merely overlapping in the camera image. Image-z is noisier, so retain a
-    // wider fallback veto there while still requiring 2D contact confirmation.
-    const maxContactDepth = frame.depthSource === 'world' ? 0.35 : 0.52;
-    const maxContact3d = frame.depthSource === 'world'
-      ? Math.max(0.55, Math.min(0.62, contactOn + 0.16))
-      : 0.72;
-    const threeDimensionalContact = frame.pinchDepth <= maxContactDepth
-      && frame.pinch3d <= maxContact3d;
+    const imageDepthPlausible = frame.depthSource === 'world'
+      || (frame.pinchDepth <= 0.58 && frame.pinch3d <= 0.78);
+    const extremeWorldContradiction = frame.depthSource === 'world'
+      && frame.pinchDepth >= 0.62
+      && frame.pinch3d >= 0.8;
+    this.worldContradictionFrames = extremeWorldContradiction
+      ? this.worldContradictionFrames + 1
+      : 0;
     const strongWorldAngleGeometry = frame.depthSource === 'world'
       && frame.pinchDepth <= 0.3
       && frame.pinch3d <= 0.46;
+    const rearmOff = this.adaptiveReleaseOff ?? this.pinchOff;
+    if (this.state === 'rearming' && frame.rawPinch >= rearmOff) return 'separated';
+    const worldRelease = frame.depthSource === 'world' ? this.worldReleaseThresholds() : null;
+    const fallbackWorldSeparation = frame.depthSource === 'world'
+      && worldRelease === null
+      && frame.pinchDepth >= WORLD_FALLBACK_RELEASE_DEPTH
+      && frame.pinch3d >= WORLD_FALLBACK_RELEASE_3D;
+    if (this.state === 'rearming' && fallbackWorldSeparation) return 'world-separated';
 
-    // Once reliable world geometry establishes an angled touch, projected 2D
-    // jitter cannot manufacture a release. Only sustained metric separation
-    // may end this contact mode.
+    // A contact-specific 2D gap remains authoritative even for an angled
+    // touch. World geometry supplements side views; it must not trap the user
+    // in a pinch when the camera's inferred depth jitters.
     if (this.worldAngleActive && this.ownsContactBaseline()) {
-      if (frame.depthSource !== 'world') return 'invalid';
+      if (frame.rawPinch >= contactOff) return 'separated';
       if (strongWorldAngleGeometry) return 'world-contact';
       const activeWorldRelease = this.worldReleaseThresholds();
       if (activeWorldRelease
         && frame.pinchDepth >= activeWorldRelease.depth
         && frame.pinch3d >= activeWorldRelease.distance3d) return 'world-separated';
+      if (currentRawContact && imageDepthPlausible) return 'contact';
       return 'neutral';
     }
     const worldAngleContact = frame.depthSource === 'world'
-      // Only supplement the 2D path when perspective has made its ratio
-      // decisively high. The ordinary hysteresis band remains neutral, so a
-      // small real release gap cannot be reinterpreted as another contact.
-      && frame.rawPinch >= WORLD_ANGLED_CONTACT_RAW_MIN
-      && frame.rawPinch <= WORLD_ANGLED_CONTACT_RAW_MAX
+      && (
+        (frame.rawPinch > contactOn && frame.rawPinch < contactOff)
+        || (frame.rawPinch >= 0.52 && frame.rawPinch <= WORLD_ANGLED_CONTACT_RAW_MAX)
+      )
       && strongWorldAngleGeometry;
     if (this.ownsContactBaseline()
       && this.contactDistances.length >= 2
       && frame.rawPinch >= contactOff
       && !worldAngleContact) return 'separated';
     if (worldAngleContact) return 'world-contact';
-    if (currentRawContact && threeDimensionalContact && (filteredContact || decisiveRawContact)) return 'contact';
-    // Raw separation remains the fastest route. A side-view release may be
-    // mostly in depth, so reliable world geometry can also separate after its
-    // own live contact baseline. update() adds an extra temporal gate to this
-    // path; image-z can never create a release.
-    const worldRelease = frame.depthSource === 'world' ? this.worldReleaseThresholds() : null;
-    if (worldRelease
+    if (this.ownsContactBaseline()
+      && worldRelease
       && frame.pinchDepth >= worldRelease.depth
       && frame.pinch3d >= worldRelease.distance3d) return 'world-separated';
-    const fallbackWorldSeparation = frame.depthSource === 'world'
-      && worldRelease === null
-      && frame.rawPinch < contactOff
-      && frame.pinchDepth >= WORLD_FALLBACK_RELEASE_DEPTH
-      && frame.pinch3d >= WORLD_FALLBACK_RELEASE_3D;
+    if (this.ownsContactBaseline() && fallbackWorldSeparation) return 'world-separated';
+    if (this.state === 'wait-tap' && fallbackWorldSeparation) return 'world-separated';
+    if (currentRawContact
+      && imageDepthPlausible
+      && this.worldContradictionFrames < 2
+      && (filteredContact || decisiveRawContact)) return 'contact';
+    // Raw separation remains the fastest route. A side-view release may be
+    // mostly in depth, so reliable world geometry can also separate after its
+    // own live contact baseline. The normal two-sample edge state machine
+    // confirms this path; image-z can never create a release.
     if (fallbackWorldSeparation) return 'world-separated';
-    if (currentRawContact && !threeDimensionalContact) return 'invalid';
+    if (currentRawContact && (!imageDepthPlausible || this.worldContradictionFrames >= 2)) return 'invalid';
     if (frame.rawPinch >= contactOff) return 'separated';
     return 'neutral';
   }
 
-  private temporallyGateWorldSeparation(evidence: PinchEvidence, nowMs: number): PinchEvidence {
-    if (evidence !== 'world-separated') {
-      this.worldSeparationFrames = 0;
-      this.lastWorldSeparationAt = 0;
-      return evidence;
-    }
-    if (this.lastWorldSeparationAt > 0
-      && nowMs - this.lastWorldSeparationAt > this.timing.neutralGraceMs) {
-      this.worldSeparationFrames = 0;
-    }
-    this.worldSeparationFrames++;
-    this.lastWorldSeparationAt = nowMs;
-    // Two world-separated observations open an edge candidate; the ordinary
-    // two-sample state edge then makes release require three fresh frames.
-    return this.worldSeparationFrames >= 2 ? 'separated' : 'neutral';
+  private temporallyGateWorldSeparation(evidence: PinchEvidence): PinchEvidence {
+    // The state machine below already requires two fresh edge samples.
+    return evidence === 'world-separated' ? 'separated' : evidence;
   }
 
   private temporallyGateWorldContact(
@@ -888,7 +949,7 @@ export class PinchDoubleTapControl {
 
     if (this.tapWindowExpired(nowMs)) return this.cancel();
 
-    const separationEvidence = this.temporallyGateWorldSeparation(this.evidence(frame), nowMs);
+    const separationEvidence = this.temporallyGateWorldSeparation(this.evidence(frame));
     const evidence = this.temporallyGateWorldContact(separationEvidence, frame, nowMs);
     const checkingLockedHand = this.state === 'wait-tap'
       || this.state === 'tap-arming'
@@ -896,13 +957,16 @@ export class PinchDoubleTapControl {
       || this.state === 'tap-opening';
     const consistent = !checkingLockedHand || this.frameMatchesLockedHand(frame);
     if (evidence === 'invalid' || !consistent) {
-      this.physicalContact = false;
       this.invalidFrames++;
+      const confirmedDepthContradiction = this.worldContradictionFrames >= 2;
+      // Contradictory geometry never completes an edge across time. Physical
+      // contact feedback survives one generic invalid frame, but a confirmed
+      // depth contradiction or hand switch clears it immediately.
       this.resetEdgeCandidate(nowMs);
-      // A different hand must not inherit the locked hand's contact model.
-      // Brief invalid geometry keeps it; a 650 ms loss is fully reset by the
-      // scene, while ordinary dropouts should not restore the old wide gap.
-      return this.invalidFrames >= 3 && this.isEngaged() ? this.cancel(consistent) : 'none';
+      if (!consistent || confirmedDepthContradiction) this.physicalContact = false;
+      if (this.invalidFrames < 3) return 'none';
+      this.physicalContact = false;
+      return this.isEngaged() ? this.cancel(consistent) : 'none';
     }
     this.invalidFrames = 0;
     if (evidence === 'contact') this.physicalContact = true;
@@ -936,6 +1000,7 @@ export class PinchDoubleTapControl {
         this.phaseSamples = 0;
         return 'none';
       }
+      this.rememberArmedOpen(frame);
       if (this.phaseSamples === 0) this.phaseSince = nowMs;
       this.phaseSamples++;
       if (this.phaseSamples >= 2 && nowMs - this.phaseSince >= this.timing.rearmOpenMs) {
@@ -945,7 +1010,17 @@ export class PinchDoubleTapControl {
     }
 
     if (this.state === 'ready') {
+      if (evidence === 'separated') {
+        this.rememberArmedOpen(frame);
+        this.physicalContact = false;
+        return 'none';
+      }
       if (evidence === 'contact') {
+        if (this.freshContactEdgeRequired && !this.hasFreshContactEdge(frame)) {
+          this.physicalContact = false;
+          return 'none';
+        }
+        this.freshContactEdgeRequired = false;
         this.aimContactSince = nowMs;
         this.beginContact(frame);
         this.enter('aim-arming', nowMs, true);
@@ -1001,6 +1076,17 @@ export class PinchDoubleTapControl {
     }
 
     if (this.state === 'wait-tap') {
+      const reliableAngledTouch = frame.depthSource === 'world'
+        && frame.rawPinch > this.pinchOn
+        && frame.rawPinch <= WORLD_ANGLED_CONTACT_RAW_MAX
+        && frame.pinchDepth <= 0.3
+        && frame.pinch3d <= 0.46;
+      if (this.adaptiveReleaseOff != null
+        && frame.rawPinch >= this.adaptiveReleaseOff
+        && !reliableAngledTouch) {
+        this.physicalContact = false;
+        return 'none';
+      }
       if (evidence !== 'contact') return 'none';
       if (nowMs - this.lastTapAt < this.timing.secondTapMinGapMs) return 'none';
       this.tapContactSince = nowMs;
@@ -1051,7 +1137,8 @@ export class PinchDoubleTapControl {
     if (nowMs - lastSampleAtMs < this.timing.lossCancelMs) return 'none';
     const wasEngaged = this.isEngaged();
     this.clearSequence(true, true);
-    this.lastTimestampMs = Math.max(this.lastTimestampMs, nowMs);
+    // Samples use capture timestamps. Do not overwrite that clock with render
+    // time or the first recovered worker result will look stale and be ignored.
     return wasEngaged ? 'cancelled' : 'none';
   }
 
@@ -1096,12 +1183,11 @@ export class PinchDoubleTapControl {
 
   /**
    * Preserve a confirmed physical contact through one brief confidence dip,
-   * while preventing observations on either side of that dip from combining
-   * into a contact or release edge.
+   * and retain one good edge sample. The scene continuity gate cancels after
+   * sustained uncertainty, while a one-frame fingertip occlusion stays smooth.
    */
   holdForUncertainty(timestampMs: number): void {
     if (!Number.isFinite(timestampMs) || timestampMs <= this.lastTimestampMs) return;
     this.lastTimestampMs = timestampMs;
-    this.resetEdgeCandidate(timestampMs);
   }
 }
