@@ -53,9 +53,9 @@ Status captured: 2026-07-23 (Asia/Karachi).
   zero WebGL context losses, terminal resource-growth flags false and exact R5
   artifact identity; see the two `performance-soak-*-contextfix-2026-07-22`
   reports.
-- The corrected 18-second H.264/AAC hand-control guide is 2,108,153 bytes with
-  SHA-256
-  `048d5cd0ffd6a908ceab995ae1c0ce5c1301a7a27231944672d575d550582c3f`.
+- The corrected 18-second single-pinch/release H.264/AAC hand-control guide is
+  2,117,853 bytes with SHA-256
+  `a8b8037b5ea9aa423dca8945640eb4c823402d7052aeb6b53b2839c687a2fcc9`.
 
 ## Delivery and validation boundary
 

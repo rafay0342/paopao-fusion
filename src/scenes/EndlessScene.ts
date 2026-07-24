@@ -13,7 +13,12 @@ import {
   type EndlessHexGrid,
   type EndlessSessionV3,
 } from '../game/endless';
-import { mapHandToAim, PinchDoubleTapControl } from '../game/handcontrol';
+import {
+  HandAimPredictor,
+  HandGestureContinuityGate,
+  mapHandToAim,
+  PinchDoubleTapControl,
+} from '../game/handcontrol';
 import { getHandSettings } from '../game/handsettings';
 import { getHandTracker, type HandTrackingFailure } from '../game/handtracking';
 import { getMeta } from '../game/meta';
@@ -93,13 +98,17 @@ export class EndlessScene extends Phaser.Scene {
   private handLastSeenAt = 0;
   private handLockedLane: number | null = null;
   private requireFreshPointerAfterContext = false;
-  private pinchControl = new PinchDoubleTapControl();
+  private pinchControl = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+  private readonly handAimPredictor = new HandAimPredictor();
+  private readonly handContinuity = new HandGestureContinuityGate();
   private readonly handleRenderContextBoundary = (event: Event): void => {
     if (!this.scene.isActive()) return;
     const phase = (event as CustomEvent<{ phase?: string }>).detail?.phase;
     this.pinchControl.resetForContinuity();
     this.handLastSeenAt = performance.now();
     this.handLockedLane = null;
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
     this.handCursor?.setVisible(false);
     this.handStatus?.setText('HAND STABILIZING').setColor('#ffe083');
     if (phase === 'restored') this.requireFreshPointerAfterContext = true;
@@ -125,9 +134,15 @@ export class EndlessScene extends Phaser.Scene {
     this.handOn = false;
     this.handStarting = false;
     this.handLockedLane = null;
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
     this.requireFreshPointerAfterContext = false;
     const settings = getHandSettings();
-    this.pinchControl = new PinchDoubleTapControl(settings.pinchOn, settings.pinchOff);
+    this.pinchControl = new PinchDoubleTapControl(
+      settings.pinchOn,
+      settings.pinchOff,
+      { fireOnFirstRelease: true },
+    );
   }
 
   create(): void {
@@ -175,6 +190,7 @@ export class EndlessScene extends Phaser.Scene {
   update(): void {
     if (!this.running || !this.session || !this.recorder) return;
     this.pollHand();
+    this.advanceHandAim();
     const now = performance.now();
     const trace = this.recorder.snapshot();
     const target = this.targets[trace.length];
@@ -648,6 +664,8 @@ export class EndlessScene extends Phaser.Scene {
       this.handOn = false;
       this.handLockedLane = null;
       this.pinchControl.reset();
+      this.handAimPredictor.reset();
+      this.handContinuity.reset();
       this.handCursor?.setVisible(false);
       this.handStatus?.setText('HAND OFF').setColor('#8595aa');
       return;
@@ -660,18 +678,26 @@ export class EndlessScene extends Phaser.Scene {
     const now = performance.now();
     const sample = getHandTracker().sample();
     if (!sample) {
+      const lostFor = now - this.handLastSeenAt;
       if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
         this.handLockedLane = null;
         this.handStatus?.setText('HAND LOST').setColor('#ffb075');
       }
-      if (now - this.handLastSeenAt > 650) {
+      if (lostFor > 320) {
+        this.handAimPredictor.reset();
+        this.handCursor?.setVisible(false);
+      }
+      if (lostFor > 650) {
         this.handLockedLane = null;
         this.pinchControl.reset();
+        this.handAimPredictor.reset();
+        this.handContinuity.reset();
         this.handCursor?.setVisible(false);
       }
       return;
     }
     this.handLastSeenAt = now;
+    this.handAimPredictor.push({ x: sample.x, y: sample.y }, sample.timestampMs);
     const point = mapHandToAim({ x: sample.x, y: sample.y }, VIEW.width, BOARD_TOP, LAUNCHER_Y);
     const lane = endlessLaneForBoardX(this.grid, point.x);
     if (this.handLockedLane === null && !this.flying) {
@@ -681,38 +707,70 @@ export class EndlessScene extends Phaser.Scene {
     this.handCursor?.setVisible(true).setPosition(point.x, point.y);
     if (this.flying) {
       this.pinchControl.resetForShot();
+      this.handContinuity.reset();
       this.handLockedLane = null;
       return;
     }
-    if (!sample.gestureStable) {
-      this.pinchControl.resetForContinuity();
-      this.handLockedLane = null;
-      this.handStatus?.setText('HAND STABILIZING').setColor('#ffe083');
-      return;
-    }
-    if (!sample.usableForGesture) {
-      this.pinchControl.resetForContinuity();
-      this.handLockedLane = null;
-      this.handStatus?.setText('HAND UNCERTAIN — HOLD STILL').setColor('#ffe083');
+    const continuity = this.handContinuity.observe(
+      sample.gestureStable && sample.usableForGesture,
+      now,
+    );
+    if (continuity !== 'usable') {
+      if (continuity === 'cancel') {
+        this.pinchControl.resetForContinuity();
+        this.handLockedLane = null;
+      } else {
+        this.pinchControl.holdForUncertainty(sample.timestampMs);
+      }
+      this.handStatus?.setText(sample.gestureStable ? 'HAND UNCERTAIN — HOLD STILL' : 'HAND STABILIZING')
+        .setColor('#ffe083');
       return;
     }
     const event = this.pinchControl.update(sample);
     if (event === 'aim-locked') this.handLockedLane = this.selectedLane;
     else if (event === 'cancelled') this.handLockedLane = null;
     else if (event === 'released') {
-      if (this.handLockedLane !== null) this.selectedLane = this.handLockedLane;
+      const predictedRelease = this.handAimPredictor.predict(now);
+      if (this.handLockedLane !== null) {
+        this.selectedLane = this.handLockedLane;
+      } else if (predictedRelease) {
+        const releasePoint = mapHandToAim(
+          predictedRelease,
+          VIEW.width,
+          BOARD_TOP,
+          LAUNCHER_Y,
+        );
+        this.selectedLane = endlessLaneForBoardX(this.grid, releasePoint.x);
+        this.handCursor?.setPosition(releasePoint.x, releasePoint.y);
+        this.drawAim();
+      }
       this.handLockedLane = null;
       this.fireSelectedLane('hand');
     }
     const phase = this.pinchControl.getPhase();
-    this.handStatus?.setText(event === 'aim-locked' ? 'AIM LOCKED — TAP AGAIN' : phase === 'ready' ? 'HAND READY' : 'HAND TRACKING')
+    this.handStatus?.setText(phase === 'ready' ? 'HAND READY' : this.pinchControl.isContacting() ? 'PINCHED — RELEASE TO FIRE' : 'HAND TRACKING')
       .setColor('#76f0c7');
+  }
+
+  /** Fill recognition gaps at render cadence without using prediction for gestures. */
+  private advanceHandAim(): void {
+    if (!this.handOn || !this.grid) return;
+    const predicted = this.handAimPredictor.predict(performance.now());
+    if (!predicted) return;
+    const point = mapHandToAim(predicted, VIEW.width, BOARD_TOP, LAUNCHER_Y);
+    if (this.handLockedLane === null && !this.flying) {
+      this.selectedLane = endlessLaneForBoardX(this.grid, point.x);
+      this.drawAim();
+    }
+    this.handCursor?.setVisible(true).setPosition(point.x, point.y);
   }
 
   private failClosed(message: string): void {
     if (!this.running) return;
     this.running = false;
     this.pinchControl.reset();
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
     getHandTracker().suspend();
     this.stateText?.setText(message).setColor('#ff8fa2');
     this.toast('RUN CLOSED WITHOUT REWARD');

@@ -26,7 +26,12 @@ import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { getHandTracker, type HandTrackingFailure } from '../game/handtracking';
 import { getHandSettings } from '../game/handsettings';
-import { mapHandToAim, PinchDoubleTapControl } from '../game/handcontrol';
+import {
+  HandAimPredictor,
+  HandGestureContinuityGate,
+  mapHandToAim,
+  PinchDoubleTapControl,
+} from '../game/handcontrol';
 import { submitScore } from '../game/leaderboard';
 import {
   addObjectiveProgress,
@@ -237,7 +242,9 @@ export class GameScene extends Phaser.Scene {
   private handSmooth: { x: number; y: number } | null = null;
   private handTarget: { x: number; y: number } | null = null;
   private handLockedAim: { x: number; y: number } | null = null;
-  private pinchControl = new PinchDoubleTapControl();
+  private pinchControl = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+  private readonly handAimPredictor = new HandAimPredictor();
+  private readonly handContinuity = new HandGestureContinuityGate();
   private handPinching = false;
   private handCursor?: Phaser.GameObjects.Arc;
   private handBtn?: Phaser.GameObjects.Text;
@@ -333,6 +340,8 @@ export class GameScene extends Phaser.Scene {
     this.handSmooth = null;
     this.handTarget = null;
     this.handLockedAim = null;
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
     this.handPinching = false;
     this.handCursor?.setVisible(false);
     this.aimGfx?.clear();
@@ -379,7 +388,13 @@ export class GameScene extends Phaser.Scene {
       ? { matchId, userId, seed, startsAt, serverTime, clientReceivedAt }
       : undefined;
     const handSettings = getHandSettings();
-    this.pinchControl = new PinchDoubleTapControl(handSettings.pinchOn, handSettings.pinchOff);
+    this.pinchControl = new PinchDoubleTapControl(
+      handSettings.pinchOn,
+      handSettings.pinchOff,
+      { fireOnFirstRelease: true },
+    );
+    this.handAimPredictor.reset();
+    this.handContinuity.reset();
     this.rng = this.challenge
       ? seededRandom(this.challenge.seed)
       : this.arena
@@ -1155,8 +1170,8 @@ export class GameScene extends Phaser.Scene {
     if (step === 'next-orb') return 'USE NEXT CARD';
     if (step === 'swap') return 'USE NEXT CARD';
     if (step === 'aim') return 'AIM AT RING';
-    if (step === 'fire') return this.tutorialInputMode === 'hand' ? 'DOUBLE TAP' : 'RELEASE TO FIRE';
-    if (step === 'hand-touch-one') return 'TOUCH + RELEASE';
+    if (step === 'fire') return this.tutorialInputMode === 'hand' ? 'PINCH + RELEASE' : 'RELEASE TO FIRE';
+    if (step === 'hand-touch-one') return 'PINCH + RELEASE';
     if (step === 'hand-touch-two') return 'TOUCH + RELEASE';
     return 'WATCH RESULT';
   }
@@ -1702,7 +1717,7 @@ export class GameScene extends Phaser.Scene {
     this.handLastSeenAt = performance.now();
     if (ok) {
       this.setHandBtn('on');
-      if (showError) this.toast('HAND  •  KEEP TIPS APART → TOUCH/RELEASE (1) → TOUCH/RELEASE (2) → FIRE');
+      if (showError) this.toast('HAND  •  AIM → TOUCH THUMB + INDEX → SEPARATE SLIGHTLY TO FIRE');
       return;
     }
 
@@ -1733,6 +1748,8 @@ export class GameScene extends Phaser.Scene {
       this.handSmooth = null;
       this.handTarget = null;
       this.handLockedAim = null;
+      this.handAimPredictor.reset();
+      this.handContinuity.reset();
       this.handCursor?.setVisible(false);
       this.setHandBtn('off');
       this.fallbackTutorialToPointerInput();
@@ -1755,6 +1772,7 @@ export class GameScene extends Phaser.Scene {
       }
       if (lostFor > 320) {
         this.handTarget = null;
+        this.handAimPredictor.reset();
         this.handCursor?.setVisible(false);
       }
       if (lostFor > 650) {
@@ -1762,6 +1780,8 @@ export class GameScene extends Phaser.Scene {
         this.handSmooth = null;
         this.handTarget = null;
         this.handLockedAim = null;
+        this.handAimPredictor.reset();
+        this.handContinuity.reset();
         this.pinchControl.reset();
         this.handPinching = false;
         this.handBtn?.setText('SHOW').setColor('#ffc56f');
@@ -1776,6 +1796,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     this.handLastSeenAt = now;
+    this.handAimPredictor.push({ x: s.x, y: s.y }, s.timestampMs);
     this.handTarget = mapHandToAim(
       { x: s.x, y: s.y },
       VIEW.width,
@@ -1789,6 +1810,7 @@ export class GameScene extends Phaser.Scene {
     // wider hand opening.
     if (this.flying) {
       this.pinchControl.resetForShot();
+      this.handContinuity.reset();
       this.handLockedAim = null;
       this.handPinching = false;
       this.handBtn?.setText('WAIT').setColor('#ffd970');
@@ -1796,26 +1818,19 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    // Tone-correction changes can move landmarks slightly. Cancel any partial
-    // double-tap and require two fresh stable frames before gesture edges are
-    // accepted; aiming remains live throughout the brief stabilization.
-    if (!s.gestureStable) {
-      this.pinchControl.resetForContinuity();
-      this.handLockedAim = null;
-      this.handPinching = false;
-      this.handBtn?.setText('STABLE').setColor('#ffd970');
-      this.handStatusText?.setColor('#ffd970');
-      return;
-    }
-
-    // Confidence may be too low for a physical contact/release edge while the
-    // filtered fingertip position is still useful for live aiming. Keep the
-    // cursor responsive, but fail closed and discard every partial double-tap.
-    if (!s.usableForGesture) {
-      this.pinchControl.resetForContinuity();
-      this.handLockedAim = null;
-      this.handPinching = false;
-      this.handBtn?.setText('UNCERTAIN').setColor('#ffd970');
+    // An uncertain result can still move the cursor but can never progress a
+    // contact/release edge. Two brief dips preserve a real pinch; sustained
+    // uncertainty cancels fail-closed.
+    const continuity = this.handContinuity.observe(s.gestureStable && s.usableForGesture, now);
+    if (continuity !== 'usable') {
+      if (continuity === 'cancel') {
+        this.pinchControl.resetForContinuity();
+        this.handLockedAim = null;
+        this.handPinching = false;
+      } else {
+        this.pinchControl.holdForUncertainty(s.timestampMs);
+      }
+      this.handBtn?.setText(s.gestureStable ? 'UNCERTAIN' : 'STABLE').setColor('#ffd970');
       this.handStatusText?.setColor('#ffd970');
       return;
     }
@@ -1837,10 +1852,18 @@ export class GameScene extends Phaser.Scene {
     }
     if (pinchEvent === 'released') {
       this.handPinching = false;
-      const aim = this.handLockedAim ?? this.handSmooth ?? this.handTarget;
+      const predictedRelease = this.handAimPredictor.predict(now);
+      const predictedAim = predictedRelease
+        ? mapHandToAim(predictedRelease, VIEW.width, VIEW.height * 0.12, this.shooter.y - 105)
+        : null;
+      const aim = this.handLockedAim ?? predictedAim ?? this.handTarget;
       this.handLockedAim = null;
+      if (!aim) return;
+      this.handTarget = { ...aim };
+      this.handSmooth = { ...aim };
+      this.handCursor?.setPosition(aim.x, aim.y);
       this.dispatchTutorial({
-        type: 'hand-touch-two',
+        type: 'hand-touch-one',
         reliable: true,
         releaseConfirmed: true,
       });
@@ -1862,7 +1885,11 @@ export class GameScene extends Phaser.Scene {
 
   /** Interpolate every Phaser frame so 15–20 recognition FPS still feels fluid. */
   private advanceHandAim(deltaMs: number): void {
-    const target = this.handLockedAim ?? this.handTarget;
+    const predicted = this.handAimPredictor.predict(performance.now());
+    const predictedTarget = predicted
+      ? mapHandToAim(predicted, VIEW.width, VIEW.height * 0.12, this.shooter.y - 105)
+      : null;
+    const target = this.handLockedAim ?? predictedTarget ?? this.handTarget;
     if (!this.handOn || !target) return;
     if (!this.handSmooth) this.handSmooth = { ...target };
     // The tracker already applies a responsive One Euro filter. Keep only a

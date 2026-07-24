@@ -1,6 +1,6 @@
 # Hand-tracking acceptance boundary
 
-The shipped Phaser control uses one on-device MediaPipe worker and a fail-closed contact state machine. The player touches thumb/index and releases for Tap 1, which freezes aim, then repeats contact/release for Tap 2 to fire. The whole palm does not need to open, and a small confirmed loss of fingertip contact is enough to register release.
+The shipped Phaser control uses one on-device MediaPipe worker and a fail-closed contact state machine. The player aims, touches thumb/index and separates the tips slightly to fire in one natural pinch/release. The whole palm does not need to open, and a small confirmed loss of fingertip contact is enough to register release.
 
 Implemented protections include:
 
@@ -8,16 +8,16 @@ Implemented protections include:
 - explicit 15/20/30 FPS input cadence independent of render quality;
 - aspect-corrected image geometry plus world-landmark depth, yaw/pitch and palm-scale checks;
 - close/far-hand bounds, stable palm anchors, dominant-hand continuity and hand-switch rejection;
-- multi-frame raw/filtered contact confirmation, small-gap adaptive release and frozen aim;
-- stale/duplicate frame rejection, tracking-loss cancellation and fresh-open rearm;
+- multi-frame raw/filtered contact confirmation and small-gap adaptive release;
+- bounded adaptive result-age acceptance, duplicate/order rejection, tracking-loss cancellation and fresh-open rearm;
 - one frame in flight, bitmap/inference watchdogs, worker/camera recovery and continuity generations;
-- bounded 320×240 capture and optional dark/backlit enhancement; preprocessing faults do not stop model inference, while blurred or uncertain gesture frames remain fail-closed;
+- bounded 640×480 camera input, adaptive 512/384/320px inference and optional dark/backlit enhancement; preprocessing faults do not stop model inference, while blurred or uncertain gesture frames remain fail-closed;
 - lifecycle handling for camera loss, pause/background/resume and delayed camera-start races;
 - no camera-frame upload, recording or server transport.
 
 Regression coverage is concentrated in:
 
-- `tests/handtracking-latency.test.ts` — playable double-tap timing, no single-pinch fire, noisy-frame rejection, depth/angle/scale gates, prewarm and recovery;
+- `tests/handtracking-latency.test.ts` — playable single pinch/release timing, legacy replay compatibility, noisy-frame rejection, depth/angle/scale gates, prewarm and recovery;
 - `tests/handgeometry.test.ts` — roll, yaw, pitch, perspective, aspect ratio, world depth and malformed inputs;
 - `tests/handsettings-contact.test.ts` — safe calibration and corrupt/legacy threshold repair;
 - `tests/handvision.test.ts` — close/far acquisition, dark/backlit enhancement, blur and slow-device budgets;

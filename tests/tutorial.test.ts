@@ -168,7 +168,7 @@ describe('Level-0 playable tutorial state machine', () => {
     ))).toEqual(progressStore.read());
   });
 
-  it('inserts two fail-closed touch/release gates only for hand input', () => {
+  it('inserts one fail-closed pinch/release gate only for hand input', () => {
     expect(levelZeroTutorialSteps('touch')).not.toContain('hand-touch-one');
     expect(levelZeroTutorialSteps('hand')).toEqual([
       'objective',
@@ -177,7 +177,6 @@ describe('Level-0 playable tutorial state machine', () => {
       'swap',
       'aim',
       'hand-touch-one',
-      'hand-touch-two',
       'fire',
       'match-three',
       'drop-cluster',
@@ -209,19 +208,6 @@ describe('Level-0 playable tutorial state machine', () => {
       reliable: true,
       releaseConfirmed: true,
     }).accepted).toBe(true);
-    expect(machine.snapshot().currentStep).toBe('hand-touch-two');
-
-    // Repeating touch one cannot count as touch two.
-    expect(machine.dispatch({
-      type: 'hand-touch-one',
-      reliable: true,
-      releaseConfirmed: true,
-    }).accepted).toBe(false);
-    expect(machine.dispatch({
-      type: 'hand-touch-two',
-      reliable: true,
-      releaseConfirmed: true,
-    }).accepted).toBe(true);
     expect(machine.snapshot()).toMatchObject({
       currentStep: 'fire',
       canAim: true,
@@ -239,7 +225,7 @@ describe('Level-0 playable tutorial state machine', () => {
       reliable: true,
       releaseConfirmed: true,
     }).accepted).toBe(true);
-    expect(machine.snapshot().currentStep).toBe('hand-touch-two');
+    expect(machine.snapshot().currentStep).toBe('fire');
 
     const fallback = machine.fallbackToPointer('mouse');
     expect(fallback.accepted).toBe(true);
@@ -336,7 +322,7 @@ describe('Level-0 playable tutorial state machine', () => {
       runMode: 'replay',
       inputMode: 'hand',
       currentStep: 'objective',
-      stepCount: 10,
+      stepCount: 9,
     });
     expect(progressStore.read()).toMatchObject({
       playCount: 2,

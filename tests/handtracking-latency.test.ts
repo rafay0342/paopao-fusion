@@ -102,6 +102,52 @@ describe('false-positive-resistant pinch and double-tap controls', () => {
     expect(control.isEngaged()).toBe(false);
   });
 
+  it.each([30, 20, 15])('fires gameplay mode once after one confirmed pinch/release at %i FPS', (fps) => {
+    const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+    const period = 1_000 / fps;
+    let now = -period;
+    const send = (pinch: number): PinchControlEvent => {
+      now += period;
+      return control.update(gestureFrame(pinch, now));
+    };
+
+    while (now < period * 2) expect(send(SEPARATED)).toBe('none');
+    const contactAt = now + period;
+    expect(send(CLOSED)).toBe('none');
+    expect(send(CLOSED)).toBe('latched');
+    while (now - contactAt < 70) expect(send(CLOSED)).toBe('none');
+    expect(send(CONTACT_BROKEN)).toBe('none');
+    expect(send(CONTACT_BROKEN)).toBe('released');
+    expect(control.isEngaged()).toBe(false);
+  });
+
+  it('never fires gameplay mode from one contact frame or one release frame', () => {
+    const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+    [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
+    expect(control.update(gestureFrame(CLOSED, 120))).toBe('none');
+    expect(control.update(gestureFrame(SEPARATED, 160))).toBe('none');
+    expect(control.getPhase()).toBe('ready');
+
+    expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
+    expect(control.update(gestureFrame(CLOSED, 240))).toBe('latched');
+    expect(control.update(gestureFrame(CLOSED, 280))).toBe('none');
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 320))).toBe('none');
+    expect(control.update(gestureFrame(CLOSED, 360))).toBe('none');
+    expect(control.isEngaged()).toBe(true);
+  });
+
+  it('does not bridge release confirmation across an uncertain frame', () => {
+    const control = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
+    [0, 40, 80].forEach((time) => control.update(gestureFrame(SEPARATED, time)));
+    expect(control.update(gestureFrame(CLOSED, 120))).toBe('none');
+    expect(control.update(gestureFrame(CLOSED, 160))).toBe('latched');
+    expect(control.update(gestureFrame(CLOSED, 200))).toBe('none');
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 240))).toBe('none');
+    control.holdForUncertainty(280);
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 320))).toBe('none');
+    expect(control.update(gestureFrame(CONTACT_BROKEN, 360))).toBe('released');
+  });
+
   it('treats a small real fingertip gap as separated without requiring an open palm', () => {
     const control = new PinchDoubleTapControl();
     [0, 40, 80, 120].forEach((time) => {
@@ -553,6 +599,7 @@ describe('hand-tracking pipeline latency invariants', () => {
   const settings = readText('src/game/handsettings.ts');
   const setup = readText('src/scenes/HandSetupScene.ts');
   const game = readText('src/scenes/GameScene.ts');
+  const endless = readText('src/scenes/EndlessScene.ts');
   const worker = readText('src/game/handtracking.worker.ts');
 
   it('prewarms the model for an uncalibrated first-time player during app startup', () => {
@@ -619,12 +666,11 @@ describe('hand-tracking pipeline latency invariants', () => {
 
   it('bounds camera frames and keeps only light final cursor interpolation', () => {
     expect(tracking).toContain('handInferenceEdge({');
-    expect(tracking).toContain("? 'high' : 'medium'");
+    expect(tracking).toContain("const resizeQuality: ResizeQuality = 'medium'");
     expect(tracking).toContain('handFarDetailMode(this.farDetailMode, this.lastPalmScale)');
-    expect(tracking).toContain('HAND_DETAIL_FALLBACK_EDGE');
-    expect(tracking).toContain('this.observeDetailPerformance(message.inferenceMs)');
-    expect(tracking).toContain('if (this.lastCaptureEdge !== HAND_DETAIL_EDGE)');
-    expect(tracking).toContain('width: { ideal: 960, max: 1280 }');
+    expect(tracking).toContain('new HandInferenceGovernor()');
+    expect(tracking).toContain('this.inferenceGovernor.observe(pipelineMs');
+    expect(tracking).toContain('Math.min(requestedEdge, this.inferenceGovernor.edgeCap())');
     expect(tracking).toContain('width: { ideal: 640, max: 640 }');
     expect(tracking).toContain('requestDefaultCamera()');
     expect(tracking).toContain('void this.optimiseCameraTrack(track)');
@@ -651,26 +697,31 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(frameHandler).toContain('finally {\n    bitmap.close();');
     expect(tracking).toContain('gestureStable: this.lightingStableFrames >= 3');
     expect(tracking).toContain('result.enhanced !== this.gestureEnhanced');
-    expect(game).toContain('if (!s.gestureStable)');
+    expect(game).toContain('this.handContinuity.observe(s.gestureStable && s.usableForGesture');
     expect(game).toContain('this.pinchControl.resetForContinuity()');
-    expect(game).not.toContain('if (!s.gestureStable) {\n      this.pinchControl.reset();');
-    expect(game).toContain("this.handBtn?.setText('STABLE')");
+    expect(game).toContain("continuity === 'cancel'");
+    expect(game).toContain("this.handBtn?.setText(s.gestureStable ? 'UNCERTAIN' : 'STABLE')");
   });
 
-  it('feeds capture-time dual pinch evidence into a frozen-aim double-tap release', () => {
+  it('feeds capture-time dual pinch evidence into a single physical pinch/release shot', () => {
     expect(tracking).toContain('rawPinch,');
     expect(tracking).toContain('filteredPinch: smoothPinch');
     expect(tracking).toContain('this.identityStabilizer.update({');
     expect(tracking).toContain('handedness: identity.identity');
     expect(tracking).toContain('handednessScore: identity.trusted ? identity.score : 0');
     expect(game).toContain('this.pinchControl.update(s)');
+    expect(game).toContain('{ fireOnFirstRelease: true }');
     expect(game).toContain('this.handPinching = this.pinchControl.isContacting()');
     expect(game).toContain('this.pinchControl.resetForShot()');
     const shootAt = game.slice(game.indexOf('private shootAt('), game.indexOf('private startGhostReplay(', game.indexOf('private shootAt(')));
     expect(shootAt).toContain('this.pinchControl.resetForShot()');
     expect(shootAt).not.toContain('this.pinchControl.reset()');
     expect(game).toContain("pinchEvent === 'aim-locked'");
-    expect(game).toContain('this.handLockedAim ?? this.handSmooth ?? this.handTarget');
+    expect(game).toContain('const predictedRelease = this.handAimPredictor.predict(now)');
+    expect(game).toContain('this.handLockedAim ?? predictedAim ?? this.handTarget');
+    expect(game).toContain('this.handCursor?.setPosition(aim.x, aim.y)');
+    expect(endless).toContain('const predictedRelease = this.handAimPredictor.predict(now)');
+    expect(endless).toContain('this.selectedLane = endlessLaneForBoardX(this.grid, releasePoint.x)');
     expect(settings).toContain('MIN_CONTACT_HYSTERESIS');
     expect(tracking).toContain('rawPinch >= settings.pinchOff');
   });

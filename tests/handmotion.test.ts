@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { HandAimFilter, HandLandmarkFilter } from '../src/game/handcontrol';
+import {
+  HandAimFilter,
+  HandAimPredictor,
+  HandGestureContinuityGate,
+  HandLandmarkFilter,
+} from '../src/game/handcontrol';
 
 describe('adaptive hand motion filters', () => {
   it.each([30, 20, 15])('responds within one recognition frame at %i FPS', (fps) => {
@@ -68,5 +73,30 @@ describe('adaptive hand motion filters', () => {
 
     filter.reset();
     expect(filter.filter(shifted, 500)).toEqual(shifted);
+  });
+
+  it('fills render gaps with bounded velocity prediction and stops after loss', () => {
+    const predictor = new HandAimPredictor();
+    predictor.push({ x: 0.2, y: 0.4 }, 0);
+    predictor.push({ x: 0.3, y: 0.4 }, 50);
+    const predicted = predictor.predict(75)!;
+    expect(predicted.x).toBeGreaterThan(0.3);
+    expect(predicted.x).toBeLessThanOrEqual(0.365);
+    expect(predicted.y).toBeCloseTo(0.4, 6);
+    expect(predictor.predict(231)).toBeNull();
+
+    predictor.reset();
+    expect(predictor.predict(250)).toBeNull();
+  });
+
+  it('holds two uncertain frames but cancels a sustained confidence loss', () => {
+    const gate = new HandGestureContinuityGate();
+    expect(gate.observe(true, 0)).toBe('usable');
+    expect(gate.observe(false, 40)).toBe('hold');
+    expect(gate.observe(false, 80)).toBe('hold');
+    expect(gate.observe(true, 120)).toBe('usable');
+    expect(gate.observe(false, 160)).toBe('hold');
+    expect(gate.observe(false, 200)).toBe('hold');
+    expect(gate.observe(false, 240)).toBe('cancel');
   });
 });

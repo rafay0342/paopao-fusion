@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   HAND_DETAIL_EDGE,
   HAND_DETAIL_FALLBACK_EDGE,
+  HAND_LOW_POWER_EDGE,
   HAND_TRACKING_EDGE,
   HandEnhancementBudget,
+  HandInferenceGovernor,
   handInferenceEdge,
   handFarDetailMode,
   handInferenceSize,
@@ -41,6 +43,29 @@ describe('adaptive hand vision policy', () => {
     expect(handFarDetailMode(true, 0.119)).toBe(true);
     expect(handFarDetailMode(true, 0.121)).toBe(false);
     expect(handFarDetailMode(false, Number.NaN)).toBe(true);
+  });
+
+  it('drops slow inference through 384px to 320px and recovers with hysteresis', () => {
+    const governor = new HandInferenceGovernor();
+    expect(governor.edgeCap()).toBe(HAND_DETAIL_EDGE);
+    [100, 200, 300].forEach((now) => governor.observe(90, 30, now));
+    expect(governor.edgeCap()).toBe(HAND_TRACKING_EDGE);
+    [400, 500, 600].forEach((now) => governor.observe(80, 30, now));
+    expect(governor.edgeCap()).toBe(HAND_LOW_POWER_EDGE);
+
+    governor.observe(35, 30, 700);
+    governor.observe(35, 30, 5_699);
+    expect(governor.edgeCap()).toBe(HAND_LOW_POWER_EDGE);
+    governor.observe(35, 30, 5_700);
+    expect(governor.edgeCap()).toBe(HAND_TRACKING_EDGE);
+    governor.observe(35, 30, 10_700);
+    expect(governor.edgeCap()).toBe(HAND_DETAIL_EDGE);
+  });
+
+  it('does not downshift a deliberately lower 15 FPS target for a healthy cadence', () => {
+    const governor = new HandInferenceGovernor();
+    for (let index = 1; index <= 20; index++) governor.observe(90, 15, index * 100);
+    expect(governor.edgeCap()).toBe(HAND_DETAIL_EDGE);
   });
 
   it.each([

@@ -72,14 +72,76 @@ export class HandEnhancementBudget {
 export const HAND_TRACKING_EDGE = 384;
 export const HAND_DETAIL_FALLBACK_EDGE = 416;
 export const HAND_DETAIL_EDGE = 512;
+export const HAND_LOW_POWER_EDGE = 320;
 export const HAND_FAR_PALM_SCALE = 0.1;
 export const HAND_FAR_DETAIL_ENTER_SCALE = 0.085;
 export const HAND_FAR_DETAIL_EXIT_SCALE = 0.12;
 export const HAND_DETAIL_STABLE_FRAMES = 6;
 
+const HAND_INFERENCE_TIERS = Object.freeze([
+  HAND_LOW_POWER_EDGE,
+  HAND_TRACKING_EDGE,
+  HAND_DETAIL_EDGE,
+]);
+const HAND_TIER_SLOW_FRAMES = 3;
+const HAND_TIER_RECOVERY_MS = 5_000;
+
 const clamp = (value: number, min: number, max: number): number => (
   Math.min(max, Math.max(min, Number.isFinite(value) ? value : min))
 );
+
+/**
+ * Fast thermal/load governor for the bitmap sent to MediaPipe. It reacts to
+ * end-to-end frame age, not inference alone, and recovers one tier at a time
+ * only after a sustained healthy window to prevent resize oscillation.
+ */
+export class HandInferenceGovernor {
+  private tierIndex = HAND_INFERENCE_TIERS.length - 1;
+  private slowFrames = 0;
+  private healthySinceMs = 0;
+  private lastObservationMs = Number.NEGATIVE_INFINITY;
+
+  observe(pipelineMs: number, targetFps: 15 | 20 | 30, timestampMs: number): number {
+    if (!Number.isFinite(pipelineMs)
+      || pipelineMs < 0
+      || !Number.isFinite(timestampMs)
+      || timestampMs <= this.lastObservationMs) return this.edgeCap();
+    this.lastObservationMs = timestampMs;
+
+    const frameBudgetMs = 1_000 / targetFps;
+    const slow = pipelineMs > Math.max(50, frameBudgetMs * 1.55);
+    if (slow) {
+      this.healthySinceMs = 0;
+      this.slowFrames++;
+      if (this.slowFrames >= HAND_TIER_SLOW_FRAMES && this.tierIndex > 0) {
+        this.tierIndex--;
+        this.slowFrames = 0;
+      }
+      return this.edgeCap();
+    }
+
+    this.slowFrames = Math.max(0, this.slowFrames - 1);
+    if (this.healthySinceMs === 0) this.healthySinceMs = timestampMs;
+    if (timestampMs - this.healthySinceMs >= HAND_TIER_RECOVERY_MS
+      && this.tierIndex < HAND_INFERENCE_TIERS.length - 1) {
+      this.tierIndex++;
+      this.slowFrames = 0;
+      this.healthySinceMs = timestampMs;
+    }
+    return this.edgeCap();
+  }
+
+  edgeCap(): number {
+    return HAND_INFERENCE_TIERS[this.tierIndex];
+  }
+
+  reset(): void {
+    this.tierIndex = HAND_INFERENCE_TIERS.length - 1;
+    this.slowFrames = 0;
+    this.healthySinceMs = 0;
+    this.lastObservationMs = Number.NEGATIVE_INFINITY;
+  }
+}
 
 /** Keeps acquisition/far/dropout frames detailed without permanently taxing inference. */
 export function handInferenceEdge(input: HandCapturePolicyInput): number {

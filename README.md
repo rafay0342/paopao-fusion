@@ -175,9 +175,10 @@ tools/
   serve-dist.mjs          gzip-enabled static server used by the live Funnel
 ```
 
-Controls: with mouse/touch, aim and release to shoot. In Hand mode, touch thumb
-and index then release for Tap 1 to lock aim; repeat contact/release for Tap 2
-to fire. Uncertain, stale or incomplete gestures fail closed. Match 3+
+Controls: with mouse/touch, aim and release to shoot. In Hand mode, aim, touch
+thumb and index, then separate them slightly to fire—one natural pinch/release,
+with no second pinch and no wide open palm. Uncertain, stale or incomplete
+gestures fail closed. Match 3+
 same-colour bubbles to pop them; disconnected bubbles fall.
 
 ## Modes, coins and artifacts
@@ -213,17 +214,18 @@ lifetime coins.
 
 ### Hand-tracking (webcam, optional)
 
-Tap **✋ HAND** in-game to enable MediaPipe hand-tracking. Touch thumb and
-index tips, then separate them slightly; that touch/release is Tap 1 and locks
-the aim. Repeat one more touch/release as Tap 2 to fire. You never need to open
-the whole palm or spread the fingers wide. A single tap, landmark jitter or an
-incomplete second tap never shoots. Tap **HAND** again to turn it off.
+Tap **✋ HAND** in-game to enable MediaPipe hand-tracking. Aim with the index
+tip, touch thumb and index, then separate them slightly to fire. You never need
+to repeat the pinch, open the whole palm or spread the fingers wide. Contact
+and release each require consecutive fresh observations, so one-frame landmark
+jitter never shoots. Tap **HAND** again to turn it off.
 It's fully optional — camera/model errors are shown in the game while
 touch/mouse remains available.
 
-The camera pipeline adaptively uses higher-detail frames for first acquisition
-and distant hands, corrects recoverable dark/bright/backlit footage, and combines
-2D fingertip contact with world-depth geometry for angled and perspective views.
+The camera pipeline adaptively scales 512/384/320px inference from measured
+end-to-end load, uses higher detail for first acquisition and distant hands,
+corrects recoverable dark/bright/backlit footage, and combines 2D fingertip
+contact with world-depth geometry for angled and perspective views.
 Severely blurred, fully occluded, pitch-black or clipped-white frames fail closed
 instead of guessing a gesture or firing accidentally.
 

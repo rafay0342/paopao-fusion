@@ -71,8 +71,8 @@ export class HandAimFilter {
   // Fast motion opens the filter aggressively while a still fingertip remains
   // damped. This avoids stacking a full recognition-frame of aim lag on top of
   // MediaPipe and the final Phaser interpolation.
-  private readonly x = new OneEuroFilter(2.2, 4.5, 1.2);
-  private readonly y = new OneEuroFilter(2, 4, 1.2);
+  private readonly x = new OneEuroFilter(2.2, 8, 1.2);
+  private readonly y = new OneEuroFilter(2, 7.5, 1.2);
 
   filter(point: HandPoint, timeMs: number): HandPoint {
     return {
@@ -84,6 +84,109 @@ export class HandAimFilter {
   reset(): void {
     this.x.reset();
     this.y.reset();
+  }
+}
+
+/**
+ * Bounded render-time prediction for a camera cursor.
+ *
+ * MediaPipe results arrive less often than Phaser renders. This predictor uses
+ * only a few milliseconds of measured fingertip velocity to fill that visual
+ * gap; gesture decisions continue to consume the original timestamped
+ * landmarks. Prediction stops quickly after loss and can never leave 0..1.
+ */
+export class HandAimPredictor {
+  private point: HandPoint | null = null;
+  private velocity: HandPoint = { x: 0, y: 0 };
+  private sampleAtMs = Number.NEGATIVE_INFINITY;
+
+  constructor(
+    private readonly maximumHorizonMs = 45,
+    private readonly maximumLead = 0.065,
+    private readonly staleAfterMs = 180,
+  ) {}
+
+  push(point: HandPoint, timestampMs: number): void {
+    const next = { x: clamp01(point.x), y: clamp01(point.y) };
+    if (!Number.isFinite(timestampMs)) return;
+    if (!this.point || !Number.isFinite(this.sampleAtMs) || timestampMs - this.sampleAtMs > this.staleAfterMs) {
+      this.point = next;
+      this.velocity = { x: 0, y: 0 };
+      this.sampleAtMs = timestampMs;
+      return;
+    }
+    if (timestampMs <= this.sampleAtMs) return;
+
+    const elapsedMs = clamp(timestampMs - this.sampleAtMs, 8, 140);
+    const elapsedSeconds = elapsedMs / 1_000;
+    const rawVelocity = {
+      x: clamp((next.x - this.point.x) / elapsedSeconds, -4.5, 4.5),
+      y: clamp((next.y - this.point.y) / elapsedSeconds, -4.5, 4.5),
+    };
+    const reversal = rawVelocity.x * this.velocity.x < 0 || rawVelocity.y * this.velocity.y < 0;
+    const follow = reversal
+      ? 0.82
+      : 1 - Math.exp(-elapsedMs / 34);
+    this.velocity.x += (rawVelocity.x - this.velocity.x) * follow;
+    this.velocity.y += (rawVelocity.y - this.velocity.y) * follow;
+    this.point = next;
+    this.sampleAtMs = timestampMs;
+  }
+
+  predict(nowMs: number): HandPoint | null {
+    if (!this.point || !Number.isFinite(nowMs) || !Number.isFinite(this.sampleAtMs)) return null;
+    const ageMs = Math.max(0, nowMs - this.sampleAtMs);
+    if (ageMs > this.staleAfterMs) return null;
+    const horizonSeconds = Math.min(ageMs, this.maximumHorizonMs) / 1_000;
+    const speed = Math.hypot(this.velocity.x, this.velocity.y);
+    const leadScale = speed > 0
+      ? Math.min(1, this.maximumLead / Math.max(0.000_001, speed * horizonSeconds))
+      : 0;
+    return {
+      x: clamp01(this.point.x + this.velocity.x * horizonSeconds * leadScale),
+      y: clamp01(this.point.y + this.velocity.y * horizonSeconds * leadScale),
+    };
+  }
+
+  reset(): void {
+    this.point = null;
+    this.velocity = { x: 0, y: 0 };
+    this.sampleAtMs = Number.NEGATIVE_INFINITY;
+  }
+}
+
+export type HandGestureContinuityDecision = 'usable' | 'hold' | 'cancel';
+
+/**
+ * A single uncertain recognition may not create an edge, but it also should not
+ * destroy a real pinch already in progress. Three consecutive uncertain frames
+ * (or 180 ms) cancel fail-closed.
+ */
+export class HandGestureContinuityGate {
+  private uncertainFrames = 0;
+  private uncertainSinceMs = 0;
+
+  observe(usable: boolean, timestampMs: number): HandGestureContinuityDecision {
+    if (usable) {
+      this.reset();
+      return 'usable';
+    }
+    if (!Number.isFinite(timestampMs)) {
+      this.reset();
+      return 'cancel';
+    }
+    if (this.uncertainFrames === 0) this.uncertainSinceMs = timestampMs;
+    this.uncertainFrames++;
+    if (this.uncertainFrames >= 3 || timestampMs - this.uncertainSinceMs >= 180) {
+      this.reset();
+      return 'cancel';
+    }
+    return 'hold';
+  }
+
+  reset(): void {
+    this.uncertainFrames = 0;
+    this.uncertainSinceMs = 0;
   }
 }
 
@@ -171,7 +274,7 @@ export interface PinchGestureFrame {
 export type PinchControlEvent = 'none' | 'latched' | 'aim-locked' | 'released' | 'cancelled';
 export type PinchControlPhase = 'open' | 'ready' | 'aim' | 'tap-two';
 
-interface PinchTiming {
+export interface PinchTiming {
   rearmOpenMs: number;
   edgeConfirmMs: number;
   minimumAimHoldMs: number;
@@ -182,6 +285,8 @@ interface PinchTiming {
   sequenceMaxMs: number;
   lossCancelMs: number;
   neutralGraceMs: number;
+  /** Gameplay mode: the first confirmed physical release fires immediately. */
+  fireOnFirstRelease: boolean;
 }
 
 const DEFAULT_PINCH_TIMING: PinchTiming = {
@@ -197,6 +302,7 @@ const DEFAULT_PINCH_TIMING: PinchTiming = {
   // One neutral recognition is tolerated even at 15 FPS, but it never counts
   // as an edge sample and a longer ambiguous pose restarts confirmation.
   neutralGraceMs: 140,
+  fireOnFirstRelease: false,
 };
 
 type PinchState =
@@ -224,13 +330,13 @@ const WORLD_ANGLED_CONTACT_RAW_MAX = 0.72;
 /**
  * Conservative camera gesture recogniser:
  *
- * stable fingertip separation -> touch/release (tap 1) -> touch/release
- * (tap 2) -> fire.
+ * stable fingertip separation -> touch/release -> fire in gameplay mode.
  *
  * A single raw landmark crossing can never advance this machine. Every edge
- * needs raw and filtered agreement, consecutive samples and elapsed time. Aim
- * is locked after tap 1 and held through tap 2; any stale, implausible or
- * different-hand sequence is cancelled back to a stable-open baseline.
+ * needs raw and filtered agreement, consecutive samples and elapsed time.
+ * Legacy two-cycle confirmation remains available for replay compatibility;
+ * any stale, implausible or different-hand sequence is cancelled back to a
+ * stable-open baseline.
  */
 export class PinchDoubleTapControl {
   private state: PinchState = 'rearming';
@@ -718,6 +824,11 @@ export class PinchDoubleTapControl {
       this.phaseSamples++;
       this.lastEdgeEvidenceAt = nowMs;
       if (!this.edgeConfirmed(nowMs)) return 'none';
+      this.rememberContactModel();
+      if (this.timing.fireOnFirstRelease) {
+        this.clearSequence(true, true);
+        return 'released';
+      }
       this.sequenceStartedAt = nowMs;
       this.lastTapAt = nowMs;
       this.lockedPalm = {
@@ -726,7 +837,6 @@ export class PinchDoubleTapControl {
         scale: frame.palmScale,
         handedness: frame.handednessScore >= 0.65 ? frame.handedness.trim().toLowerCase() : '',
       };
-      this.rememberContactModel();
       this.enter('wait-tap', nowMs);
       return 'aim-locked';
     }
@@ -823,5 +933,16 @@ export class PinchDoubleTapControl {
   /** Pipeline continuity boundary that retains calibrated physical separation. */
   resetForContinuity(): void {
     this.clearSequence(true, true);
+  }
+
+  /**
+   * Preserve a confirmed physical contact through one brief confidence dip,
+   * while preventing observations on either side of that dip from combining
+   * into a contact or release edge.
+   */
+  holdForUncertainty(timestampMs: number): void {
+    if (!Number.isFinite(timestampMs) || timestampMs <= this.lastTimestampMs) return;
+    this.lastTimestampMs = timestampMs;
+    this.resetEdgeCandidate(timestampMs);
   }
 }

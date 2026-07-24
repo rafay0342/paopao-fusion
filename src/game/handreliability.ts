@@ -57,10 +57,14 @@ export interface HandWorkerResultFreshnessInput {
   lastAcceptedCaptureTimestampMs: number;
   receivedTimestampMs: number;
   targetFps: 15 | 20 | 30;
+  /** Worker-only time used to bound the newest in-flight result on slow CPUs. */
+  inferenceMs?: number;
 }
 
-/** A recognition older than two requested capture periods cannot drive play. */
+/** Ordinary fast-path budget before measured slow-device adaptation is needed. */
 export const HAND_RESULT_MAX_FRAME_BUDGETS = 2;
+/** No recognition older than this may drive aim or gesture state. */
+export const HAND_RESULT_HARD_MAX_AGE_MS = 180;
 
 export type HandCameraLifecycleState =
   | 'off'
@@ -228,9 +232,10 @@ export function classifyHandConfidence(input: HandConfidenceInput): HandConfiden
 
 /**
  * Validates a worker result against the capture clock before any landmark
- * filter, cursor or gesture state consumes it. The strict timestamp watermark
- * also protects same-generation results if a browser delivers an old worker
- * message after a newer capture has already been accepted.
+ * filter, cursor or gesture state consumes it. Only one frame can be in flight,
+ * so a measured inference allowance accepts the newest 70–120 ms CPU result
+ * without permitting a stale queue. The timestamp watermark still protects
+ * same-generation results delivered out of order.
  */
 export function classifyHandWorkerResultFreshness(
   input: HandWorkerResultFreshnessInput,
@@ -244,7 +249,18 @@ export function classifyHandWorkerResultFreshness(
 
   const ageMs = input.receivedTimestampMs - input.captureTimestampMs;
   if (ageMs < 0) return 'future';
-  const maximumAgeMs = (1_000 / input.targetFps) * HAND_RESULT_MAX_FRAME_BUDGETS;
+  const frameBudgetMs = 1_000 / input.targetFps;
+  const fastPathAgeMs = frameBudgetMs * HAND_RESULT_MAX_FRAME_BUDGETS;
+  const measuredAgeMs = Number.isFinite(input.inferenceMs) && input.inferenceMs! >= 0
+    // Bitmap creation and worker transfer sit outside worker inference time.
+    // Keep that real overhead bounded instead of dropping every valid result
+    // on a slower CPU.
+    ? input.inferenceMs! + Math.max(frameBudgetMs, 50)
+    : fastPathAgeMs;
+  const maximumAgeMs = Math.min(
+    HAND_RESULT_HARD_MAX_AGE_MS,
+    Math.max(fastPathAgeMs, measuredAgeMs),
+  );
   return ageMs <= maximumAgeMs ? 'fresh' : 'stale';
 }
 

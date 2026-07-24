@@ -16,9 +16,9 @@ import {
   type HandConfidenceState,
 } from './handreliability';
 import {
-  HAND_DETAIL_FALLBACK_EDGE,
   HAND_DETAIL_EDGE,
   HAND_FAR_PALM_SCALE,
+  HandInferenceGovernor,
   handFarDetailMode,
   handInferenceEdge,
   handInferenceSize,
@@ -138,12 +138,15 @@ export interface HandSample {
 export interface HandTrackingDiagnostics {
   captureFps: number;
   inferenceMs: number;
+  pipelineMs: number;
+  droppedResults: number;
   missingFrames: number;
   recoveries: number;
   pendingMs: number;
   sourceWidth: number;
   sourceHeight: number;
   inferenceEdge: number;
+  inferenceEdgeCap: number;
   inferenceWidth: number;
   inferenceHeight: number;
   lightingMode: HandLightingMode;
@@ -214,6 +217,8 @@ class HandTracker {
   private pendingFrameId = 0;
   private nextFrameId = 1;
   private lastInferenceMs = 0;
+  private lastPipelineMs = 0;
+  private droppedResults = 0;
   private frameErrors = 0;
   private nextCaptureAt = 0;
   private lastVideoTime = -1;
@@ -248,6 +253,7 @@ class HandTracker {
   private readonly pinchFilter = new OneEuroFilter(6, 1.5, 1.2);
   private readonly identityStabilizer = new HandIdentityStabilizer();
   private readonly cameraLifecycle = new HandCameraLifecycle();
+  private readonly inferenceGovernor = new HandInferenceGovernor();
   private gestureCandidate: HandGesture = 'other';
   private gestureCandidateFrames = 0;
   private stableGesture: HandGesture = 'other';
@@ -262,9 +268,6 @@ class HandTracker {
   private lastCaptureEdge = HAND_DETAIL_EDGE;
   private lastCaptureWidth = 0;
   private lastCaptureHeight = 0;
-  private slowDetailFrames = 0;
-  private detailBackoffUntil = 0;
-  private nextDetailProbeAt = 0;
 
   constructor() {
     this.video = document.createElement('video');
@@ -329,12 +332,15 @@ class HandTracker {
     return {
       captureFps: this.trackingFps,
       inferenceMs: this.lastInferenceMs,
+      pipelineMs: this.lastPipelineMs,
+      droppedResults: this.droppedResults,
       missingFrames: this.missingFrames,
       recoveries: this.recoveryCount,
       pendingMs: this.pendingPhase === 'none' ? 0 : Math.max(0, now - this.pendingSince),
       sourceWidth: this.video.videoWidth,
       sourceHeight: this.video.videoHeight,
       inferenceEdge: this.lastCaptureEdge,
+      inferenceEdgeCap: this.inferenceGovernor.edgeCap(),
       inferenceWidth: this.lastCaptureWidth,
       inferenceHeight: this.lastCaptureHeight,
       lightingMode: this.lightingMode,
@@ -435,8 +441,13 @@ class HandTracker {
       console.warn('Gesture frame failed:', message.error);
       this.clearPendingFrame();
       this.frameErrors++;
-      if (this.frameErrors >= 3) this.queueWorkerRecovery();
-      else this.scheduleFrame(performance.now());
+      if (this.frameErrors >= 3) {
+        const error = new Error(`Gesture worker failed ${this.frameErrors} consecutive frames`);
+        this.resetWorker(error);
+        this.queueWorkerRecovery();
+      } else {
+        this.scheduleFrame(performance.now());
+      }
       return;
     }
 
@@ -446,7 +457,9 @@ class HandTracker {
     if (!this.wanted || !this.camReady) return;
     this.frameErrors = 0;
     this.lastInferenceMs = message.inferenceMs;
-    this.observeDetailPerformance(message.inferenceMs);
+    const pipelineMs = receivedTimestampMs - message.timestampMs;
+    this.lastPipelineMs = pipelineMs;
+    this.inferenceGovernor.observe(pipelineMs, this.settings.targetFps, receivedTimestampMs);
     const freshness = classifyHandWorkerResultFreshness({
       generation: message.generation,
       activeGeneration: this.captureGeneration,
@@ -454,8 +467,10 @@ class HandTracker {
       lastAcceptedCaptureTimestampMs: this.lastAcceptedCaptureTimestampMs,
       receivedTimestampMs,
       targetFps: this.settings.targetFps,
+      inferenceMs: message.inferenceMs,
     });
     if (freshness !== 'fresh') {
+      this.droppedResults++;
       this.scheduleFrame(receivedTimestampMs);
       return;
     }
@@ -464,25 +479,6 @@ class HandTracker {
     // Backpressure is already guaranteed by one frame in flight. Capture the
     // newest camera frame immediately instead of adding inference time again.
     this.scheduleFrame(receivedTimestampMs);
-  }
-
-  private observeDetailPerformance(inferenceMs: number): void {
-    if (!Number.isFinite(inferenceMs)) return;
-    if (this.lastCaptureEdge !== HAND_DETAIL_EDGE) {
-      // A later far-hand session must not inherit stale slow samples collected
-      // before a long period of ordinary 384/416 tracking.
-      this.slowDetailFrames = 0;
-      return;
-    }
-    const budgetMs = Math.max(48, captureIntervalMs(this.settings) * 1.35);
-    this.slowDetailFrames = inferenceMs > budgetMs
-      ? this.slowDetailFrames + 1
-      : Math.max(0, this.slowDetailFrames - 1);
-    if (this.slowDetailFrames < 3) return;
-    const now = performance.now();
-    this.detailBackoffUntil = now + 3_000;
-    this.nextDetailProbeAt = now + 900;
-    this.slowDetailFrames = 0;
   }
 
   private startCamera(): Promise<void> {
@@ -503,8 +499,8 @@ class HandTracker {
     const requestId = ++this.cameraRequestId;
     this.stopCamera(false);
     const boundedVideo: MediaTrackConstraints = {
-      width: { ideal: 960, max: 1280 },
-      height: { ideal: 720, max: 720 },
+      width: { ideal: 640, max: 640 },
+      height: { ideal: 480, max: 480 },
       aspectRatio: { ideal: 4 / 3 },
       frameRate: { ideal: 30, max: 30 },
       facingMode: { ideal: 'user' },
@@ -667,9 +663,9 @@ class HandTracker {
     this.lastCaptureEdge = HAND_DETAIL_EDGE;
     this.lastCaptureWidth = 0;
     this.lastCaptureHeight = 0;
-    this.slowDetailFrames = 0;
-    this.detailBackoffUntil = 0;
-    this.nextDetailProbeAt = 0;
+    this.lastPipelineMs = 0;
+    this.droppedResults = 0;
+    this.inferenceGovernor.reset();
     this.overlayCtx.clearRect(0, 0, this.overlay.width, this.overlay.height);
   }
 
@@ -896,16 +892,11 @@ class HandTracker {
       stableFrames: this.stableHandFrames,
       palmScale: this.farDetailMode ? 0 : Math.max(HAND_FAR_PALM_SCALE, this.lastPalmScale),
     });
-    const captureNow = performance.now();
-    let inferenceEdge = requestedEdge;
-    if (requestedEdge === HAND_DETAIL_EDGE && captureNow < this.detailBackoffUntil) {
-      if (captureNow >= this.nextDetailProbeAt) this.nextDetailProbeAt = captureNow + 900;
-      else inferenceEdge = HAND_DETAIL_FALLBACK_EDGE;
-    }
+    const inferenceEdge = Math.min(requestedEdge, this.inferenceGovernor.edgeCap());
     const inferenceSize = handInferenceSize(sourceWidth, sourceHeight, inferenceEdge);
     const resizeWidth = inferenceSize.width;
     const resizeHeight = inferenceSize.height;
-    const resizeQuality: ResizeQuality = inferenceEdge >= HAND_DETAIL_FALLBACK_EDGE ? 'high' : 'medium';
+    const resizeQuality: ResizeQuality = 'medium';
     this.lastCaptureEdge = inferenceEdge;
     this.lastCaptureWidth = resizeWidth;
     this.lastCaptureHeight = resizeHeight;

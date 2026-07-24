@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  HAND_RESULT_HARD_MAX_AGE_MS,
   HAND_RESULT_MAX_FRAME_BUDGETS,
   classifyHandWorkerResultFreshness,
 } from '../src/game/handreliability';
@@ -22,11 +23,18 @@ const freshness = (
 });
 
 describe('hand worker and gameplay safety gates', () => {
-  it('accepts only current-generation results inside two target frame budgets', () => {
+  it('accepts the newest slow-CPU result within a hard bounded adaptive age', () => {
     expect(HAND_RESULT_MAX_FRAME_BUDGETS).toBe(2);
+    expect(HAND_RESULT_HARD_MAX_AGE_MS).toBe(180);
     expect(freshness()).toBe('fresh');
     expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) - 0.001 })).toBe('fresh');
     expect(freshness({ receivedTimestampMs: 1_000 + (2_000 / 30) + 0.001 })).toBe('stale');
+    expect(freshness({ inferenceMs: 90, receivedTimestampMs: 1_120 })).toBe('fresh');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_165 })).toBe('fresh');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170 })).toBe('fresh');
+    expect(freshness({ inferenceMs: 120, receivedTimestampMs: 1_170.001 })).toBe('stale');
+    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180 })).toBe('fresh');
+    expect(freshness({ inferenceMs: 150, receivedTimestampMs: 1_180.001 })).toBe('stale');
     expect(freshness({ targetFps: 15, receivedTimestampMs: 1_133 })).toBe('fresh');
     expect(freshness({ targetFps: 15, receivedTimestampMs: 1_134 })).toBe('stale');
     expect(freshness({ generation: 6 })).toBe('wrong-generation');
@@ -49,18 +57,22 @@ describe('hand worker and gameplay safety gates', () => {
     expect(tracking).toContain('lastAcceptedCaptureTimestampMs: this.lastAcceptedCaptureTimestampMs');
 
     for (const [source, sampleName] of [[game, 's'], [endless, 'sample']] as const) {
-      const gate = source.indexOf(`if (!${sampleName}.usableForGesture)`);
+      const gate = source.indexOf(`this.handContinuity.observe(`);
       const gestureUpdate = source.indexOf(`this.pinchControl.update(${sampleName})`, gate);
       expect(gate).toBeGreaterThan(-1);
       expect(gestureUpdate).toBeGreaterThan(gate);
       expect(source.slice(gate, gestureUpdate)).toContain('this.pinchControl.resetForContinuity()');
+      expect(source.slice(gate, gestureUpdate)).toContain("continuity === 'cancel'");
+      expect(source.slice(gate, gestureUpdate)).toContain(
+        `this.pinchControl.holdForUncertainty(${sampleName}.timestampMs)`,
+      );
     }
 
     expect(game.indexOf('this.handTarget = mapHandToAim(')).toBeLessThan(
-      game.indexOf('if (!s.usableForGesture)'),
+      game.indexOf('this.handContinuity.observe('),
     );
     expect(endless.indexOf('const point = mapHandToAim(')).toBeLessThan(
-      endless.indexOf('if (!sample.usableForGesture)'),
+      endless.indexOf('this.handContinuity.observe('),
     );
   });
 });

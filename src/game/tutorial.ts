@@ -124,7 +124,6 @@ const HAND_STEP_ORDER = Object.freeze([
   'swap',
   'aim',
   'hand-touch-one',
-  'hand-touch-two',
   'fire',
   'match-three',
   'drop-cluster',
@@ -311,7 +310,7 @@ function instructionForAim(inputMode: TutorialInputMode): string {
 function instructionForFire(inputMode: TutorialInputMode): string {
   switch (inputMode) {
     case 'hand':
-      return 'Keep the locked aim steady while the confirmed second release launches the orb.';
+      return 'Touch thumb and index to pinch, then separate them slightly to launch the orb.';
     case 'keyboard':
       return 'Press Space to launch the red orb.';
     case 'gamepad':
@@ -347,8 +346,8 @@ export function tutorialPrompt(step: TutorialStepId, inputMode: GameplayInputMod
       instructionForAim(normalizedInput),
     ],
     'hand-touch-one': [
-      'First touch: lock aim',
-      'Touch thumb and index, then naturally release. Keep the fingers only comfortably apart.',
+      'Pinch and release',
+      'Touch thumb and index while aiming, then separate them slightly to launch. No second pinch is needed.',
     ],
     'hand-touch-two': [
       'Second touch: confirm',

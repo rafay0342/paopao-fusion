@@ -23,9 +23,9 @@ a direct download at:
 
 `https://rafayamir-1.tail372a9e.ts.net/dl/paopao-handtracking-double-tap-guide-v3.mp4`
 
-The verified 18-second H.264/AAC file is 2,108,153 bytes.
+The verified 18-second single-pinch/release H.264/AAC file is 2,117,853 bytes.
 Its SHA-256 is
-`048d5cd0ffd6a908ceab995ae1c0ce5c1301a7a27231944672d575d550582c3f`.
+`a8b8037b5ea9aa423dca8945640eb4c823402d7052aeb6b53b2839c687a2fcc9`.
 
 ## Verify and restore on Windows
 

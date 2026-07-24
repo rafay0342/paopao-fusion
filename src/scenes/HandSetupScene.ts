@@ -39,7 +39,7 @@ export class HandSetupScene extends Phaser.Scene {
     addArtButton(this, 185, 1080, `MIRROR  ${settings.mirror ? 'ON' : 'OFF'}`, () => { updateHandSettings({ mirror: !getHandSettings().mirror }); this.scene.restart(); }, 300, 58, 14);
     addArtButton(this, 535, 1080, `PREVIEW  ${settings.preview ? 'ON' : 'OFF'}`, () => { updateHandSettings({ preview: !getHandSettings().preview }); this.scene.restart(); }, 300, 58, 14);
     addArtButton(this, VIEW.width / 2, 1170, `INFERENCE  ${settings.targetFps} FPS`, () => { const current = getHandSettings().targetFps; updateHandSettings({ targetFps: current === 15 ? 20 : current === 20 ? 30 : 15 }); this.scene.restart(); }, 380, 58, 14);
-    addArtButton(this, VIEW.width / 2, 1240, 'WATCH 18 SEC DOUBLE-TAP GUIDE', () => {
+    addArtButton(this, VIEW.width / 2, 1240, 'WATCH 18 SEC HAND GUIDE', () => {
       window.location.assign('/dl/paopao-handtracking-double-tap-guide-v3.mp4');
     }, 430, 48, 14);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => getHandTracker().suspend());
