@@ -21,6 +21,8 @@ import { AccountScene } from './scenes/AccountScene';
 import { InventoryScene } from './scenes/InventoryScene';
 import { IntroScene } from './scenes/IntroScene';
 import { HandSetupScene } from './scenes/HandSetupScene';
+import { Match3MapScene } from './scenes/Match3MapScene';
+import { Match3Scene } from './scenes/Match3Scene';
 import { registerOfflineShell } from './game/offline';
 import { installNavigation } from './game/navigation';
 import { runtimePerformance } from './game/performance';
@@ -77,6 +79,8 @@ const config: Phaser.Types.Core.GameConfig = {
     WorldMapScene,
     GameScene,
     ...(PHASER_RELEASE_FEATURES.completeGameplay ? [
+      Match3MapScene,
+      Match3Scene,
       ChronicleScene,
       EndingScene,
       InventoryScene,

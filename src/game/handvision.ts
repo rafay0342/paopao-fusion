@@ -84,7 +84,7 @@ const HAND_INFERENCE_TIERS = Object.freeze([
   HAND_DETAIL_EDGE,
 ]);
 const HAND_TIER_SLOW_FRAMES = 3;
-const HAND_TIER_RECOVERY_MS = 5_000;
+const HAND_TIER_RECOVERY_MS = 8_000;
 
 const clamp = (value: number, min: number, max: number): number => (
   Math.min(max, Math.max(min, Number.isFinite(value) ? value : min))
@@ -96,7 +96,10 @@ const clamp = (value: number, min: number, max: number): number => (
  * only after a sustained healthy window to prevent resize oscillation.
  */
 export class HandInferenceGovernor {
-  private tierIndex = HAND_INFERENCE_TIERS.length - 1;
+  // 384 px is the cold-start production balance. Acquisition can still ask
+  // for 512, but a new/slow device is never forced through six expensive
+  // detail frames before the governor learns its sustainable cadence.
+  private tierIndex = HAND_INFERENCE_TIERS.indexOf(HAND_TRACKING_EDGE);
   private slowFrames = 0;
   private healthySinceMs = 0;
   private lastObservationMs = Number.NEGATIVE_INFINITY;
@@ -109,7 +112,7 @@ export class HandInferenceGovernor {
     this.lastObservationMs = timestampMs;
 
     const frameBudgetMs = 1_000 / targetFps;
-    const slow = pipelineMs > Math.max(50, frameBudgetMs * 1.55);
+    const slow = pipelineMs > Math.max(42, frameBudgetMs * 1.25);
     if (slow) {
       this.healthySinceMs = 0;
       this.slowFrames++;
@@ -136,7 +139,7 @@ export class HandInferenceGovernor {
   }
 
   reset(): void {
-    this.tierIndex = HAND_INFERENCE_TIERS.length - 1;
+    this.tierIndex = HAND_INFERENCE_TIERS.indexOf(HAND_TRACKING_EDGE);
     this.slowFrames = 0;
     this.healthySinceMs = 0;
     this.lastObservationMs = Number.NEGATIVE_INFINITY;

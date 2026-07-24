@@ -1716,6 +1716,9 @@ export class GameScene extends Phaser.Scene {
     this.handOn = ok;
     this.handLastSeenAt = performance.now();
     if (ok) {
+      // Gameplay keeps camera decoding/inference but removes the preview and
+      // skeleton paint cost. Hand Control Lab remains the explicit preview UI.
+      ht.setPreviewVisible(false);
       this.setHandBtn('on');
       if (showError) this.toast('HAND  •  AIM → TOUCH THUMB + INDEX → SEPARATE SLIGHTLY TO FIRE');
       return;
@@ -1796,7 +1799,7 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     this.handLastSeenAt = now;
-    this.handAimPredictor.push({ x: s.x, y: s.y }, s.timestampMs);
+    this.handAimPredictor.push({ x: s.x, y: s.y }, s.timestampMs, now);
     this.handTarget = mapHandToAim(
       { x: s.x, y: s.y },
       VIEW.width,
@@ -1839,9 +1842,20 @@ export class GameScene extends Phaser.Scene {
     this.observeTutorialAim(this.aimVectorXY(handAim.x, handAim.y));
     const pinchEvent = this.pinchControl.update(s);
     this.handPinching = this.pinchControl.isContacting();
-    if (pinchEvent === 'aim-locked') {
-      this.handLockedAim = { ...(this.handSmooth ?? this.handTarget) };
+    if (pinchEvent === 'latched') {
+      // The confirmed contact frame is the shot's authority boundary. Lock the
+      // measured aim and make the display agree with it; render prediction may
+      // keep an open-hand cursor fluid, but it can never choose a shot target.
+      const measuredAim = this.handTarget;
+      this.handLockedAim = measuredAim ? { ...measuredAim } : null;
+      if (!this.handLockedAim) {
+        this.pinchControl.resetForContinuity();
+        this.handPinching = false;
+        return;
+      }
       this.handSmooth = { ...this.handLockedAim };
+      this.handCursor?.setPosition(this.handLockedAim.x, this.handLockedAim.y);
+    } else if (pinchEvent === 'aim-locked') {
       this.dispatchTutorial({
         type: 'hand-touch-one',
         reliable: true,
@@ -1852,13 +1866,21 @@ export class GameScene extends Phaser.Scene {
     }
     if (pinchEvent === 'released') {
       this.handPinching = false;
+      // Prediction is presentation-only. It may provide a final visual cursor
+      // target when a malformed sequence has no latch, but only the measured
+      // contact lock below is eligible to fire.
       const predictedRelease = this.handAimPredictor.predict(now);
       const predictedAim = predictedRelease
         ? mapHandToAim(predictedRelease, VIEW.width, VIEW.height * 0.12, this.shooter.y - 105)
         : null;
-      const aim = this.handLockedAim ?? predictedAim ?? this.handTarget;
+      const visualAim = this.handLockedAim ?? predictedAim ?? this.handTarget;
+      const aim = this.handLockedAim;
       this.handLockedAim = null;
-      if (!aim) return;
+      if (!aim) {
+        if (visualAim) this.handCursor?.setPosition(visualAim.x, visualAim.y);
+        this.pinchControl.resetForContinuity();
+        return;
+      }
       this.handTarget = { ...aim };
       this.handSmooth = { ...aim };
       this.handCursor?.setPosition(aim.x, aim.y);
@@ -2450,7 +2472,9 @@ export class GameScene extends Phaser.Scene {
 
   private updateAimAt(x: number, y: number, handInput = false): void {
     if (this.flying || this.powerUsePending || !this.running) return;
-    this.lastAim = { x, y };
+    // Predicted hand motion is allowed to move the launcher and cursor only.
+    // Pointer input and a measured, latched hand aim may update gameplay state.
+    if (!handInput || this.handLockedAim) this.lastAim = { x, y };
     const d = this.aimVectorXY(x, y);
     this.observeTutorialAim(d);
     const rawAngle = Phaser.Math.RadToDeg(Math.atan2(d.y, d.x)) + 90;

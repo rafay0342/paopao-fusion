@@ -298,7 +298,12 @@ class HandTracker {
 
     window.addEventListener('paopao:hand-settings', (event) => {
       const next = (event as CustomEvent<HandSettings>).detail;
-      if (next) this.settings = next;
+      if (next) {
+        const inferenceContractChanged = next.deviceId !== this.settings.deviceId
+          || next.targetFps !== this.settings.targetFps;
+        this.settings = next;
+        if (inferenceContractChanged) this.inferenceGovernor.reset();
+      }
     });
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
     window.addEventListener('pagehide', () => this.handlePageHidden());
@@ -665,7 +670,9 @@ class HandTracker {
     this.lastCaptureHeight = 0;
     this.lastPipelineMs = 0;
     this.droppedResults = 0;
-    this.inferenceGovernor.reset();
+    // Preserve the learned device tier across ordinary scene/camera
+    // suspension. It is reset only when the camera device or target cadence
+    // changes, so a long session never repeats the slow-device warm-up tax.
     this.overlayCtx.clearRect(0, 0, this.overlay.width, this.overlay.height);
   }
 

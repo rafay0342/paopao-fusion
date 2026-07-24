@@ -257,7 +257,9 @@ class RuntimePerformanceMonitor {
     // A downgrade is safe during gameplay because it only reduces visual work;
     // hand inference cadence and deterministic simulation clocks are separate.
     // Upgrades wait for a non-game scene to avoid introducing work mid-shot.
-    const gameActive = game.scene.getScenes(true).some((scene) => scene.scene.key === 'Game');
+    const gameActive = game.scene.getScenes(true).some(
+      (scene) => scene.scene.key === 'Game' || scene.scene.key === 'Match3',
+    );
     const candidate = this.controller.evaluate({ ...this.snapshot, sampledAt: now }, true);
     const next = gameActive && QUALITY_ORDER.indexOf(candidate) > QUALITY_ORDER.indexOf(current) ? current : candidate;
     if (next !== current) {

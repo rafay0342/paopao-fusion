@@ -19,7 +19,7 @@ const KEY = 'paopao-fusion-hand-settings-v13';
 const LEGACY_KEY = 'paopao-fusion-hand-settings-v12';
 const MIN_CONTACT_HYSTERESIS = 0.03;
 const MAX_CONTACT_HYSTERESIS = 0.1;
-const defaults: HandSettings = { deviceId: '', mirror: true, dominantHand: 'either', sensitivity: 1, preview: true, targetFps: 30, pinchOn: 0.44, pinchOff: 0.5, calibrated: false };
+const defaults: HandSettings = { deviceId: '', mirror: true, dominantHand: 'either', sensitivity: 1, preview: false, targetFps: 30, pinchOn: 0.44, pinchOff: 0.5, calibrated: false };
 
 function safePinchThresholds(pinchOn: unknown, pinchOff: unknown): Pick<HandSettings, 'pinchOn' | 'pinchOff'> {
   const onValue = Number(pinchOn);

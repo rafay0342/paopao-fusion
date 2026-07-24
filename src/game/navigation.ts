@@ -49,7 +49,7 @@ export function installNavigation(game: Phaser.Game): void {
     event.preventDefault();
     // Escape pauses gameplay through the scene's single back owner. It must
     // never skip a live attempt or race the scene's own pause state.
-    if (active.scene.key === 'Game') active.events.emit('paopao:back-request');
+    if (active.scene.key === 'Game' || active.scene.key === 'Match3') active.events.emit('paopao:back-request');
     else navigateBack(active);
   };
   const handlePopState = (): void => {
@@ -59,6 +59,11 @@ export function installNavigation(game: Phaser.Game): void {
     // allowed to leave the app instead of trapping the browser in a loop.
     if (!active || ignored.has(active.scene.key) || active.scene.key === 'Menu') {
       history.back();
+      return;
+    }
+    if (active.scene.key === 'Game' || active.scene.key === 'Match3') {
+      active.events.emit('paopao:back-request');
+      history.pushState({ paopaoGuard: true }, document.title);
       return;
     }
     navigateBack(active);

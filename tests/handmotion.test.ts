@@ -89,6 +89,15 @@ describe('adaptive hand motion filters', () => {
     expect(predictor.predict(250)).toBeNull();
   });
 
+  it('keeps a delayed accepted result visually alive from receipt time', () => {
+    const predictor = new HandAimPredictor();
+    predictor.push({ x: 0.2, y: 0.4 }, 0, 150);
+    predictor.push({ x: 0.3, y: 0.4 }, 50, 220);
+    expect(predictor.predict(230)?.x).toBeGreaterThanOrEqual(0.3);
+    expect(predictor.predict(399)).not.toBeNull();
+    expect(predictor.predict(401)).toBeNull();
+  });
+
   it('holds two uncertain frames but cancels a sustained confidence loss', () => {
     const gate = new HandGestureContinuityGate();
     expect(gate.observe(true, 0)).toBe('usable');

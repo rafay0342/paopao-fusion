@@ -99,6 +99,7 @@ export class HandAimPredictor {
   private point: HandPoint | null = null;
   private velocity: HandPoint = { x: 0, y: 0 };
   private sampleAtMs = Number.NEGATIVE_INFINITY;
+  private receivedAtMs = Number.NEGATIVE_INFINITY;
 
   constructor(
     private readonly maximumHorizonMs = 45,
@@ -106,13 +107,14 @@ export class HandAimPredictor {
     private readonly staleAfterMs = 180,
   ) {}
 
-  push(point: HandPoint, timestampMs: number): void {
+  push(point: HandPoint, timestampMs: number, receivedTimestampMs = timestampMs): void {
     const next = { x: clamp01(point.x), y: clamp01(point.y) };
-    if (!Number.isFinite(timestampMs)) return;
+    if (!Number.isFinite(timestampMs) || !Number.isFinite(receivedTimestampMs)) return;
     if (!this.point || !Number.isFinite(this.sampleAtMs) || timestampMs - this.sampleAtMs > this.staleAfterMs) {
       this.point = next;
       this.velocity = { x: 0, y: 0 };
       this.sampleAtMs = timestampMs;
+      this.receivedAtMs = receivedTimestampMs;
       return;
     }
     if (timestampMs <= this.sampleAtMs) return;
@@ -131,12 +133,17 @@ export class HandAimPredictor {
     this.velocity.y += (rawVelocity.y - this.velocity.y) * follow;
     this.point = next;
     this.sampleAtMs = timestampMs;
+    this.receivedAtMs = receivedTimestampMs;
   }
 
   predict(nowMs: number): HandPoint | null {
-    if (!this.point || !Number.isFinite(nowMs) || !Number.isFinite(this.sampleAtMs)) return null;
+    if (!this.point
+      || !Number.isFinite(nowMs)
+      || !Number.isFinite(this.sampleAtMs)
+      || !Number.isFinite(this.receivedAtMs)) return null;
+    const receivedAgeMs = Math.max(0, nowMs - this.receivedAtMs);
+    if (receivedAgeMs > this.staleAfterMs) return null;
     const ageMs = Math.max(0, nowMs - this.sampleAtMs);
-    if (ageMs > this.staleAfterMs) return null;
     const horizonSeconds = Math.min(ageMs, this.maximumHorizonMs) / 1_000;
     const speed = Math.hypot(this.velocity.x, this.velocity.y);
     const leadScale = speed > 0
@@ -152,6 +159,7 @@ export class HandAimPredictor {
     this.point = null;
     this.velocity = { x: 0, y: 0 };
     this.sampleAtMs = Number.NEGATIVE_INFINITY;
+    this.receivedAtMs = Number.NEGATIVE_INFINITY;
   }
 }
 
@@ -225,6 +233,154 @@ export class HandLandmarkFilter {
       axis.y.reset();
       axis.z.reset();
     });
+  }
+}
+
+export interface HandGridCell {
+  row: number;
+  col: number;
+}
+
+export interface HandGridDragFrame {
+  timestampMs: number;
+  cell: HandGridCell | null;
+  palmX: number;
+  palmY: number;
+  palmScale: number;
+}
+
+export interface HandGridSwap {
+  from: HandGridCell;
+  to: HandGridCell;
+}
+
+const sameGridCell = (first: HandGridCell | null, second: HandGridCell | null): boolean => (
+  Boolean(first && second && first.row === second.row && first.col === second.col)
+);
+
+/**
+ * Grid-specific pinch drag authority.
+ *
+ * Fingertips move as thumb and index close, so using the cursor displacement
+ * itself can manufacture a swap. This controller locks the source from the
+ * last measured open-hand cells, then uses palm displacement (normalised by
+ * live palm size) with a Schmitt threshold and two-sample confirmation.
+ * Prediction is intentionally absent: callers may predict only the ghost.
+ */
+export class HandDragSwapController {
+  private readonly openHistory: Array<{ cell: HandGridCell; timestampMs: number }> = [];
+  private source: HandGridCell | null = null;
+  private anchor: { x: number; y: number; scale: number } | null = null;
+  private candidate: HandGridCell | null = null;
+  private candidateFrames = 0;
+  private candidateAtMs = 0;
+
+  constructor(
+    private readonly engageThreshold = 0.3,
+    private readonly releaseThreshold = 0.19,
+    private readonly dominanceRatio = 1.28,
+  ) {}
+
+  observeOpen(frame: HandGridDragFrame): void {
+    if (!frame.cell || !Number.isFinite(frame.timestampMs)) return;
+    this.openHistory.push({
+      cell: { ...frame.cell },
+      timestampMs: frame.timestampMs,
+    });
+    while (this.openHistory.length > 3) this.openHistory.shift();
+  }
+
+  latch(frame: HandGridDragFrame): HandGridCell | null {
+    const recent = this.openHistory.filter(({ timestampMs }) => frame.timestampMs - timestampMs <= 240);
+    const fallback = frame.cell ? { ...frame.cell } : null;
+    let source = fallback;
+    if (recent.length) {
+      const counts = new Map<string, { cell: HandGridCell; count: number; latest: number }>();
+      recent.forEach(({ cell, timestampMs }) => {
+        const key = `${cell.row}:${cell.col}`;
+        const current = counts.get(key);
+        counts.set(key, {
+          cell,
+          count: (current?.count ?? 0) + 1,
+          latest: Math.max(current?.latest ?? 0, timestampMs),
+        });
+      });
+      source = [...counts.values()].sort((first, second) => (
+        second.count - first.count || second.latest - first.latest
+      ))[0]?.cell ?? fallback;
+    }
+    if (!source
+      || ![frame.palmX, frame.palmY, frame.palmScale].every(Number.isFinite)
+      || frame.palmScale <= 0.001) {
+      this.cancel();
+      return null;
+    }
+    this.source = { ...source };
+    this.anchor = { x: frame.palmX, y: frame.palmY, scale: frame.palmScale };
+    this.candidate = null;
+    this.candidateFrames = 0;
+    this.candidateAtMs = 0;
+    return { ...this.source };
+  }
+
+  updateContact(frame: HandGridDragFrame): HandGridCell | null {
+    if (!this.source || !this.anchor) return null;
+    if (![frame.timestampMs, frame.palmX, frame.palmY, frame.palmScale].every(Number.isFinite)) {
+      this.clearCandidate();
+      return null;
+    }
+    const scale = Math.max(0.001, (this.anchor.scale + frame.palmScale) * 0.5);
+    // Camera landmarks are unmirrored while the on-screen hand cursor is.
+    const dx = -(frame.palmX - this.anchor.x) / scale;
+    const dy = (frame.palmY - this.anchor.y) / scale;
+    const absoluteX = Math.abs(dx);
+    const absoluteY = Math.abs(dy);
+    const magnitude = Math.max(absoluteX, absoluteY);
+    if (magnitude <= this.releaseThreshold) {
+      this.clearCandidate();
+      return null;
+    }
+    if (magnitude < this.engageThreshold) return this.candidate ? { ...this.candidate } : null;
+
+    let next: HandGridCell | null = null;
+    if (absoluteX >= absoluteY * this.dominanceRatio) {
+      next = { row: this.source.row, col: this.source.col + (dx > 0 ? 1 : -1) };
+    } else if (absoluteY >= absoluteX * this.dominanceRatio) {
+      next = { row: this.source.row + (dy > 0 ? 1 : -1), col: this.source.col };
+    }
+    if (!next || next.row < 0 || next.row >= 8 || next.col < 0 || next.col >= 8) {
+      this.clearCandidate();
+      return null;
+    }
+    if (!sameGridCell(next, this.candidate)
+      || (this.candidateAtMs > 0 && frame.timestampMs - this.candidateAtMs > 170)) {
+      this.candidate = next;
+      this.candidateFrames = 1;
+    } else {
+      this.candidateFrames += 1;
+    }
+    this.candidateAtMs = frame.timestampMs;
+    return this.candidateFrames >= 2 ? { ...next } : null;
+  }
+
+  release(): HandGridSwap | null {
+    const result = this.source && this.candidate && this.candidateFrames >= 2
+      ? { from: { ...this.source }, to: { ...this.candidate } }
+      : null;
+    this.cancel();
+    return result;
+  }
+
+  cancel(): void {
+    this.source = null;
+    this.anchor = null;
+    this.clearCandidate();
+  }
+
+  private clearCandidate(): void {
+    this.candidate = null;
+    this.candidateFrames = 0;
+    this.candidateAtMs = 0;
   }
 }
 

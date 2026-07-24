@@ -154,15 +154,22 @@ export class ModeSelectScene extends Phaser.Scene {
       }, 180, 52, 14);
     });
 
-    if (PHASER_RELEASE_FEATURES.endlessLiveOperations) {
-      addArtButton(this, width / 2, 1_126, 'ENDLESS NEXUS  •  VERIFIED LIVE RUN', () => {
+    if (PHASER_RELEASE_FEATURES.completeGameplay && PHASER_RELEASE_FEATURES.endlessLiveOperations) {
+      addArtButton(this, 202, 1_126, 'PRISM CASCADE  •  MATCH-3', () => {
+        SFX.click();
+        this.scene.start('Match3Map');
+      }, 304, 56, 18);
+      addArtButton(this, 518, 1_126, 'ENDLESS NEXUS  •  LIVE', () => {
         SFX.click();
         this.scene.start('Endless', { event: false });
+      }, 304, 56, 18);
+    } else if (PHASER_RELEASE_FEATURES.completeGameplay) {
+      addArtButton(this, width / 2, 1_126, 'PRISM CASCADE  •  MATCH-3 ADVENTURE', () => {
+        SFX.click();
+        this.scene.start('Match3Map');
       }, 600, 56, 18);
     } else {
-      this.add.text(width / 2, 1_126, PHASER_RELEASE_FEATURES.completeGameplay
-        ? 'CAMPAIGN, BOSSES AND ARENA ACTIVE'
-        : 'FOUNDATION BUILD  •  FIRST BOARD ACTIVE', {
+      this.add.text(width / 2, 1_126, 'FOUNDATION BUILD  •  FIRST BOARD ACTIVE', {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#9fb5d0', fontStyle: 'bold', letterSpacing: 1,
       }).setOrigin(0.5).setDepth(12);
     }
