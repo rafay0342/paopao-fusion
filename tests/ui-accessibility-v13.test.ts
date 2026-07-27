@@ -8,16 +8,11 @@ const readText = (path: string): string => readFileSync(projectFile(path), 'utf8
 describe('V13 art, responsive launcher and accessible interaction contract', () => {
   it('keeps browser zoom available and handles safe areas plus compact landscape coaching', () => {
     const shell = readText('index.html');
-    const fightShell = readText('fight/index.html');
     expect(shell).not.toContain('maximum-scale=1');
     expect(shell).not.toContain('user-scalable=no');
-    expect(fightShell).not.toContain('maximum-scale=1');
-    expect(fightShell).not.toContain('user-scalable=no');
     expect(shell).toContain('env(safe-area-inset-top)');
     expect(shell).toContain('id="orientation-coach"');
     expect(shell).toContain('(orientation: landscape) and (max-height: 560px)');
-    expect(fightShell).toContain('id="orientation-gate"');
-    expect(fightShell).toContain('(orientation: portrait) and (max-width: 900px)');
   });
 
   it('puts one real play action above launcher diagnostics on small screens', () => {
@@ -32,8 +27,8 @@ describe('V13 art, responsive launcher and accessible interaction contract', () 
     const ui = readText('src/gfx/ui.ts');
     const game = readText('src/scenes/GameScene.ts');
     const main = readText('src/main.ts');
-    const fightShell = readText('fight/index.html');
-    const fighterSelect = readText('src/fighting/FighterSelectScene.ts');
+    const launcher = readText('public/choose/index.html');
+    const vite = readText('vite.config.ts');
     expect(ui).toContain('ensureAccessibleScene(scene)');
     expect(ui).toContain('registerButton({');
     expect(game).toContain("id: 'game-fire'");
@@ -41,12 +36,10 @@ describe('V13 art, responsive launcher and accessible interaction contract', () 
     expect(game).toContain("event.key === 'ArrowLeft'");
     expect(main).toContain("game.canvas.setAttribute('role', 'application')");
     expect(main).toContain('game.canvas.tabIndex = 0');
-    expect(fightShell).toContain('data-fight-select-action="confirm"');
-    expect(fightShell).toContain("selectActions?.addEventListener('keydown', (event) => event.stopPropagation())");
-    expect(fighterSelect).toContain("window.addEventListener('paopao:fighter-select-action'");
-    expect(fighterSelect).toContain("event.target.closest('#fight-select-actions')");
-    expect(fighterSelect).toContain('this.cards.clear()');
-    expect(fighterSelect).toContain("Phaser.Scenes.Events.SHUTDOWN");
+    expect(launcher).not.toContain('/fight/');
+    expect(launcher).not.toContain('Shattered Tribunal');
+    expect(vite).not.toContain("fight: resolve('fight/index.html')");
+    expect(vite).toContain("resolve(source, 'assets', 'fighting')");
   });
 
   it('ships original transparent masters through lightweight alpha WebP runtime variants', () => {

@@ -8,8 +8,9 @@ import {
   type ProductionExperienceOracleInput,
   type ProductionExperienceOracleResult,
 } from '../../shared/runtime/production-experience.mjs';
+import { hostedAssetUrl } from './hostedAsset';
 
-export const PRODUCTION_EXPERIENCE_MANIFEST_URL = '/assets/production-experience/manifest.json';
+export const PRODUCTION_EXPERIENCE_MANIFEST_URL = hostedAssetUrl('/assets/production-experience/manifest.json');
 export const PRODUCTION_EXPERIENCE_TOTAL = 1500;
 export const PRODUCTION_EXPERIENCE_PAGE_CACHE_LIMIT = 2;
 export const PRODUCTION_EXPERIENCE_CARD_WIDTH = 292;
@@ -279,7 +280,7 @@ export class ProductionExperienceLoader {
       this.cache.set(binding.path, cached);
       return cached;
     }
-    const response = await this.fetcher(binding.path, { credentials: 'same-origin', cache: 'force-cache', signal });
+    const response = await this.fetcher(hostedAssetUrl(binding.path), { cache: 'force-cache', signal });
     if (!response.ok) throw new Error(`Production experience page returned HTTP ${response.status}.`);
     const bytes = new Uint8Array(await response.arrayBuffer());
     if (bytes.byteLength !== binding.bytes || await sha256Hex(bytes) !== binding.sha256) {

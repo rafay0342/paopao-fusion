@@ -1,4 +1,6 @@
-export const PRODUCTION_RUNTIME_MANIFEST_URL = '/assets/production/runtime-manifest.json';
+import { hostedAssetUrl } from './hostedAsset';
+
+export const PRODUCTION_RUNTIME_MANIFEST_URL = hostedAssetUrl('/assets/production/runtime-manifest.json');
 export const PRODUCTION_ARCHIVE_TOTAL = 500;
 export const PRODUCTION_ARCHIVE_PAGE_SIZE = 6;
 export const PRODUCTION_ASSET_CACHE_LIMIT = 18;
@@ -177,7 +179,7 @@ export function validateProductionRuntimeEntry(value: unknown): ProductionRuntim
 
 export function productionRuntimeUrl(entry: ProductionRuntimeEntry): string {
   const validated = validateProductionRuntimeEntry(entry);
-  return validated.runtime.path;
+  return hostedAssetUrl(validated.runtime.path);
 }
 
 export function validateProductionRuntimeManifest(value: unknown): ProductionRuntimeManifest {

@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parsePhaserReleaseGate, phaserReleaseProfile } from './tools/release-profile-lib.mjs';
 
@@ -37,10 +37,15 @@ function copyRuntimePublic() {
           continue;
         }
         const target = resolve(destination, entry.name);
+        const fightingAssets = resolve(source, 'assets', 'fighting');
         // Merge public/assets into Vite's existing hashed dist/assets folder;
         // replacing the folder would erase the freshly generated JS chunks.
-        cpSync(resolve(source, entry.name), target, { recursive: true });
+        cpSync(resolve(source, entry.name), target, {
+          recursive: true,
+          filter: (candidate) => resolve(candidate) !== fightingAssets,
+        });
       }
+      rmSync(resolve(destination, 'assets', 'fighting'), { recursive: true, force: true });
       const classicDirectory = resolve(destination, 'classic');
       mkdirSync(classicDirectory, { recursive: true });
       const builtHtml = injectReleaseMeta(readFileSync(resolve(destination, 'index.html'), 'utf8'));
@@ -73,7 +78,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve('index.html'),
-        fight: resolve('fight/index.html'),
       },
       output: {
         manualChunks(id) {
