@@ -83,7 +83,7 @@ describe('IntroScene video integration invariants', () => {
     expect(videoUrl).toBe('assets/cinematics/paopao-opening-final-light-1080.mp4');
     expect(introSource).toContain('return [VIDEO_URL]');
     expect(introSource).toContain('return [hdSource, VIDEO_URL]');
-    expect(introSource).toContain('video.loadURL(sources[sourceIndex]');
+    expect(introSource).toContain("video.loadURL(sources[sourceIndex], true, 'anonymous')");
     expect(introSource).not.toContain('paopao-opening-v2.mp4');
     expect(introSource).not.toContain('paopao-fusion-clean-full-stitch-rafaygen-outro-4k-ai.mp4');
 

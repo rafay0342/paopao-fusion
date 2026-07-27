@@ -321,7 +321,7 @@ export class IntroScene extends Phaser.Scene {
 
       autoplayLocked = false;
       setState('loading');
-      video.loadURL(sources[sourceIndex], true).setMute(!soundEnabled);
+      video.loadURL(sources[sourceIndex], true, 'anonymous').setMute(!soundEnabled);
       if (video.video) video.video.defaultMuted = !soundEnabled;
       bindMedia();
       video.play(false);
