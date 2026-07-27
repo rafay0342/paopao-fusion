@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:appdeploy-runtime": "node tools/build-appdeploy-runtime.mjs",
     "build:phaser": "npm run build",
     "build:release": "node tools/build-release.mjs",
     "generate:ledger": "node tools/generate-upgrade-ledger.mjs",

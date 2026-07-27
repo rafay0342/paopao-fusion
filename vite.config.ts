@@ -24,7 +24,7 @@ function copyRuntimePublic() {
       for (const entry of readdirSync(source, { withFileTypes: true })) {
         // Never allow a stale retired-client tree or the source-only launcher
         // folder to leak into the Phaser runtime bundle.
-        if (entry.name === '3d' || entry.name === 'choose') continue;
+        if (entry.name === '3d' || entry.name === 'choose' || entry.name === 'appdeploy') continue;
         if (entry.name === 'downloads') {
           const downloadsTarget = resolve(destination, entry.name);
           for (const fileName of ['index.html', 'release-manifest.json']) {

@@ -40,6 +40,7 @@ describe('V13 art, responsive launcher and accessible interaction contract', () 
     expect(launcher).not.toContain('Shattered Tribunal');
     expect(vite).not.toContain("fight: resolve('fight/index.html')");
     expect(vite).toContain("resolve(source, 'assets', 'fighting')");
+    expect(vite).toContain("entry.name === 'appdeploy'");
   });
 
   it('ships original transparent masters through lightweight alpha WebP runtime variants', () => {
