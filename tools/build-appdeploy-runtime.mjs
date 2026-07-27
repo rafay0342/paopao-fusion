@@ -36,6 +36,7 @@ for (const [from, to] of [
   ['fetch("/api/telemetry/batch"', 'fetch("data:application/json,%7B%7D"'],
   ['"/dl/', '"./guide.html#'],
   ['register("/sw.js",{scope:"/"', 'register("./sw.js",{scope:"./"'],
+  [`"${handWorkerFile}"`, `location.origin+"/${handWorkerFile}"`],
   ['paopao-opening-final-light-1080.mp4', 'paopao-opening-v2.mp4'],
 ]) {
   runtime = replaceRequired(runtime, from, to);
