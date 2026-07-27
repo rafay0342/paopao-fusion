@@ -86,6 +86,7 @@ import {
   UI_COLORS,
   UI_FONT,
 } from '../gfx/ui';
+import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import {
   createRunSummary,
   normalizeGhostTrace,
@@ -441,6 +442,13 @@ export class GameScene extends Phaser.Scene {
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 18 : 12, 1);
 
     const def = LEVELS[Math.min(this.level, LEVELS.length - 1)];
+    const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: `game-level-${this.level + 1}`,
+      heading: `PaoPao Fusion level ${this.level + 1}: ${def.title}`,
+      description: `${def.objective}. Aim with pointer, touch, hand tracking, or keyboard. Release pointer or press Space to launch.`,
+      status: `${MODE_DEFS[this.mode].name} mode. Score ${this.score.toLocaleString()}.`,
+      lifecycle: this.events,
+    });
     startMusic(def.goal === 'boss' ? 'boss' : 'game');
     this.palette = COLOR_KEYS.slice(0, def.colors);
     this.configureTutorialSession();
@@ -666,7 +674,7 @@ export class GameScene extends Phaser.Scene {
     this.comboText = this.add.text(width / 2, 101, '', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe27a', fontStyle: 'bold',
       stroke: '#09101e', strokeThickness: 4,
-      backgroundColor: 'rgba(3,9,20,0.94)', padding: { x: 12, y: 4 },
+      backgroundColor: 'rgba(41,20,82,0.92)', padding: { x: 12, y: 4 },
     }).setOrigin(0.5).setDepth(22).setAlpha(0);
     const modeRibbon = this.addSlimHudStrip(width / 2, 101, width - 48, 34, theme.accent, 18);
     if (this.mechanicState.boss) {
@@ -773,6 +781,89 @@ export class GameScene extends Phaser.Scene {
       this.shootAt(p.worldX, p.worldY);
     });
 
+    const returnToMap = (): void => {
+      SFX.click();
+      this.running = false;
+      getHandTracker().suspend();
+      this.scene.start('WorldMap', { world: LEVELS[this.level].world });
+    };
+    const keyboardFire = (): void => this.shootAt(this.lastAim.x, this.lastAim.y);
+    a11y.registerButton({
+      id: 'game-aim-left',
+      label: 'Aim launcher left',
+      description: 'Moves the launcher three degrees left.',
+      onActivate: () => this.nudgeKeyboardAim(-3),
+    });
+    a11y.registerButton({
+      id: 'game-aim-right',
+      label: 'Aim launcher right',
+      description: 'Moves the launcher three degrees right.',
+      onActivate: () => this.nudgeKeyboardAim(3),
+    });
+    a11y.registerButton({
+      id: 'game-fire',
+      label: 'Launch current Pao',
+      description: 'Fires at the current launcher angle.',
+      onActivate: keyboardFire,
+    });
+    a11y.registerButton({
+      id: 'game-bomb',
+      label: `Use bomb. ${this.powerUps.bomb} available`,
+      onActivate: () => { void this.usePowerUp('bomb'); },
+    });
+    a11y.registerButton({
+      id: 'game-rainbow',
+      label: `Use rainbow. ${this.powerUps.rainbow} available`,
+      onActivate: () => { void this.usePowerUp('rainbow'); },
+    });
+    a11y.registerButton({
+      id: 'game-artifact',
+      label: `Use ${this.artifact.name} power`,
+      onActivate: () => this.useArtifactSuper(),
+    });
+    a11y.registerButton({
+      id: 'game-hand-tracking',
+      label: 'Toggle camera hand tracking',
+      description: 'Camera frames stay on this device.',
+      onActivate: () => { void this.toggleHand(); },
+    });
+    a11y.registerButton({
+      id: 'game-pause',
+      label: 'Pause adventure',
+      onActivate: () => this.showPauseCard(),
+    });
+    a11y.registerButton({
+      id: 'game-map',
+      label: 'Return to adventure map',
+      onActivate: returnToMap,
+    });
+    const handleKeyboardControls = (event: KeyboardEvent): void => {
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === 'BUTTON' || activeTag === 'INPUT' || activeTag === 'TEXTAREA' || event.repeat) return;
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        this.nudgeKeyboardAim(-3);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        this.nudgeKeyboardAim(3);
+      } else if (event.key === ' ' || event.code === 'Space') {
+        event.preventDefault();
+        keyboardFire();
+      } else if (event.key.toLowerCase() === 'h') {
+        void this.toggleHand();
+      } else if (event.key.toLowerCase() === 'b') {
+        void this.usePowerUp('bomb');
+      } else if (event.key.toLowerCase() === 'r') {
+        void this.usePowerUp('rainbow');
+      } else if (event.key.toLowerCase() === 'p' || event.key === 'Escape') {
+        this.showPauseCard();
+      }
+    };
+    this.input.keyboard?.on('keydown', handleKeyboardControls);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.input.keyboard?.off('keydown', handleKeyboardControls);
+    });
+
     // resume hand-tracking if it was enabled on a previous level
     const ht = getHandTracker();
     if (ht.isWanted()) {
@@ -849,9 +940,9 @@ export class GameScene extends Phaser.Scene {
       { x: -halfW, y: -halfH + cut * 0.58 },
     ];
     const shadow = points.map(({ x: px, y: py }) => ({ x: px + 2, y: py + 6 }));
-    surface.fillStyle(0x01030a, 0.5);
+    surface.fillStyle(0x14062d, 0.44);
     surface.fillPoints(shadow, true);
-    surface.fillStyle(UI_COLORS.surface, 0.96);
+    surface.fillGradientStyle(0x4b3278, 0x35245f, UI_COLORS.surface, 0x160d35, 0.92, 0.92, 0.96, 0.96);
     surface.fillPoints(points, true);
 
     // Static colour planes make the HUD belong to the current realm without
@@ -901,9 +992,9 @@ export class GameScene extends Phaser.Scene {
       { x: -halfW, y: halfH - cut },
       { x: -halfW, y: -halfH + cut * 0.72 },
     ];
-    surface.fillStyle(0x01040c, 0.5);
+    surface.fillStyle(0x14062d, 0.42);
     surface.fillPoints(points.map(({ x: px, y: py }) => ({ x: px + 1, y: py + 4 })), true);
-    surface.fillStyle(0x030914, 0.92);
+    surface.fillGradientStyle(0x442d70, 0x302158, 0x211443, 0x160d35, 0.89, 0.89, 0.94, 0.94);
     surface.fillPoints(points, true);
     surface.fillStyle(accent, 0.105);
     surface.fillTriangle(-halfW, -halfH + cut * 0.72, -halfW + cut, -halfH, -halfW + width * 0.34, -halfH);
@@ -2530,6 +2621,15 @@ export class GameScene extends Phaser.Scene {
       if (py < this.geom.topPad + this.offsetY) break;
       if (i % 2 === 0) this.aimGfx.fillCircle(px, py, 3.5);
     }
+  }
+
+  private nudgeKeyboardAim(deltaDegrees: number): void {
+    const angle = Phaser.Math.Clamp(this.launcher.angle + deltaDegrees, -30, 30);
+    const radians = Phaser.Math.DegToRad(angle - 90);
+    const distance = 620;
+    const x = this.shooter.x + Math.cos(radians) * distance;
+    const y = this.shooter.y + Math.sin(radians) * distance;
+    this.updateAimAt(x, y);
   }
 
   private shootAt(x: number, y: number): void {

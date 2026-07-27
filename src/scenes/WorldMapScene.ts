@@ -6,6 +6,7 @@ import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
 import { getArtifact, getMeta, MODE_DEFS } from '../game/meta';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
+import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import {
   addAmbientMotes,
   addArtButton,
@@ -41,6 +42,13 @@ export class WorldMapScene extends Phaser.Scene {
     const meta = getMeta();
     const mode = MODE_DEFS[meta.mode];
     const artifact = getArtifact(meta.equippedArtifact);
+    const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: `world-map-${this.world + 1}`,
+      heading: `${theme.name} adventure map`,
+      description: `${theme.subtitle}. Choose an unlocked level, switch realm, open the Chronicle, or return to the menu.`,
+      status: `${progress.unlocked} of ${LEVELS.length} levels unlocked. ${totalStars(progress)} stars earned.`,
+      lifecycle: this.events,
+    });
     this.cameras.main.fadeIn(180, 0, 0, 0);
     addWorldBackground(this, theme.background, 0.23);
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 24 : 18, 2);
@@ -168,18 +176,33 @@ export class WorldMapScene extends Phaser.Scene {
       });
       node.on('pointerover', () => unlocked && this.tweens.add({ targets: node, scale: 1.06, duration: 100 }));
       node.on('pointerout', () => this.tweens.add({ targets: node, scale: 1, duration: 120 }));
-      node.on('pointerup', () => {
+      const activateLevel = (): void => {
         if (!releaseAvailable) {
           this.showLockedMessage(level, 'AVAILABLE IN RELEASE 2');
+          a11y.announce(`Level ${level + 1} is not available in this release.`);
           return;
         }
         if (!unlocked) {
           this.showLockedMessage(level);
+          a11y.announce(`Level ${level + 1} is locked. Complete the previous path.`);
           return;
         }
         SFX.click();
         this.cameras.main.fadeOut(180, 0, 0, 0);
         this.time.delayedCall(190, () => this.scene.start('Story', { level, score: 0, mode: meta.mode }));
+      };
+      node.on('pointerup', activateLevel);
+      a11y.registerButton({
+        id: `world-${this.world + 1}-level-${level + 1}`,
+        label: unlocked
+          ? `Play level ${level + 1}: ${def.title}. ${def.objective}`
+          : `Level ${level + 1}: ${def.title}. Locked`,
+        description: unlocked ? `${stars} of 3 stars earned.` : 'Complete the previous path to unlock.',
+        onActivate: activateLevel,
+        onFocusChange: (focused) => {
+          if (!unlocked) return;
+          this.tweens.add({ targets: node, scale: focused ? 1.06 : 1, duration: 100 });
+        },
       });
 
       const labelX = pos.x + pos.side * 104;

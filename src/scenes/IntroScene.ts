@@ -7,6 +7,7 @@ import { containVideoLayout } from '../gfx/videoLayout';
 const VIDEO_URL = 'assets/cinematics/paopao-opening-final-light-1080.mp4';
 const POSTER_TEXTURE = 'intro_poster';
 const INTRO_WATCHDOG_MS = 60_000;
+export const INTRO_SEEN_KEY = 'paopao:intro-seen:v13';
 
 type IntroPlaybackState = 'loading' | 'buffering' | 'autoplay-locked' | 'playing' | 'offline' | 'error';
 
@@ -73,10 +74,7 @@ function cover(image: Phaser.GameObjects.Image, width: number, height: number): 
   image.setScale(Math.max(width / image.width, height / image.height));
 }
 
-/**
- * Autoplay-safe opening story. It intentionally runs on every fresh app boot;
- * no persistent "seen" flag is stored. Boot owns routing into this scene.
- */
+/** Autoplay-safe opening story, shown once automatically and replayable later. */
 export class IntroScene extends Phaser.Scene {
   constructor() {
     super('Intro');
@@ -182,6 +180,9 @@ export class IntroScene extends Phaser.Scene {
     const finish = (): void => {
       if (leaving) return;
       leaving = true;
+      try {
+        window.localStorage.setItem(INTRO_SEEN_KEY, '1');
+      } catch { /* private storage modes still get a complete in-memory handoff */ }
       video.setMute(true);
 
       // Keep the final video frame (or poster) in place until the camera has

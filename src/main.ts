@@ -46,7 +46,7 @@ const canvasFallbackRequested = isCanvasFallbackRequested(window.location.search
 const config: Phaser.Types.Core.GameConfig = {
   type: canvasFallbackRequested ? Phaser.CANVAS : Phaser.AUTO,
   parent: 'game',
-  backgroundColor: '#0b0f1e',
+  backgroundColor: '#211044',
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -274,6 +274,9 @@ async function startGame(): Promise<void> {
 
   // eslint-disable-next-line no-new
   const game = new Phaser.Game(config);
+  game.canvas.tabIndex = 0;
+  game.canvas.setAttribute('role', 'application');
+  game.canvas.setAttribute('aria-label', 'PaoPao Fusion interactive game canvas');
   installNavigation(game);
   const renderContext = installRenderContextRecovery(game);
   game.events.on(Phaser.Core.Events.POST_STEP, () => {

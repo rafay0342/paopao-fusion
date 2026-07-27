@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config';
 import { getQualityProfile, type QualityProfile } from '../game/meta';
+import {
+  accessibilityRuntimeForCanvas,
+  activeAccessibilitySceneForCanvas,
+} from './accessibility';
 import { resolveTextFitScale } from './text-layout';
 
 export const DISPLAY_FONT = '"PaoPao Display", Cinzel, Georgia, serif';
@@ -25,18 +29,50 @@ export const TYPE = {
 } as const;
 
 export const UI_COLORS = {
-  canvas: 0x030611,
-  surface: 0x07101e,
-  raised: 0x0b1629,
-  quietBorder: 0x33415a,
-  cyan: 0x65dbe8,
-  gold: 0xd4ac5c,
-  text: '#f2e8d4',
-  secondaryText: '#bac5d5',
-  mutedText: '#8794a8',
-  success: '#76d8b1',
-  danger: '#ed6b75',
+  canvas: 0x150a31,
+  surface: 0x211443,
+  raised: 0x32205f,
+  quietBorder: 0x7966a0,
+  cyan: 0x8af3ff,
+  gold: 0xf5c96c,
+  text: '#fff3dd',
+  secondaryText: '#dfe7f4',
+  mutedText: '#aab5cd',
+  success: '#7de2b8',
+  danger: '#f17692',
 } as const;
+
+const accessibleButtonSerial = new WeakMap<Phaser.Scene, number>();
+
+function humanizeSceneKey(scene: Phaser.Scene): string {
+  return scene.sys.settings.key
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[-_]+/g, ' ')
+    .trim() || 'Game screen';
+}
+
+function accessibleButtonId(scene: Phaser.Scene, label: string): string {
+  const serial = (accessibleButtonSerial.get(scene) ?? 0) + 1;
+  accessibleButtonSerial.set(scene, serial);
+  const token = label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 42) || 'action';
+  return `${scene.sys.settings.key.toLowerCase()}-${token}-${serial}`;
+}
+
+function ensureAccessibleScene(scene: Phaser.Scene) {
+  const canvas = scene.game.canvas;
+  const active = activeAccessibilitySceneForCanvas(canvas);
+  if (active?.isActive) return active;
+  return accessibilityRuntimeForCanvas(canvas).mountScene({
+    id: scene.sys.settings.key,
+    heading: humanizeSceneKey(scene),
+    description: 'Use Tab to move through actions. Press Enter or Space to activate the focused action.',
+    lifecycle: scene.events,
+  });
+}
 
 export function prefersReducedMotion(): boolean {
   return typeof window !== 'undefined'
@@ -78,7 +114,7 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
     paopaoBaseScaleX: baseScaleX,
     paopaoBaseScaleY: baseScaleY,
   });
-  if (quality.parallax) {
+  if (quality.parallax && !prefersReducedMotion()) {
     scene.tweens.add({
       targets: image,
       x: VIEW.width / 2 + 7,
@@ -93,12 +129,23 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
   }
 
   const cinematicWash = scene.add.graphics().setDepth(1);
-  cinematicWash.fillGradientStyle(0x020817, 0x020817, 0x02040c, 0x02040c, 0.04, 0.04, 0.58, 0.58);
-  cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height);
-  cinematicWash.fillGradientStyle(0x020611, 0x020611, 0x020611, 0x020611, shade, shade, shade * 0.42, shade * 0.42);
-  cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height * 0.54);
-  cinematicWash.fillGradientStyle(0x02040a, 0x02040a, 0x02040a, 0x02040a, 0, 0, 0.5, 0.5);
-  cinematicWash.fillRect(0, VIEW.height - 300, VIEW.width, 300);
+  if (texture === 'world_crystal') {
+    // Luma Orchard is authored as a bright storybook playfield. Preserve its
+    // sunrise and colour separation, shading only the HUD and launcher lanes.
+    cinematicWash.fillGradientStyle(0x4a287a, 0x4a287a, 0x24134f, 0x24134f, 0.17, 0.17, 0.015, 0.015);
+    cinematicWash.fillRect(0, 0, VIEW.width, 430);
+    cinematicWash.fillGradientStyle(0x21104a, 0x21104a, 0x170936, 0x170936, 0, 0, 0.24, 0.24);
+    cinematicWash.fillRect(0, VIEW.height - 360, VIEW.width, 360);
+    cinematicWash.fillGradientStyle(0xffe3a8, 0xffe3a8, 0x77eaff, 0x77eaff, 0, 0, 0.045, 0.045);
+    cinematicWash.fillRect(0, VIEW.height * 0.5, VIEW.width, VIEW.height * 0.34);
+  } else {
+    cinematicWash.fillGradientStyle(0x020817, 0x020817, 0x02040c, 0x02040c, 0.04, 0.04, 0.58, 0.58);
+    cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height);
+    cinematicWash.fillGradientStyle(0x020611, 0x020611, 0x020611, 0x020611, shade, shade, shade * 0.42, shade * 0.42);
+    cinematicWash.fillRect(0, 0, VIEW.width, VIEW.height * 0.54);
+    cinematicWash.fillGradientStyle(0x02040a, 0x02040a, 0x02040a, 0x02040a, 0, 0, 0.5, 0.5);
+    cinematicWash.fillRect(0, VIEW.height - 300, VIEW.width, 300);
+  }
 
   const realmLight: Record<string, number> = {
     world_crystal: 0x62f3ef,
@@ -115,8 +162,20 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
     VIEW.width * 0.9,
     250,
     realmLight[texture] ?? UI_COLORS.cyan,
-    quality.bloom ? 0.035 : 0.018,
+    texture === 'world_crystal'
+      ? quality.bloom ? 0.075 : 0.04
+      : quality.bloom ? 0.035 : 0.018,
   ).setDepth(1);
+  if (texture === 'world_crystal') {
+    scene.add.ellipse(
+      VIEW.width / 2,
+      VIEW.height * 0.82,
+      VIEW.width * 0.72,
+      190,
+      UI_COLORS.gold,
+      quality.bloom ? 0.055 : 0.028,
+    ).setDepth(1);
+  }
   return image;
 }
 
@@ -163,9 +222,9 @@ export function addArtPanel(
 
   // A grounded shadow and offset lower crystal plane establish depth without a
   // luminous overlay or animation loop.
-  shell.fillStyle(0x01030a, 0.5);
+  shell.fillStyle(0x130629, 0.46);
   shell.fillPoints(offsetPoints(outer, 4, 9), true);
-  shell.fillStyle(0x11253a, 0.42);
+  shell.fillStyle(0x4a3277, 0.36);
   shell.fillPoints([
     outer[4], outer[5], outer[6],
     { x: inner[6].x, y: inner[6].y - 1 },
@@ -173,14 +232,14 @@ export function addArtPanel(
     { x: inner[4].x, y: inner[4].y - 1 },
   ], true);
   shell.fillGradientStyle(
-    0x10253a,
-    0x08192b,
+    0x4b347a,
+    0x33245f,
     UI_COLORS.surface,
-    0x040b16,
+    0x160d36,
+    0.94,
+    0.94,
     0.97,
     0.97,
-    0.99,
-    0.99,
   );
   shell.fillPoints(outer, true);
 
@@ -190,7 +249,7 @@ export function addArtPanel(
   shell.fillPoints([outer[0], outer[1], { x: width * 0.08, y: -height * 0.08 }, inner[7]], true);
   shell.fillStyle(UI_COLORS.gold, 0.045);
   shell.fillPoints([outer[2], outer[3], { x: width * 0.19, y: height * 0.1 }, inner[1]], true);
-  shell.fillStyle(0x18334a, 0.22);
+  shell.fillStyle(0x654594, 0.18);
   shell.fillPoints([outer[5], outer[6], { x: -width * 0.12, y: height * 0.12 }, inner[5]], true);
 
   shell.lineStyle(1, UI_COLORS.quietBorder, 0.92);
@@ -235,17 +294,17 @@ export function addArtButton(
     const hover = state === 'hover';
     const pressed = state === 'pressed';
 
-    surface.fillStyle(0x01030a, pressed ? 0.34 : 0.48);
+    surface.fillStyle(0x16072f, pressed ? 0.32 : 0.46);
     surface.fillPoints(offsetPoints(outer, 2, pressed ? 3 : 6), true);
     surface.fillGradientStyle(
-      hover ? 0x17334a : pressed ? 0x06101d : 0x0d2033,
-      hover ? 0x102a40 : pressed ? 0x050c17 : 0x09182a,
-      pressed ? 0x040a13 : 0x071321,
-      pressed ? 0x07111c : 0x040b16,
-      0.99,
-      0.99,
-      0.99,
-      0.99,
+      hover ? 0x694596 : pressed ? 0x2a1b55 : 0x503477,
+      hover ? 0x4e367d : pressed ? 0x211642 : 0x38255f,
+      pressed ? 0x160d35 : 0x26194d,
+      pressed ? 0x211441 : 0x190f39,
+      0.97,
+      0.97,
+      0.98,
+      0.98,
     );
     surface.fillPoints(outer, true);
 
@@ -253,7 +312,7 @@ export function addArtButton(
     surface.fillPoints([outer[0], outer[1], { x: width * 0.04, y: 1 }, inner[7]], true);
     surface.fillStyle(UI_COLORS.gold, hover ? 0.095 : pressed ? 0.035 : 0.055);
     surface.fillPoints([outer[2], outer[3], { x: width * 0.22, y: height * 0.12 }, inner[1]], true);
-    surface.fillStyle(0x1a3850, pressed ? 0.08 : 0.2);
+    surface.fillStyle(0x8b5bb2, pressed ? 0.07 : 0.16);
     surface.fillPoints([outer[5], outer[6], { x: -width * 0.16, y: height * 0.08 }, inner[5]], true);
 
     surface.lineStyle(state === 'hover' ? 2 : 1, state === 'hover' ? UI_COLORS.gold : UI_COLORS.cyan, state === 'hover' ? 0.9 : 0.56);
@@ -273,10 +332,10 @@ export function addArtButton(
     fontSize: `${Phaser.Math.Clamp(Math.round(height * 0.34), 20, 26)}px`,
     color: UI_COLORS.text,
     fontStyle: 'bold',
-    stroke: '#020611',
+    stroke: '#251044',
     strokeThickness: 2,
     letterSpacing: 0.8,
-  }).setOrigin(0.5).setShadow(0, 2, '#02050b', 4);
+  }).setOrigin(0.5).setShadow(0, 2, '#1c0a36', 4);
   fitText(text, width * 0.8, 0.84);
   button.add([surface, text]);
   // Keep touch targets forgiving even when compact button art is used.
@@ -299,6 +358,17 @@ export function addArtButton(
     button.setScale(1);
     onPress();
   });
+  const accessibleScene = ensureAccessibleScene(scene);
+  const accessibilityRegistration = accessibleScene.registerButton({
+    id: accessibleButtonId(scene, label),
+    label,
+    onActivate: onPress,
+    onFocusChange: (focused) => {
+      drawSurface(focused ? 'hover' : 'idle');
+      button.setScale(focused ? 1.025 : 1);
+    },
+  });
+  button.once(Phaser.GameObjects.Events.DESTROY, () => accessibilityRegistration.unregister());
   return button;
 }
 
@@ -318,9 +388,9 @@ export function addIconFrame(
   const inner = facetedSurfacePoints(size, size, Math.max(6, size * 0.1));
   const radius = size / 2;
 
-  art.fillStyle(0x01030a, 0.5);
+  art.fillStyle(0x15062f, 0.46);
   art.fillPoints(offsetPoints(outer, 2, 4), true);
-  art.fillGradientStyle(0x11283c, 0x091a2b, UI_COLORS.surface, 0x040b15, 0.97, 0.97, 0.99, 0.99);
+  art.fillGradientStyle(0x4d347d, 0x342461, UI_COLORS.surface, 0x170d36, 0.95, 0.95, 0.98, 0.98);
   art.fillPoints(outer, true);
 
   // Static, differently tinted crystal planes let each caller's accent colour
@@ -331,7 +401,7 @@ export function addIconFrame(
   art.fillPoints([outer[2], outer[3], { x: 0, y: 0 }, outer[1]], true);
   art.fillStyle(UI_COLORS.gold, selected ? 0.12 : 0.055);
   art.fillPoints([outer[4], outer[5], { x: 0, y: 0 }, outer[3]], true);
-  art.fillStyle(0x1b3150, 0.2);
+  art.fillStyle(0x75509e, 0.16);
   art.fillPoints([outer[6], outer[7], { x: 0, y: 0 }, outer[5]], true);
 
   art.lineStyle(selected ? 3 : 2, selected ? UI_COLORS.gold : accent, selected ? 0.92 : 0.62);

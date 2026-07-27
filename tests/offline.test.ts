@@ -69,7 +69,7 @@ describe('service worker routing invariants', () => {
     expect(quotedPaths).toContain('assets/fonts/fusion-sans-sora-latin.woff2');
     expect(quotedPaths).toContain('assets/icons/icon-maskable-512.png');
     expect(quotedPaths).toContain('assets/cinematics/previews-v2/frame-00750ms.jpg');
-    expect(quotedPaths).toContain('assets/worlds/v3/world-crystal-hd.jpg');
+    expect(quotedPaths).toContain('assets/worlds/v12/world-luma-orchard-hd.jpg');
     expect(quotedPaths).toContain('mediapipe/models/hand_landmarker.task');
     expect(quotedPaths).toContain('mediapipe/wasm/vision_wasm_internal.wasm');
     for (const path of new Set(quotedPaths)) {
@@ -83,7 +83,7 @@ describe('service worker routing invariants', () => {
     expect(shellPaths).not.toContain('assets/audio/');
     expect(workerSource).toContain('mp4');
     expect(workerSource).toContain('ogg');
-    expect(workerSource).toContain("CACHE_VERSION = 'hand-landmarker-2026-07-24-v16'");
+    expect(workerSource).toContain("CACHE_VERSION = 'luma-orchard-2026-07-24-v17'");
     expect(workerSource).not.toContain('const FULL_MEDIA_WARMUPS = new Map()');
     expect(workerSource).toContain('rangeHeader && isStreamedMediaRequest(request, url)');
     expect(workerSource).toContain("request.destination === 'audio'");

@@ -7,6 +7,10 @@ import { getAccountSnapshot } from '../game/online';
 import { getMusicState, startMusic, toggleMusic } from '../game/music';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import {
+  accessibilityRuntimeForCanvas,
+  type AccessibilityButtonRegistration,
+} from '../gfx/accessibility';
+import {
   addAmbientMotes,
   addArtButton,
   addArtPanel,
@@ -25,6 +29,15 @@ export class MenuScene extends Phaser.Scene {
     super('Menu');
   }
 
+  preload(): void {
+    if (!this.textures.exists('prism_keeper_hero')) {
+      this.load.image('prism_keeper_hero', 'assets/characters/v13/prism-keeper-hero.webp');
+    }
+    if (!this.textures.exists('lumi_guide')) {
+      this.load.image('lumi_guide', 'assets/characters/v13/lumi-guide.webp');
+    }
+  }
+
   create(): void {
     const { width, height } = VIEW;
     const progress = getProgress();
@@ -36,6 +49,15 @@ export class MenuScene extends Phaser.Scene {
     const reducedMotion = typeof window !== 'undefined'
       && typeof window.matchMedia === 'function'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: 'main-menu',
+      heading: 'PaoPao Fusion main menu',
+      description: 'Begin an adventure, review your Keeper collection, or open more services. Use Tab, Enter, or Space for every mirrored action.',
+      status: `${progress.unlocked} of ${LEVELS.length} levels unlocked. ${totalStars(progress)} campaign stars earned.`,
+      lifecycle: this.events,
+    });
+    const modalA11yButtons: AccessibilityButtonRegistration[] = [];
+    let customA11ySerial = 0;
 
     const addFacetRail = (
       x: number,
@@ -57,9 +79,9 @@ export class MenuScene extends Phaser.Scene {
         { x: -railWidth / 2, y: railHeight / 2 - 20 },
         { x: -railWidth / 2, y: -railHeight / 2 + 14 },
       ];
-      art.fillStyle(0x01030a, 0.5);
+      art.fillStyle(0x15062f, 0.44);
       art.fillPoints(points.map((point) => ({ x: point.x + 3, y: point.y + 7 })), true);
-      art.fillStyle(UI_COLORS.surface, 0.94);
+      art.fillGradientStyle(0x4a3276, 0x34225f, UI_COLORS.surface, 0x160d35, 0.91, 0.91, 0.95, 0.95);
       art.fillPoints(points, true);
       art.lineStyle(1, UI_COLORS.quietBorder, 0.92);
       art.strokePoints(points, true);
@@ -109,7 +131,16 @@ export class MenuScene extends Phaser.Scene {
           { x: -buttonWidth / 2 + notch * 1.5, y: buttonHeight / 2 },
           { x: -buttonWidth / 2, y: buttonHeight / 2 - notch },
         ];
-        surface.fillStyle(hovered ? 0x102b3d : UI_COLORS.surface, 0.98);
+        surface.fillGradientStyle(
+          hovered ? 0x64418d : 0x472f70,
+          hovered ? 0x4f367b : 0x38245f,
+          hovered ? 0x2f205a : UI_COLORS.surface,
+          hovered ? 0x211543 : 0x170e36,
+          0.97,
+          0.97,
+          0.98,
+          0.98,
+        );
         surface.fillPoints(points, true);
         surface.lineStyle(hovered ? 2 : 1, hovered ? accent : UI_COLORS.quietBorder, hovered ? 0.88 : 0.92);
         surface.strokePoints(points, true);
@@ -128,7 +159,7 @@ export class MenuScene extends Phaser.Scene {
         fontStyle: 'bold',
         letterSpacing: 0.55,
         align: 'center',
-      }).setOrigin(0.5).setShadow(0, 2, '#02040c', 4);
+      }).setOrigin(0.5).setShadow(0, 2, '#1b0a35', 4);
       fitText(buttonText, buttonWidth - 18, 0.88);
       button.add([surface, buttonText]);
       button.setSize(buttonWidth, Math.max(64, buttonHeight)).setInteractive({ useHandCursor: true });
@@ -143,6 +174,20 @@ export class MenuScene extends Phaser.Scene {
         SFX.click();
         action();
       });
+      const registration = a11y.registerButton({
+        id: `main-menu-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${++customA11ySerial}`,
+        label,
+        disabled: parent !== null,
+        onActivate: () => {
+          SFX.click();
+          action();
+        },
+        onFocusChange: (focused) => {
+          drawSurface(focused);
+          button.setScale(focused ? 1.025 : 1);
+        },
+      });
+      if (parent) modalA11yButtons.push(registration);
       if (parent) parent.add(button);
       else button.setDepth(12);
       return button;
@@ -151,6 +196,48 @@ export class MenuScene extends Phaser.Scene {
     this.cameras.main.fadeIn(reducedMotion ? 0 : 220, 3, 5, 19);
     addWorldBackground(this, 'world_crystal', 0.2);
     addAmbientMotes(this, 0x62f3ef, 5, 2);
+
+    // Original recurring cast anchors the game's identity on the very first
+    // interactive screen. Both cutouts stay behind the central launcher and
+    // the interaction rails, preserving the one-action hierarchy.
+    const keeperHalo = this.add.ellipse(90, 650, 282, 410, 0x6ce9ff, 0.07)
+      .setStrokeStyle(2, UI_COLORS.gold, 0.22)
+      .setDepth(4);
+    const keeper = this.add.image(96, 886, 'prism_keeper_hero')
+      .setOrigin(0.5, 1)
+      .setDisplaySize(318, 477)
+      .setDepth(5)
+      .setAlpha(0.97);
+    const lumiHalo = this.add.circle(width - 86, 610, 92, 0xb6a0ff, 0.09)
+      .setStrokeStyle(1, UI_COLORS.cyan, 0.28)
+      .setDepth(4);
+    const lumi = this.add.image(width - 78, 611, 'lumi_guide')
+      .setDisplaySize(182, 182)
+      .setDepth(5);
+    if (!reducedMotion) {
+      keeper.setX(keeper.x - 26).setAlpha(0);
+      keeperHalo.setX(keeperHalo.x - 26);
+      lumi.setX(lumi.x + 22).setAlpha(0);
+      lumiHalo.setX(lumiHalo.x + 22);
+      keeperHalo.setAlpha(0);
+      lumiHalo.setAlpha(0);
+      this.tweens.add({
+        targets: [keeper, keeperHalo],
+        x: '+=26',
+        alpha: 1,
+        delay: 150,
+        duration: 520,
+        ease: 'Cubic.easeOut',
+      });
+      this.tweens.add({
+        targets: [lumi, lumiHalo],
+        x: '-=22',
+        alpha: 1,
+        delay: 260,
+        duration: 470,
+        ease: 'Cubic.easeOut',
+      });
+    }
 
     // Cropped edge bubbles bring the collection identity into the composition
     // without another animated layer.
@@ -205,12 +292,13 @@ export class MenuScene extends Phaser.Scene {
       fontStyle: 'bold',
       padding: { x: 6, y: 6 },
     }).setOrigin(1, 0).setDepth(9).setInteractive({ useHandCursor: true });
-    soundText.on('pointerup', () => {
+    const toggleSoundAction = (): void => {
       const music = toggleMusic();
       SFX.setMuted(music.muted);
       soundText.setText(music.muted ? '♪  SOUND OFF' : '♪  SOUND ON');
       if (!music.muted) SFX.click();
-    });
+    };
+    soundText.on('pointerup', toggleSoundAction);
 
     // One title and one primary action define the first reading order.
     revealText(this.add.text(width / 2, 117, 'THE SHATTERED CROWN', {
@@ -243,6 +331,11 @@ export class MenuScene extends Phaser.Scene {
       this.cameras.main.fadeOut(reducedMotion ? 0 : 200, 3, 5, 19);
       this.time.delayedCall(reducedMotion ? 0 : 210, () => this.scene.start('ModeSelect'));
     }, 380, 84, 12);
+    a11y.registerButton({
+      id: 'main-menu-sound',
+      label: getMusicState().muted ? 'Turn sound on' : 'Turn sound off',
+      onActivate: toggleSoundAction,
+    });
     const progressText = revealText(this.add.text(
       width / 2,
       385,
@@ -333,6 +426,8 @@ export class MenuScene extends Phaser.Scene {
     const closeMore = (): void => {
       if (!moreOpen) return;
       moreOpen = false;
+      modalA11yButtons.forEach((button) => button.update({ disabled: true }));
+      a11y.setStatus('Keeper services closed.');
       this.tweens.killTweensOf(moreLayer);
       if (reducedMotion) {
         moreLayer.setVisible(false);
@@ -350,6 +445,9 @@ export class MenuScene extends Phaser.Scene {
     const openMore = (): void => {
       if (moreOpen) return;
       moreOpen = true;
+      modalA11yButtons.forEach((button) => button.update({ disabled: false }));
+      a11y.setStatus('Keeper services open. Choose an account, store, challenge, ranking, gallery, or close action.');
+      a11y.announce('Keeper services opened.');
       this.tweens.killTweensOf(moreLayer);
       moreLayer.setVisible(true);
       if (reducedMotion) {
@@ -360,7 +458,7 @@ export class MenuScene extends Phaser.Scene {
       this.tweens.add({ targets: moreLayer, alpha: 1, y: 0, duration: 190, ease: 'Cubic.easeOut' });
     };
 
-    const modalShield = this.add.rectangle(width / 2, height / 2, width, height, 0x02040c, 0.78)
+    const modalShield = this.add.rectangle(width / 2, height / 2, width, height, 0x180932, 0.74)
       .setInteractive({ useHandCursor: true });
     modalShield.on('pointerup', () => {
       SFX.click();

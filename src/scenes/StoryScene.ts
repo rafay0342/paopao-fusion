@@ -4,7 +4,18 @@ import { storyBeatForLevel, storyChapterForLevel } from '../game/story';
 import { getMeta, type GameMode } from '../game/meta';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
-import { addAmbientMotes, addArtButton, addWorldBackground, DISPLAY_FONT, fitText, sharpenSceneText, TYPE, UI_FONT } from '../gfx/ui';
+import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
+import {
+  addAmbientMotes,
+  addArtButton,
+  addWorldBackground,
+  DISPLAY_FONT,
+  fitText,
+  prefersReducedMotion,
+  sharpenSceneText,
+  TYPE,
+  UI_FONT,
+} from '../gfx/ui';
 
 export interface StoryLaunchData {
   level?: number;
@@ -29,6 +40,12 @@ export class StoryScene extends Phaser.Scene {
     this.leaving = false;
   }
 
+  preload(): void {
+    if (!this.textures.exists('lumi_guide')) {
+      this.load.image('lumi_guide', 'assets/characters/v13/lumi-guide.webp');
+    }
+  }
+
   create(): void {
     const { width, height } = VIEW;
     startMusic('story');
@@ -37,8 +54,16 @@ export class StoryScene extends Phaser.Scene {
     const chapter = storyChapterForLevel(this.level);
     const meta = getMeta();
     const spiritColor = COLOR_KEYS[this.level % COLOR_KEYS.length];
+    const reducedMotion = prefersReducedMotion();
+    const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: `story-level-${this.level + 1}`,
+      heading: `${beat.title}. ${beat.speaker} speaks.`,
+      description: `${beat.body} Objective: ${beat.purpose}`,
+      status: `Chapter ${chapter.number}, level ${this.level + 1} of ${LEVELS.length}.`,
+      lifecycle: this.events,
+    });
 
-    this.cameras.main.fadeIn(260, 0, 0, 0);
+    this.cameras.main.fadeIn(reducedMotion ? 0 : 260, 0, 0, 0);
     addWorldBackground(this, theme.background, 0.34);
     addAmbientMotes(this, theme.accent, 15, 2);
 
@@ -53,19 +78,39 @@ export class StoryScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#cad5e7', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(8);
 
-    const line = this.add.rectangle(width / 2, 128, 350, 2, theme.accent, 0.48).setDepth(8).setScale(0, 1);
-    this.tweens.add({ targets: line, scaleX: 1, duration: 650, ease: 'Cubic.easeOut' });
+    const line = this.add.rectangle(width / 2, 128, 350, 2, theme.accent, 0.48)
+      .setDepth(8)
+      .setScale(reducedMotion ? 1 : 0, 1);
+    if (!reducedMotion) this.tweens.add({ targets: line, scaleX: 1, duration: 650, ease: 'Cubic.easeOut' });
 
     const halo = this.add.circle(width / 2, 272, 116, theme.accent, 0.08)
       .setStrokeStyle(2, theme.accent, 0.28).setBlendMode(Phaser.BlendModes.ADD).setDepth(5);
     const ring = this.add.circle(width / 2, 272, 84, 0x000000, 0)
       .setStrokeStyle(2, 0xffdda0, 0.34).setDepth(6);
-    const spirit = this.add.image(width / 2, 272, orbTexture(meta.equippedSkin, spiritColor))
-      .setDisplaySize(132, 132).setDepth(7).setAlpha(0).setScale(0.55);
-    this.tweens.add({ targets: spirit, alpha: 1, scale: 1, angle: { from: -8, to: 0 }, duration: 620, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: halo, scale: 1.13, alpha: 0.2, duration: 1500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    this.tweens.add({ targets: ring, angle: 360, duration: 15000, repeat: -1, ease: 'Linear' });
-    this.tweens.add({ targets: spirit, y: 263, duration: 1700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    const isLumi = beat.speaker === 'LUMI';
+    const spirit = this.add.image(
+      width / 2,
+      272,
+      isLumi ? 'lumi_guide' : orbTexture(meta.equippedSkin, spiritColor),
+    ).setDisplaySize(isLumi ? 220 : 132, isLumi ? 220 : 132)
+      .setDepth(7);
+    if (!reducedMotion) {
+      const spiritScaleX = spirit.scaleX;
+      const spiritScaleY = spirit.scaleY;
+      spirit.setAlpha(0).setScale(spiritScaleX * 0.55, spiritScaleY * 0.55);
+      this.tweens.add({
+        targets: spirit,
+        alpha: 1,
+        scaleX: spiritScaleX,
+        scaleY: spiritScaleY,
+        angle: { from: -8, to: 0 },
+        duration: 620,
+        ease: 'Back.easeOut',
+      });
+      this.tweens.add({ targets: halo, scale: 1.13, alpha: 0.2, duration: 1500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      this.tweens.add({ targets: ring, angle: 360, duration: 15000, repeat: -1, ease: 'Linear' });
+      this.tweens.add({ targets: spirit, y: 263, duration: 1700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
 
     const kicker = this.add.text(width / 2, 411, beat.kicker, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe19a', fontStyle: 'bold', letterSpacing: 3,
@@ -93,6 +138,10 @@ export class StoryScene extends Phaser.Scene {
     }).setOrigin(0.5, 0).setDepth(8).setAlpha(0);
 
     [kicker, title, speaker, body, objectiveLabel, objective].forEach((item, index) => {
+      if (reducedMotion) {
+        item.setAlpha(1);
+        return;
+      }
       const y = item.y;
       item.setY(y + 13);
       this.tweens.add({ targets: item, y, alpha: 1, delay: 130 + index * 75, duration: 440, ease: 'Cubic.easeOut' });
@@ -104,19 +153,31 @@ export class StoryScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#aebacd', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(10);
 
-    this.add.text(38, height - 36, '‹  ADVENTURE MAP', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#cbd5e5', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', () => {
+    const returnToMap = (): void => {
       if (this.leaving) return;
       SFX.click();
       this.scene.start('WorldMap', { world: theme.levels.includes(this.level) ? LEVELS[this.level].world : 0 });
-    });
-    this.add.text(width - 38, height - 36, 'CHRONICLE  ›', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe19a', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(1, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', () => {
+    };
+    const openChronicle = (): void => {
       if (this.leaving) return;
       SFX.click();
       this.scene.start('Chronicle', { returnScene: 'Story', level: this.level, score: this.score, mode: this.mode });
+    };
+    this.add.text(38, height - 36, '‹  ADVENTURE MAP', {
+      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#cbd5e5', fontStyle: 'bold', letterSpacing: 1,
+    }).setOrigin(0, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', returnToMap);
+    this.add.text(width - 38, height - 36, 'CHRONICLE  ›', {
+      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe19a', fontStyle: 'bold', letterSpacing: 1,
+    }).setOrigin(1, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', openChronicle);
+    a11y.registerButton({
+      id: 'story-adventure-map',
+      label: 'Return to adventure map',
+      onActivate: returnToMap,
+    });
+    a11y.registerButton({
+      id: 'story-chronicle',
+      label: 'Open the Aurora Chronicle',
+      onActivate: openChronicle,
     });
 
     this.input.keyboard?.on('keydown-SPACE', () => this.beginLevel());
@@ -128,8 +189,9 @@ export class StoryScene extends Phaser.Scene {
     if (this.leaving) return;
     this.leaving = true;
     SFX.click();
-    this.cameras.main.fadeOut(180, 0, 0, 0);
-    this.time.delayedCall(190, () => this.scene.start('Game', {
+    const transitionMs = prefersReducedMotion() ? 0 : 180;
+    this.cameras.main.fadeOut(transitionMs, 0, 0, 0);
+    this.time.delayedCall(transitionMs ? 190 : 0, () => this.scene.start('Game', {
       level: this.level,
       score: this.score,
       mode: this.mode,

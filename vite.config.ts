@@ -71,6 +71,10 @@ export default defineConfig({
     emptyOutDir: true,
     assetsInlineLimit: 0,
     rollupOptions: {
+      input: {
+        main: resolve('index.html'),
+        fight: resolve('fight/index.html'),
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/phaser')) return 'phaser';

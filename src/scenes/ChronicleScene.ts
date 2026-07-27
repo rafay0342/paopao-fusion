@@ -53,6 +53,15 @@ export class ChronicleScene extends Phaser.Scene {
     this.page = Phaser.Math.Clamp(data.page ?? 0, 0, PAGE_NAMES.length - 1);
   }
 
+  preload(): void {
+    if (!this.textures.exists('prism_keeper_hero')) {
+      this.load.image('prism_keeper_hero', 'assets/characters/v13/prism-keeper-hero.webp');
+    }
+    if (!this.textures.exists('lumi_guide')) {
+      this.load.image('lumi_guide', 'assets/characters/v13/lumi-guide.webp');
+    }
+  }
+
   create(): void {
     const { width, height } = VIEW;
     startMusic('story');
@@ -139,11 +148,27 @@ export class ChronicleScene extends Phaser.Scene {
   private renderCharacters(): void {
     CHARACTERS.forEach((character, index) => {
       const y = 288 + index * 197;
-      const marker = this.add.circle(90, y + 30, 26, index === 3 ? 0xa88cff : 0x62e9f2, 0.12)
-        .setStrokeStyle(2, index === 3 ? 0xa88cff : 0xffdfa0, 0.42);
-      const number = this.add.text(90, y + 30, String(index + 1).padStart(2, '0'), {
-        fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffffff', fontStyle: 'bold',
-      }).setOrigin(0.5);
+      let identityArt: Phaser.GameObjects.GameObject[];
+      if (index === 0) {
+        const frame = this.add.ellipse(90, y + 32, 76, 112, 0x62e9f2, 0.09)
+          .setStrokeStyle(2, 0xffdfa0, 0.42);
+        const portrait = this.add.image(90, y + 36, 'prism_keeper_hero')
+          .setDisplaySize(72, 108);
+        identityArt = [frame, portrait];
+      } else if (index === 1) {
+        const frame = this.add.circle(90, y + 30, 43, 0x62e9f2, 0.09)
+          .setStrokeStyle(2, 0xffdfa0, 0.42);
+        const portrait = this.add.image(90, y + 30, 'lumi_guide')
+          .setDisplaySize(86, 86);
+        identityArt = [frame, portrait];
+      } else {
+        const marker = this.add.circle(90, y + 30, 26, index === 3 ? 0xa88cff : 0x62e9f2, 0.12)
+          .setStrokeStyle(2, index === 3 ? 0xa88cff : 0xffdfa0, 0.42);
+        const number = this.add.text(90, y + 30, String(index + 1).padStart(2, '0'), {
+          fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffffff', fontStyle: 'bold',
+        }).setOrigin(0.5);
+        identityArt = [marker, number];
+      }
       const name = fitText(this.add.text(132, y, character.name, {
         fontFamily: UI_FONT, fontSize: TYPE.section, color: index === 3 ? '#c8b5ff' : '#8ce8ff', fontStyle: 'bold',
       }).setOrigin(0, 0), 480);
@@ -154,7 +179,7 @@ export class ChronicleScene extends Phaser.Scene {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#d5dfec',
         wordWrap: { width: 470, useAdvancedWrap: true }, lineSpacing: 5,
       }).setOrigin(0, 0);
-      this.pageLayer?.add([marker, number, name, role, description]);
+      this.pageLayer?.add([...identityArt, name, role, description]);
     });
   }
 

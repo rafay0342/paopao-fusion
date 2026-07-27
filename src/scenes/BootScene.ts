@@ -5,6 +5,7 @@ import { scheduleOnlineSync } from '../game/online';
 import { makeOrbCanvas, makeSparkCanvas, makeBgCanvas } from '../gfx/textures';
 import { DISPLAY_FONT, TYPE, UI_FONT } from '../gfx/ui';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
+import { INTRO_SEEN_KEY } from './IntroScene';
 
 const LOAD_STAGES = [
   { until: 0.08, label: 'RESTORING PLAYER PROFILE' },
@@ -259,7 +260,7 @@ export class BootScene extends Phaser.Scene {
     if (PHASER_RELEASE_FEATURES.cinematicPresentation) {
       this.load.image('intro_poster', 'assets/cinematics/previews-v2/frame-00750ms.jpg');
     }
-    this.load.image('world_crystal', 'assets/worlds/v3/world-crystal-hd.jpg');
+    this.load.image('world_crystal', 'assets/worlds/v12/world-luma-orchard-hd.jpg');
     this.load.image('world_emerald', 'assets/worlds/v3/world-emerald-hd.jpg');
     this.load.image('world_celestial', 'assets/worlds/v3/world-celestial-hd.jpg');
     this.load.image('world_ember', 'assets/worlds/v3/world-ember-hd.jpg');
@@ -327,6 +328,16 @@ export class BootScene extends Phaser.Scene {
       console.warn(`[PaoPao] Boot continued with ${this.failedAssetKeys.size} unavailable art asset(s).`, [...this.failedAssetKeys]);
     }
     scheduleOnlineSync(0);
-    this.scene.start(PHASER_RELEASE_FEATURES.cinematicPresentation ? 'Intro' : 'Menu');
+    const gatedDestination = PHASER_RELEASE_FEATURES.cinematicPresentation ? 'Intro' : 'Menu';
+    let introSeen = false;
+    try {
+      introSeen = window.localStorage.getItem(INTRO_SEEN_KEY) === '1';
+    } catch { /* storage is optional */ }
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+    const forceReplay = new URLSearchParams(window.location.search).get('intro') === '1';
+    const destination = gatedDestination === 'Intro' && (forceReplay || (!introSeen && !reducedMotion))
+      ? 'Intro'
+      : 'Menu';
+    this.scene.start(destination);
   }
 }

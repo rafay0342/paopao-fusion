@@ -129,6 +129,10 @@ export class GalleryScene extends Phaser.Scene {
       SFX.click();
       this.scene.start('Menu');
     }, 140, 48, 18);
+    addArtButton(this, width - 86, 45, 'OPENING', () => {
+      SFX.click();
+      this.scene.start('Intro');
+    }, 140, 48, 18);
 
     this.add.text(width / 2, 236, 'DISCOVERED WORLDS', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe4a0', fontStyle: 'bold', letterSpacing: 2,

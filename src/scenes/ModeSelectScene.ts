@@ -5,6 +5,7 @@ import { cycleQuality, getMeta, MODE_DEFS, setMode, type GameMode } from '../gam
 import { getHandTracker } from '../game/handtracking';
 import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
+import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addWorldBackground, DISPLAY_FONT, sharpenSceneText, TYPE, UI_COLORS, UI_FONT } from '../gfx/ui';
 
 const MODE_ORDER: GameMode[] = ['classic', 'rush', 'precision'];
@@ -78,6 +79,13 @@ export class ModeSelectScene extends Phaser.Scene {
   create(): void {
     const { width, height } = VIEW;
     const meta = getMeta();
+    accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: 'mode-select',
+      heading: 'Choose your PaoPao Fusion challenge',
+      description: 'Classic Adventure, timed Rush, Precision, Prism Cascade match-three, and live modes each preserve the same campaign progress.',
+      status: `${MODE_DEFS[meta.mode].name} is currently selected.`,
+      lifecycle: this.events,
+    });
     void getHandTracker().prepare().catch(() => undefined);
     this.cameras.main.fadeIn(180, 0, 0, 0);
     addWorldBackground(this, 'world_celestial', 0.25);

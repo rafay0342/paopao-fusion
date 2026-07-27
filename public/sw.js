@@ -5,7 +5,7 @@
  * response can never masquerade as current cloud state.
  */
 const CACHE_PREFIX = 'paopao-fusion-';
-const CACHE_VERSION = 'hand-landmarker-2026-07-24-v16';
+const CACHE_VERSION = 'luma-orchard-2026-07-24-v17';
 const SHELL_CACHE = `${CACHE_PREFIX}shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}runtime-${CACHE_VERSION}`;
 const CURRENT_CACHES = new Set([SHELL_CACHE, RUNTIME_CACHE]);
@@ -32,7 +32,7 @@ const CORE_SHELL_PATHS = [
   'assets/icons/icon-maskable-512.png',
   'assets/brand/paopao-shattered-crown-key-art.png',
   'assets/cinematics/previews-v2/frame-00750ms.jpg',
-  'assets/worlds/v3/world-crystal-hd.jpg',
+  'assets/worlds/v12/world-luma-orchard-hd.jpg',
   'assets/ui/v3/level-medallion-hd.png',
   'assets/ui/v6/mystery-chest-closed.png',
   'assets/ui/v6/coin-stack.png',

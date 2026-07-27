@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#060911" />
+  <meta name="description" content="Enter the Shattered Tribunal for an original one-on-one PaoPao Fusion fighting experience." />
+  <title>PaoPao Fusion · Shattered Tribunal</title>
+  <link rel="icon" href="/assets/icons/favicon.ico" sizes="any" />
+  <link rel="preload" href="/assets/fonts/paopao-display-cinzel-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/fusion-sans-sora-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Fusion Sans", Inter, system-ui, sans-serif;
+      background: #04070d;
+      color: #f7f0d9;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+      background:
+        radial-gradient(circle at 18% 60%, rgba(28, 211, 255, .16), transparent 30%),
+        radial-gradient(circle at 82% 60%, rgba(255, 67, 53, .15), transparent 30%),
+        linear-gradient(180deg, rgba(3, 7, 14, .5), rgba(2, 4, 8, .82)),
+        url("/assets/fighting/stages/shattered-tribunal.png") center / cover no-repeat,
+        #04070d;
+      touch-action: none;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(0, 9, 15, .46), transparent 32%, transparent 68%, rgba(18, 3, 2, .46)),
+        radial-gradient(ellipse at center, transparent 22%, rgba(1, 3, 7, .52) 100%);
+    }
+    #fight-game {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      isolation: isolate;
+    }
+    #fight-game canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+    #fight-game canvas:focus-visible {
+      outline: 3px solid #76e8ff;
+      outline-offset: -4px;
+    }
+    .fight-home {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top));
+      left: max(12px, env(safe-area-inset-left));
+      z-index: 40;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 14px;
+      border: 1px solid rgba(215, 231, 247, .2);
+      border-radius: 999px;
+      color: #dce8f4;
+      background: rgba(4, 8, 16, .68);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(12px);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+    .fight-home::before {
+      content: "‹";
+      color: #76e8ff;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .fight-home:hover {
+      border-color: rgba(118, 232, 255, .52);
+      background: rgba(7, 15, 27, .88);
+      transform: translateY(-1px);
+    }
+    .fight-home:focus-visible {
+      outline: 3px solid #76e8ff;
+      outline-offset: 3px;
+    }
+    .fight-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(3, 6, 13, .3), rgba(2, 4, 9, .74)),
+        radial-gradient(circle at center, rgba(12, 27, 42, .22), transparent 52%);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 480ms ease, visibility 480ms step-end;
+    }
+    .fight-ready .fight-loading {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loading-lockup {
+      width: min(520px, 88vw);
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      animation: rise 650ms cubic-bezier(.18, .78, .24, 1) both;
+    }
+    .tribunal-mark {
+      width: clamp(76px, 14vw, 104px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      margin-bottom: 19px;
+      border: 1px solid rgba(227, 189, 104, .52);
+      border-radius: 50%;
+      background: rgba(5, 9, 18, .82);
+      box-shadow:
+        0 18px 48px rgba(0, 0, 0, .42),
+        -12px 0 34px rgba(32, 207, 255, .1),
+        12px 0 34px rgba(255, 69, 53, .1);
+    }
+    .tribunal-mark svg {
+      width: 62%;
+      height: 62%;
+    }
+    .loading-eyebrow {
+      margin: 0 0 9px;
+      color: #e3bd68;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+    }
+    .loading-title {
+      margin: 0;
+      font-family: "PaoPao Display", Georgia, serif;
+      font-size: clamp(32px, 7vw, 57px);
+      line-height: .95;
+      letter-spacing: .035em;
+      text-shadow: 0 8px 24px rgba(0, 0, 0, .64);
+    }
+    .loading-copy {
+      margin: 14px 0 0;
+      color: #aebed0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .loading-line {
+      width: min(320px, 68vw);
+      height: 3px;
+      margin-top: 22px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(220, 234, 249, .12);
+    }
+    .loading-line::after {
+      content: "";
+      display: block;
+      width: 42%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #55daf9, #e3bd68, #ff5b47);
+      box-shadow: 0 0 18px rgba(92, 221, 250, .55);
+      animation: loading 1.2s ease-in-out infinite alternate;
+    }
+    noscript {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      color: #f7f0d9;
+      background: #050812;
+      text-align: center;
+      font: 700 15px/1.6 "Fusion Sans", system-ui, sans-serif;
+    }
+    .visually-hidden,
+    .fight-a11y-actions button:not(:focus) {
+      position: fixed !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip-path: inset(50%) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+    .fight-a11y-actions {
+      position: fixed;
+      inset: 0;
+      z-index: 45;
+      width: 0;
+      height: 0;
+    }
+    .fight-a11y-actions button:focus {
+      position: fixed;
+      left: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 46;
+      width: min(360px, calc(100vw - 24px));
+      min-height: 52px;
+      padding: 12px 16px;
+      border: 3px solid #76e8ff;
+      border-radius: 13px;
+      color: #f7f0d9;
+      background: #07101d;
+      box-shadow: 0 12px 38px rgba(0, 0, 0, .65);
+      font: 800 15px/1.35 "Fusion Sans", system-ui, sans-serif;
+    }
+    .orientation-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      display: none;
+      place-items: center;
+      padding:
+        max(28px, env(safe-area-inset-top))
+        max(22px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(22px, env(safe-area-inset-left));
+      color: #f7f0d9;
+      background:
+        linear-gradient(180deg, rgba(2, 6, 12, .78), rgba(2, 4, 9, .96)),
+        url("/assets/fighting/stages/shattered-tribunal.png") center / cover no-repeat;
+      text-align: center;
+    }
+    .orientation-card {
+      width: min(100%, 390px);
+      padding: 28px 24px 24px;
+      border: 1px solid rgba(115, 232, 255, .45);
+      border-radius: 22px;
+      background: rgba(4, 9, 18, .94);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .58);
+    }
+    .orientation-icon {
+      width: 72px;
+      height: 46px;
+      margin: 0 auto 18px;
+      border: 2px solid #73e8ff;
+      border-radius: 9px;
+      box-shadow: inset 0 0 0 4px rgba(115, 232, 255, .08);
+      transform: rotate(-8deg);
+    }
+    .orientation-card h2 {
+      margin: 0;
+      font-family: "PaoPao Display", Georgia, serif;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+    .orientation-card p {
+      margin: 13px 0 20px;
+      color: #c2cfdd;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .orientation-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .orientation-actions button,
+    .orientation-actions a {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(227, 189, 104, .5);
+      border-radius: 13px;
+      color: #071018;
+      background: linear-gradient(105deg, #73e8ff, #e3bd68);
+      font: 900 12px/1 "Fusion Sans", system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .orientation-actions a {
+      color: #dce8f4;
+      background: rgba(8, 13, 24, .86);
+    }
+    @keyframes loading {
+      from { transform: translateX(-8%); }
+      to { transform: translateX(146%); }
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translate3d(0, 12px, 0) scale(.99); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (max-width: 520px) {
+      .fight-home {
+        min-height: 37px;
+        padding: 0 11px;
+        font-size: 9px;
+      }
+    }
+    @media (orientation: landscape) and (max-height: 560px) {
+      .fight-home {
+        top: max(7px, env(safe-area-inset-top));
+        left: 50%;
+        min-height: 34px;
+        padding: 0 11px;
+        font-size: 9px;
+        transform: translateX(-50%);
+      }
+      .fight-home:hover {
+        transform: translateX(-50%) translateY(-1px);
+      }
+    }
+    @media (orientation: portrait) and (max-width: 900px) {
+      body:not(.orientation-dismissed) .orientation-gate {
+        display: grid;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .loading-lockup,
+      .loading-line::after {
+        animation: none;
+      }
+      .fight-loading {
+        transition-duration: 1ms;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="fight-home" href="/" aria-label="Return to the PaoPao Fusion launcher">Launcher</a>
+  <main
+    id="fight-game"
+    role="application"
+    aria-label="PaoPao Fusion fighting arena"
+    aria-describedby="fight-instructions"
+  ></main>
+  <p id="fight-instructions" hidden>Rotate a phone to landscape. Player one uses A, D, W, S, Shift, J, K and L. Player two uses arrow and numeric keypad controls. Touch controls appear on touch devices during a fight.</p>
+  <p id="fight-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true">Choose a fighter.</p>
+  <div id="fight-select-actions" class="fight-a11y-actions" aria-label="Fighter selection actions" hidden>
+    <button type="button" data-fight-select-action="previous">Previous fighter</button>
+    <button type="button" data-fight-select-action="next">Next fighter</button>
+    <button type="button" data-fight-select-action="mode">Toggle CPU or local versus mode</button>
+    <button type="button" data-fight-select-action="confirm">Lock selected fighter</button>
+  </div>
+  <section class="orientation-gate" id="orientation-gate" role="dialog" aria-modal="true" aria-labelledby="orientation-title" aria-describedby="orientation-copy">
+    <div class="orientation-card">
+      <div class="orientation-icon" aria-hidden="true"></div>
+      <h2 id="orientation-title">Rotate to fight</h2>
+      <p id="orientation-copy">Shattered Tribunal is a wide-screen duel. Turn your phone sideways for readable fighters, full-size touch controls and the complete arena.</p>
+      <div class="orientation-actions">
+        <button id="orientation-anyway" type="button">Continue in portrait</button>
+        <a href="/">Return to launcher</a>
+      </div>
+    </div>
+  </section>
+  <div class="fight-loading" id="fight-loading" role="status" aria-live="polite">
+    <div class="loading-lockup">
+      <div class="tribunal-mark" aria-hidden="true">
+        <svg viewBox="0 0 100 100">
+          <path d="M18 69 12 31l24 18L50 18l14 31 24-18-6 38Z" fill="#e3bd68" />
+          <path d="M28 74h44l-6 10H34Z" fill="#8e642f" />
+          <path d="m19 56 22 17M81 56 59 73" fill="none" stroke="#73e8ff" stroke-width="3" stroke-linecap="round" />
+        </svg>
+      </div>
+      <p class="loading-eyebrow">PaoPao Fusion presents</p>
+      <h1 class="loading-title">Shattered Tribunal</h1>
+      <p class="loading-copy" id="fight-loading-copy">Summoning fighters and arena</p>
+      <div class="loading-line" aria-hidden="true"></div>
+    </div>
+  </div>
+  <noscript>JavaScript is required to enter the Shattered Tribunal. Enable it, then reload this page.</noscript>
+  <script>
+    (() => {
+      const root = document.getElementById('fight-game');
+      const loadingCopy = document.getElementById('fight-loading-copy');
+      const orientationGate = document.getElementById('orientation-gate');
+      const continuePortrait = document.getElementById('orientation-anyway');
+      const home = document.querySelector('.fight-home');
+      const selectActions = document.getElementById('fight-select-actions');
+      if (!root) return;
+      let orientationDismissed = false;
+      try {
+        orientationDismissed = sessionStorage.getItem('paopao:fight-portrait-dismissed') === '1';
+      } catch {}
+      if (orientationDismissed) document.body.classList.add('orientation-dismissed');
+      const syncOrientationFocus = () => {
+        const portraitGateVisible = !document.body.classList.contains('orientation-dismissed')
+          && matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
+        [home, root, selectActions].forEach((element) => element?.toggleAttribute('inert', portraitGateVisible));
+        if (portraitGateVisible) window.setTimeout(() => continuePortrait?.focus(), 0);
+      };
+      continuePortrait?.addEventListener('click', () => {
+        document.body.classList.add('orientation-dismissed');
+        try { sessionStorage.setItem('paopao:fight-portrait-dismissed', '1'); } catch {}
+        syncOrientationFocus();
+        root.querySelector('canvas')?.focus();
+      });
+      window.addEventListener('orientationchange', syncOrientationFocus, { passive: true });
+      window.addEventListener('resize', syncOrientationFocus, { passive: true });
+      selectActions?.addEventListener('click', (event) => {
+        const button = event.target instanceof Element
+          ? event.target.closest('[data-fight-select-action]')
+          : null;
+        const action = button?.getAttribute('data-fight-select-action');
+        if (!action) return;
+        window.dispatchEvent(new CustomEvent('paopao:fighter-select-action', { detail: { action } }));
+      });
+      selectActions?.addEventListener('keydown', (event) => event.stopPropagation());
+      selectActions?.addEventListener('keyup', (event) => event.stopPropagation());
+      syncOrientationFocus();
+      const reveal = () => {
+        if (!root.querySelector('canvas')) return;
+        document.body.classList.add('fight-ready');
+        loadingCopy.textContent = 'Arena ready';
+        observer.disconnect();
+      };
+      const observer = new MutationObserver(reveal);
+      observer.observe(root, { childList: true, subtree: true });
+      reveal();
+    })();
+  </script>
+  <script type="module" src="../src/fighting/main.ts"></script>
+</body>
+</html>
