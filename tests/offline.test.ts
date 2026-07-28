@@ -1,5 +1,7 @@
+import { createHash, webcrypto } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
 import { canRegisterOfflineShell, isLocalHostname } from '../src/game/offline';
 
@@ -7,6 +9,88 @@ const projectFile = (path: string): string => fileURLToPath(new URL(`../${path}`
 const workerSource = readFileSync(projectFile('public/sw.js'), 'utf8');
 const introSource = readFileSync(projectFile('src/scenes/IntroScene.ts'), 'utf8');
 const manifest = JSON.parse(readFileSync(projectFile('public/manifest.webmanifest'), 'utf8')) as Record<string, unknown>;
+
+interface IntegrityHarness {
+  bundle: (request: Request, url: URL) => Promise<Response>;
+  verify: (response: Response, url: URL) => Promise<Response>;
+  prefix: (url: URL) => string | null;
+  normalizeEquipped: (data: unknown) => Array<{ stableKey: string; fallbackPath: string }> | null;
+  runtimeCache: string;
+}
+
+function createIntegrityHarness(
+  fetcher: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>,
+) {
+  const stores = new Map<string, Map<string, Response>>();
+  const stats = { puts: 0, deletes: 0 };
+  const requestUrl = (input: RequestInfo | URL): string => (
+    input instanceof Request ? input.url : String(input)
+  );
+  const cacheStorage = {
+    async open(name: string) {
+      const store = stores.get(name) ?? new Map<string, Response>();
+      stores.set(name, store);
+      return {
+        async match(input: RequestInfo | URL) {
+          return store.get(requestUrl(input))?.clone();
+        },
+        async put(input: RequestInfo | URL, response: Response) {
+          stats.puts += 1;
+          store.set(requestUrl(input), response.clone());
+        },
+        async delete(input: RequestInfo | URL) {
+          stats.deletes += 1;
+          return store.delete(requestUrl(input));
+        },
+      };
+    },
+    async keys() {
+      return [...stores.keys()];
+    },
+    async delete(name: string) {
+      return stores.delete(name);
+    },
+  };
+  const context: Record<string, unknown> = {
+    self: {
+      registration: { scope: 'https://game.example/' },
+      location: { origin: 'https://game.example' },
+      crypto: webcrypto,
+      clients: { claim: async () => undefined },
+      addEventListener: () => undefined,
+    },
+    caches: cacheStorage,
+    fetch: fetcher,
+    URL,
+    Request,
+    Response,
+    Headers,
+    AbortController,
+    DOMException,
+    setTimeout,
+    clearTimeout,
+    console,
+  };
+  runInNewContext(`${workerSource}
+globalThis.__integrityHarness = {
+  bundle: v14BundleCacheFirst,
+  verify: verifyV14ResponseIntegrity,
+  prefix: v14ContentHashPrefix,
+  normalizeEquipped: normalizeEquippedArtRequest,
+  runtimeCache: RUNTIME_CACHE,
+};`, context);
+  const harness = context.__integrityHarness as IntegrityHarness;
+
+  return {
+    ...harness,
+    stats,
+    seed(cacheName: string, url: string, response: Response) {
+      const store = stores.get(cacheName) ?? new Map<string, Response>();
+      stores.set(cacheName, store);
+      store.set(url, response.clone());
+    },
+  };
+}
 
 describe('offline shell registration policy', () => {
   it('permits supported secure origins and localhost only', () => {
@@ -35,7 +119,9 @@ describe('service worker routing invariants', () => {
   it('uses network-first navigation, cache-first static assets and root/classic fallbacks', () => {
     expect(workerSource).toContain('event.respondWith(navigationNetworkFirst(request))');
     expect(workerSource).toContain('event.respondWith(staticCacheFirst(request, url, event))');
-    expect(workerSource).toContain('const cached = await shellCache.match(request) ?? await runtimeCache.match(request)');
+    expect(workerSource).toContain('const equippedCache = await caches.open(EQUIPPED_ART_CACHE)');
+    expect(workerSource).toContain('?? await shellCache.match(request)');
+    expect(workerSource).toContain('?? await runtimeCache.match(request)');
     expect(workerSource).toContain('const LAUNCHER_URL = SCOPE_URL.href');
     expect(workerSource).toContain("const INDEX_URL = new URL('classic/', SCOPE_URL).href");
     expect(workerSource).toContain('const fallbackUrl = isClassic ? INDEX_URL : LAUNCHER_URL');
@@ -55,35 +141,78 @@ describe('service worker routing invariants', () => {
     expect(workerSource).toContain('/<script\\b[^>]*\\bsrc');
     expect(workerSource).toContain('const baseMatch = /<base\\b');
     expect(workerSource).toContain('new URL(match[1], documentBase)');
+    expect(workerSource).toContain("!relTokens.includes('stylesheet') && !relTokens.includes('modulepreload')");
     expect(workerSource).toContain('name.startsWith(CACHE_PREFIX) && !CURRENT_CACHES.has(name)');
     expect(workerSource).toContain('self.clients.claim()');
   });
 
-  it('ships every explicit core shell resource from the public directory', () => {
+  it('preloads only manifests, fonts, poster, default realm and equipped-family recovery art', () => {
     const quotedPaths = [...workerSource.matchAll(/'((?:assets|manifest|mediapipe)[^']+)'/g)]
       .map((match) => match[1])
       .filter((path) => !path.includes('${'));
 
     expect(quotedPaths).toContain('manifest.webmanifest');
+    expect(quotedPaths).toContain('assets/v14/art-manifest.json');
     expect(quotedPaths).toContain('assets/fonts/paopao-display-cinzel-latin.woff2');
     expect(quotedPaths).toContain('assets/fonts/fusion-sans-sora-latin.woff2');
-    expect(quotedPaths).toContain('assets/icons/icon-maskable-512.png');
-    expect(quotedPaths).toContain('assets/cinematics/previews-v2/frame-00750ms.jpg');
     expect(quotedPaths).toContain('assets/worlds/v12/world-luma-orchard-hd.jpg');
-    expect(quotedPaths).toContain('mediapipe/models/hand_landmarker.task');
-    expect(quotedPaths).toContain('mediapipe/wasm/vision_wasm_internal.wasm');
+    expect(quotedPaths).toContain('assets/cinematics/previews-v2/frame-00750ms.jpg');
+    expect(quotedPaths).toContain('assets/sprites/v6/nova-blue.png');
+    expect(quotedPaths).toContain('assets/sprites/v6/nova-yellow.png');
+    expect(quotedPaths.some((path) => path.startsWith('assets/icons/'))).toBe(false);
+    expect(quotedPaths.some((path) => path.startsWith('mediapipe/'))).toBe(false);
+    expect(workerSource).toContain('loadOptionalV14Manifest(cache)');
+    expect(workerSource).toContain('manifestDefaultUrl(manifest, stableKey)');
+    expect(workerSource).toContain("entry?.variants?.performance");
+    expect(workerSource).toContain('await cacheDefaultArt(cache, v14Manifest)');
+    expect(workerSource).toContain('await cacheEquippedArt(DEFAULT_EQUIPPED_ART_PRECACHE)');
+    expect(workerSource).toContain("data.type !== 'PAOPAO_CACHE_EQUIPPED_ART'");
+    expect(workerSource).toContain('event.waitUntil(cacheEquippedArt(entries))');
+    expect(workerSource).toContain('await caches.delete(EQUIPPED_ART_CACHE)');
     for (const path of new Set(quotedPaths)) {
+      if (path === 'assets/v14/art-manifest.json') continue;
       expect(() => readFileSync(projectFile(`public/${path}`))).not.toThrow();
     }
   });
 
+  it('loads content-addressed V14 bundles lazily and blocks retired combat media', () => {
+    expect(workerSource).toContain('const CONTENT_HASHED_V14_PATH =');
+    expect(workerSource).toContain('function isContentHashedV14Request(url)');
+    expect(workerSource).toContain('if (isContentHashedV14Request(url))');
+    expect(workerSource).toContain('event.respondWith(v14BundleCacheFirst(request, url))');
+    expect(workerSource).toContain("subtle.digest('SHA-256', bytes)");
+    expect(workerSource).toContain('actualHash.startsWith(expectedPrefix)');
+    expect(workerSource).toContain('await deleteCachedV14Request(shellCache, runtimeCache, equippedCache, canonicalRequest)');
+    expect(workerSource).toContain('await runtimeCache.put(canonicalRequest, response.clone())');
+    expect(workerSource).toContain('if (hasRetiredFightingSegment(url))');
+    expect(workerSource).toContain("status: 410");
+    expect(workerSource.indexOf('if (hasRetiredFightingSegment(url))'))
+      .toBeLessThan(workerSource.indexOf('if (url.origin !== self.location.origin) return;'));
+  });
+
+  it('refreshes the mutable V14 manifest network-first while keeping hashed bundles cache-first', () => {
+    const manifestBranch = workerSource.indexOf('if (url.href === V14_MANIFEST_URL)');
+    const bundleBranch = workerSource.indexOf('if (isContentHashedV14Request(url))');
+
+    expect(workerSource).toContain('async function v14ManifestNetworkFirst(request)');
+    expect(workerSource).toContain('await cache.put(V14_MANIFEST_URL, response.clone())');
+    expect(workerSource).toContain('const cached = await cache.match(V14_MANIFEST_URL)');
+    expect(workerSource).toContain('event.respondWith(v14ManifestNetworkFirst(request))');
+    expect(manifestBranch).toBeGreaterThan(-1);
+    expect(manifestBranch).toBeLessThan(bundleBranch);
+  });
+
   it('streams heavyweight media without making it part of blocking install', () => {
-    const shellPaths = workerSource.match(/const CORE_SHELL_PATHS = \[([\s\S]*?)\n\];/)?.[1] ?? '';
-    expect(shellPaths).not.toContain('assets/cinematics/paopao-opening-final-light-1080.mp4');
-    expect(shellPaths).not.toContain('assets/audio/');
+    const precacheStart = workerSource.indexOf('const FIXED_PRECACHE_PATHS =');
+    const precacheEnd = workerSource.indexOf('const STATIC_DESTINATIONS =');
+    const precacheSource = workerSource.slice(precacheStart, precacheEnd);
+    expect(precacheStart).toBeGreaterThan(-1);
+    expect(precacheEnd).toBeGreaterThan(precacheStart);
+    expect(precacheSource).not.toContain('assets/cinematics/paopao-opening-final-light-1080.mp4');
+    expect(precacheSource).not.toContain('assets/audio/');
     expect(workerSource).toContain('mp4');
     expect(workerSource).toContain('ogg');
-    expect(workerSource).toContain("CACHE_VERSION = 'luma-orchard-2026-07-24-v17'");
+    expect(workerSource).toContain("CACHE_VERSION = 'art-v14-delivery-2026-07-28-v21'");
     expect(workerSource).not.toContain('const FULL_MEDIA_WARMUPS = new Map()');
     expect(workerSource).toContain('rangeHeader && isStreamedMediaRequest(request, url)');
     expect(workerSource).toContain("request.destination === 'audio'");
@@ -105,6 +234,85 @@ describe('service worker routing invariants', () => {
     expect(retiredBypass).toBeGreaterThan(-1);
     expect(retiredBypass).toBeLessThan(navigationBranch);
     expect(workerSource).toContain("url.pathname.startsWith(`${SCOPE_PATH}3d/`)");
+  });
+});
+
+describe('content-addressed V14 service-worker integrity', () => {
+  const payload = new TextEncoder().encode('verified PaoPao V14 bundle bytes');
+  const digest = createHash('sha256').update(payload).digest('hex');
+  const assetUrl = `https://game.example/assets/v14/bundles/core/lumi.${digest.slice(0, 12)}.webp`;
+
+  it('accepts exactly one safe six-colour equipped family and rejects traversal or partial payloads', () => {
+    const harness = createIntegrityHarness(async () => new Response(payload));
+    const colors = ['blue', 'green', 'orange', 'purple', 'red', 'yellow'];
+    const entries = colors.map((color) => ({
+      stableKey: `bubble_aurora_${color}`,
+      fallbackPath: `assets/sprites/v7/aurora-${color}.png`,
+    }));
+    expect(harness.normalizeEquipped({
+      type: 'PAOPAO_CACHE_EQUIPPED_ART',
+      entries,
+    })).toEqual(entries);
+    expect(harness.normalizeEquipped({
+      type: 'PAOPAO_CACHE_EQUIPPED_ART',
+      entries: entries.slice(0, 5),
+    })).toBeNull();
+    expect(harness.normalizeEquipped({
+      type: 'PAOPAO_CACHE_EQUIPPED_ART',
+      entries: entries.map((entry, index) => index === 0
+        ? { ...entry, fallbackPath: 'assets/sprites/../fighting/escape.png' }
+        : entry),
+    })).toBeNull();
+  });
+
+  it('accepts only bytes matching the content hash embedded in the filename', async () => {
+    const harness = createIntegrityHarness(async () => new Response(payload));
+    const url = new URL(assetUrl);
+
+    expect(harness.prefix(url)).toBe(digest.slice(0, 12));
+    await expect(harness.verify(new Response(payload), url)).resolves.toBeInstanceOf(Response);
+    await expect(harness.verify(new Response('corrupt bytes'), url)).rejects.toThrow('v14-integrity-mismatch');
+  });
+
+  it('fails closed and never caches a corrupt network bundle', async () => {
+    const harness = createIntegrityHarness(async () => new Response('corrupt bytes', { status: 200 }));
+    const response = await harness.bundle(new Request(assetUrl), new URL(assetUrl));
+
+    expect(response.status).toBe(502);
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(harness.stats.puts).toBe(0);
+  });
+
+  it('purges corrupt cached bytes before failing a corrupt network retry', async () => {
+    const harness = createIntegrityHarness(async () => new Response('also corrupt', { status: 200 }));
+    harness.seed(harness.runtimeCache, assetUrl, new Response('corrupt cached bytes', { status: 200 }));
+
+    const response = await harness.bundle(new Request(assetUrl), new URL(assetUrl));
+    expect(response.status).toBe(502);
+    expect(harness.stats.deletes).toBeGreaterThanOrEqual(2);
+    expect(harness.stats.puts).toBe(0);
+  });
+
+  it('verifies a complete entity before caching and serving a requested media range', async () => {
+    let observedRange: string | null = 'not-fetched';
+    const harness = createIntegrityHarness(async (input) => {
+      observedRange = new Request(input).headers.get('range');
+      return new Response(payload, {
+        status: 200,
+        headers: {
+          'content-length': String(payload.byteLength),
+          'content-type': 'image/webp',
+        },
+      });
+    });
+    const request = new Request(assetUrl, { headers: { Range: 'bytes=2-9' } });
+    const response = await harness.bundle(request, new URL(assetUrl));
+
+    expect(observedRange).toBeNull();
+    expect(response.status).toBe(206);
+    expect(response.headers.get('content-range')).toBe(`bytes 2-9/${payload.byteLength}`);
+    expect(new Uint8Array(await response.arrayBuffer())).toEqual(payload.slice(2, 10));
+    expect(harness.stats.puts).toBe(1);
   });
 });
 

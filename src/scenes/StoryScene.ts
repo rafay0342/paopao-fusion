@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { COLOR_KEYS, LEVELS, VIEW, orbTexture, worldForLevel } from '../config';
+import { getArtBundleKeys, queueArtBundle } from '../game/art-v14';
 import { storyBeatForLevel, storyChapterForLevel } from '../game/story';
+import { hostedAssetUrl } from '../game/hostedAsset';
 import { getMeta, type GameMode } from '../game/meta';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
@@ -41,8 +43,10 @@ export class StoryScene extends Phaser.Scene {
   }
 
   preload(): void {
-    if (!this.textures.exists('lumi_guide')) {
-      this.load.image('lumi_guide', 'assets/characters/v13/lumi-guide.webp');
+    const v14CharacterKeys = new Set(getArtBundleKeys('characters'));
+    queueArtBundle(this, 'characters');
+    if (!this.textures.exists('lumi_guide') && !v14CharacterKeys.has('lumi_guide')) {
+      this.load.image('lumi_guide', hostedAssetUrl('assets/characters/v13/lumi-guide.webp'));
     }
   }
 

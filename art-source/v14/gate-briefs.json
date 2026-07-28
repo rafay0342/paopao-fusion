@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "artVersion": "V14",
+  "styleBible": "docs/art/v14/style-bible.md",
+  "candidatePolicy": {
+    "canonAnchorCandidates": 3,
+    "approvalBeforeDependentProduction": true,
+    "distinctAssetPerGenerationCall": true,
+    "independentAnimationFramesForbidden": true,
+    "reviewOutput": "art-source/v14/review",
+    "approvedMasterRoot": "art-source/v14/masters"
+  },
+  "gates": [
+    {
+      "id": "A1",
+      "release": 1,
+      "firstId": "PF-asset-001",
+      "lastId": "PF-asset-100",
+      "count": 100,
+      "focus": [
+        "Lumi and Aurora Crown canon",
+        "Crystal and Emerald presentation",
+        "core interface",
+        "first tutorial",
+        "opening vertical slice"
+      ],
+      "verticalSlice": [
+        "menu",
+        "story beat",
+        "campaign map",
+        "Bubble Shooter level",
+        "Prism Cascade Match-3 level",
+        "boss presentation",
+        "reward",
+        "tutorial"
+      ],
+      "exitEvidence": [
+        "approved source and provenance for all 100 IDs",
+        "contact sheets",
+        "runtime compilation",
+        "desktop in-engine captures",
+        "mobile in-engine captures",
+        "automated manifest validation"
+      ]
+    },
+    {
+      "id": "A2",
+      "release": 2,
+      "firstId": "PF-asset-101",
+      "lastId": "PF-asset-200",
+      "count": 100,
+      "focus": [
+        "Prism Warden and Heartwood Guardian",
+        "Ember and Celestial realms",
+        "gameplay and hand-control interface",
+        "restoration sequences"
+      ],
+      "exitEvidence": [
+        "approved source and provenance for all 100 IDs",
+        "contact sheets",
+        "runtime compilation",
+        "desktop in-engine captures",
+        "mobile in-engine captures",
+        "automated manifest validation"
+      ]
+    },
+    {
+      "id": "A3",
+      "release": 3,
+      "firstId": "PF-asset-201",
+      "lastId": "PF-asset-300",
+      "count": 100,
+      "focus": [
+        "Inferno Sovereign and Astral Sentinel",
+        "Frostbound and Nexus realms",
+        "inventory and store presentation",
+        "associated media"
+      ],
+      "exitEvidence": [
+        "approved source and provenance for all 100 IDs",
+        "contact sheets",
+        "runtime compilation",
+        "desktop in-engine captures",
+        "mobile in-engine captures",
+        "automated manifest validation"
+      ]
+    },
+    {
+      "id": "A4",
+      "release": 4,
+      "firstId": "PF-asset-301",
+      "lastId": "PF-asset-400",
+      "count": 100,
+      "focus": [
+        "Frost Regent and Nexus Architect",
+        "Aurora hub and arena sanctum",
+        "story presentation",
+        "competitive presentation"
+      ],
+      "exitEvidence": [
+        "approved source and provenance for all 100 IDs",
+        "contact sheets",
+        "runtime compilation",
+        "desktop in-engine captures",
+        "mobile in-engine captures",
+        "automated manifest validation"
+      ]
+    },
+    {
+      "id": "A5",
+      "release": 5,
+      "firstId": "PF-asset-401",
+      "lastId": "PF-asset-500",
+      "count": 100,
+      "focus": [
+        "Keeper, launcher and Fusion Pao family",
+        "season and event environments",
+        "accessibility presentation",
+        "ending and promotion"
+      ],
+      "exitEvidence": [
+        "approved source and provenance for all 100 IDs",
+        "contact sheets",
+        "runtime compilation",
+        "desktop in-engine captures",
+        "mobile in-engine captures",
+        "automated manifest validation"
+      ]
+    }
+  ]
+}

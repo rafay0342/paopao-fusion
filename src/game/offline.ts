@@ -20,6 +20,12 @@ let state: OfflineShellState = {
   message: 'Offline shell has not started.',
 };
 let registrationStarted = false;
+let lastEquippedArtSignature = '';
+
+export interface EquippedOfflineArtEntry {
+  stableKey: string;
+  fallbackPath: string;
+}
 
 export function isLocalHostname(hostname: string): boolean {
   const normalized = hostname.trim().toLowerCase().replace(/^\[|\]$/g, '');
@@ -36,6 +42,33 @@ export function canRegisterOfflineShell(capability: OfflineCapability): boolean 
 
 export function getOfflineShellState(): OfflineShellState {
   return { ...state };
+}
+
+/**
+ * Tells the active worker which six-piece family belongs in its small,
+ * replaceable equipped-art cache. The worker validates every field and
+ * verifies any V14 content-addressed response before replacing the prior set.
+ */
+export function requestEquippedOfflineArt(entries: readonly EquippedOfflineArtEntry[]): void {
+  if (typeof navigator === 'undefined' || !('serviceWorker' in navigator) || entries.length !== 6) return;
+  const signature = JSON.stringify(entries);
+  if (signature === lastEquippedArtSignature) return;
+  lastEquippedArtSignature = signature;
+  const message = {
+    type: 'PAOPAO_CACHE_EQUIPPED_ART',
+    entries: entries.map((entry) => ({ ...entry })),
+  };
+  const controller = navigator.serviceWorker.controller;
+  if (controller) {
+    controller.postMessage(message);
+    return;
+  }
+  void navigator.serviceWorker.ready.then((registration) => {
+    registration.active?.postMessage(message);
+  }).catch(() => {
+    // Offline warming is optional; online play and the scene loader continue.
+    lastEquippedArtSignature = '';
+  });
 }
 
 function publish(next: OfflineShellState): void {

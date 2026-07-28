@@ -79,8 +79,9 @@ describe('IntroScene video integration invariants', () => {
   });
 
   it('loads the exact final-light render and always retains it as fallback', () => {
-    const videoUrl = introSource.match(/const VIDEO_URL = ['"]([^'"]+)['"];/)?.[1];
+    const videoUrl = introSource.match(/const VIDEO_ASSET_PATH = ['"]([^'"]+)['"];/)?.[1];
     expect(videoUrl).toBe('assets/cinematics/paopao-opening-final-light-1080.mp4');
+    expect(introSource).toContain('const VIDEO_URL = hostedAssetUrl(VIDEO_ASSET_PATH)');
     expect(introSource).toContain('return [VIDEO_URL]');
     expect(introSource).toContain('return [hdSource, VIDEO_URL]');
     expect(introSource).toContain("video.loadURL(sources[sourceIndex], true, 'anonymous')");

@@ -6,6 +6,8 @@
  * and every browser/storage/network failure degrades to silent gameplay.
  */
 
+import { hostedAssetUrl } from './hostedAsset';
+
 export type MusicMood = 'menu' | 'story' | 'game' | 'boss' | 'ending';
 
 export interface MusicState {
@@ -78,12 +80,13 @@ function saveMutePreference(): void {
 }
 
 function makeAssetUrl(path: string): string {
+  const resolved = hostedAssetUrl(path);
   try {
-    if (typeof document !== 'undefined') return new URL(path, document.baseURI).toString();
+    if (typeof document !== 'undefined') return new URL(resolved, document.baseURI).toString();
   } catch {
     // A relative path remains valid for ordinary same-origin hosting.
   }
-  return path;
+  return resolved;
 }
 
 function createChannel(): Channel {

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "compositionId": "paopao.v14.emerald-realm.hero",
+  "canvas": {
+    "width": 941,
+    "height": 1672,
+    "orientation": "portrait"
+  },
+  "safeZones": {
+    "topHud": {
+      "x": 0.08,
+      "y": 0.0,
+      "width": 0.84,
+      "height": 0.14
+    },
+    "shooterBoard": {
+      "x": 0.09,
+      "y": 0.15,
+      "width": 0.82,
+      "height": 0.58
+    },
+    "match3Board": {
+      "x": 0.14,
+      "y": 0.22,
+      "width": 0.72,
+      "height": 0.48
+    },
+    "launcher": {
+      "x": 0.12,
+      "y": 0.78,
+      "width": 0.76,
+      "height": 0.18
+    }
+  },
+  "layers": [
+    {
+      "id": "environment",
+      "role": "background-midground-foreground plate",
+      "source": "art-source/v14/masters/PF-asset-031-emerald-realm-hero-background.png",
+      "blend": "normal",
+      "parallax": 0.12
+    },
+    {
+      "id": "atmosphere",
+      "role": "quality-scaled aurora depth wash",
+      "source": "art-source/v14/masters/PF-asset-031-emerald-realm-hero-atmosphere.png",
+      "blend": "screen",
+      "parallax": 0.04
+    }
+  ],
+  "cropPolicy": {
+    "desktopLateralBleed": 0.12,
+    "mobileVerticalBleed": 0.08,
+    "focalAnchor": {
+      "x": 0.5,
+      "y": 0.37
+    }
+  }
+}

@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config';
+import { hostedAssetUrl } from '../game/hostedAsset';
 import { stopMusic, unlockMusic } from '../game/music';
 import { DISPLAY_FONT, TYPE, UI_FONT } from '../gfx/ui';
 import { containVideoLayout } from '../gfx/videoLayout';
 
-const VIDEO_URL = 'assets/cinematics/paopao-opening-final-light-1080.mp4';
+const VIDEO_ASSET_PATH = 'assets/cinematics/paopao-opening-final-light-1080.mp4';
+const VIDEO_URL = hostedAssetUrl(VIDEO_ASSET_PATH);
 const POSTER_TEXTURE = 'intro_poster';
 const INTRO_WATCHDOG_MS = 60_000;
 export const INTRO_SEEN_KEY = 'paopao:intro-seen:v13';

@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://paopao.local/schemas/production-master-manifest-v2.schema.json",
+  "title": "ProductionMasterManifestV2",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "manifestType",
+    "project",
+    "artVersion",
+    "status",
+    "sourceLedger",
+    "styleBible",
+    "gateBriefs",
+    "masterRoot",
+    "reviewRoot",
+    "rightsStatement",
+    "countingPolicy",
+    "legacyPolicy",
+    "gates",
+    "total",
+    "entries"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 2 },
+    "manifestType": { "const": "ProductionMasterManifestV2" },
+    "project": { "const": "PaoPao Fusion" },
+    "artVersion": { "const": "V14" },
+    "status": { "enum": ["briefing", "production"] },
+    "sourceLedger": { "const": "docs/production/upgrade-ledger.json" },
+    "styleBible": { "const": "docs/art/v14/style-bible.md" },
+    "gateBriefs": { "const": "art-source/v14/gate-briefs.json" },
+    "masterRoot": { "const": "art-source/v14/masters" },
+    "reviewRoot": { "const": "art-source/v14/review" },
+    "rightsStatement": { "type": "string", "minLength": 1 },
+    "countingPolicy": { "type": "string", "minLength": 1 },
+    "legacyPolicy": {
+      "type": "object",
+      "required": ["frozenVersions", "legacyMasterRoot", "legacyGenerator", "finalArtProducer"],
+      "properties": {
+        "frozenVersions": { "const": "V2-V13" },
+        "legacyMasterRoot": { "const": "art-source/production-masters" },
+        "legacyGenerator": { "const": "tools/generate-production-masters.mjs" },
+        "finalArtProducer": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/gate" }
+    },
+    "total": { "const": 500 },
+    "entries": {
+      "type": "array",
+      "minItems": 500,
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "required": ["id", "release", "firstOrdinal", "lastOrdinal", "count", "status"],
+      "properties": {
+        "id": { "enum": ["A1", "A2", "A3", "A4", "A5"] },
+        "release": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "firstOrdinal": { "type": "integer", "minimum": 1, "maximum": 401 },
+        "lastOrdinal": { "type": "integer", "minimum": 100, "maximum": 500 },
+        "count": { "const": 100 },
+        "status": { "enum": ["briefing", "approved"] },
+        "evidence": { "$ref": "#/$defs/gateEvidence" }
+      },
+      "additionalProperties": false
+    },
+    "evidenceArtifact": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "gateEvidence": {
+      "type": "object",
+      "required": ["requirements", "verticalSlice"],
+      "properties": {
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["requirement", "artifacts"],
+            "properties": {
+              "requirement": { "type": "string", "minLength": 1 },
+              "artifacts": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/$defs/evidenceArtifact" }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "verticalSlice": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["surface", "desktop", "mobile"],
+            "properties": {
+              "surface": { "type": "string", "minLength": 1 },
+              "desktop": { "$ref": "#/$defs/evidenceArtifact" },
+              "mobile": { "$ref": "#/$defs/evidenceArtifact" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "ordinal",
+        "gate",
+        "release",
+        "allocation",
+        "kind",
+        "brief",
+        "provenance",
+        "approval",
+        "primary",
+        "companions",
+        "technical",
+        "dependencies",
+        "usageReferences"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^PF-asset-[0-9]{3}$" },
+        "ordinal": { "type": "integer", "minimum": 1, "maximum": 500 },
+        "gate": { "enum": ["A1", "A2", "A3", "A4", "A5"] },
+        "release": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "allocation": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["image", "layered", "atlas", "rig", "audio", "video", "semantic"] },
+        "brief": { "$ref": "#/$defs/brief" },
+        "provenance": { "$ref": "#/$defs/provenance" },
+        "approval": { "$ref": "#/$defs/approval" },
+        "primary": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/fileDescriptor" }
+          ]
+        },
+        "companions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/companion" }
+        },
+        "candidateReviews": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/candidateReview" }
+        },
+        "technical": { "type": "object" },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^PF-asset-[0-9]{3}$" }
+        },
+        "usageReferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "target"],
+            "properties": {
+              "kind": { "enum": ["runtime", "production"] },
+              "target": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "candidateReview": {
+      "type": "object",
+      "required": ["id", "source", "provenance", "review"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "source": { "$ref": "#/$defs/fileDescriptor" },
+        "provenance": { "$ref": "#/$defs/candidateProvenance" },
+        "review": { "$ref": "#/$defs/candidateReviewResult" }
+      },
+      "additionalProperties": false
+    },
+    "candidateProvenance": {
+      "type": "object",
+      "required": [
+        "actualTool",
+        "mode",
+        "generatedAt",
+        "finalPrompt",
+        "negativeConstraints",
+        "referenceImages",
+        "model",
+        "seed",
+        "outputId",
+        "rightsStatement",
+        "sourceSha256"
+      ],
+      "properties": {
+        "actualTool": {
+          "enum": ["built-in-image-generation", "local-authoring", "local-post-processing"]
+        },
+        "mode": {
+          "enum": ["generate", "edit", "strip-edit", "layer-compose", "local-authoring"]
+        },
+        "generatedAt": { "type": "string", "minLength": 1 },
+        "finalPrompt": { "type": "string", "minLength": 1 },
+        "negativeConstraints": {
+          "type": "array",
+          "minItems": 5,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "referenceImages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "path", "sha256"],
+            "properties": {
+              "role": { "type": "string", "minLength": 1 },
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "model": { "type": ["string", "null"] },
+        "seed": { "type": ["string", "integer", "null"], "minimum": 0 },
+        "outputId": { "type": ["string", "null"] },
+        "rightsStatement": { "type": "string", "minLength": 1 },
+        "sourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "candidateReviewResult": {
+      "type": "object",
+      "required": ["state", "reviewer", "reviewedAt", "notes", "defects"],
+      "properties": {
+        "state": { "enum": ["pending", "reviewed", "rejected"] },
+        "reviewer": { "type": ["string", "null"] },
+        "reviewedAt": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] },
+        "defects": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "brief": {
+      "type": "object",
+      "required": [
+        "title",
+        "subject",
+        "deliverable",
+        "intent",
+        "ledgerAcceptanceId",
+        "plannedTool",
+        "plannedMode",
+        "policyBindings"
+      ],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "subject": { "type": "string", "minLength": 1 },
+        "deliverable": { "type": "string", "minLength": 1 },
+        "intent": { "type": "string", "minLength": 1 },
+        "ledgerAcceptanceId": { "type": "string", "pattern": "^AT-PF-asset-[0-9]{3}$" },
+        "plannedTool": { "enum": ["built-in-image-generation", "local-authoring"] },
+        "plannedMode": { "enum": ["generate", "strip-edit", "layer-compose", "local-authoring"] },
+        "policyBindings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "state",
+        "actualTool",
+        "mode",
+        "generatedAt",
+        "finalPrompt",
+        "negativeConstraints",
+        "referenceImages",
+        "model",
+        "seed",
+        "outputId",
+        "rightsStatement",
+        "sourceSha256"
+      ],
+      "properties": {
+        "state": { "enum": ["not-generated", "generated"] },
+        "actualTool": {
+          "type": ["string", "null"],
+          "enum": ["built-in-image-generation", "local-authoring", "local-post-processing", null]
+        },
+        "mode": {
+          "type": ["string", "null"],
+          "enum": ["generate", "edit", "strip-edit", "layer-compose", "local-authoring", null]
+        },
+        "generatedAt": { "type": ["string", "null"] },
+        "finalPrompt": { "type": ["string", "null"] },
+        "negativeConstraints": {
+          "type": "array",
+          "minItems": 5,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "referenceImages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "path", "sha256"],
+            "properties": {
+              "role": { "type": "string", "minLength": 1 },
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "model": { "type": ["string", "null"] },
+        "seed": { "type": ["string", "integer", "null"], "minimum": 0 },
+        "outputId": { "type": ["string", "null"] },
+        "rightsStatement": { "type": "string", "minLength": 1 },
+        "sourceSha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "approval": {
+      "type": "object",
+      "required": ["state", "reviewer", "reviewedAt", "contactSheetPath", "notes"],
+      "properties": {
+        "state": { "enum": ["briefed", "candidate-review", "approved", "rejected"] },
+        "reviewer": { "type": ["string", "null"] },
+        "reviewedAt": { "type": ["string", "null"] },
+        "contactSheetPath": { "type": ["string", "null"] },
+        "notes": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "fileDescriptor": {
+      "type": "object",
+      "required": ["path", "format", "bytes", "sha256", "authoredResolution", "durationMs"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "format": { "type": "string", "minLength": 1 },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "authoredResolution": {
+          "type": "object",
+          "required": ["width", "height"],
+          "properties": {
+            "width": { "type": ["integer", "null"], "minimum": 1 },
+            "height": { "type": ["integer", "null"], "minimum": 1 }
+          },
+          "additionalProperties": false
+        },
+        "durationMs": { "type": ["integer", "null"], "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "companion": {
+      "type": "object",
+      "required": ["role", "path", "format", "bytes", "sha256"],
+      "properties": {
+        "role": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "format": { "type": "string", "minLength": 1 },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

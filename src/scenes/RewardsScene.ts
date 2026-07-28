@@ -10,6 +10,12 @@ import {
   openMysteryBox,
   type MysteryReward,
 } from '../game/meta';
+import {
+  queueVerifiedArtCandidate,
+  resolveArtAsset,
+  type ResolvedGameplayArtAsset,
+} from '../game/art-v14';
+import { hostedAssetUrl } from '../game/hostedAsset';
 import { SFX } from '../game/sfx';
 import { scheduleOnlineSync } from '../game/online';
 import { getPlatformAccount, purchaseOffer } from '../game/platform';
@@ -38,6 +44,21 @@ const SKIN_OFFERS: Partial<Record<OrbSkinId, { id: string; price: number }>> = {
   nexus_crown_optical: { id: 'nexus_crown_optical_skin', price: 880 },
 };
 
+const SKIN_PAGES: readonly { label: string; skins: readonly OrbSkinDef[] }[] = [
+  { label: 'V6 ROYAL', skins: ORB_SKINS.slice(0, 3) },
+  { label: 'V7 OPTICAL', skins: ORB_SKINS.slice(3, 6) },
+  { label: 'V11 CROWN ROYAL', skins: ORB_SKINS.slice(6, 9) },
+  { label: 'V11 CROWN OPTICAL', skins: ORB_SKINS.slice(9, 12) },
+] as const;
+const rewardsManagedOrbKeys = new Set<string>();
+
+interface RewardArtRetry {
+  asset: ResolvedGameplayArtAsset;
+  nextCandidate: number;
+  legacyUrl: string;
+  legacyQueued: boolean;
+}
+
 export class RewardsScene extends Phaser.Scene {
   private opening = false;
   private skinPage = 0;
@@ -48,23 +69,57 @@ export class RewardsScene extends Phaser.Scene {
   }
 
   init(data: { skinPage?: number } = {}): void {
-    this.skinPage = Phaser.Math.Clamp(Math.floor(data.skinPage ?? 0), 0, 3);
+    this.skinPage = Phaser.Math.Clamp(Math.floor(data.skinPage ?? 0), 0, SKIN_PAGES.length - 1);
   }
 
   preload(): void {
     let queued = 0;
+    const retryByKey = new Map<string, RewardArtRetry>();
+    const initiallyMissing = new Set<string>();
     const image = (key: string, path: string): void => {
       if (this.textures.exists(key)) return;
-      this.load.image(key, path);
+      this.load.image(key, hostedAssetUrl(path));
       queued += 1;
     };
 
-    for (const skin of ORB_SKINS) {
+    const visiblePage = SKIN_PAGES[this.skinPage];
+    const prefetchedPage = SKIN_PAGES[(this.skinPage + 1) % SKIN_PAGES.length];
+    const streamedSkins = [...visiblePage.skins, ...prefetchedPage.skins];
+    const desiredKeys = new Set(
+      streamedSkins.flatMap((skin) => COLOR_KEYS.map((color) => orbTexture(skin.id, color))),
+    );
+    const equippedSkin = getMeta().equippedSkin;
+    const pinnedEquippedKeys = new Set(COLOR_KEYS.map((color) => orbTexture(equippedSkin, color)));
+    for (const key of [...rewardsManagedOrbKeys]) {
+      if (desiredKeys.has(key) || pinnedEquippedKeys.has(key)) continue;
+      if (this.textures.exists(key)) this.textures.remove(key);
+      rewardsManagedOrbKeys.delete(key);
+    }
+
+    const quality = getMeta().quality;
+    for (const skin of streamedSkins) {
       for (const color of COLOR_KEYS) {
-        image(
-          orbTexture(skin.id, color),
-          `assets/sprites/${skin.assetFolder}/${skin.assetSlug}-${color}.png`,
-        );
+        const key = orbTexture(skin.id, color);
+        if (this.textures.exists(key)) continue;
+        const legacyUrl = hostedAssetUrl(`assets/sprites/${skin.assetFolder}/${skin.assetSlug}-${color}.png`);
+        const resolved = resolveArtAsset(key, quality);
+        initiallyMissing.add(key);
+        if (resolved?.mediaKind === 'image') {
+          retryByKey.set(key, {
+            asset: resolved,
+            nextCandidate: 1,
+            legacyUrl,
+            legacyQueued: false,
+          });
+          if (queueVerifiedArtCandidate(this, resolved)) {
+            queued += 1;
+          } else {
+            retryByKey.delete(key);
+            image(key, legacyUrl);
+          }
+        } else {
+          image(key, legacyUrl);
+        }
       }
     }
     image('world_prize_vault', 'assets/worlds/v6/prize-vault-hd.jpg');
@@ -76,6 +131,21 @@ export class RewardsScene extends Phaser.Scene {
     image('prize_pool', 'assets/ui/v6/prize-pool.png');
 
     if (queued === 0) return;
+    const onLoadError = (file: Phaser.Loader.File): void => {
+      const key = String(file.key);
+      const retry = retryByKey.get(key);
+      if (!retry) return;
+      if (queueVerifiedArtCandidate(this, retry.asset, retry.nextCandidate)) {
+        retry.nextCandidate += 1;
+        return;
+      }
+      if (!retry.legacyQueued) {
+        retry.legacyQueued = true;
+        this.load.image(key, retry.legacyUrl);
+        return;
+      }
+      retryByKey.delete(key);
+    };
     const cover = this.add.rectangle(0, 0, VIEW.width, VIEW.height, 0x06091a, 1).setOrigin(0).setDepth(200);
     const loadingPrism = this.add.graphics().setDepth(201);
     const prismX = VIEW.width / 2;
@@ -102,11 +172,20 @@ export class RewardsScene extends Phaser.Scene {
     const status = this.add.text(VIEW.width / 2, VIEW.height / 2 + 43, `PREPARING ${queued} TREASURES`, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#b9cae2', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(202);
-    this.load.on('progress', (value: number) => {
+    const onProgress = (value: number): void => {
       bar.width = 414 * value;
       status.setText(`PREPARING TREASURES  •  ${Math.round(value * 100)}%`);
+    };
+    this.load.on('loaderror', onLoadError);
+    this.load.on('progress', onProgress);
+    this.load.once('complete', () => {
+      this.load.off('loaderror', onLoadError);
+      this.load.off('progress', onProgress);
+      for (const key of initiallyMissing) {
+        if (this.textures.exists(key)) rewardsManagedOrbKeys.add(key);
+      }
+      [cover, loadingPrism, title, track, bar, status].forEach((item) => item.destroy());
     });
-    this.load.once('complete', () => [cover, loadingPrism, title, track, bar, status].forEach((item) => item.destroy()));
   }
 
   create(): void {
@@ -157,23 +236,17 @@ export class RewardsScene extends Phaser.Scene {
     this.addPrizePreview(450, 674, 'gift_hamper', 'GIFT HAMPERS');
     this.addPrizePreview(628, 674, 'prize_pool', 'PRIZE POOLS');
 
-    const skinPages = [
-      { label: 'V6 ROYAL', skins: ORB_SKINS.slice(0, 3) },
-      { label: 'V7 OPTICAL', skins: ORB_SKINS.slice(3, 6) },
-      { label: 'V11 CROWN ROYAL', skins: ORB_SKINS.slice(6, 9) },
-      { label: 'V11 CROWN OPTICAL', skins: ORB_SKINS.slice(9, 12) },
-    ] as const;
-    const skinPage = skinPages[this.skinPage];
+    const skinPage = SKIN_PAGES[this.skinPage];
     const visibleSkins = skinPage.skins;
     addArtButton(this, 67, 752, '‹', () => {
       SFX.click();
-      this.scene.restart({ skinPage: (this.skinPage + skinPages.length - 1) % skinPages.length });
+      this.scene.restart({ skinPage: (this.skinPage + SKIN_PAGES.length - 1) % SKIN_PAGES.length });
     }, 72, 44, 18);
     addArtButton(this, width - 67, 752, '›', () => {
       SFX.click();
-      this.scene.restart({ skinPage: (this.skinPage + 1) % skinPages.length });
+      this.scene.restart({ skinPage: (this.skinPage + 1) % SKIN_PAGES.length });
     }, 72, 44, 18);
-    fitText(this.add.text(width / 2, 755, `ORB SKINS  •  ${skinPage.label}  •  ${this.skinPage + 1}/${skinPages.length}`, {
+    fitText(this.add.text(width / 2, 755, `ORB SKINS  •  ${skinPage.label}  •  ${this.skinPage + 1}/${SKIN_PAGES.length}`, {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe4a0', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12), 490);
     visibleSkins.forEach((skin, index) => this.addSkinCard(skin, 120 + index * 240, 902));

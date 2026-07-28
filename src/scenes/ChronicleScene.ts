@@ -10,6 +10,8 @@ import {
   storyProgressFromStars,
 } from '../game/story';
 import { getProgress, totalStars } from '../game/progression';
+import { getArtBundleKeys, queueArtBundle } from '../game/art-v14';
+import { hostedAssetUrl } from '../game/hostedAsset';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
 import type { GameMode } from '../game/meta';
@@ -54,11 +56,13 @@ export class ChronicleScene extends Phaser.Scene {
   }
 
   preload(): void {
-    if (!this.textures.exists('prism_keeper_hero')) {
-      this.load.image('prism_keeper_hero', 'assets/characters/v13/prism-keeper-hero.webp');
+    const v14CharacterKeys = new Set(getArtBundleKeys('characters'));
+    queueArtBundle(this, 'characters');
+    if (!this.textures.exists('prism_keeper_hero') && !v14CharacterKeys.has('prism_keeper_hero')) {
+      this.load.image('prism_keeper_hero', hostedAssetUrl('assets/characters/v13/prism-keeper-hero.webp'));
     }
-    if (!this.textures.exists('lumi_guide')) {
-      this.load.image('lumi_guide', 'assets/characters/v13/lumi-guide.webp');
+    if (!this.textures.exists('lumi_guide') && !v14CharacterKeys.has('lumi_guide')) {
+      this.load.image('lumi_guide', hostedAssetUrl('assets/characters/v13/lumi-guide.webp'));
     }
   }
 

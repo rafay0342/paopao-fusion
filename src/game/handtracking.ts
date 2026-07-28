@@ -4,6 +4,7 @@
  */
 
 import { HandAimFilter, HandLandmarkFilter, OneEuroFilter, normaliseCameraPoint } from './handcontrol';
+import { hostedAssetUrl } from './hostedAsset';
 import { getHandSettings, type HandSettings } from './handsettings';
 import { measureHandGeometry } from './handgeometry';
 import {
@@ -26,7 +27,7 @@ import {
   type HandLightingMode,
 } from './handvision';
 
-const assetUrl = (path: string) => new URL(path, document.baseURI).toString();
+const assetUrl = (path: string) => new URL(hostedAssetUrl(path), document.baseURI).toString();
 const WASM_URL = assetUrl('mediapipe/wasm');
 const MODEL_URL = assetUrl('mediapipe/models/hand_landmarker.task');
 

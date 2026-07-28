@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "releaseId": "r6-art-v14-a1-preview",
+  "generatedAt": "2026-07-28T08:56:01.000Z",
+  "approvedMasterIds": [
+    "PF-asset-002",
+    "PF-asset-012",
+    "PF-asset-021",
+    "PF-asset-031",
+    "PF-asset-102",
+    "PF-asset-402",
+    "PF-asset-411"
+  ],
+  "runtimeStableKeys": 86,
+  "sourceHashes": {
+    "PF-asset-002": "9e6b50dbfc9059dcdf61ec7e321f957700f6f458133758ebe6305e84a380cec2",
+    "PF-asset-012": "0dea61b08ac7f19df09bed8d5ed2943016a54a1c19eac9a9063f7104deec5879",
+    "PF-asset-021": "51fb6e8511cf44fb53763d6cf99feca81526767cfd2b21823e161875fc8cb322",
+    "PF-asset-031": "5cff02ab1e7efc0576550e58df0d819d9859cede6dcdaf5cc41e9d04a1a19c5b",
+    "PF-asset-102": "9e72bc31e8528d4d51c8ba0596317ab8eef6440a0a97a2f0b19739500eeac713",
+    "PF-asset-402": "c17deaf4dd83b5f66e857b4967602762b88e4160032a6103e7e5b5febf1c8eb7",
+    "PF-asset-411": "7586dcb251232fd5d2b6ca141b38108fedb4f72d38525a0eeb6b3d38829ba37a"
+  },
+  "manifestSha256": "e568d4ad8925c028df121b6b5b8daf416958468cfdfc1b2541ccbf68e83b8b33",
+  "budgetBytes": {
+    "performance": {
+      "coreNonVideo": 32602,
+      "firstRealm": 163912,
+      "largestSkin": 91358,
+      "defaultInitial": 295672
+    },
+    "balanced": {
+      "coreNonVideo": 61754,
+      "firstRealm": 341990,
+      "largestSkin": 182504,
+      "defaultInitial": 593010
+    },
+    "ultra": {
+      "coreNonVideo": 107632,
+      "firstRealm": 623108,
+      "largestSkin": 323854,
+      "defaultInitial": 1062618
+    }
+  },
+  "policies": {
+    "derivedRuntimeEntriesDoNotCountAsMasters": true,
+    "sourceResolutionPreservedInProductionManifest": true,
+    "fightingContentExcluded": true,
+    "contentAddressedRuntime": true
+  }
+}
