@@ -130,7 +130,9 @@ const HAND_STEP_ORDER = Object.freeze([
 ] satisfies readonly TutorialStepId[]);
 
 export function levelZeroTutorialSteps(inputMode: GameplayInputMode): readonly TutorialStepId[] {
-  return inputMode === 'hand' ? HAND_STEP_ORDER : STANDARD_STEP_ORDER;
+  return inputMode === 'hand' || inputMode === 'gaze-hand'
+    ? HAND_STEP_ORDER
+    : STANDARD_STEP_ORDER;
 }
 
 export interface TutorialPrompt {
@@ -296,6 +298,10 @@ function instructionForAim(inputMode: TutorialInputMode): string {
   switch (inputMode) {
     case 'hand':
       return 'Move your index fingertip until the guide settles over the glowing red socket.';
+    case 'gaze':
+      return 'Look at the glowing red socket and hold your eyes steady until the guide settles.';
+    case 'gaze-hand':
+      return 'Look at the glowing red socket; your eyes aim while your hand confirms the shot.';
     case 'keyboard':
       return 'Use Left and Right until the guide settles over the glowing red socket.';
     case 'gamepad':
@@ -311,6 +317,10 @@ function instructionForFire(inputMode: TutorialInputMode): string {
   switch (inputMode) {
     case 'hand':
       return 'Touch thumb and index to pinch, then separate them slightly to launch the orb.';
+    case 'gaze':
+      return 'Keep looking at the socket, then make two deliberate quick blinks to launch the orb.';
+    case 'gaze-hand':
+      return 'Keep looking at the socket, touch thumb and index, then separate them slightly to launch.';
     case 'keyboard':
       return 'Press Space to launch the red orb.';
     case 'gamepad':
@@ -517,6 +527,8 @@ export function tutorialSignalCompletesStep(step: TutorialStepId, signal: Tutori
 
 function normalizeTutorialInputMode(inputMode: GameplayInputMode): TutorialInputMode {
   return inputMode === 'hand'
+    || inputMode === 'gaze'
+    || inputMode === 'gaze-hand'
     || inputMode === 'keyboard'
     || inputMode === 'gamepad'
     || inputMode === 'mouse'
@@ -862,11 +874,14 @@ export class LevelZeroTutorialMachine {
    * resumes at FIRE, so pointer controls can never be trapped behind a camera.
    */
   fallbackToPointer(inputMode: GameplayInputMode): TutorialTransition {
-    if (this.status !== 'active' || this.inputMode !== 'hand') {
+    if (this.status !== 'active'
+      || !['hand', 'gaze', 'gaze-hand'].includes(this.inputMode)) {
       return this.transition(false, [], []);
     }
     const pointerMode = normalizeTutorialInputMode(inputMode);
-    if (pointerMode === 'hand') return this.transition(false, [], []);
+    if (['hand', 'gaze', 'gaze-hand'].includes(pointerMode)) {
+      return this.transition(false, [], []);
+    }
     const currentStep = this.steps[this.stepIndex];
     this.inputMode = pointerMode;
     this.steps = levelZeroTutorialSteps(pointerMode);

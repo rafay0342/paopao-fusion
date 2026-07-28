@@ -141,7 +141,7 @@ describe('Level-0 tutorial gameplay adapter', () => {
     expect(hand).toContain('this.tutorialInputMode = pointerMode');
     const poll = section(
       '  private pollHand(): void {',
-      '  /** Interpolate every Phaser frame',
+      '  private pollGaze(): void {',
     );
     expect(poll).toContain('if (!this.handHasSeen)');
     expect(poll).toContain("this.handBtn?.setText('SEARCH')");

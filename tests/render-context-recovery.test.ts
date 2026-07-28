@@ -187,7 +187,12 @@ describe('render-context recovery', () => {
     expect(main).toContain("addEventListener('webglcontextrestored'");
     expect(main).toContain('game.input.enabled = false');
     expect(main).toContain('tracker.suspend()');
-    expect(main).toContain('handWasActive = tracker.isWanted()');
+    expect(main).toContain('let trackingModeToResume: VisionTrackingMode | null = null');
+    expect(main).toContain('trackingModeToResume = tracker.isWanted()');
+    expect(main).toContain('tracker.getActiveMode()');
+    expect(main).toContain('if (trackingModeToResume)');
+    expect(main).toContain('getHandTracker().enable(trackingModeToResume)');
+    expect(main).toContain('trackingModeToResume = null');
     expect(main).toContain('game.loop.sleep()');
     expect(main).toContain("contextStatus: context.status");
     expect(main).toContain('contextLastLossAt: context.lostAt');

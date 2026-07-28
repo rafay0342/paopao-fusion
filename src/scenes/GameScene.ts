@@ -25,8 +25,22 @@ import {
 import { clusterOf, floaters, type Cell } from '../game/matcher';
 import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
-import { getHandTracker, type HandTrackingFailure } from '../game/handtracking';
+import {
+  getHandTracker,
+  type HandTrackingFailure,
+  type VisionTrackingMode,
+} from '../game/handtracking';
 import { getHandSettings } from '../game/handsettings';
+import {
+  DoubleBlinkControl,
+  GazeAimController,
+  GazeDwellControl,
+} from '../game/gazecontrol';
+import {
+  currentGazeCalibrationIdentity,
+  gazeCalibrationMatches,
+  getGazeSettings,
+} from '../game/gazesettings';
 import {
   HandAimPredictor,
   HandGestureContinuityGate,
@@ -245,6 +259,7 @@ export class GameScene extends Phaser.Scene {
 
   private handOn = false;
   private handStarting = false;
+  private visionMode: VisionTrackingMode = 'hand';
   private handHasSeen = false;
   private handLastSeenAt = 0;
   private handReleaseThreshold = 0.5;
@@ -255,6 +270,13 @@ export class GameScene extends Phaser.Scene {
   private pinchControl = new PinchDoubleTapControl(undefined, undefined, { fireOnFirstRelease: true });
   private readonly handAimPredictor = new HandAimPredictor();
   private readonly handContinuity = new HandGestureContinuityGate();
+  private readonly gazeAimController = new GazeAimController();
+  private readonly gazeBlinkControl = new DoubleBlinkControl();
+  private gazeDwellControl = new GazeDwellControl();
+  private gazeHasSeen = false;
+  private gazeLastSeenAt = 0;
+  private gazeStableAim: { x: number; y: number; timestampMs: number } | null = null;
+  private gazeBlinkAim: { x: number; y: number; timestampMs: number } | null = null;
   private handPinching = false;
   private handCursor?: Phaser.GameObjects.Arc;
   private handBtn?: Phaser.GameObjects.Text;
@@ -355,6 +377,13 @@ export class GameScene extends Phaser.Scene {
     this.handOpenAim = null;
     this.handAimPredictor.reset();
     this.handContinuity.reset();
+    this.gazeAimController.reset();
+    this.gazeBlinkControl.reset();
+    this.gazeDwellControl.reset();
+    this.gazeHasSeen = false;
+    this.gazeLastSeenAt = 0;
+    this.gazeStableAim = null;
+    this.gazeBlinkAim = null;
     this.handPinching = false;
     this.handCursor?.setVisible(false);
     this.aimGfx?.clear();
@@ -401,6 +430,10 @@ export class GameScene extends Phaser.Scene {
       ? { matchId, userId, seed, startsAt, serverTime, clientReceivedAt }
       : undefined;
     const handSettings = getHandSettings();
+    const gazeSettings = getGazeSettings();
+    const savedVisionMode = gazeSettings.mode;
+    this.visionMode = savedVisionMode === 'off' ? 'hand' : savedVisionMode;
+    this.gazeDwellControl = new GazeDwellControl(gazeSettings.dwellMs);
     this.handReleaseThreshold = handSettings.pinchOff;
     this.pinchControl = new PinchDoubleTapControl(
       handSettings.pinchOn,
@@ -409,6 +442,9 @@ export class GameScene extends Phaser.Scene {
     );
     this.handAimPredictor.reset();
     this.handContinuity.reset();
+    this.gazeAimController.reset();
+    this.gazeBlinkControl.reset();
+    this.gazeDwellControl.reset();
     this.rng = this.challenge
       ? seededRandom(this.challenge.seed)
       : this.arena
@@ -469,7 +505,7 @@ export class GameScene extends Phaser.Scene {
     const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
       id: `game-level-${this.level + 1}`,
       heading: `PaoPao Fusion stage ${displayStage}: ${def.title}`,
-      description: `${def.objective}. Aim with pointer, touch, hand tracking, or keyboard. Release pointer or press Space to launch.`,
+      description: `${def.objective}. Aim with pointer, touch, hand tracking, calibrated eyes, or keyboard. Release pointer, deliberately double blink, pinch-release, or press Space to launch.`,
       status: `${MODE_DEFS[this.mode].name} mode. Score ${this.score.toLocaleString()}.`,
       lifecycle: this.events,
     });
@@ -514,6 +550,10 @@ export class GameScene extends Phaser.Scene {
     this.handStarting = false;
     this.handHasSeen = false;
     this.handLastSeenAt = 0;
+    this.gazeHasSeen = false;
+    this.gazeLastSeenAt = 0;
+    this.gazeStableAim = null;
+    this.gazeBlinkAim = null;
     this.handSmooth = null;
     this.handTarget = null;
     this.handLockedAim = null;
@@ -796,7 +836,7 @@ export class GameScene extends Phaser.Scene {
     trackerGlyph.moveTo(6, 12); trackerGlyph.lineTo(15, 12); trackerGlyph.lineTo(15, 5);
     trackerGlyph.strokePath();
     trackerGlyph.fillStyle(0x8ff6ff, 0.78).fillPoint(0, -2, 4);
-    this.handBtn = fitText(this.add.text(0, 20, 'HAND', {
+    this.handBtn = fitText(this.add.text(0, 20, this.visionControlLabel(), {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#b9c5d6', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5), 48, 0.72);
     this.handStatusText = this.add.text(16, -18, '●', {
@@ -922,13 +962,13 @@ export class GameScene extends Phaser.Scene {
     });
 
     // resume hand-tracking if it was enabled on a previous level
-    const ht = getHandTracker();
-    if (ht.isWanted()) {
+    const tracker = getHandTracker();
+    if (tracker.isWanted()) {
       void this.startHandTracking(false);
     } else {
       // This is idempotent with app-start warm-up and also covers a recoverable
       // background-load failure before the player presses HAND.
-      void ht.prepare().catch(() => undefined);
+      void tracker.prepare().catch(() => undefined);
     }
 
     // release the camera when leaving this scene (preference is remembered)
@@ -1221,7 +1261,7 @@ export class GameScene extends Phaser.Scene {
     });
     if (!decision.shouldStart || !decision.runMode) return;
     this.tutorialInputMode = getHandTracker().isWanted()
-      ? 'hand'
+      ? getHandTracker().getActiveMode()
       : navigator.maxTouchPoints > 0
         ? 'touch'
         : 'mouse';
@@ -1344,7 +1384,12 @@ export class GameScene extends Phaser.Scene {
     if (step === 'next-orb') return 'USE NEXT CARD';
     if (step === 'swap') return 'USE NEXT CARD';
     if (step === 'aim') return 'AIM AT RING';
-    if (step === 'fire') return this.tutorialInputMode === 'hand' ? 'PINCH + RELEASE' : 'RELEASE TO FIRE';
+    if (step === 'fire') {
+      if (this.tutorialInputMode === 'hand' || this.tutorialInputMode === 'gaze-hand') {
+        return 'PINCH + RELEASE';
+      }
+      return this.tutorialInputMode === 'gaze' ? 'DOUBLE BLINK' : 'RELEASE TO FIRE';
+    }
     if (step === 'hand-touch-one') return 'PINCH + RELEASE';
     if (step === 'hand-touch-two') return 'TOUCH + RELEASE';
     return 'WATCH RESULT';
@@ -1854,10 +1899,11 @@ export class GameScene extends Phaser.Scene {
 
   private setHandBtn(state: 'off' | 'loading' | 'on' | 'denied' | 'error'): void {
     if (!this.handBtn) return;
+    const controlLabel = this.visionControlLabel();
     const visual: Record<typeof state, { label: string; text: string; dot: string }> = {
-      off: { label: 'HAND', text: '#b9c5d6', dot: '#6f8094' },
+      off: { label: controlLabel, text: '#b9c5d6', dot: '#6f8094' },
       loading: { label: 'WAIT', text: '#ffd970', dot: '#ffd970' },
-      on: { label: 'ON', text: '#54e8cf', dot: '#54e8cf' },
+      on: { label: controlLabel, text: '#54e8cf', dot: '#54e8cf' },
       denied: { label: 'BLOCK', text: '#ff8496', dot: '#ff8496' },
       error: { label: 'ERROR', text: '#ffc56f', dot: '#ffc56f' },
     };
@@ -1866,31 +1912,61 @@ export class GameScene extends Phaser.Scene {
     this.handStatusText?.setText('●').setColor(next.dot);
   }
 
+  private visionControlLabel(): string {
+    if (this.visionMode === 'gaze') return 'EYES';
+    if (this.visionMode === 'gaze-hand') return 'BOTH';
+    return 'HAND';
+  }
+
   private handFailureMessage(failure: HandTrackingFailure): string {
     switch (failure) {
       case 'permission-denied': return 'Camera is blocked — allow camera for this site, then tap CAMERA again';
       case 'no-camera': return 'No camera was found on this device';
       case 'camera-busy': return 'Camera is busy — close other camera apps and retry';
       case 'camera-constraints': return 'This camera mode is not supported — basic mode also failed';
-      case 'model-load-failed': return 'Hand model could not start — reload the game and retry';
-      case 'insecure-context': return 'Hand tracking requires the HTTPS Funnel URL';
-      case 'unsupported': return 'This browser does not support camera hand tracking';
+      case 'model-load-failed': return 'On-device vision model could not start — reload and retry';
+      case 'insecure-context': return 'Camera controls require HTTPS';
+      case 'unsupported': return 'This browser does not support on-device camera controls';
       default: return 'Camera could not start — check browser permission and retry';
     }
   }
 
   private async startHandTracking(showError = true): Promise<void> {
     if (this.handStarting) return;
-    const ht = getHandTracker();
+    const tracker = getHandTracker();
+    if (this.visionMode !== 'hand') {
+      const gazeSettings = getGazeSettings();
+      const handSettings = getHandSettings();
+      const identity = currentGazeCalibrationIdentity(handSettings.deviceId, handSettings.mirror);
+      if (!gazeCalibrationMatches(gazeSettings.calibration, identity)) {
+        this.setHandBtn('error');
+        if (showError) this.toast('EYE CALIBRATION REQUIRED  •  OPEN CAMERA CONTROLS');
+        return;
+      }
+    }
     this.handStarting = true;
     this.setHandBtn('loading');
-    const ok = await ht.enable();
-    this.handStarting = false;
-
+    const ok = await tracker.enable(this.visionMode);
     if (!this.sys.isActive()) {
-      ht.suspend();
+      this.handStarting = false;
+      tracker.suspend();
       return;
     }
+    if (ok && this.visionMode !== 'hand') {
+      const resolvedCameraId = tracker.getActiveCameraDeviceId();
+      const gazeSettings = getGazeSettings();
+      const handSettings = getHandSettings();
+      const activeIdentity = currentGazeCalibrationIdentity(resolvedCameraId, handSettings.mirror);
+      if (!resolvedCameraId || !gazeCalibrationMatches(gazeSettings.calibration, activeIdentity)) {
+        tracker.disable();
+        this.handStarting = false;
+        this.handOn = false;
+        this.setHandBtn('error');
+        if (showError) this.toast('ACTIVE CAMERA CHANGED  •  RECALIBRATE EYES IN CAMERA CONTROLS');
+        return;
+      }
+    }
+    this.handStarting = false;
 
     this.handOn = ok;
     this.handHasSeen = false;
@@ -1898,26 +1974,35 @@ export class GameScene extends Phaser.Scene {
     if (ok) {
       // Gameplay keeps camera decoding/inference but removes the preview and
       // skeleton paint cost. Hand Control Lab remains the explicit preview UI.
-      ht.setPreviewVisible(false);
+      tracker.setPreviewVisible(false);
       this.setHandBtn('loading');
-      if (showError) this.toast('HAND  •  AIM → TOUCH THUMB + INDEX → SEPARATE SLIGHTLY TO FIRE');
+      if (showError) {
+        this.toast(
+          this.visionMode === 'gaze'
+            ? 'EYES  •  LOOK TO AIM → HOLD STEADY → DOUBLE BLINK TO FIRE'
+            : this.visionMode === 'gaze-hand'
+              ? 'HYBRID  •  LOOK TO AIM → PINCH → RELEASE TO FIRE'
+              : 'HAND  •  AIM → TOUCH THUMB + INDEX → SEPARATE SLIGHTLY TO FIRE',
+        );
+      }
       return;
     }
 
-    const failure = ht.getLastFailure();
+    const failure = tracker.getLastFailure();
     this.setHandBtn(failure === 'permission-denied' ? 'denied' : 'error');
     this.fallbackTutorialToPointerInput();
     if (showError) this.toast(this.handFailureMessage(failure));
   }
 
   private fallbackTutorialToPointerInput(): void {
-    if (!this.isTutorialActive() || this.tutorialInputMode !== 'hand') return;
+    if (!this.isTutorialActive()
+      || !['hand', 'gaze', 'gaze-hand'].includes(this.tutorialInputMode)) return;
     const pointerMode: GameplayInputMode = navigator.maxTouchPoints > 0 ? 'touch' : 'mouse';
     const transition = this.tutorialMachine?.fallbackToPointer(pointerMode);
     if (!transition?.accepted) return;
     this.tutorialInputMode = pointerMode;
     this.renderTutorialHud();
-    this.toast('HAND UNAVAILABLE  •  TRAINING CONTINUES WITH POINTER CONTROLS');
+    this.toast('CAMERA CONTROL UNAVAILABLE  •  TRAINING CONTINUES WITH POINTER CONTROLS');
   }
 
   private async toggleHand(): Promise<void> {
@@ -1934,6 +2019,13 @@ export class GameScene extends Phaser.Scene {
       this.handOpenAim = null;
       this.handAimPredictor.reset();
       this.handContinuity.reset();
+      this.gazeAimController.reset();
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.reset();
+      this.gazeHasSeen = false;
+      this.gazeLastSeenAt = 0;
+      this.gazeStableAim = null;
+      this.gazeBlinkAim = null;
       this.handCursor?.setVisible(false);
       this.setHandBtn('off');
       this.fallbackTutorialToPointerInput();
@@ -2095,6 +2187,234 @@ export class GameScene extends Phaser.Scene {
     const contactColor = this.handPinching ? '#4be08a' : '#54e8cf';
     this.handBtn?.setText(phaseLabel).setColor(contactColor);
     this.handStatusText?.setText('●').setColor(contactColor);
+  }
+
+  private pollGaze(): void {
+    if (!this.handOn) return;
+    const now = performance.now();
+    const observation = getHandTracker().sampleGaze();
+    if (!observation) {
+      if (!this.gazeHasSeen) {
+        this.handBtn?.setText('FACE').setColor('#ffe083');
+        this.handStatusText?.setColor('#ffe083');
+        return;
+      }
+      const lostFor = now - this.gazeLastSeenAt;
+      if (lostFor > 260) {
+        this.gazeBlinkControl.reset();
+        this.gazeDwellControl.update({
+          targetId: null,
+          timestampMs: now,
+          usableForAction: false,
+          stableForAction: false,
+        });
+        this.handLockedAim = null;
+        this.gazeStableAim = null;
+        this.gazeBlinkAim = null;
+      }
+      if (lostFor > 450) {
+        this.handTarget = null;
+        this.handSmooth = null;
+        this.handCursor?.setVisible(false);
+      }
+      if (lostFor > 1_200) {
+        this.gazeAimController.reset();
+        this.gazeHasSeen = false;
+        this.handBtn?.setText('FACE').setColor('#ffc56f');
+        this.handStatusText?.setColor('#ffc56f');
+      }
+      return;
+    }
+
+    const gazeSettings = getGazeSettings();
+    const handSettings = getHandSettings();
+    const activeCameraId = getHandTracker().getActiveCameraDeviceId();
+    const identity = currentGazeCalibrationIdentity(activeCameraId, handSettings.mirror);
+    const profile = gazeSettings.calibration;
+    if (!activeCameraId || !gazeCalibrationMatches(profile, identity)) {
+      getHandTracker().disable();
+      this.handOn = false;
+      this.gazeAimController.reset();
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.reset();
+      this.gazeStableAim = null;
+      this.gazeBlinkAim = null;
+      this.handTarget = null;
+      this.handCursor?.setVisible(false);
+      this.handBtn?.setText('RECAL').setColor('#ff9a99');
+      this.handStatusText?.setColor('#ff9a99');
+      return;
+    }
+    const point = profile
+      ? this.gazeAimController.update(observation, profile, now)
+      : null;
+    if (!point) {
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.update({
+        targetId: null,
+        timestampMs: observation.timestampMs,
+        usableForAction: false,
+        stableForAction: false,
+      });
+      this.handTarget = null;
+      this.gazeStableAim = null;
+      this.gazeBlinkAim = null;
+      this.handCursor?.setVisible(false);
+      this.handBtn?.setText('CAL').setColor('#ff9a99');
+      this.handStatusText?.setColor('#ff9a99');
+      return;
+    }
+
+    this.gazeHasSeen = true;
+    this.gazeLastSeenAt = now;
+    const target = {
+      x: Phaser.Math.Clamp(point.x * VIEW.width, 12, VIEW.width - 12),
+      y: Phaser.Math.Clamp(point.y * VIEW.height, VIEW.height * 0.12, this.shooter.y - 105),
+    };
+    this.handTarget = target;
+    if (!this.handSmooth) this.handSmooth = { ...target };
+    const stableTarget = point.usableForAction
+      && point.stableForAction
+      && now - observation.timestampMs <= 180;
+    const bothEyesOpen = observation.leftBlink <= 0.32 && observation.rightBlink <= 0.32;
+    if (stableTarget && bothEyesOpen) {
+      this.gazeStableAim = { ...target, timestampMs: observation.timestampMs };
+    }
+
+    // Hybrid mode deliberately ignores blinks: gaze supplies measured aim and
+    // the existing physical pinch/release recognizer owns the action boundary.
+    if (this.visionMode === 'gaze-hand') {
+      this.gazeBlinkAim = null;
+      const locked = this.gazeStableAim && now - this.gazeStableAim.timestampMs <= 260;
+      this.handBtn?.setText(locked ? 'LOOK' : 'STEADY').setColor(locked ? '#54e8cf' : '#ffd970');
+      this.handStatusText?.setColor(locked ? '#54e8cf' : '#ffd970');
+      return;
+    }
+
+    let activate = false;
+    const targetKey = `${Math.round(point.x * 14)}:${Math.round(point.y * 14)}`;
+    if (gazeSettings.activation === 'dwell') {
+      const dwell = this.gazeDwellControl.update({
+        targetId: targetKey,
+        timestampMs: observation.timestampMs,
+        usableForAction: stableTarget && bothEyesOpen && !this.flying,
+        stableForAction: point.stableForAction,
+      });
+      activate = dwell.action;
+      const progress = Math.round(dwell.progress * 100);
+      this.handBtn?.setText(stableTarget && progress > 0 ? `${progress}%` : 'DWELL')
+        .setColor(stableTarget ? '#54e8cf' : '#ffd970');
+    } else {
+      const blinkEvent = this.gazeBlinkControl.update({
+        timestampMs: observation.timestampMs,
+        leftBlink: observation.leftBlink,
+        rightBlink: observation.rightBlink,
+        usableForAction: point.usableForAction && !this.flying,
+        stableForAction: point.stableForAction,
+      });
+      activate = blinkEvent === 'action';
+      if (blinkEvent !== 'action') {
+        if (this.gazeBlinkControl.isSequenceEngaged()) {
+          const stableAim = this.gazeStableAim
+            && now - this.gazeStableAim.timestampMs <= 260
+            ? this.gazeStableAim
+            : null;
+          if (!this.gazeBlinkAim && stableAim) this.gazeBlinkAim = { ...stableAim };
+        } else {
+          this.gazeBlinkAim = null;
+        }
+      }
+      this.handBtn?.setText(
+        point.stableForAction ? 'BLINK ×2' : 'HOLD',
+      ).setColor('#54e8cf');
+    }
+    this.handStatusText?.setColor(stableTarget ? '#54e8cf' : '#ffd970');
+    if (!activate || this.flying) return;
+
+    // Only the fresh, calibrated sample that completed the deliberate action
+    // can choose the shot target; render interpolation never changes it.
+    const selectedAim = gazeSettings.activation === 'double-blink'
+      ? this.gazeBlinkAim
+      : this.gazeStableAim;
+    const authoritativeAgeMs = gazeSettings.activation === 'double-blink' ? 1_000 : 260;
+    const authoritativeAim = selectedAim
+      && now - selectedAim.timestampMs <= authoritativeAgeMs
+      ? selectedAim
+      : null;
+    if (!authoritativeAim) {
+      this.gazeBlinkAim = null;
+      return;
+    }
+    this.handLockedAim = { x: authoritativeAim.x, y: authoritativeAim.y };
+    this.handSmooth = { x: authoritativeAim.x, y: authoritativeAim.y };
+    this.handCursor?.setPosition(authoritativeAim.x, authoritativeAim.y);
+    this.shootAt(authoritativeAim.x, authoritativeAim.y);
+    this.handLockedAim = null;
+    this.gazeBlinkControl.reset();
+    this.gazeBlinkAim = null;
+  }
+
+  private pollHybridHand(): void {
+    if (!this.handOn) return;
+    const now = performance.now();
+    const sample = getHandTracker().sample();
+    if (!sample) {
+      if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
+        this.handLockedAim = null;
+        this.handPinching = false;
+      }
+      return;
+    }
+    this.handHasSeen = true;
+    this.handLastSeenAt = now;
+    if (this.flying) {
+      this.pinchControl.resetForShot();
+      this.handContinuity.reset();
+      this.handLockedAim = null;
+      this.handPinching = false;
+      return;
+    }
+    const continuity = this.handContinuity.observe(
+      sample.gestureStable && sample.usableForGesture,
+      sample.timestampMs,
+    );
+    if (continuity !== 'usable') {
+      if (continuity === 'cancel') {
+        this.pinchControl.resetForContinuity();
+        this.handLockedAim = null;
+        this.handPinching = false;
+      } else {
+        this.pinchControl.holdForUncertainty(sample.timestampMs);
+      }
+      return;
+    }
+    const event = this.pinchControl.update(sample);
+    this.handPinching = this.pinchControl.isContacting();
+    if (event === 'latched') {
+      const freshGaze = this.gazeStableAim && now - this.gazeStableAim.timestampMs <= 260
+        ? this.gazeStableAim
+        : null;
+      this.handLockedAim = freshGaze ? { x: freshGaze.x, y: freshGaze.y } : null;
+      if (!this.handLockedAim) {
+        this.pinchControl.resetForContinuity();
+        this.handPinching = false;
+      }
+    } else if (event === 'cancelled') {
+      this.handLockedAim = null;
+      this.handPinching = false;
+    } else if (event === 'released') {
+      const aim = this.handLockedAim;
+      this.handLockedAim = null;
+      this.handPinching = false;
+      if (!aim) {
+        this.pinchControl.resetForContinuity();
+        return;
+      }
+      this.handSmooth = { ...aim };
+      this.shootAt(aim.x, aim.y);
+    }
+    this.handBtn?.setText(this.handPinching ? 'PINCH' : 'LOOK').setColor('#54e8cf');
+    this.handStatusText?.setColor(this.handPinching ? '#4be08a' : '#54e8cf');
   }
 
   /** Interpolate every Phaser frame so 15–20 recognition FPS still feels fluid. */
@@ -3129,7 +3449,12 @@ export class GameScene extends Phaser.Scene {
   update(_time: number, delta: number): void {
     this.updateModeClock(delta);
     if (!this.running) return;
-    this.pollHand();
+    if (this.visionMode === 'hand') {
+      this.pollHand();
+    } else {
+      this.pollGaze();
+      if (this.visionMode === 'gaze-hand') this.pollHybridHand();
+    }
     this.advanceHandAim(delta);
     if (!this.flying || !this.ballSprite) return;
     const r = this.geom.radius;

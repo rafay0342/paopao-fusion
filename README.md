@@ -4,10 +4,10 @@ A production Phaser 3 + TypeScript + Vite bubble-shooter with six worlds, 30
 deterministic campaign levels, six bosses, three classic modes, authoritative
 endless/live events, arena play, PlayerSaveV4 migration, accounts, inventory,
 economy, story, accessibility profiles and optional on-device MediaPipe hand
-control. Physics, matching, deterministic replay rules, progression and visual
-feedback are implemented rather than mocked. The browser exterior, scene
-backgrounds, panels, map paths, gameplay pieces and overlays share one animated
-gold/crystal visual language.
+or eye/gaze control. Physics, matching, deterministic replay rules,
+progression and visual feedback are implemented rather than mocked. The
+browser exterior, scene backgrounds, panels, map paths, gameplay pieces and
+overlays share one animated gold/crystal visual language.
 
 The V4 progression expansion adds three special modes, live run timers,
 hit/accuracy/streak tracking, bank-shot bonuses, persistent coins, a four-item
@@ -130,6 +130,8 @@ src/
     endless.ts            deterministic endless/live-event state and modifiers
     handtracking.ts       on-device MediaPipe capture, recovery and bounded inference
     handcontrol.ts        fail-closed contact/release gesture state machine
+    gazecontrol.ts        calibrated gaze aim, smoothing, double-blink and dwell controls
+    gazesettings.ts       device-local gaze mode, action and calibration profile
     render-context.ts     WebGL loss/restore state and one-time Canvas fallback
     online.ts             offline queue, cloud sync, leaderboards and ghost retrieval
     progression.ts        local level unlocks, stars and best scores
@@ -140,6 +142,7 @@ src/
     BootScene.ts          branded loading screen + optimized art preload
     MenuScene.ts          illustrated title, progress and Hall of Heroes
     WorldMapScene.ts      six-world map + interactive level medallions
+    GazeSetupScene.ts     explicit camera controls and nine-point eye calibration
     GameScene.ts          themed HUD, pause/results, launcher, levels + fx
     RewardsScene.ts       animated mystery vault, prize pool, skins and tiers
     ChallengesScene.ts    daily/weekly orders, streak, badges and mastery
@@ -175,11 +178,12 @@ tools/
   serve-dist.mjs          gzip-enabled static server used by the live Funnel
 ```
 
-Controls: with mouse/touch, aim and release to shoot. In Hand mode, aim, touch
-thumb and index, then separate them slightly to fire—one natural pinch/release,
-with no second pinch and no wide open palm. Uncertain, stale or incomplete
-gestures fail closed. Match 3+
-same-colour bubbles to pop them; disconnected bubbles fall.
+Controls: with mouse/touch, aim and release to shoot. Pointer, touch and
+keyboard controls remain available when camera control is off or unavailable.
+In Hand mode, aim, touch thumb and index, then separate them slightly to
+fire—one natural pinch/release, with no second pinch and no wide open palm.
+Uncertain, stale or incomplete gestures fail closed. Match 3+ same-colour
+bubbles to pop them; disconnected bubbles fall.
 
 ## Modes, coins and artifacts
 
@@ -239,6 +243,25 @@ Automated recorded-landmark tests cover timing, geometry, loss and false-shot
 boundaries. Camera drivers, real-device thermals and the full far/near,
 dark/backlit, blur and angle matrix still require physical hardware evidence;
 desktop mobile emulation is not a physical Android result.
+
+### Eye/gaze controls (webcam, optional)
+
+Open **Mode Select → CAMERA CONTROLS**, choose **EYES / GAZE** or
+**EYES + HAND**, then press **START CAMERA**. Camera access never starts from
+looking at a menu control. Select **CALIBRATE EYES** and hold your gaze on each
+of the nine targets with both eyes visible; the resulting profile stays on this
+device. If the active camera, mirror setting or screen orientation changes, use
+**RECALIBRATE EYES** before playing.
+
+In **EYES / GAZE**, look to aim and confirm with the selected deliberate action:
+**double blink** or **dwell**. In **EYES + HAND**, look to aim, pinch to lock the
+target, then release the pinch to shoot or commit the Match-3 move. Use
+**STOP CAMERA** whenever finished; pointer, touch and keyboard remain available
+as fallbacks.
+
+Face and hand processing runs on-device. Camera frames and landmark samples are
+not uploaded or stored; only the bounded calibration coefficients and selected
+control settings are kept locally.
 
 ---
 

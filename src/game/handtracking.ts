@@ -30,6 +30,7 @@ import {
 const assetUrl = (path: string) => new URL(hostedAssetUrl(path), document.baseURI).toString();
 const WASM_URL = assetUrl('mediapipe/wasm');
 const MODEL_URL = assetUrl('mediapipe/models/hand_landmarker.task');
+const FACE_MODEL_URL = assetUrl('mediapipe/models/face_landmarker.task');
 
 // Hand input is gameplay-critical and must not be throttled by visual quality.
 // Players can still choose 15/20/30 FPS explicitly in Hand Control Lab.
@@ -38,8 +39,10 @@ const DROPOUT_GRACE_MS = 260;
 const BITMAP_TIMEOUT_MS = 700;
 const VIDEO_STALL_MS = 1_200;
 const WORKER_INIT_TIMEOUT_MS = 25_000;
+const GAZE_INIT_TIMEOUT_MS = 25_000;
 const CAPTURE_EARLY_TOLERANCE_MS = 8;
 const CAMERA_PARK_GRACE_MS = 5_000;
+const GAZE_DROPOUT_GRACE_MS = 220;
 
 const HAND_CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
   [0, 1], [1, 2], [2, 3], [3, 4],
@@ -60,6 +63,7 @@ interface WorkerResultMessage {
   generation: number;
   frameId: number;
   timestampMs: number;
+  mode: VisionTrackingMode;
   inferenceMs: number;
   landmarks: Landmark[] | null;
   worldLandmarks: Landmark[] | null;
@@ -69,13 +73,41 @@ interface WorkerResultMessage {
   handednessScore: number;
   lightingMode: HandLightingMode;
   enhanced: boolean;
+  gaze: CompactGazeObservation | null;
+  gazeEvaluated: boolean;
 }
 
 type WorkerMessage =
   | WorkerResultMessage
   | { type: 'READY' }
+  | { type: 'GAZE_READY' }
   | { type: 'INIT_ERROR'; error: string }
+  | { type: 'GAZE_INIT_ERROR'; error: string }
   | { type: 'FRAME_ERROR'; generation: number; frameId: number; error: string };
+
+export type VisionTrackingMode = 'hand' | 'gaze' | 'gaze-hand';
+export type GazeFeatureVector = readonly [
+  number, number, number, number,
+  number, number, number, number,
+];
+
+interface CompactGazeObservation {
+  features: GazeFeatureVector;
+  confidence: number;
+  leftBlink: number;
+  rightBlink: number;
+}
+
+/**
+ * Device-local eye observation. The screen calibration layer consumes this
+ * compact vector; camera pixels and full face landmarks never leave the worker.
+ */
+export interface GazeObservation extends CompactGazeObservation {
+  timestampMs: number;
+  inferenceMs: number;
+  trackingFps: number;
+  usableForAction: boolean;
+}
 
 export type HandGesture =
   | 'pinch'
@@ -214,6 +246,11 @@ class HandTracker {
   private resolveWorkerInit: (() => void) | null = null;
   private rejectWorkerInit: ((error: Error) => void) | null = null;
   private workerInitTimer: ReturnType<typeof setTimeout> | null = null;
+  private gazeReady = false;
+  private gazeInitPromise: Promise<void> | null = null;
+  private resolveGazeInit: (() => void) | null = null;
+  private rejectGazeInit: ((error: Error) => void) | null = null;
+  private gazeInitTimer: ReturnType<typeof setTimeout> | null = null;
   private workerRecoveryPromise: Promise<void> | null = null;
   private workerRetryAt = 0;
   private workerRetryDelay = 500;
@@ -233,6 +270,7 @@ class HandTracker {
   private lastTimestampMs = -1;
   private lastAcceptedCaptureTimestampMs = Number.NEGATIVE_INFINITY;
   private captureGeneration = 0;
+  private trackingMode: VisionTrackingMode = 'hand';
 
   private latestSample: HandSample | null = null;
   private latestSampleAt = 0;
@@ -245,6 +283,13 @@ class HandTracker {
   private missingFrames = 0;
   private lossFiltersReset = false;
   private recoveryCount = 0;
+  private latestGazeObservation: GazeObservation | null = null;
+  private latestGazeAt = 0;
+  private gazeSequence = 0;
+  private consumedGazeSequence = 0;
+  private gazeMissingSince = 0;
+  private gazeTrackingFps = 0;
+  private lastGazeResultAt = 0;
   private lastOverlayDrawAt = 0;
   private previewVisible = false;
   private directionPoint: { x: number; y: number } | null = null;
@@ -325,9 +370,25 @@ class HandTracker {
     return this.lastFailure;
   }
 
+  getActiveMode(): VisionTrackingMode {
+    return this.trackingMode;
+  }
+
+  /** Resolved hardware identity after permission, used only to bind local calibration. */
+  getActiveCameraDeviceId(): string {
+    const track = this.stream?.getVideoTracks()[0];
+    return track?.getSettings().deviceId || '';
+  }
+
   /** Warm the worker/model without requesting camera permission. */
   prepare(): Promise<void> {
     return this.ensureModel();
+  }
+
+  /** Warm the optional face model without requesting camera permission. */
+  async prepareGaze(): Promise<void> {
+    await this.ensureModel();
+    return this.ensureGazeModel();
   }
 
   setPreviewVisible(visible: boolean): void {
@@ -395,17 +456,50 @@ class HandTracker {
     return this.workerInitPromise;
   }
 
+  private ensureGazeModel(): Promise<void> {
+    if (this.gazeReady) return Promise.resolve();
+    if (this.gazeInitPromise) return this.gazeInitPromise;
+    if (!this.worker || !this.workerReady) {
+      return this.ensureModel().then(() => this.ensureGazeModel());
+    }
+
+    const worker = this.worker;
+    this.gazeInitPromise = new Promise<void>((resolve, reject) => {
+      this.resolveGazeInit = resolve;
+      this.rejectGazeInit = reject;
+    });
+    this.gazeInitTimer = setTimeout(() => {
+      if (this.worker !== worker || this.gazeReady) return;
+      const reject = this.rejectGazeInit;
+      this.gazeInitPromise = null;
+      this.resolveGazeInit = null;
+      this.rejectGazeInit = null;
+      this.gazeInitTimer = null;
+      reject?.(new Error('Face model initialization timed out'));
+    }, GAZE_INIT_TIMEOUT_MS);
+    worker.postMessage({ type: 'PREPARE_GAZE', modelUrl: FACE_MODEL_URL });
+    return this.gazeInitPromise;
+  }
+
   private resetWorker(error = new Error('Gesture worker was reset')): void {
     const reject = this.rejectWorkerInit;
+    const rejectGaze = this.rejectGazeInit;
     if (this.workerInitTimer) clearTimeout(this.workerInitTimer);
+    if (this.gazeInitTimer) clearTimeout(this.gazeInitTimer);
     this.workerInitTimer = null;
+    this.gazeInitTimer = null;
     this.worker?.terminate();
     this.worker = null;
     this.workerReady = false;
+    this.gazeReady = false;
     this.workerInitPromise = null;
+    this.gazeInitPromise = null;
     this.resolveWorkerInit = null;
     this.rejectWorkerInit = null;
+    this.resolveGazeInit = null;
+    this.rejectGazeInit = null;
     reject?.(error);
+    rejectGaze?.(error);
     this.captureGeneration++;
     this.clearPendingFrame();
     this.clearTrackingState();
@@ -415,6 +509,7 @@ class HandTracker {
     if (!this.wanted || this.workerRecoveryPromise || performance.now() < this.workerRetryAt) return;
     this.recoveryCount++;
     this.workerRecoveryPromise = this.ensureModel()
+      .then(() => this.trackingMode === 'hand' ? undefined : this.ensureGazeModel())
       .then(() => {
         this.frameErrors = 0;
         this.workerRetryAt = 0;
@@ -443,9 +538,31 @@ class HandTracker {
       this.rejectWorkerInit = null;
       return;
     }
+    if (message.type === 'GAZE_READY') {
+      if (this.gazeInitTimer) clearTimeout(this.gazeInitTimer);
+      this.gazeInitTimer = null;
+      this.gazeReady = true;
+      this.resolveGazeInit?.();
+      this.gazeInitPromise = null;
+      this.resolveGazeInit = null;
+      this.rejectGazeInit = null;
+      return;
+    }
     if (message.type === 'INIT_ERROR') {
       const error = new Error(message.error);
       this.resetWorker(error);
+      return;
+    }
+    if (message.type === 'GAZE_INIT_ERROR') {
+      const error = new Error(message.error);
+      if (this.gazeInitTimer) clearTimeout(this.gazeInitTimer);
+      this.gazeInitTimer = null;
+      this.gazeReady = false;
+      const reject = this.rejectGazeInit;
+      this.gazeInitPromise = null;
+      this.resolveGazeInit = null;
+      this.rejectGazeInit = null;
+      reject?.(error);
       return;
     }
     if (message.type === 'FRAME_ERROR') {
@@ -467,6 +584,10 @@ class HandTracker {
     const receivedTimestampMs = performance.now();
     this.clearPendingFrame();
     if (!this.wanted || !this.camReady) return;
+    if (message.mode !== this.trackingMode) {
+      this.scheduleFrame(receivedTimestampMs);
+      return;
+    }
     this.frameErrors = 0;
     this.lastInferenceMs = message.inferenceMs;
     const pipelineMs = receivedTimestampMs - message.timestampMs;
@@ -487,7 +608,8 @@ class HandTracker {
       return;
     }
     this.lastAcceptedCaptureTimestampMs = message.timestampMs;
-    this.processResult(message, freshness === 'fresh-action');
+    if (message.mode !== 'gaze') this.processResult(message, freshness === 'fresh-action');
+    if (message.gazeEvaluated) this.processGazeResult(message, freshness === 'fresh-action');
     // Backpressure is already guaranteed by one frame in flight. Capture the
     // newest camera frame immediately instead of adding inference time again.
     this.scheduleFrame(receivedTimestampMs);
@@ -650,12 +772,19 @@ class HandTracker {
   private clearTrackingState(): void {
     this.latestSample = null;
     this.latestSampleAt = 0;
+    this.latestGazeObservation = null;
+    this.latestGazeAt = 0;
     this.lastAcceptedCaptureTimestampMs = Number.NEGATIVE_INFINITY;
     this.consumedSequence = this.sampleSequence;
+    this.gazeSequence = 0;
+    this.consumedGazeSequence = 0;
     this.trackingFps = 0;
+    this.gazeTrackingFps = 0;
     this.lastResultAt = 0;
+    this.lastGazeResultAt = 0;
     this.lastValidResultAt = 0;
     this.missingSince = 0;
+    this.gazeMissingSince = 0;
     this.missingFrames = 0;
     this.lossFiltersReset = false;
     this.directionPoint = null;
@@ -754,10 +883,14 @@ class HandTracker {
     return 'unknown';
   }
 
-  async enable(): Promise<boolean> {
+  async enable(mode: VisionTrackingMode = 'hand'): Promise<boolean> {
     const requestId = ++this.enableRequestId;
     let stage: 'camera' | 'model' = 'camera';
     this.lastFailure = 'none';
+    if (this.trackingMode !== mode) {
+      this.trackingMode = mode;
+      this.clearTrackingState();
+    }
     this.wanted = true;
     this.activeDesired = true;
     if (this.parkedCameraTimer) clearTimeout(this.parkedCameraTimer);
@@ -775,12 +908,20 @@ class HandTracker {
         (): Error | null => null,
         (error: unknown): Error | null => error instanceof Error ? error : new Error(String(error)),
       );
+      const gazeReady = mode === 'hand'
+        ? Promise.resolve<Error | null>(null)
+        : this.prepareGaze().then(
+          (): Error | null => null,
+          (error: unknown): Error | null => error instanceof Error ? error : new Error(String(error)),
+        );
       await this.startCamera();
       if (requestId !== this.enableRequestId) throw new Error('Hand tracking activation was superseded');
       this.setPreviewVisible(this.settings.preview);
       stage = 'model';
       const modelError = await modelReady;
       if (modelError) throw modelError;
+      const gazeError = await gazeReady;
+      if (gazeError) throw gazeError;
       if (requestId !== this.enableRequestId) throw new Error('Hand tracking activation was superseded');
       this.nextCaptureAt = performance.now();
       this.startVideoPump();
@@ -895,6 +1036,7 @@ class HandTracker {
   private scheduleFrame(now: number, mediaTime = this.video.currentTime): void {
     this.runMaintenance(now);
     if (!this.workerReady || !this.worker || this.inferencePending || now + CAPTURE_EARLY_TOLERANCE_MS < this.nextCaptureAt) return;
+    if (this.trackingMode !== 'hand' && !this.gazeReady) return;
     if (!this.wanted || !this.activeDesired || !this.camReady || this.video.readyState < 2 || mediaTime === this.lastVideoTime) return;
 
     this.lastVideoTime = mediaTime;
@@ -950,6 +1092,7 @@ class HandTracker {
         try {
           if (!this.worker
             || !this.workerReady
+            || (this.trackingMode !== 'hand' && !this.gazeReady)
             || !this.wanted
             || !this.activeDesired
             || !this.camReady
@@ -957,7 +1100,13 @@ class HandTracker {
             || frameId !== this.pendingFrameId) return;
           this.pendingPhase = 'worker';
           this.pendingSince = performance.now();
-          this.worker.postMessage({ type: 'FRAME', bitmap, timestampMs, generation, frameId }, [bitmap]);
+          this.worker.postMessage({ type: 'FRAME',
+            bitmap,
+            timestampMs,
+            generation,
+            frameId,
+            mode: this.trackingMode,
+          }, [bitmap]);
           transferred = true;
         } finally {
           if (!transferred) {
@@ -1227,6 +1376,46 @@ class HandTracker {
     this.latestSampleAt = now;
   }
 
+  private processGazeResult(result: WorkerResultMessage, actionTimely: boolean): void {
+    const now = performance.now();
+    const gaze = result.gaze;
+    const valid = gaze
+      && gaze.features.length === 8
+      && gaze.features.every(Number.isFinite)
+      && Number.isFinite(gaze.confidence)
+      && Number.isFinite(gaze.leftBlink)
+      && Number.isFinite(gaze.rightBlink);
+    if (!valid || !gaze) {
+      if (this.gazeMissingSince === 0) this.gazeMissingSince = now;
+      if (now - this.gazeMissingSince >= GAZE_DROPOUT_GRACE_MS) {
+        this.latestGazeObservation = null;
+        this.latestGazeAt = 0;
+      }
+      return;
+    }
+
+    if (this.lastGazeResultAt > 0) {
+      const instantFps = 1000 / Math.max(1, now - this.lastGazeResultAt);
+      this.gazeTrackingFps = this.gazeTrackingFps === 0
+        ? instantFps
+        : this.gazeTrackingFps * 0.82 + instantFps * 0.18;
+    }
+    this.lastGazeResultAt = now;
+    this.gazeMissingSince = 0;
+    this.latestGazeObservation = {
+      timestampMs: result.timestampMs,
+      features: gaze.features,
+      confidence: Math.min(1, Math.max(0, gaze.confidence)),
+      leftBlink: Math.min(1, Math.max(0, gaze.leftBlink)),
+      rightBlink: Math.min(1, Math.max(0, gaze.rightBlink)),
+      inferenceMs: result.inferenceMs,
+      trackingFps: this.gazeTrackingFps,
+      usableForAction: actionTimely && gaze.confidence >= 0.62,
+    };
+    this.gazeSequence++;
+    this.latestGazeAt = now;
+  }
+
   /** Schedule one worker frame and return only newly completed recognition. */
   sample(): HandSample | null {
     const now = performance.now();
@@ -1248,6 +1437,37 @@ class HandTracker {
     this.scheduleFrame(now);
     if (!this.latestSample || now - this.latestSampleAt > maxAgeMs) return null;
     return this.latestSample;
+  }
+
+  /** Schedule one shared-camera frame and return only a new face observation. */
+  sampleGaze(): GazeObservation | null {
+    const now = performance.now();
+    this.runMaintenance(now);
+    if (!this.wanted
+      || this.trackingMode === 'hand'
+      || !this.workerReady
+      || !this.gazeReady
+      || !this.camReady) return null;
+    this.startVideoPump();
+    this.scheduleFrame(now);
+    if (this.gazeSequence === this.consumedGazeSequence) return null;
+    this.consumedGazeSequence = this.gazeSequence;
+    return this.latestGazeObservation;
+  }
+
+  /** Return the latest still-fresh eye observation without consuming it. */
+  peekGaze(maxAgeMs = 160): GazeObservation | null {
+    const now = performance.now();
+    this.runMaintenance(now);
+    if (!this.wanted
+      || this.trackingMode === 'hand'
+      || !this.workerReady
+      || !this.gazeReady
+      || !this.camReady) return null;
+    this.startVideoPump();
+    this.scheduleFrame(now);
+    if (!this.latestGazeObservation || now - this.latestGazeAt > maxAgeMs) return null;
+    return this.latestGazeObservation;
   }
 
   async cameras(): Promise<MediaDeviceInfo[]> {

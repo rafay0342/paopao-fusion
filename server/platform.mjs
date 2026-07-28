@@ -1759,7 +1759,9 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
   ]);
   const telemetryEventTypes = ['performance', 'frame-health', ...productTelemetryTypes];
   const telemetryModes = ['classic', 'rush', 'precision', 'endless', 'arena', 'tutorial'];
-  const telemetryInputModes = ['touch', 'mouse', 'keyboard', 'gamepad', 'hand', 'unknown'];
+  const telemetryInputModes = [
+    'touch', 'mouse', 'keyboard', 'gamepad', 'hand', 'gaze', 'gaze-hand', 'unknown',
+  ];
   const telemetrySteps = [
     'aim', 'fire', 'match-three', 'drop-cluster', 'next-orb', 'swap',
     'danger-line', 'objective', 'hand-touch-one', 'hand-touch-two',

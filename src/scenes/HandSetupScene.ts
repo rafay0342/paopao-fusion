@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config';
+import { updateGazeSettings } from '../game/gazesettings';
 import { getHandTracker } from '../game/handtracking';
 import { calibrateHand, getHandSettings, minimumContactCalibrationGap, updateHandSettings } from '../game/handsettings';
 import { SFX } from '../game/sfx';
@@ -24,7 +25,7 @@ export class HandSetupScene extends Phaser.Scene {
     addArtPanel(this, VIEW.width / 2, 118, 630, 210, 8, 0.98);
     this.add.text(VIEW.width / 2, 70, 'HAND CONTROL LAB', { fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold', stroke: '#132e51', strokeThickness: 7 }).setOrigin(0.5).setDepth(12);
     this.add.text(VIEW.width / 2, 125, 'CAMERA-SAFE  •  ON-DEVICE LANDMARKS  •  NO VIDEO UPLOAD', { fontFamily: UI_FONT, fontSize: TYPE.label, color: '#79d9ff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
-    addArtButton(this, 86, 46, '‹  BACK', () => this.scene.start('ModeSelect'), 140, 50, 18);
+    addArtButton(this, 86, 46, '‹  BACK', () => this.scene.start('GazeSetup'), 140, 50, 18);
     addArtPanel(this, VIEW.width / 2, 430, 630, 340, 8, 0.97);
     this.status = this.add.text(VIEW.width / 2, 325, 'START CAMERA TO CALIBRATE', { fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
     this.metrics = this.add.text(VIEW.width / 2, 405, `PROFILE ${settings.calibrated ? 'CALIBRATED' : 'DEFAULT'}\nTOUCH ${settings.pinchOn.toFixed(2)} / RELEASE ${settings.pinchOff.toFixed(2)}\nTARGET ${settings.targetFps} FPS`, { fontFamily: 'monospace', fontSize: TYPE.body, color: '#dce6f5', align: 'center', lineSpacing: 10 }).setOrigin(0.5).setDepth(12);
@@ -58,8 +59,9 @@ export class HandSetupScene extends Phaser.Scene {
   }
 
   private async startCamera(): Promise<void> {
+    updateGazeSettings({ mode: 'hand' });
     this.status?.setText('LOADING ON-DEVICE HAND MODEL…');
-    const ok = await getHandTracker().enable();
+    const ok = await getHandTracker().enable('hand');
     if (!this.scene.isActive()) return;
     this.status?.setText(ok ? 'CAMERA READY  •  HOLD HAND IN FRAME' : `CAMERA ERROR  •  ${getHandTracker().getLastFailure().replace(/-/g, ' ').toUpperCase()}`).setColor(ok ? '#7ff1d0' : '#ff8d8d');
   }

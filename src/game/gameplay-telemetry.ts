@@ -17,7 +17,15 @@ export const GAMEPLAY_EVENT_TYPES = [
 ] as const;
 
 export type GameplayEventType = typeof GAMEPLAY_EVENT_TYPES[number];
-export type GameplayInputMode = 'touch' | 'mouse' | 'keyboard' | 'gamepad' | 'hand' | 'unknown';
+export type GameplayInputMode =
+  | 'touch'
+  | 'mouse'
+  | 'keyboard'
+  | 'gamepad'
+  | 'hand'
+  | 'gaze'
+  | 'gaze-hand'
+  | 'unknown';
 export type GameplayMode = 'classic' | 'rush' | 'precision' | 'endless' | 'arena' | 'tutorial';
 export type GameplayTelemetryOutcome =
   | 'started'
@@ -106,7 +114,9 @@ export interface GameplayTelemetryQueueOptions {
 }
 
 const EVENT_TYPES = new Set<string>(GAMEPLAY_EVENT_TYPES);
-const INPUT_MODES = new Set<string>(['touch', 'mouse', 'keyboard', 'gamepad', 'hand', 'unknown']);
+const INPUT_MODES = new Set<string>([
+  'touch', 'mouse', 'keyboard', 'gamepad', 'hand', 'gaze', 'gaze-hand', 'unknown',
+]);
 const MODES = new Set<string>(['classic', 'rush', 'precision', 'endless', 'arena', 'tutorial']);
 const OUTCOMES = new Set<string>([
   'started', 'completed', 'failed', 'quit', 'won', 'lost', 'hit', 'miss',

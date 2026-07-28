@@ -21,12 +21,13 @@ import { AccountScene } from './scenes/AccountScene';
 import { InventoryScene } from './scenes/InventoryScene';
 import { IntroScene } from './scenes/IntroScene';
 import { HandSetupScene } from './scenes/HandSetupScene';
+import { GazeSetupScene } from './scenes/GazeSetupScene';
 import { Match3MapScene } from './scenes/Match3MapScene';
 import { Match3Scene } from './scenes/Match3Scene';
 import { registerOfflineShell } from './game/offline';
 import { installNavigation } from './game/navigation';
 import { runtimePerformance } from './game/performance';
-import { getHandTracker } from './game/handtracking';
+import { getHandTracker, type VisionTrackingMode } from './game/handtracking';
 import { getPlatformAccount } from './game/platform';
 import { initializeClassicPlayerSaveV4 } from './game/save-v4';
 import { PHASER_RELEASE_FEATURES, PHASER_RELEASE_GATE } from './game/release-profile';
@@ -75,6 +76,7 @@ const config: Phaser.Types.Core.GameConfig = {
     ModeSelectScene,
     StoryScene,
     AccountScene,
+    GazeSetupScene,
     HandSetupScene,
     WorldMapScene,
     GameScene,
@@ -157,7 +159,7 @@ function installRenderContextRecovery(game: Phaser.Game): RenderContextRecoveryC
   const renderer = game.renderer.type === Phaser.WEBGL ? 'webgl' : 'canvas';
   let loopWasRunning = false;
   let inputWasEnabled = false;
-  let handWasActive = false;
+  let trackingModeToResume: VisionTrackingMode | null = null;
   let pausedVideos: Phaser.GameObjects.Video[] = [];
 
   const forceCanvasFallback = (): boolean => {
@@ -183,8 +185,10 @@ function installRenderContextRecovery(game: Phaser.Game): RenderContextRecoveryC
       // Model-only prewarm must never become an implicit camera request after
       // graphics recovery. Resume only a tracker the player had explicitly
       // enabled and that was actively starting, running, or recovering.
-      handWasActive = tracker.isWanted()
-        && (handState === 'active' || handState === 'warming' || handState === 'recovering');
+      trackingModeToResume = tracker.isWanted()
+        && (handState === 'active' || handState === 'warming' || handState === 'recovering')
+        ? tracker.getActiveMode()
+        : null;
       pausedVideos = [];
       for (const scene of game.scene.getScenes(true)) {
         for (const child of scene.children.list) {
@@ -212,12 +216,12 @@ function installRenderContextRecovery(game: Phaser.Game): RenderContextRecoveryC
         if (video.active && video.video && !video.video.ended) video.resume();
       }
       pausedVideos = [];
-      if (handWasActive) {
-        void getHandTracker().enable().catch((error: unknown) => {
-          console.warn('Hand tracking did not resume after graphics recovery.', error);
+      if (trackingModeToResume) {
+        void getHandTracker().enable(trackingModeToResume).catch((error: unknown) => {
+          console.warn('Camera tracking did not resume after graphics recovery.', error);
         });
       }
-      handWasActive = false;
+      trackingModeToResume = null;
     },
     onFallback: forceCanvasFallback,
     onStatus: (report: RenderContextReport) => overlay.update(report),

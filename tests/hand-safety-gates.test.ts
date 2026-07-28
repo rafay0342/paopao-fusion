@@ -95,7 +95,7 @@ describe('hand worker and gameplay safety gates', () => {
     }
     const gamePoll = readText('src/scenes/GameScene.ts').slice(
       readText('src/scenes/GameScene.ts').indexOf('private pollHand(): void'),
-      readText('src/scenes/GameScene.ts').indexOf('private advanceHandAim('),
+      readText('src/scenes/GameScene.ts').indexOf('private pollGaze(): void'),
     );
     expect(gamePoll).not.toContain('getHandTracker().disable()');
   });

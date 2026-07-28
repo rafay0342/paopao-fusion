@@ -182,8 +182,8 @@ export class ModeSelectScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(12);
     }
 
-    addArtButton(this, 214, height - 66, 'HAND SETUP', () => {
-      SFX.click(); this.scene.start('HandSetup');
+    addArtButton(this, 214, height - 66, 'CAMERA CONTROLS', () => {
+      SFX.click(); this.scene.start('GazeSetup');
     }, 280, 58, 18);
     addArtButton(this, 520, height - 66, `QUALITY  •  ${meta.quality.toUpperCase()}`, () => {
       SFX.click();

@@ -1,4 +1,10 @@
-import { FilesetResolver, HandLandmarker, type HandLandmarkerResult } from '@mediapipe/tasks-vision';
+import {
+  FaceLandmarker,
+  FilesetResolver,
+  HandLandmarker,
+  type FaceLandmarkerResult,
+  type HandLandmarkerResult,
+} from '@mediapipe/tasks-vision';
 import {
   HandEnhancementBudget,
   handLightingProfile,
@@ -19,13 +25,32 @@ interface FrameMessage {
   timestampMs: number;
   generation: number;
   frameId: number;
+  mode: VisionTrackingMode;
+}
+
+interface PrepareGazeMessage {
+  type: 'PREPARE_GAZE';
+  modelUrl: string;
 }
 
 interface CleanupMessage {
   type: 'CLEANUP';
 }
 
-type IncomingMessage = InitMessage | FrameMessage | CleanupMessage;
+type IncomingMessage = InitMessage | FrameMessage | PrepareGazeMessage | CleanupMessage;
+
+type VisionTrackingMode = 'hand' | 'gaze' | 'gaze-hand';
+type GazeFeatureVector = [
+  number, number, number, number,
+  number, number, number, number,
+];
+
+interface CompactGazeObservation {
+  features: GazeFeatureVector;
+  confidence: number;
+  leftBlink: number;
+  rightBlink: number;
+}
 
 const workerScope = self as unknown as {
   onmessage: ((event: MessageEvent<IncomingMessage>) => void) | null;
@@ -33,6 +58,17 @@ const workerScope = self as unknown as {
 };
 
 let recognizer: HandLandmarker | null = null;
+let faceRecognizer: FaceLandmarker | null = null;
+let visionFileset: Awaited<ReturnType<typeof FilesetResolver.forVisionTasks>> | null = null;
+let lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
+let lastOpenGaze: {
+  features: GazeFeatureVector;
+  confidence: number;
+  timestampMs: number;
+} | null = null;
+const GAZE_FACE_INTERVAL_MS = 1_000 / 15;
+const GAZE_FACE_EARLY_TOLERANCE_MS = 3;
+const GAZE_BLINK_FEATURE_HOLD_MS = 320;
 const PROBE_WIDTH = 32;
 const PROBE_HEIGHT = 24;
 const PROBE_INTERVAL_MS = 180;
@@ -67,6 +103,8 @@ function resetLighting(): void {
   canvasInputSupported = null;
   filterPipelineSupported = null;
   enhancementBudget.reset();
+  lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
+  lastOpenGaze = null;
 }
 
 function analyseLighting(bitmap: ImageBitmap): HandLightingStats | null {
@@ -233,6 +271,7 @@ async function createRecognizer(wasmUrl: string, modelUrl: string): Promise<void
     FilesetResolver.forVisionTasks(wasmUrl, true),
     fetch(modelUrl),
   ]);
+  visionFileset = vision;
   if (!modelResponse.ok) throw new Error(`Hand model HTTP ${modelResponse.status}`);
   const model = new Uint8Array(await modelResponse.arrayBuffer());
 
@@ -257,12 +296,193 @@ async function createRecognizer(wasmUrl: string, modelUrl: string): Promise<void
   primeRecognizer();
 }
 
+async function createFaceRecognizer(modelUrl: string): Promise<void> {
+  if (faceRecognizer) return;
+  if (!visionFileset) throw new Error('Vision runtime is not ready');
+  const modelResponse = await fetch(modelUrl);
+  if (!modelResponse.ok) throw new Error(`Face model HTTP ${modelResponse.status}`);
+  const model = new Uint8Array(await modelResponse.arrayBuffer());
+  const options = (delegate: 'CPU' | 'GPU') => ({
+    baseOptions: { modelAssetBuffer: model, delegate },
+    runningMode: 'VIDEO' as const,
+    numFaces: 1,
+    minFaceDetectionConfidence: 0.5,
+    minFacePresenceConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+    outputFaceBlendshapes: true,
+    outputFacialTransformationMatrixes: true,
+  });
+  try {
+    faceRecognizer = await FaceLandmarker.createFromOptions(visionFileset, options('GPU'));
+  } catch (gpuError) {
+    console.warn('Face GPU delegate unavailable; trying CPU.', gpuError);
+    faceRecognizer = await FaceLandmarker.createFromOptions(visionFileset, options('CPU'));
+  }
+  if (typeof OffscreenCanvas !== 'undefined') {
+    try {
+      const canvas = new OffscreenCanvas(64, 64);
+      const context = canvas.getContext('2d');
+      if (context) {
+        context.fillStyle = '#808080';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      // Load face graph kernels while the setup screen is warming the model,
+      // before the player's first calibration target appears.
+      faceRecognizer.detectForVideo(canvas, 0);
+    } catch (error) {
+      console.warn('Face landmarker warm-up skipped.', error);
+    }
+  }
+  lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
+}
+
+interface Point2D {
+  x: number;
+  y: number;
+}
+
+const finitePoint = (point: Point2D | undefined): point is Point2D => (
+  Boolean(point) && Number.isFinite(point?.x) && Number.isFinite(point?.y)
+);
+
+const pointDistance = (a: Point2D, b: Point2D): number => Math.hypot(a.x - b.x, a.y - b.y);
+
+function eyeRatios(
+  landmarks: Point2D[],
+  irisIndex: number,
+  outerIndex: number,
+  innerIndex: number,
+  upperIndex: number,
+  lowerIndex: number,
+): { x: number; y: number; width: number; valid: boolean } {
+  const iris = landmarks[irisIndex];
+  const outer = landmarks[outerIndex];
+  const inner = landmarks[innerIndex];
+  const upper = landmarks[upperIndex];
+  const lower = landmarks[lowerIndex];
+  if (![iris, outer, inner, upper, lower].every(finitePoint)) {
+    return { x: 0.5, y: 0.5, width: 0, valid: false };
+  }
+
+  const axisX = inner.x - outer.x;
+  const axisY = inner.y - outer.y;
+  const widthSquared = axisX * axisX + axisY * axisY;
+  const lidX = lower.x - upper.x;
+  const lidY = lower.y - upper.y;
+  const lidSquared = lidX * lidX + lidY * lidY;
+  if (widthSquared < 0.0001 || lidSquared < 0.0000025) {
+    return { x: 0.5, y: 0.5, width: Math.sqrt(Math.max(0, widthSquared)), valid: false };
+  }
+
+  return {
+    x: ((iris.x - outer.x) * axisX + (iris.y - outer.y) * axisY) / widthSquared,
+    y: ((iris.x - upper.x) * lidX + (iris.y - upper.y) * lidY) / lidSquared,
+    width: Math.sqrt(widthSquared),
+    valid: true,
+  };
+}
+
+const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
+
+/**
+ * Reduce MediaPipe's 478-point face output to the eight calibration features
+ * required by the game. Full face landmarks and camera pixels never cross the
+ * worker boundary.
+ */
+function compactGazeResult(
+  result: FaceLandmarkerResult,
+  timestampMs: number,
+): CompactGazeObservation | null {
+  const landmarks = result.faceLandmarks?.[0];
+  if (!landmarks || landmarks.length < 478) return null;
+
+  const categories = result.faceBlendshapes?.[0]?.categories ?? [];
+  const blendshape = (name: string): number => {
+    const category = categories.find((candidate) => candidate.categoryName === name);
+    return clamp01(category?.score ?? 0);
+  };
+  const leftBlink = blendshape('eyeBlinkLeft');
+  const rightBlink = blendshape('eyeBlinkRight');
+  const hasBlinkSignals = categories.some((candidate) => candidate.categoryName === 'eyeBlinkLeft')
+    && categories.some((candidate) => candidate.categoryName === 'eyeBlinkRight');
+
+  // MediaPipe names these from the subject's perspective.
+  const left = eyeRatios(landmarks, 473, 263, 362, 386, 374);
+  const right = eyeRatios(landmarks, 468, 33, 133, 159, 145);
+  const leftOuter = landmarks[263];
+  const rightOuter = landmarks[33];
+  if (!finitePoint(leftOuter) || !finitePoint(rightOuter)) return null;
+
+  const faceScale = pointDistance(leftOuter, rightOuter);
+  const faceCenterX = (leftOuter.x + rightOuter.x) / 2;
+  const faceCenterY = (leftOuter.y + rightOuter.y) / 2;
+  const faceRoll = Math.atan2(leftOuter.y - rightOuter.y, leftOuter.x - rightOuter.x) / Math.PI;
+
+  // Eyelid closure makes iris-to-lid ratios mathematically unstable. During a
+  // short, bilateral blink only, hold the last verified open-eye features.
+  // Head movement, asymmetric closure, an old lock, or missing blendshapes all
+  // fail closed instead of manufacturing a target.
+  const bilateralClosure = hasBlinkSignals && leftBlink >= 0.44 && rightBlink >= 0.44;
+  if (bilateralClosure) {
+    const held = lastOpenGaze;
+    const headStill = held
+      && Math.hypot(faceCenterX - held.features[4], faceCenterY - held.features[5]) <= 0.04
+      && Math.abs(faceScale - held.features[6]) <= Math.max(0.018, held.features[6] * 0.16)
+      && Math.abs(faceRoll - held.features[7]) <= 0.08;
+    if (!held || timestampMs - held.timestampMs > GAZE_BLINK_FEATURE_HOLD_MS || !headStill) return null;
+    return {
+      features: [...held.features] as GazeFeatureVector,
+      confidence: held.confidence,
+      leftBlink,
+      rightBlink,
+    };
+  }
+
+  if (!left.valid || !right.valid) return null;
+
+  let confidence = 1;
+  confidence *= clamp01((faceScale - 0.08) / 0.1);
+  confidence *= clamp01(Math.min(left.width, right.width) / 0.025);
+  if (faceCenterX < 0.08 || faceCenterX > 0.92 || faceCenterY < 0.06 || faceCenterY > 0.72) confidence *= 0.55;
+  if (Math.abs(faceRoll) > 0.34) confidence *= 0.65;
+  const ratios = [left.x, left.y, right.x, right.y];
+  if (ratios.some((value) => !Number.isFinite(value) || value < -0.35 || value > 1.35)) confidence = 0;
+  if (!hasBlinkSignals) confidence = Math.min(confidence, 0.45);
+
+  const compact: CompactGazeObservation = {
+    features: [
+      left.x,
+      left.y,
+      right.x,
+      right.y,
+      faceCenterX,
+      faceCenterY,
+      faceScale,
+      faceRoll,
+    ],
+    confidence: clamp01(confidence),
+    leftBlink,
+    rightBlink,
+  };
+  if (leftBlink <= 0.32 && rightBlink <= 0.32 && compact.confidence >= 0.62) {
+    lastOpenGaze = {
+      features: [...compact.features] as GazeFeatureVector,
+      confidence: compact.confidence,
+      timestampMs,
+    };
+  }
+  return compact;
+}
+
 workerScope.onmessage = async (event): Promise<void> => {
   const message = event.data;
   if (message.type === 'INIT') {
     try {
       recognizer?.close();
+      faceRecognizer?.close();
       recognizer = null;
+      faceRecognizer = null;
+      visionFileset = null;
       resetLighting();
       await createRecognizer(message.wasmUrl, message.modelUrl);
       workerScope.postMessage({ type: 'READY' });
@@ -272,51 +492,106 @@ workerScope.onmessage = async (event): Promise<void> => {
     return;
   }
 
+  if (message.type === 'PREPARE_GAZE') {
+    try {
+      await createFaceRecognizer(message.modelUrl);
+      workerScope.postMessage({ type: 'GAZE_READY' });
+    } catch (error) {
+      faceRecognizer?.close();
+      faceRecognizer = null;
+      workerScope.postMessage({
+        type: 'GAZE_INIT_ERROR',
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+    return;
+  }
+
   if (message.type === 'CLEANUP') {
     recognizer?.close();
+    faceRecognizer?.close();
     recognizer = null;
+    faceRecognizer = null;
+    visionFileset = null;
     resetLighting();
     return;
   }
 
-  const { bitmap, timestampMs, generation, frameId } = message;
-  if (!recognizer) {
+  const { bitmap, timestampMs, generation, frameId, mode } = message;
+  const needsHand = mode !== 'gaze';
+  const needsGaze = mode !== 'hand';
+  if ((needsHand && !recognizer) || (needsGaze && !faceRecognizer)) {
     bitmap.close();
-    workerScope.postMessage({ type: 'FRAME_ERROR', generation, frameId, error: 'Hand landmarker is not ready' });
+    workerScope.postMessage({
+      type: 'FRAME_ERROR',
+      generation,
+      frameId,
+      error: needsGaze && !faceRecognizer ? 'Face landmarker is not ready' : 'Hand landmarker is not ready',
+    });
     return;
   }
 
   const startedAt = performance.now();
   try {
     const prepared = inferenceSource(bitmap, startedAt);
-    let result: HandLandmarkerResult;
     let enhanced = prepared.enhanced;
     let enhancedFallback = false;
-    try {
-      result = recognizer.detectForVideo(prepared.source, timestampMs);
-    } catch (error) {
-      if (!prepared.enhanced) throw error;
-      // Some browsers expose OffscreenCanvas and its filters but MediaPipe's
-      // selected delegate cannot consume that canvas. Permanently retain the
-      // known-good ImageBitmap path for this recognizer instance.
-      canvasInputSupported = false;
-      enhanced = false;
-      enhancedFallback = true;
-      result = recognizer.detectForVideo(bitmap, timestampMs);
+    let result: HandLandmarkerResult | null = null;
+    let gaze: CompactGazeObservation | null = null;
+    let gazeEvaluated = false;
+
+    if (needsHand && recognizer) {
+      try {
+        result = recognizer.detectForVideo(prepared.source, timestampMs);
+      } catch (error) {
+        if (!prepared.enhanced) throw error;
+        // Some browsers expose OffscreenCanvas and its filters but MediaPipe's
+        // selected delegate cannot consume that canvas. Permanently retain the
+        // known-good ImageBitmap path for this recognizer instance.
+        canvasInputSupported = false;
+        enhanced = false;
+        enhancedFallback = true;
+        result = recognizer.detectForVideo(bitmap, timestampMs);
+      }
     }
+
+    if (needsGaze && faceRecognizer
+      && timestampMs - lastFaceInferenceTimestampMs >= GAZE_FACE_INTERVAL_MS - GAZE_FACE_EARLY_TOLERANCE_MS) {
+      gazeEvaluated = true;
+      lastFaceInferenceTimestampMs = timestampMs;
+      let faceResult: FaceLandmarkerResult;
+      try {
+        faceResult = faceRecognizer.detectForVideo(enhanced ? prepared.source : bitmap, timestampMs);
+      } catch (error) {
+        if (!enhanced) throw error;
+        // The face graph can reject a filtered OffscreenCanvas independently
+        // from the hand graph. Retain the common ImageBitmap fallback.
+        canvasInputSupported = false;
+        enhanced = false;
+        enhancedFallback = true;
+        faceResult = faceRecognizer.detectForVideo(bitmap, timestampMs);
+      }
+      gaze = compactGazeResult(faceResult, timestampMs);
+    }
+
     const totalFrameMs = performance.now() - startedAt;
     if (!enhancedFallback && enhancementBudget.observe(totalFrameMs, enhanced)) {
       enhancementDisabledUntil = performance.now() + OPTIONAL_PIPELINE_COOLDOWN_MS;
       enhancementBudget.clearEnhancedWindow();
     }
-    const landmarks = result.landmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null;
-    const worldLandmarks = result.worldLandmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null;
-    const handedness = result.handedness?.[0]?.[0];
+    const landmarks = result
+      ? result.landmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null
+      : null;
+    const worldLandmarks = result
+      ? result.worldLandmarks?.[0]?.map((point) => ({ x: point.x, y: point.y, z: point.z })) ?? null
+      : null;
+    const handedness = result ? result.handedness?.[0]?.[0] : undefined;
     workerScope.postMessage({
       type: 'RESULT',
       generation,
       frameId,
       timestampMs,
+      mode,
       inferenceMs: totalFrameMs,
       landmarks,
       worldLandmarks,
@@ -326,6 +601,8 @@ workerScope.onmessage = async (event): Promise<void> => {
       handednessScore: handedness?.score ?? 0,
       lightingMode: activeLighting.mode,
       enhanced,
+      gaze,
+      gazeEvaluated,
     });
   } catch (error) {
     workerScope.postMessage({ type: 'FRAME_ERROR', generation, frameId, error: error instanceof Error ? error.message : String(error) });

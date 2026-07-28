@@ -9,7 +9,22 @@ import {
   type HandGridDragFrame,
 } from '../game/handcontrol';
 import { getHandSettings } from '../game/handsettings';
-import { getHandTracker, type HandSample, type HandTrackingFailure } from '../game/handtracking';
+import {
+  getHandTracker,
+  type HandSample,
+  type HandTrackingFailure,
+  type VisionTrackingMode,
+} from '../game/handtracking';
+import {
+  DoubleBlinkControl,
+  GazeAimController,
+  GazeDwellControl,
+} from '../game/gazecontrol';
+import {
+  currentGazeCalibrationIdentity,
+  gazeCalibrationMatches,
+  getGazeSettings,
+} from '../game/gazesettings';
 import {
   MATCH3_COLUMNS,
   MATCH3_LEVEL_COUNT,
@@ -121,6 +136,7 @@ export class Match3Scene extends Phaser.Scene {
 
   private handOn = false;
   private handStarting = false;
+  private visionMode: VisionTrackingMode = 'hand';
   private handHasSeen = false;
   private handActivationGeneration = 0;
   private handReleaseThreshold = 0.5;
@@ -133,6 +149,18 @@ export class Match3Scene extends Phaser.Scene {
   private readonly handAimPredictor = new HandAimPredictor(32, 0.04, 180);
   private readonly handContinuity = new HandGestureContinuityGate();
   private readonly handDrag = new HandDragSwapController();
+  private readonly gazeAimController = new GazeAimController();
+  private readonly gazeBlinkControl = new DoubleBlinkControl();
+  private gazeDwellControl = new GazeDwellControl();
+  private gazeHasSeen = false;
+  private gazeLastSeenAt = 0;
+  private gazeCursorTarget: { x: number; y: number } | null = null;
+  private gazeCursorSmooth: { x: number; y: number } | null = null;
+  private gazeCell: Match3Coordinate | null = null;
+  private gazeStableCell: { cell: Match3Coordinate; timestampMs: number } | null = null;
+  private gazeBlinkCell: { cell: Match3Coordinate; timestampMs: number } | null = null;
+  private gazePinchSource: Match3Coordinate | null = null;
+  private gazePinchCandidate: { cell: Match3Coordinate; timestampMs: number } | null = null;
 
   private readonly handleQualityChange = (): void => {
     if (!this.scene.isActive()) return;
@@ -146,12 +174,24 @@ export class Match3Scene extends Phaser.Scene {
     this.handAimPredictor.reset();
     this.handContinuity.reset();
     this.handDrag.cancel();
+    this.gazeAimController.reset();
+    this.gazeBlinkControl.reset();
+    this.gazeDwellControl.reset();
+    this.gazeHasSeen = false;
+    this.gazeLastSeenAt = 0;
+    this.gazeCursorTarget = null;
+    this.gazeCursorSmooth = null;
+    this.gazeCell = null;
+    this.gazeStableCell = null;
+    this.gazeBlinkCell = null;
+    this.gazePinchSource = null;
+    this.gazePinchCandidate = null;
     this.handBoosterTarget = null;
     this.handHasSeen = false;
     this.handLastSeenAt = 0;
     this.handCursor?.setVisible(false);
     this.clearSelection();
-    this.setStatus('HAND STABILIZING', '#ffe083');
+    this.setStatus(`${this.visionLabel()} STABILIZING`, '#ffe083');
   };
 
   constructor() {
@@ -178,6 +218,20 @@ export class Match3Scene extends Phaser.Scene {
     this.handOn = false;
     this.handStarting = false;
     this.handHasSeen = false;
+    const gazeSettings = getGazeSettings();
+    this.visionMode = gazeSettings.mode === 'off' ? 'hand' : gazeSettings.mode;
+    this.gazeDwellControl = new GazeDwellControl(gazeSettings.dwellMs);
+    this.gazeAimController.reset();
+    this.gazeBlinkControl.reset();
+    this.gazeHasSeen = false;
+    this.gazeLastSeenAt = 0;
+    this.gazeCursorTarget = null;
+    this.gazeCursorSmooth = null;
+    this.gazeCell = null;
+    this.gazeStableCell = null;
+    this.gazeBlinkCell = null;
+    this.gazePinchSource = null;
+    this.gazePinchCandidate = null;
     this.handLastSeenAt = 0;
     this.handBoosterTarget = null;
     this.tileViews.clear();
@@ -286,7 +340,7 @@ export class Match3Scene extends Phaser.Scene {
     }, 196, 58, 16);
 
     addArtButton(this, 112, 1_112, 'HINT', () => this.showHint(), 168, 58, 16);
-    this.handButton = addArtButton(this, 360, 1_112, 'HAND  •  OFF', () => {
+    this.handButton = addArtButton(this, 360, 1_112, `${this.visionLabel()}  •  OFF`, () => {
       void this.toggleHand();
     }, 286, 58, 16);
     this.handButtonText = this.handButton.list.find(
@@ -294,7 +348,7 @@ export class Match3Scene extends Phaser.Scene {
     );
     addArtButton(this, 608, 1_112, 'RESTART', () => this.restartLevel(), 168, 58, 16);
 
-    this.statusText = this.add.text(VIEW.width / 2, 1_176, 'DRAG, TAP-TAP, ARROWS + SPACE, OR PINCH + PALM SWIPE', {
+    this.statusText = this.add.text(VIEW.width / 2, 1_176, 'DRAG, TAP-TAP, ARROWS + SPACE, PINCH, OR CALIBRATED EYES', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#aebdd1',
@@ -334,10 +388,16 @@ export class Match3Scene extends Phaser.Scene {
     sharpenSceneText(this);
   }
 
-  update(): void {
+  update(_time: number, delta: number): void {
     if (!this.handOn || this.inputLocked || this.pauseShown || this.terminalShown) return;
-    this.pollHand();
-    this.advanceHandCursor();
+    if (this.visionMode === 'hand') {
+      this.pollHand();
+      this.advanceHandCursor();
+    } else {
+      this.pollGaze();
+      if (this.visionMode === 'gaze-hand') this.pollGazeHand();
+      this.advanceGazeCursor(delta);
+    }
   }
 
   private drawBoardGrid(accent: number): void {
@@ -987,8 +1047,18 @@ export class Match3Scene extends Phaser.Scene {
       this.handAimPredictor.reset();
       this.handContinuity.reset();
       this.handDrag.cancel();
+      this.gazeAimController.reset();
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.reset();
+      this.gazeCursorTarget = null;
+      this.gazeCursorSmooth = null;
+      this.gazeCell = null;
+      this.gazeStableCell = null;
+      this.gazeBlinkCell = null;
+      this.gazePinchSource = null;
+      this.gazePinchCandidate = null;
       this.handCursor?.setVisible(false);
-      this.setHandButton('HAND  •  OFF', '#f2e8d4');
+      this.setHandButton(`${this.visionLabel()}  •  OFF`, '#f2e8d4');
       this.setStatus('POINTER, TOUCH AND KEYBOARD READY', '#aebdd1');
       return;
     }
@@ -998,10 +1068,20 @@ export class Match3Scene extends Phaser.Scene {
   private async startHandTracking(): Promise<void> {
     if (this.handStarting || this.handOn || this.pauseShown || this.terminalShown) return;
     const tracker = getHandTracker();
+    if (this.visionMode !== 'hand') {
+      const settings = getGazeSettings();
+      const handSettings = getHandSettings();
+      const identity = currentGazeCalibrationIdentity(handSettings.deviceId, handSettings.mirror);
+      if (!gazeCalibrationMatches(settings.calibration, identity)) {
+        this.setHandButton(`${this.visionLabel()}  •  CALIBRATE`, '#ff9a99');
+        this.setStatus('EYE CALIBRATION REQUIRED — OPEN CAMERA CONTROLS', '#ff9a99');
+        return;
+      }
+    }
     const activation = ++this.handActivationGeneration;
     this.handStarting = true;
-    this.setHandButton('HAND  •  STARTING', '#ffe083');
-    const enabled = await tracker.enable();
+    this.setHandButton(`${this.visionLabel()}  •  STARTING`, '#ffe083');
+    const enabled = await tracker.enable(this.visionMode);
     if (activation !== this.handActivationGeneration) return;
     this.handStarting = false;
     if (!this.sys.isActive() || this.pauseShown || this.terminalShown) {
@@ -1009,15 +1089,35 @@ export class Match3Scene extends Phaser.Scene {
       this.handOn = false;
       return;
     }
+    if (enabled && this.visionMode !== 'hand') {
+      const resolvedCameraId = tracker.getActiveCameraDeviceId();
+      const settings = getGazeSettings();
+      const handSettings = getHandSettings();
+      const activeIdentity = currentGazeCalibrationIdentity(resolvedCameraId, handSettings.mirror);
+      if (!resolvedCameraId || !gazeCalibrationMatches(settings.calibration, activeIdentity)) {
+        tracker.disable();
+        this.handOn = false;
+        this.setHandButton(`${this.visionLabel()}  •  RECALIBRATE`, '#ff9a99');
+        this.setStatus('ACTIVE CAMERA CHANGED — RECALIBRATE IN CAMERA CONTROLS', '#ff9a99');
+        return;
+      }
+    }
     this.handOn = enabled;
     this.handHasSeen = false;
     this.handLastSeenAt = 0;
     if (enabled) {
       tracker.setPreviewVisible(false);
-      this.setHandButton('HAND  •  ON', '#76f0c7');
-      this.setStatus('SEARCHING FOR HAND  •  KEEP PALM IN FRAME', '#ffe083');
+      this.setHandButton(`${this.visionLabel()}  •  ON`, '#76f0c7');
+      this.setStatus(
+        this.visionMode === 'hand'
+          ? 'SEARCHING FOR HAND  •  KEEP PALM IN FRAME'
+          : this.visionMode === 'gaze'
+            ? 'LOOK AT AN ORB  •  HOLD STEADY, THEN DOUBLE BLINK'
+            : 'LOOK AT AN ORB  •  PINCH TO LOCK, MOVE EYES, RELEASE',
+        '#ffe083',
+      );
     } else {
-      this.setHandButton('HAND  •  ERROR', '#ff9a99');
+      this.setHandButton(`${this.visionLabel()}  •  ERROR`, '#ff9a99');
       this.setStatus(handFailureMessage(tracker.getLastFailure()), '#ff9a99');
     }
   }
@@ -1031,6 +1131,16 @@ export class Match3Scene extends Phaser.Scene {
     this.handAimPredictor.reset();
     this.handContinuity.reset();
     this.handDrag.cancel();
+    this.gazeAimController.reset();
+    this.gazeBlinkControl.reset();
+    this.gazeDwellControl.reset();
+    this.gazeCursorTarget = null;
+    this.gazeCursorSmooth = null;
+    this.gazeCell = null;
+    this.gazeStableCell = null;
+    this.gazeBlinkCell = null;
+    this.gazePinchSource = null;
+    this.gazePinchCandidate = null;
     this.handBoosterTarget = null;
     this.clearSelection();
     this.handCursor?.setVisible(false);
@@ -1044,6 +1154,12 @@ export class Match3Scene extends Phaser.Scene {
       pressed: label.includes('ON'),
       disabled: label.includes('STARTING'),
     });
+  }
+
+  private visionLabel(): string {
+    if (this.visionMode === 'gaze') return 'EYES';
+    if (this.visionMode === 'gaze-hand') return 'EYES + PINCH';
+    return 'HAND';
   }
 
   private handFrame(sample: HandSample, cell: Match3Coordinate | null): HandGridDragFrame {
@@ -1169,6 +1285,305 @@ export class Match3Scene extends Phaser.Scene {
     } else if (!this.pinchControl.isLatched()) {
       this.setStatus('HAND READY  •  PINCH, SWIPE ONE CELL, RELEASE', '#76f0c7');
     }
+  }
+
+  private pollGaze(): void {
+    const now = performance.now();
+    const observation = getHandTracker().sampleGaze();
+    if (!observation) {
+      if (!this.gazeHasSeen) {
+        this.setStatus('SEARCHING FOR FACE  •  KEEP BOTH EYES IN FRAME', '#ffe083');
+        return;
+      }
+      const lostFor = now - this.gazeLastSeenAt;
+      if (lostFor > HAND_LOSS_HIDE_MS) {
+        this.gazeCursorTarget = null;
+        this.gazeCursorSmooth = null;
+        this.gazeCell = null;
+        this.gazeStableCell = null;
+        this.gazeBlinkCell = null;
+        this.gazePinchCandidate = null;
+        this.handCursor?.setVisible(false);
+        this.gazeBlinkControl.reset();
+        this.gazeDwellControl.update({
+          targetId: null,
+          timestampMs: now,
+          usableForAction: false,
+          stableForAction: false,
+        });
+      }
+      if (lostFor > HAND_LOSS_RESET_MS) {
+        this.gazeAimController.reset();
+        this.gazeHasSeen = false;
+        this.gazePinchSource = null;
+        this.gazePinchCandidate = null;
+        this.pinchControl.reset();
+        this.setStatus('FACE LOST — NO MOVE WAS SPENT', '#ffb27d');
+      }
+      return;
+    }
+
+    const settings = getGazeSettings();
+    const handSettings = getHandSettings();
+    const activeCameraId = getHandTracker().getActiveCameraDeviceId();
+    const identity = currentGazeCalibrationIdentity(activeCameraId, handSettings.mirror);
+    const profile = settings.calibration;
+    if (!activeCameraId || !gazeCalibrationMatches(profile, identity)) {
+      getHandTracker().disable();
+      this.handOn = false;
+      this.gazeAimController.reset();
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.reset();
+      this.gazeStableCell = null;
+      this.gazeBlinkCell = null;
+      this.gazePinchSource = null;
+      this.gazePinchCandidate = null;
+      this.handCursor?.setVisible(false);
+      this.setHandButton(`${this.visionLabel()}  •  RECALIBRATE`, '#ff9a99');
+      this.setStatus('ACTIVE CAMERA CHANGED — RECALIBRATE IN CAMERA CONTROLS', '#ff9a99');
+      return;
+    }
+    const aim = profile
+      ? this.gazeAimController.update(observation, profile, now)
+      : null;
+    if (!aim) {
+      this.gazeCell = null;
+      this.gazeStableCell = null;
+      this.gazeBlinkCell = null;
+      this.gazePinchCandidate = null;
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.update({
+        targetId: null,
+        timestampMs: observation.timestampMs,
+        usableForAction: false,
+        stableForAction: false,
+      });
+      this.handCursor?.setVisible(false);
+      this.setStatus('EYE INPUT UNCERTAIN — HOLD STILL OR RECALIBRATE', '#ffe083');
+      return;
+    }
+
+    this.gazeHasSeen = true;
+    this.gazeLastSeenAt = now;
+    const point = { x: aim.x * VIEW.width, y: aim.y * VIEW.height };
+    const cell = this.cellAtPoint(point.x, point.y);
+    this.gazeCursorTarget = cell ? cellCenter(cell) : point;
+    if (!this.gazeCursorSmooth) this.gazeCursorSmooth = { ...this.gazeCursorTarget };
+    this.gazeCell = cell;
+    const stableTarget = aim.usableForAction
+      && aim.stableForAction
+      && now - observation.timestampMs <= 180;
+    const bothEyesOpen = observation.leftBlink <= 0.32 && observation.rightBlink <= 0.32;
+    if (!cell) {
+      this.gazeStableCell = null;
+      this.gazeBlinkCell = null;
+      this.gazePinchCandidate = null;
+      this.candidate = null;
+      this.drawSelection(this.gazePinchSource ?? this.selected, null);
+      this.gazeBlinkControl.reset();
+      this.gazeDwellControl.update({
+        targetId: null,
+        timestampMs: observation.timestampMs,
+        usableForAction: stableTarget && bothEyesOpen,
+        stableForAction: aim.stableForAction,
+      });
+      this.setStatus('LOOK INSIDE THE ORB GRID', '#ffe083');
+      return;
+    }
+
+    if (stableTarget && bothEyesOpen) {
+      this.gazeStableCell = { cell: { ...cell }, timestampMs: observation.timestampMs };
+      this.keyboardCell = { ...cell };
+      if (this.gazePinchSource) {
+        this.gazePinchCandidate = areMatch3Neighbors(this.gazePinchSource, cell)
+          ? { cell: { ...cell }, timestampMs: observation.timestampMs }
+          : null;
+        this.candidate = this.gazePinchCandidate ? { ...this.gazePinchCandidate.cell } : null;
+        this.drawSelection(this.gazePinchSource, this.candidate);
+      } else {
+        this.candidate = this.selected && areMatch3Neighbors(this.selected, cell)
+          ? { ...cell }
+          : null;
+        this.drawSelection(this.selected, this.candidate);
+      }
+    }
+
+    if (this.visionMode === 'gaze-hand') {
+      this.gazeBlinkCell = null;
+      const locked = this.gazeStableCell
+        && now - this.gazeStableCell.timestampMs <= 260;
+      this.setStatus(
+        locked ? 'GAZE LOCKED  •  PINCH TO SELECT' : 'HOLD GAZE STEADY',
+        locked ? '#76f0c7' : '#ffe083',
+      );
+      return;
+    }
+
+    let action = false;
+    if (settings.activation === 'dwell') {
+      const dwell = this.gazeDwellControl.update({
+        timestampMs: observation.timestampMs,
+        targetId: coordinateKey(cell),
+        usableForAction: stableTarget && bothEyesOpen,
+        stableForAction: aim.stableForAction,
+      });
+      action = dwell.action;
+      this.setStatus(`EYE DWELL  •  ${Math.round(dwell.progress * 100)}%`, '#76f0c7');
+    } else {
+      const blinkEvent = this.gazeBlinkControl.update({
+        timestampMs: observation.timestampMs,
+        leftBlink: observation.leftBlink,
+        rightBlink: observation.rightBlink,
+        usableForAction: aim.usableForAction,
+        stableForAction: aim.stableForAction,
+      });
+      action = blinkEvent === 'action';
+      if (blinkEvent !== 'action') {
+        if (this.gazeBlinkControl.isSequenceEngaged()) {
+          const stableCell = this.gazeStableCell
+            && now - this.gazeStableCell.timestampMs <= 260
+            ? this.gazeStableCell
+            : null;
+          if (!this.gazeBlinkCell && stableCell) {
+            this.gazeBlinkCell = {
+              cell: { ...stableCell.cell },
+              timestampMs: stableCell.timestampMs,
+            };
+          }
+        } else {
+          this.gazeBlinkCell = null;
+        }
+      }
+      this.setStatus(
+        aim.stableForAction ? 'GAZE LOCKED  •  DOUBLE BLINK TO SELECT' : 'HOLD GAZE STEADY',
+        aim.stableForAction ? '#76f0c7' : '#ffe083',
+      );
+    }
+    const selectedCell = settings.activation === 'double-blink'
+      ? this.gazeBlinkCell
+      : this.gazeStableCell;
+    const authoritativeAgeMs = settings.activation === 'double-blink' ? 1_000 : 260;
+    const authoritativeCell = selectedCell
+      && now - selectedCell.timestampMs <= authoritativeAgeMs
+      ? selectedCell.cell
+      : null;
+    if (action && authoritativeCell) this.activateGazeCell(authoritativeCell);
+    if (action) this.gazeBlinkCell = null;
+  }
+
+  private activateGazeCell(cell: Match3Coordinate): void {
+    if (this.inputLocked || this.pauseShown || this.terminalShown) return;
+    if (this.activeBooster) {
+      const booster = this.activeBooster;
+      this.activeBooster = null;
+      void this.applyBooster(booster, cell);
+      this.gazeBlinkControl.reset();
+      return;
+    }
+    if (this.selected && !this.sameCell(this.selected, cell) && areMatch3Neighbors(this.selected, cell)) {
+      const from = { ...this.selected };
+      void this.attemptSwap(from, cell);
+    } else {
+      this.selected = { ...cell };
+      this.keyboardCell = { ...cell };
+      this.candidate = null;
+      this.drawSelection();
+      this.announceBoardFocus('Eye selected');
+      this.setStatus('SOURCE LOCKED  •  LOOK AT AN ADJACENT ORB', '#76f0c7');
+    }
+    this.gazeBlinkControl.reset();
+  }
+
+  private pollGazeHand(): void {
+    const now = performance.now();
+    const sample = getHandTracker().sample();
+    if (!sample) {
+      if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
+        this.gazePinchSource = null;
+        this.gazePinchCandidate = null;
+        this.candidate = null;
+        this.drawSelection();
+      }
+      return;
+    }
+    this.handHasSeen = true;
+    this.handLastSeenAt = now;
+    const continuity = this.handContinuity.observe(
+      sample.gestureStable && sample.usableForGesture,
+      sample.timestampMs,
+    );
+    if (continuity !== 'usable') {
+      if (continuity === 'cancel') {
+        this.pinchControl.resetForContinuity();
+        this.gazePinchSource = null;
+        this.gazePinchCandidate = null;
+      } else {
+        this.pinchControl.holdForUncertainty(sample.timestampMs);
+      }
+      return;
+    }
+    const event = this.pinchControl.update(sample);
+    if (event === 'latched') {
+      const stableCell = this.gazeStableCell
+        && now - this.gazeStableCell.timestampMs <= 260
+        ? this.gazeStableCell.cell
+        : null;
+      if (!stableCell) {
+        this.pinchControl.resetForContinuity();
+        return;
+      }
+      this.gazePinchSource = { ...stableCell };
+      this.gazePinchCandidate = null;
+      this.selected = { ...stableCell };
+      this.candidate = null;
+      this.drawSelection();
+      this.setStatus('PINCHED  •  LOOK AT ONE ADJACENT ORB, THEN RELEASE', '#76f0c7');
+    } else if (event === 'cancelled') {
+      this.gazePinchSource = null;
+      this.gazePinchCandidate = null;
+      this.candidate = null;
+      this.drawSelection();
+      this.setStatus('GESTURE CANCELLED SAFELY — NO MOVE SPENT', '#ffb27d');
+    } else if (event === 'released') {
+      const source = this.gazePinchSource;
+      const candidate = this.gazePinchCandidate
+        && now - this.gazePinchCandidate.timestampMs <= 260
+        ? this.gazePinchCandidate.cell
+        : null;
+      this.gazePinchSource = null;
+      this.gazePinchCandidate = null;
+      this.candidate = null;
+      if (this.activeBooster && source) {
+        const booster = this.activeBooster;
+        this.activeBooster = null;
+        void this.applyBooster(booster, source);
+      } else if (source && candidate && areMatch3Neighbors(source, candidate)) {
+        void this.attemptSwap(source, candidate);
+      } else {
+        this.drawSelection();
+        this.setStatus('LOOK AT AN ADJACENT ORB BEFORE RELEASE — NO MOVE SPENT', '#ffb27d');
+      }
+    }
+  }
+
+  private advanceGazeCursor(deltaMs: number): void {
+    if (!this.gazeCursorTarget || !this.handCursor) return;
+    if (!this.gazeCursorSmooth) this.gazeCursorSmooth = { ...this.gazeCursorTarget };
+    const follow = 1 - Math.exp(-Math.min(50, Math.max(1, deltaMs)) / 34);
+    this.gazeCursorSmooth.x = Phaser.Math.Linear(
+      this.gazeCursorSmooth.x,
+      this.gazeCursorTarget.x,
+      follow,
+    );
+    this.gazeCursorSmooth.y = Phaser.Math.Linear(
+      this.gazeCursorSmooth.y,
+      this.gazeCursorTarget.y,
+      follow,
+    );
+    this.handCursor.setVisible(true).setPosition(
+      this.gazeCursorSmooth.x,
+      this.gazeCursorSmooth.y,
+    );
   }
 
   /** Render-only prediction; logical source/candidate always use measured palm frames. */
