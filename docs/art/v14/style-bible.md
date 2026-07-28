@@ -4,7 +4,7 @@ Status: locked for candidate production. This document governs V14 only. V2 thro
 
 ## North star
 
-PaoPao Fusion is an original mascot-led cinematic casual-fantasy world. Its visual language combines expressive Pao spirits, pearl and crystal translucency, warm gold craft, readable silhouettes and hopeful magical landscapes. Corruption introduces tension through fractured rhythm and dimmed material response; it never turns the game into horror or combat presentation.
+PaoPao Fusion is an original mascot-led cinematic casual-fantasy world. Its visual language combines expressive Pao spirits, pearl and crystal translucency, warm gold craft, readable silhouettes and hopeful magical landscapes. Corruption may push a realm into original cinematic fantasy-horror through impossible scale, fractured rhythm, haunted stillness, volumetric fog and dimmed material response. It never becomes gore, cruelty, combat presentation or a cheap jump scare: the darkness is always something the player can heal.
 
 The player should understand the main action within five seconds. Every screen has one dominant hero focal point, one clear play action and a calm hierarchy around the active board.
 
@@ -68,6 +68,32 @@ All realm compositions are portrait-first and include crop bleed for mobile and 
 | Nexus | coherent prism bridges, pearl void, ordered constellations | phase offsets, fractured bridges, sparse red-violet interference |
 
 Corruption is a material and rhythm state. It does not add fighting poses, weapons, copied monsters or franchise iconography.
+
+### Corrupted realm direction
+
+Every existing realm has one corrupted presentation state and one restored
+state. These are visual readings of the same stable world ID, never extra
+campaign worlds and never gameplay modifiers.
+
+- Crystal becomes a silent fractured orchard with suspended refractions.
+- Emerald becomes an overgrown memory vault with slow bioluminescent breath.
+- Celestial becomes an eclipsed observatory with impossible star geometry.
+- Ember becomes a cooling furnace cathedral with ash suspended in time.
+- Frostbound becomes a buried mirror palace with distant aurora signals.
+- Nexus becomes a haunted celestial archive of broken crown mechanisms.
+
+Horror is created by scale, negative space, sound restraint, parallax,
+occlusion and corrupted light. No blood, mutilation, corpse imagery,
+weapon-led framing, hostile face hidden in scenery or uncontrolled strobe is
+permitted. Pao spirits and the Keeper retain their locked stylized proportions;
+only environment materials, lighting and atmosphere approach realistic surface
+response.
+
+The active board stays visually protected. Corrupted art reserves a quiet top
+14 percent HUD band, a low-frequency central 58 percent playfield, a readable
+lower 18 percent launcher zone and crop bleed for phone, tablet and desktop.
+Reduced motion freezes fog, parallax and decorative fractures while preserving
+state labels and all gameplay feedback.
 
 ## Composition and safe zones
 

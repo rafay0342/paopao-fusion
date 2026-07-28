@@ -34,10 +34,23 @@ describe('V10 Crownshard visual grammar', () => {
     }
   });
 
+  it('expands compact map controls through their real Phaser hit rectangles', () => {
+    const button = exportedFunction(ui, 'addArtButton');
+    expect(button).toContain('setSize(Math.max(100, width), Math.max(100, height))');
+    const helper = exportedFunction(ui, 'setArtButtonHitArea');
+    expect(helper).toContain('button.setSize(width, height)');
+    expect(helper).toContain('hitArea.setTo(0, 0, width, height)');
+    for (const path of ['src/scenes/WorldMapScene.ts', 'src/scenes/Match3MapScene.ts']) {
+      const map = readText(path);
+      expect(map).toContain('setArtButtonHitArea(addArtButton');
+      expect(map).not.toMatch(/addArtButton\([^;]+\.setSize\([^;]+100\)/s);
+    }
+  });
+
   it('lights every realm with its own energy colour', () => {
     const background = exportedFunction(ui, 'addWorldBackground');
     expect(background).toContain('const realmLight');
-    for (const realm of ['world_crystal', 'world_emerald', 'world_celestial', 'world_ember', 'world_frost', 'world_nexus']) {
+    for (const realm of ['world_crystal', 'world_emerald', 'world_celestial', 'world_ember', 'world_frostbound', 'world_nexus']) {
       expect(background).toContain(realm);
     }
     expect(background).not.toContain('0x54ddff');
@@ -74,12 +87,15 @@ describe('V10 Crownshard visual grammar', () => {
     }
   });
 
-  it('renders the map route as a fractured rune rail with compact reward badges', () => {
+  it('renders the map route as a fractured, kind-specific rune rail with bounded reward copy', () => {
     const map = readText('src/scenes/WorldMapScene.ts');
     expect(map).toContain('const route = [');
-    expect(map).toContain('drawRoute(4, theme.accent');
+    expect(map).toContain('drawRoute(15, 0x020611');
+    expect(map).toContain('drawDashedSegment(path, start, point');
+    expect(map).toContain('addNodeKindFrame(this, mapNode.kind');
     expect(map).toContain('labelRail');
-    expect(map).toContain('setDisplaySize(44, 44)');
+    expect(map).toContain('node.setSize(180, 180)');
+    expect(map).not.toContain('const rewardChest');
   });
 
   it('gives store relics and gallery collections distinct static identities', () => {

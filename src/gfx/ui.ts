@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
 import { VIEW } from '../config';
 import { getQualityProfile, type QualityProfile } from '../game/meta';
+import type { WorldPresentation } from '../game/world-presentation';
 import {
   accessibilityRuntimeForCanvas,
   activeAccessibilitySceneForCanvas,
+  type AccessibilityButtonRegistration,
+  type AccessibilityButtonUpdate,
 } from './accessibility';
 import { resolveTextFitScale } from './text-layout';
 
@@ -100,8 +103,14 @@ export function sharpenSceneText(scene: Phaser.Scene): void {
   for (const child of scene.children.list) sharpen(child);
 }
 
-export function addWorldBackground(scene: Phaser.Scene, texture: string, shade = 0.16): Phaser.GameObjects.Image {
+export function addWorldBackground(
+  scene: Phaser.Scene,
+  texture: string,
+  shade = 0.16,
+  presentation?: WorldPresentation,
+): Phaser.GameObjects.Image {
   const quality = getQualityProfile();
+  const reducedMotion = prefersReducedMotion();
   const image = scene.add.image(VIEW.width / 2, VIEW.height / 2, texture)
     .setDisplaySize(VIEW.width + 34, VIEW.height + 54)
     .setDepth(0);
@@ -128,6 +137,10 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
     });
   }
 
+  if (presentation) {
+    addCinematicRealmLayers(scene, presentation, quality, reducedMotion);
+  }
+
   const cinematicWash = scene.add.graphics().setDepth(1);
   if (texture === 'world_crystal') {
     // Luma Orchard is authored as a bright storybook playfield. Preserve its
@@ -152,7 +165,7 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
     world_emerald: 0x70ef98,
     world_celestial: 0x79d9ff,
     world_ember: 0xff715a,
-    world_frost: 0x78dcff,
+    world_frostbound: 0x78dcff,
     world_nexus: 0xa88cff,
     world_prize_vault: 0x82edff,
   };
@@ -177,6 +190,179 @@ export function addWorldBackground(scene: Phaser.Scene, texture: string, shade =
     ).setDepth(1);
   }
   return image;
+}
+
+function addCinematicRealmLayers(
+  scene: Phaser.Scene,
+  presentation: WorldPresentation,
+  quality: QualityProfile,
+  reducedMotion: boolean,
+): void {
+  const corrupted = presentation.state === 'corrupted';
+  const atmosphereExists = scene.textures.exists(presentation.atmosphereKey);
+
+  if (atmosphereExists && quality.parallax && corrupted) {
+    const atmosphere = scene.add.image(
+      VIEW.width / 2,
+      VIEW.height / 2,
+      presentation.atmosphereKey,
+    ).setDisplaySize(VIEW.width + 38, VIEW.height + 58)
+      .setDepth(0.42)
+      .setAlpha(quality.bloom ? 0.46 : 0.3)
+      .setBlendMode(Phaser.BlendModes.SCREEN)
+      .setData({
+        paopaoResourceRole: 'world-atmosphere',
+        paopaoBaseX: VIEW.width / 2,
+        paopaoBaseY: VIEW.height / 2,
+      });
+    if (!reducedMotion) {
+      scene.tweens.add({
+        targets: atmosphere,
+        x: VIEW.width / 2 + 5,
+        y: VIEW.height / 2 - 9,
+        alpha: quality.bloom ? 0.54 : 0.36,
+        duration: 12_800,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
+  }
+
+  const edgeVeil = scene.add.graphics().setDepth(0.6);
+  const edgeAlpha = corrupted ? 0.28 + presentation.intensity * 0.16 : 0.12;
+  edgeVeil.fillGradientStyle(
+    presentation.shadow,
+    presentation.shadow,
+    presentation.shadow,
+    presentation.shadow,
+    edgeAlpha,
+    0,
+    edgeAlpha,
+    0,
+  );
+  edgeVeil.fillRect(0, 0, 116, VIEW.height);
+  edgeVeil.fillGradientStyle(
+    presentation.shadow,
+    presentation.shadow,
+    presentation.shadow,
+    presentation.shadow,
+    0,
+    edgeAlpha,
+    0,
+    edgeAlpha,
+  );
+  edgeVeil.fillRect(VIEW.width - 116, 0, 116, VIEW.height);
+  edgeVeil.setData({ paopaoResourceRole: 'world-static-veil' });
+
+  const fractureArt = scene.add.graphics().setDepth(0.72);
+  const fractureCount = corrupted ? quality.bloom ? 7 : quality.parallax ? 5 : 3 : 2;
+  for (let index = 0; index < fractureCount; index += 1) {
+    const left = index % 2 === 0;
+    const seed = presentation.motionSeed + index * 17;
+    const startX = left ? 12 + seed % 42 : VIEW.width - 12 - seed % 42;
+    const direction = left ? 1 : -1;
+    const startY = 168 + (seed * 43) % 840;
+    const reach = 42 + (seed * 7) % 86;
+    fractureArt.lineStyle(
+      index % 3 === 0 ? 2 : 1,
+      index % 3 === 0 ? presentation.ember : presentation.accent,
+      corrupted ? 0.18 + presentation.intensity * 0.18 : 0.1,
+    );
+    fractureArt.beginPath();
+    fractureArt.moveTo(startX, startY);
+    fractureArt.lineTo(startX + direction * reach * 0.46, startY + 34);
+    fractureArt.lineTo(startX + direction * reach, startY + 9);
+    fractureArt.strokePath();
+  }
+  fractureArt.setData({ paopaoResourceRole: 'world-static-fractures' });
+
+  if (!corrupted) {
+    const restorationLight = scene.add.graphics().setDepth(0.7);
+    restorationLight.fillGradientStyle(
+      presentation.ember,
+      presentation.accent,
+      presentation.ember,
+      presentation.accent,
+      0.055,
+      0.04,
+      0.14,
+      0.1,
+    );
+    restorationLight.fillRect(0, VIEW.height * 0.36, VIEW.width, VIEW.height * 0.64);
+    restorationLight.setData({ paopaoResourceRole: 'world-restoration-light' });
+  }
+
+  if (!quality.parallax) return;
+  const fogPlanes = quality.bloom ? 3 : 1;
+  for (let index = 0; index < fogPlanes; index += 1) {
+    const fog = scene.add.ellipse(
+      VIEW.width * (index % 2 === 0 ? 0.26 : 0.74),
+      VIEW.height * (0.38 + index * 0.18),
+      420 + index * 80,
+      120 + index * 26,
+      presentation.fog,
+      corrupted ? 0.055 : 0.032,
+    ).setDepth(0.68)
+      .setBlendMode(Phaser.BlendModes.SCREEN)
+      .setData({
+        paopaoResourceRole: 'world-atmosphere',
+        paopaoBaseX: VIEW.width * (index % 2 === 0 ? 0.26 : 0.74),
+        paopaoBaseY: VIEW.height * (0.38 + index * 0.18),
+      });
+    if (reducedMotion) continue;
+    scene.tweens.add({
+      targets: fog,
+      x: fog.x + (index % 2 === 0 ? 34 : -34),
+      y: fog.y - 10,
+      alpha: fog.alpha * 1.35,
+      duration: 10_600 + index * 1_700,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+  }
+}
+
+export function addWorldStateBadge(
+  scene: Phaser.Scene,
+  presentation: WorldPresentation,
+  y: number,
+  compact = false,
+): Phaser.GameObjects.Container {
+  const restored = presentation.state === 'restored';
+  const badge = scene.add.container(VIEW.width / 2, y).setDepth(14);
+  const art = scene.add.graphics();
+  const width = compact ? 438 : 568;
+  const height = compact ? 54 : 84;
+  const points = facetedSurfacePoints(width, height, 9);
+  art.fillStyle(restored ? 0x102d2c : 0x100b22, 0.92);
+  art.fillPoints(points, true);
+  art.lineStyle(2, restored ? presentation.ember : presentation.accent, 0.76);
+  art.strokePoints(points, true);
+  art.lineStyle(1, restored ? UI_COLORS.gold : presentation.ember, 0.42);
+  art.lineBetween(-width * 0.32, -height / 2 + 3, width * 0.32, -height / 2 + 3);
+  const label = scene.add.text(0, compact ? 0 : -18, presentation.label, {
+    fontFamily: UI_FONT,
+    fontSize: TYPE.section,
+    color: restored ? '#d7fff2' : '#f0eaff',
+    fontStyle: 'bold',
+    letterSpacing: 1.2,
+  }).setOrigin(0.5);
+  fitText(label, width - 48, 0.9);
+  badge.add([art, label]);
+  if (!compact) {
+    const guidance = scene.add.text(0, 18, presentation.guidance, {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.section,
+      color: restored ? '#d3f7ec' : '#e5deef',
+      fontStyle: 'bold',
+      letterSpacing: 0.35,
+    }).setOrigin(0.5);
+    fitText(guidance, width - 52, 0.84);
+    badge.add(guidance);
+  }
+  return badge;
 }
 
 type CrystalPoint = { x: number; y: number };
@@ -338,8 +524,9 @@ export function addArtButton(
   }).setOrigin(0.5).setShadow(0, 2, '#1c0a36', 4);
   fitText(text, width * 0.8, 0.84);
   button.add([surface, text]);
-  // Keep touch targets forgiving even when compact button art is used.
-  button.setSize(width, Math.max(72, height)).setInteractive({ useHandCursor: true });
+  // At the 320x568 baseline the 720x1280 canvas scales to 0.44375. A
+  // 100-design-pixel target therefore remains at least 44 CSS pixels.
+  button.setSize(Math.max(100, width), Math.max(100, height)).setInteractive({ useHandCursor: true });
   if (!prefersReducedMotion()) {
     button.setY(y + 6).setAlpha(0);
     scene.tweens.add({ targets: button, y, alpha: 1, duration: 190, ease: 'Cubic.easeOut' });
@@ -368,7 +555,36 @@ export function addArtButton(
       button.setScale(focused ? 1.025 : 1);
     },
   });
+  button.setData('paopaoAccessibilityRegistration', accessibilityRegistration);
   button.once(Phaser.GameObjects.Events.DESTROY, () => accessibilityRegistration.unregister());
+  return button;
+}
+
+export function updateArtButtonAccessibility(
+  button: Phaser.GameObjects.Container | undefined,
+  update: AccessibilityButtonUpdate,
+): void {
+  const registration = button?.getData('paopaoAccessibilityRegistration') as
+    | AccessibilityButtonRegistration
+    | undefined;
+  registration?.update(update);
+}
+
+/**
+ * Expand a compact art button's pointer target without scaling its artwork.
+ * Phaser does not resize an existing interactive rectangle when Container
+ * size changes, so both values must be updated together.
+ */
+export function setArtButtonHitArea(
+  button: Phaser.GameObjects.Container,
+  width: number,
+  height: number,
+): Phaser.GameObjects.Container {
+  button.setSize(width, height);
+  const hitArea = button.input?.hitArea;
+  if (hitArea instanceof Phaser.Geom.Rectangle) {
+    hitArea.setTo(0, 0, width, height);
+  }
   return button;
 }
 
@@ -486,6 +702,11 @@ export function applyLiveSceneQuality(scene: Phaser.Scene, profile: QualityProfi
         dataObject.setPosition?.(x, y);
         dataObject.setScale?.(scaleX, scaleY);
       }
+      continue;
+    }
+    if (role === 'world-atmosphere' && !profile.parallax) {
+      scene.tweens.killTweensOf(child);
+      dataObject.setVisible?.(false);
     }
   }
   sharpenSceneText(scene);

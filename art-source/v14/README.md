@@ -4,7 +4,7 @@
 
 Only approved sources belong in `masters/`. Candidate generation and contact-sheet review use the ignored `review/` directory. Rejected candidates are removed when their gate closes.
 
-The current A1 vertical-slice preview contains seven genuinely generated and reviewed source masters: Lumi, Aurora Crown, Crystal Realm, Emerald Realm, Prism Warden, Keeper/launcher and the six-Pao family. Their compressed runtime output is generated under `public/assets/v14/` and bound to 86 stable runtime keys: seven direct gameplay keys, 72 derived orb keys and seven integrity-verified Production Archive previews. The remaining 493 entries stay honestly `briefed`; no gate is closed early and no model, seed or output identifier is invented.
+The current staged preview contains eight genuinely generated and reviewed source masters: Lumi, Aurora Crown, Crystal Realm, Emerald Realm, Prism Warden, the Nexus corruption environment, Keeper/launcher and the six-Pao family. Their compressed runtime output is generated under `public/assets/v14/` and bound to 89 stable runtime keys: nine direct gameplay keys, 72 derived orb keys and eight integrity-verified Production Archive previews. The remaining 492 entries stay honestly `briefed`; no gate is closed early and no model, seed or output identifier is invented.
 
 Run `npm run art:v14:build` to reproduce the approved A1 runtime slice and `npm run art:v14:verify` before candidate work. Both commands treat the production manifest and every approved primary/companion hash as immutable input: they cannot create, overwrite or approve a source master.
 

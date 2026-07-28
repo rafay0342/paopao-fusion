@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "releaseId": "r6-art-v14-a1-preview",
-  "generatedAt": "2026-07-28T08:56:01.000Z",
+  "generatedAt": "2026-07-28T15:46:30.000Z",
   "entries": [
     {
       "stableKey": "archive.pf-asset-002",
@@ -416,6 +416,90 @@
         "manifest": "art-source/v14/manifest.json",
         "recordId": "PF-asset-102",
         "sourceSha256": "9e72bc31e8528d4d51c8ba0596317ab8eef6440a0a97a2f0b19739500eeac713",
+        "approved": true
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "stableKey": "archive.pf-asset-231",
+      "pfId": "PF-asset-231",
+      "bundle": "rewards",
+      "mediaKind": "image",
+      "variants": {
+        "performance": {
+          "format": "webp",
+          "dimensions": {
+            "width": 256,
+            "height": 256
+          },
+          "bytes": 7962,
+          "sha256": "f307d3a94730bf56c28dd1aeaaadc747aa451b4cc06771e203ad8b6da714aa87",
+          "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-performance.f307d3a94730.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 512,
+                "height": 512
+              },
+              "bytes": 413334,
+              "sha256": "7c5c299713c6edbe73a94ac2e8cc4019fc0f449fa3ea5ef3586c1a1f33615f45",
+              "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-fallback.7c5c299713c6.png"
+            }
+          ]
+        },
+        "balanced": {
+          "format": "webp",
+          "dimensions": {
+            "width": 384,
+            "height": 384
+          },
+          "bytes": 22228,
+          "sha256": "e42b4a948868eaac9c6501f42d60125643ff3ab00f85638c0bd920eaf87e55a6",
+          "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-balanced.e42b4a948868.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 512,
+                "height": 512
+              },
+              "bytes": 413334,
+              "sha256": "7c5c299713c6edbe73a94ac2e8cc4019fc0f449fa3ea5ef3586c1a1f33615f45",
+              "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-fallback.7c5c299713c6.png"
+            }
+          ]
+        },
+        "ultra": {
+          "format": "webp",
+          "dimensions": {
+            "width": 512,
+            "height": 512
+          },
+          "bytes": 54470,
+          "sha256": "f705961bd3a8bbbb907d56da6421729b4ffefb1e21c5e8256765e43d8bc53a29",
+          "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-ultra.f705961bd3a8.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 512,
+                "height": 512
+              },
+              "bytes": 413334,
+              "sha256": "7c5c299713c6edbe73a94ac2e8cc4019fc0f449fa3ea5ef3586c1a1f33615f45",
+              "url": "/assets/v14/bundles/rewards/archive-pf-asset-231-fallback.7c5c299713c6.png"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "manifest": "art-source/v14/manifest.json",
+        "recordId": "PF-asset-231",
+        "sourceSha256": "d5ee32dabe81b849eb9502c3fe0570f0a25a9fc75c5c6f41976288d6af9389dd",
         "approved": true
       },
       "pivot": {
@@ -7078,12 +7162,12 @@
             {
               "format": "jpeg",
               "dimensions": {
-                "width": 1080,
-                "height": 1920
+                "width": 720,
+                "height": 1280
               },
-              "bytes": 441114,
-              "sha256": "d78a713a308722722b9f016393aeb0e4487d6094830c951235c350550c5288f8",
-              "url": "/assets/v14/bundles/realm-crystal/world-crystal-fallback.d78a713a3087.jpg"
+              "bytes": 235336,
+              "sha256": "88707351b272049a072557078a7f30e9795be63075090999bce8981732b7ca57",
+              "url": "/assets/v14/bundles/realm-crystal/world-crystal-performance-fallback.88707351b272.jpg"
             }
           ]
         },
@@ -7105,7 +7189,7 @@
               },
               "bytes": 441114,
               "sha256": "d78a713a308722722b9f016393aeb0e4487d6094830c951235c350550c5288f8",
-              "url": "/assets/v14/bundles/realm-crystal/world-crystal-fallback.d78a713a3087.jpg"
+              "url": "/assets/v14/bundles/realm-crystal/world-crystal-balanced-fallback.d78a713a3087.jpg"
             }
           ]
         },
@@ -7122,12 +7206,12 @@
             {
               "format": "jpeg",
               "dimensions": {
-                "width": 1080,
-                "height": 1920
+                "width": 1440,
+                "height": 2560
               },
-              "bytes": 441114,
-              "sha256": "d78a713a308722722b9f016393aeb0e4487d6094830c951235c350550c5288f8",
-              "url": "/assets/v14/bundles/realm-crystal/world-crystal-fallback.d78a713a3087.jpg"
+              "bytes": 667565,
+              "sha256": "4fd67d71ca9a49cccade1af02d63fbf338c9d9ff5d9f08b4cfac808563f3fce2",
+              "url": "/assets/v14/bundles/realm-crystal/world-crystal-ultra-fallback.4fd67d71ca9a.jpg"
             }
           ]
         }
@@ -7164,12 +7248,12 @@
             {
               "format": "jpeg",
               "dimensions": {
-                "width": 1080,
-                "height": 1920
+                "width": 720,
+                "height": 1280
               },
-              "bytes": 484969,
-              "sha256": "4f9f8e5a5984223029c9f741b1c7dc83936704001a50fdcc1d10370e78996b44",
-              "url": "/assets/v14/bundles/realm-emerald/world-emerald-fallback.4f9f8e5a5984.jpg"
+              "bytes": 264141,
+              "sha256": "0b8c383642c807fb5a88e07c591b3051c620d85311f8e7db5d06374cf73f526c",
+              "url": "/assets/v14/bundles/realm-emerald/world-emerald-performance-fallback.0b8c383642c8.jpg"
             }
           ]
         },
@@ -7191,7 +7275,7 @@
               },
               "bytes": 484969,
               "sha256": "4f9f8e5a5984223029c9f741b1c7dc83936704001a50fdcc1d10370e78996b44",
-              "url": "/assets/v14/bundles/realm-emerald/world-emerald-fallback.4f9f8e5a5984.jpg"
+              "url": "/assets/v14/bundles/realm-emerald/world-emerald-balanced-fallback.4f9f8e5a5984.jpg"
             }
           ]
         },
@@ -7208,12 +7292,12 @@
             {
               "format": "jpeg",
               "dimensions": {
-                "width": 1080,
-                "height": 1920
+                "width": 1440,
+                "height": 2560
               },
-              "bytes": 484969,
-              "sha256": "4f9f8e5a5984223029c9f741b1c7dc83936704001a50fdcc1d10370e78996b44",
-              "url": "/assets/v14/bundles/realm-emerald/world-emerald-fallback.4f9f8e5a5984.jpg"
+              "bytes": 726356,
+              "sha256": "a7893e3ee2a37a2faa43f7bafcacd1d3669b5eea2cdcf0772b819124ae0ef11a",
+              "url": "/assets/v14/bundles/realm-emerald/world-emerald-ultra-fallback.a7893e3ee2a3.jpg"
             }
           ]
         }
@@ -7230,6 +7314,185 @@
         "bottom": 0.18,
         "left": 0.09
       }
+    },
+    {
+      "stableKey": "world_nexus",
+      "pfId": "PF-asset-231",
+      "bundle": "realm-nexus",
+      "mediaKind": "layered",
+      "variants": {
+        "performance": {
+          "format": "webp",
+          "dimensions": {
+            "width": 720,
+            "height": 1280
+          },
+          "bytes": 92820,
+          "sha256": "3c0e1e7f271bb131c6f328e8364aad47c860c71e28e38d581af42e531829e9ae",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-performance.3c0e1e7f271b.webp",
+          "fallbacks": [
+            {
+              "format": "jpeg",
+              "dimensions": {
+                "width": 720,
+                "height": 1280
+              },
+              "bytes": 171153,
+              "sha256": "bca0c238b90f8b1faa983833ddf41d9120968eb2a4abd305861453baf805884f",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-performance-fallback.bca0c238b90f.jpg"
+            }
+          ]
+        },
+        "balanced": {
+          "format": "webp",
+          "dimensions": {
+            "width": 1080,
+            "height": 1920
+          },
+          "bytes": 207708,
+          "sha256": "db2528b8030a6c676bc80f1363c92700339ba163b58f784dbb9a6eb0b50c87c1",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-balanced.db2528b8030a.webp",
+          "fallbacks": [
+            {
+              "format": "jpeg",
+              "dimensions": {
+                "width": 1080,
+                "height": 1920
+              },
+              "bytes": 332553,
+              "sha256": "2235a8cdebaae27f0deaa0972aa74e0ea5f22ba33c7dfe3d802f76f15c680eda",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-balanced-fallback.2235a8cdebaa.jpg"
+            }
+          ]
+        },
+        "ultra": {
+          "format": "webp",
+          "dimensions": {
+            "width": 1440,
+            "height": 2560
+          },
+          "bytes": 399308,
+          "sha256": "2cda3c77e4b26132c4c7c0ab6aa23c7b6575117189783d3965df4ed8282d436b",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-ultra.2cda3c77e4b2.webp",
+          "fallbacks": [
+            {
+              "format": "jpeg",
+              "dimensions": {
+                "width": 1440,
+                "height": 2560
+              },
+              "bytes": 507409,
+              "sha256": "efb0b0959c53b415f0032e98e08b82011fd7885a72bb8c518943a134ca37167e",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-ultra-fallback.efb0b0959c53.jpg"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "manifest": "art-source/v14/manifest.json",
+        "recordId": "PF-asset-231",
+        "sourceSha256": "d5ee32dabe81b849eb9502c3fe0570f0a25a9fc75c5c6f41976288d6af9389dd",
+        "approved": true
+      },
+      "safeZones": {
+        "top": 0.14,
+        "right": 0.09,
+        "bottom": 0.18,
+        "left": 0.09
+      },
+      "dependencies": [
+        "aurora_crown"
+      ],
+      "fallbackKey": "world_crystal"
+    },
+    {
+      "stableKey": "world_nexus_atmosphere",
+      "pfId": "PF-asset-231",
+      "bundle": "realm-nexus",
+      "mediaKind": "image",
+      "variants": {
+        "performance": {
+          "format": "webp",
+          "dimensions": {
+            "width": 720,
+            "height": 1280
+          },
+          "bytes": 12000,
+          "sha256": "313ce6f5dcd6ed36ead1aada6fe66e994ba8f0300a536feb22deb1541e1d2b6a",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-performance.313ce6f5dcd6.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 720,
+                "height": 1280
+              },
+              "bytes": 181581,
+              "sha256": "0579c7aebc4539b7e2926342bfe9246f81672bf0d3ef07d49b71240402bd78c8",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-performance-fallback.0579c7aebc45.png"
+            }
+          ]
+        },
+        "balanced": {
+          "format": "webp",
+          "dimensions": {
+            "width": 1080,
+            "height": 1920
+          },
+          "bytes": 32476,
+          "sha256": "e973bc1c977e76c35d00f1efbe18fe9d186f29c98915178fb2b66a01a5193c14",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-balanced.e973bc1c977e.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 1080,
+                "height": 1920
+              },
+              "bytes": 279542,
+              "sha256": "03916cb5cbf5b5e63bf8349caf7c50014a4dec13272d1197fed508b0e33a832a",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-balanced-fallback.03916cb5cbf5.png"
+            }
+          ]
+        },
+        "ultra": {
+          "format": "webp",
+          "dimensions": {
+            "width": 1440,
+            "height": 2560
+          },
+          "bytes": 87588,
+          "sha256": "20da864d9286cd8620212604a002cff28a616bff974662a8fbef785a12101ca5",
+          "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-ultra.20da864d9286.webp",
+          "fallbacks": [
+            {
+              "format": "png",
+              "dimensions": {
+                "width": 1440,
+                "height": 2560
+              },
+              "bytes": 319646,
+              "sha256": "2884a31cb59d2ac95eca4ea5e167ae9e27ec1f221a5fcc470916d9a5566c7695",
+              "url": "/assets/v14/bundles/realm-nexus/world-nexus-atmosphere-ultra-fallback.2884a31cb59d.png"
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "manifest": "art-source/v14/manifest.json",
+        "recordId": "PF-asset-231",
+        "sourceSha256": "d5ee32dabe81b849eb9502c3fe0570f0a25a9fc75c5c6f41976288d6af9389dd",
+        "approved": true
+      },
+      "safeZones": {
+        "top": 0.14,
+        "right": 0.09,
+        "bottom": 0.18,
+        "left": 0.09
+      },
+      "dependencies": [
+        "world_nexus"
+      ]
     }
   ]
 }

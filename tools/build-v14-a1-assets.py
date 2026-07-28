@@ -30,13 +30,14 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "public" / "assets" / "v14"
 MANIFEST_PATH = RUNTIME / "art-manifest.json"
 RELEASE_ID = "r6-art-v14-a1-preview"
-GENERATED_AT = "2026-07-28T08:56:01.000Z"
+GENERATED_AT = "2026-07-28T15:46:30.000Z"
 PRODUCTION_MANIFEST_PATH = ROOT / "art-source" / "v14" / "manifest.json"
 A1_RUNTIME_MASTER_IDS = (
     "PF-asset-002",
     "PF-asset-012",
     "PF-asset-021",
     "PF-asset-031",
+    "PF-asset-231",
     "PF-asset-102",
     "PF-asset-402",
     "PF-asset-411",
@@ -399,6 +400,20 @@ def contain_world(image: Image.Image, size: tuple[int, int]) -> Image.Image:
     return resized.crop((left, top, left + target_w, top + target_h))
 
 
+def contain_world_rgba(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    """Scale/crop a transparent portrait layer without flattening its alpha."""
+    source = image.convert("RGBA")
+    target_w, target_h = size
+    scale = max(target_w / source.width, target_h / source.height)
+    resized = source.resize(
+        (max(1, round(source.width * scale)), max(1, round(source.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
+    left = max(0, (resized.width - target_w) // 2)
+    top = max(0, (resized.height - target_h) // 2)
+    return resized.crop((left, top, left + target_w, top + target_h))
+
+
 def encode_image(image: Image.Image, image_format: str, *, quality: int = 90) -> bytes:
     buffer = io.BytesIO()
     save_kwargs: dict[str, Any] = {}
@@ -535,6 +550,8 @@ def make_entry(
     variants: dict[str, Any],
     pivot: dict[str, float] | None = None,
     safe_zones: dict[str, float] | None = None,
+    dependencies: list[str] | None = None,
+    fallback_key: str | None = None,
 ) -> dict[str, Any]:
     entry: dict[str, Any] = {
         "stableKey": stable_key,
@@ -553,6 +570,10 @@ def make_entry(
         entry["pivot"] = pivot
     if safe_zones is not None:
         entry["safeZones"] = safe_zones
+    if dependencies:
+        entry["dependencies"] = dependencies
+    if fallback_key is not None:
+        entry["fallbackKey"] = fallback_key
     return entry
 
 
@@ -582,15 +603,15 @@ def alpha_variants(bundle: str, slug: str, image: Image.Image) -> dict[str, Any]
 
 def world_variants(bundle: str, slug: str, image: Image.Image) -> dict[str, Any]:
     variants: dict[str, Any] = {}
-    fallback = image_file_descriptor(
-        bundle,
-        f"{slug}-fallback",
-        contain_world(image, QUALITY_WORLD["balanced"]),
-        "JPEG",
-        84,
-    )
     for quality, size in QUALITY_WORLD.items():
         fitted = contain_world(image, size)
+        fallback = image_file_descriptor(
+            bundle,
+            f"{slug}-{quality}-fallback",
+            fitted,
+            "JPEG",
+            84,
+        )
         variants[quality] = {
             **image_file_descriptor(
             bundle,
@@ -598,6 +619,31 @@ def world_variants(bundle: str, slug: str, image: Image.Image) -> dict[str, Any]
             fitted,
             "WEBP",
             QUALITY_WEBP[quality],
+            ),
+            "fallbacks": [fallback],
+        }
+    return variants
+
+
+def world_overlay_variants(bundle: str, slug: str, image: Image.Image) -> dict[str, Any]:
+    """Compile one integrity-bound alpha layer for bounded quality-tier motion."""
+    variants: dict[str, Any] = {}
+    for quality, size in QUALITY_WORLD.items():
+        fitted = contain_world_rgba(image, size)
+        fallback = image_file_descriptor(
+            bundle,
+            f"{slug}-{quality}-fallback",
+            fitted,
+            "PNG",
+            88,
+        )
+        variants[quality] = {
+            **image_file_descriptor(
+                bundle,
+                f"{slug}-{quality}",
+                fitted,
+                "WEBP",
+                QUALITY_WEBP[quality],
             ),
             "fallbacks": [fallback],
         }
@@ -714,6 +760,16 @@ def build_runtime(
                 "environment-plate",
             ),
         ),
+        (
+            "world_nexus",
+            "PF-asset-231",
+            "realm-nexus",
+            approved_companion_path(
+                ROOT,
+                source_entries["PF-asset-231"],
+                "environment-plate",
+            ),
+        ),
     ]
     for stable_key, pf_id, bundle, source_path in world_sources:
         source = Image.open(source_path).convert("RGB")
@@ -726,8 +782,32 @@ def build_runtime(
                 source_sha256=bindings[pf_id].sha256,
                 variants=world_variants(bundle, stable_key.replace("_", "-"), source),
                 safe_zones={"top": 0.14, "right": 0.09, "bottom": 0.18, "left": 0.09},
+                dependencies=["aurora_crown"] if stable_key == "world_nexus" else None,
+                fallback_key="world_crystal" if stable_key == "world_nexus" else None,
             )
         )
+
+    nexus_atmosphere = Image.open(approved_companion_path(
+        ROOT,
+        source_entries["PF-asset-231"],
+        "atmosphere-layer",
+    )).convert("RGBA")
+    entries.append(
+        make_entry(
+            stable_key="world_nexus_atmosphere",
+            pf_id="PF-asset-231",
+            bundle="realm-nexus",
+            media_kind="image",
+            source_sha256=bindings["PF-asset-231"].sha256,
+            variants=world_overlay_variants(
+                "realm-nexus",
+                "world-nexus-atmosphere",
+                nexus_atmosphere,
+            ),
+            safe_zones={"top": 0.14, "right": 0.09, "bottom": 0.18, "left": 0.09},
+            dependencies=["world_nexus"],
+        )
+    )
 
     # The in-game Production Archive must show the same approved V14 sources,
     # not the retired procedural V2-V13 documentation sheets. These previews
@@ -749,6 +829,15 @@ def build_runtime(
             approved_companion_path(
                 ROOT,
                 source_entries["PF-asset-031"],
+                "environment-plate",
+            ),
+            True,
+        ),
+        (
+            "PF-asset-231",
+            approved_companion_path(
+                ROOT,
+                source_entries["PF-asset-231"],
                 "environment-plate",
             ),
             True,

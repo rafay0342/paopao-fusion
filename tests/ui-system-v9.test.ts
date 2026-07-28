@@ -88,10 +88,11 @@ describe('V9 scene application', () => {
   });
 
   it('uses static framed orb and artifact identity on key collection screens', () => {
-    for (const scene of ['Menu', 'ModeSelect', 'WorldMap', 'Gallery', 'Store', 'Inventory', 'Rewards']) {
+    for (const scene of ['Menu', 'ModeSelect', 'Gallery', 'Store', 'Inventory', 'Rewards']) {
       expect(readText(`src/scenes/${scene}Scene.ts`), `${scene} should use addIconFrame`)
         .toContain('addIconFrame(');
     }
+    expect(readText('src/scenes/WorldMapScene.ts')).toContain('addNodeKindFrame(');
   });
 
   it('keeps all six gallery worlds in a deterministic safe grid', () => {

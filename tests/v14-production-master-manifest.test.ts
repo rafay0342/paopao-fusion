@@ -19,6 +19,7 @@ const APPROVED_MASTER_IDS = [
   'PF-asset-021',
   'PF-asset-031',
   'PF-asset-102',
+  'PF-asset-231',
   'PF-asset-402',
   'PF-asset-411',
 ];
@@ -229,7 +230,7 @@ afterEach(() => {
 });
 
 describe('ProductionMasterManifestV2', () => {
-  it('binds 500 planned PF IDs to five exact gates and seven real approved masters', () => {
+  it('binds 500 planned PF IDs to five exact gates and eight real approved masters', () => {
     const ledger = readV14Ledger(projectRoot);
     const manifest = readV14Manifest(projectRoot);
     const planned = createV14BriefManifest(ledger);
@@ -248,8 +249,8 @@ describe('ProductionMasterManifestV2', () => {
     );
     expect(new Set(manifest.entries.map(({ id }: any) => id)).size).toBe(500);
     expect(result.total).toBe(500);
-    expect(result.approved).toBe(7);
-    expect(result.primaryHashes).toBe(7);
+    expect(result.approved).toBe(8);
+    expect(result.primaryHashes).toBe(8);
     expect(result.candidateReviews).toBe(0);
     expect(result.gates).toEqual({ A1: 100, A2: 100, A3: 100, A4: 100, A5: 100 });
     expect(Object.keys(result.kinds).sort()).toEqual([...V14_MASTER_KINDS].sort());
@@ -258,7 +259,7 @@ describe('ProductionMasterManifestV2', () => {
     const approved = manifest.entries.filter(({ approval }: any) => approval.state === 'approved');
     const briefed = manifest.entries.filter(({ approval }: any) => approval.state === 'briefed');
     expect(approved.map(({ id }: any) => id)).toEqual(APPROVED_MASTER_IDS);
-    expect(briefed).toHaveLength(493);
+    expect(briefed).toHaveLength(492);
     expect(briefed.every((entry: any) => (
       entry.primary === null
       && entry.provenance.state === 'not-generated'
@@ -674,7 +675,7 @@ describe('ProductionMasterManifestV2', () => {
       .toThrow('production manifest status');
   });
 
-  it('binds every public V14 runtime entry to one of the seven approved source hashes', () => {
+  it('binds every public V14 runtime entry to one of the eight approved source hashes', () => {
     const sourceManifest = readV14Manifest(projectRoot);
     const runtimeManifest = JSON.parse(readFileSync(
       join(projectRoot, 'public/assets/v14/art-manifest.json'),
@@ -687,10 +688,10 @@ describe('ProductionMasterManifestV2', () => {
     );
     const runtimeIds = [...new Set(runtimeManifest.entries.map(({ pfId }: any) => pfId))].sort();
 
-    expect(runtimeManifest.entries).toHaveLength(86);
+    expect(runtimeManifest.entries).toHaveLength(89);
     expect(runtimeManifest.entries.filter(({ stableKey }: any) => (
       stableKey.startsWith('archive.')
-    ))).toHaveLength(7);
+    ))).toHaveLength(8);
     expect(runtimeIds).toEqual(APPROVED_MASTER_IDS);
     expect(runtimeManifest.entries.every((entry: any) => {
       const source: any = approvedById.get(entry.pfId);

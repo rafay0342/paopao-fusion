@@ -376,6 +376,18 @@ export function mapNodeForLevel(level: number): MapNodeDef {
   return MAP_NODES.find((node) => node.level === level) ?? MAP_NODES[0];
 }
 
+/**
+ * Player-facing campaign stage number in authored route order.
+ *
+ * Canonical level indices remain stable for saves, replays, rewards and API
+ * payloads. The route interleaves legacy and expanded levels, so exposing the
+ * raw index would make a realm appear to jump backwards and forwards.
+ */
+export function campaignStageNumber(level: number): number {
+  const routeIndex = MAP_NODES.findIndex((node) => node.level === level);
+  return routeIndex >= 0 ? routeIndex + 1 : Math.max(1, level + 1);
+}
+
 export function mapRewardLabel(reward: MapNodeDef['reward'], availability: MapRewardAvailability): string {
   if (availability === 'claimed') return 'CLAIMED';
   const amount = `◆ ${reward.amount}`;

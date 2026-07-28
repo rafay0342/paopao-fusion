@@ -13,14 +13,24 @@ import {
 } from '../game/match3';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
+import { queueArtBundle } from '../game/art-v14';
+import { getQualityProfile } from '../game/meta';
+import { resolveWorldPresentation } from '../game/world-presentation';
+import {
+  accessibilityRuntimeForCanvas,
+  type AccessibilitySceneSession,
+} from '../gfx/accessibility';
 import {
   addAmbientMotes,
   addArtButton,
   addArtPanel,
+  applyLiveSceneQuality,
   addWorldBackground,
+  addWorldStateBadge,
   DISPLAY_FONT,
   fitText,
   prefersReducedMotion,
+  setArtButtonHitArea,
   sharpenSceneText,
   TYPE,
   UI_FONT,
@@ -50,6 +60,10 @@ const NODE_KINDS = ['PRISM PATH', 'COLOR RELAY', 'CASCADE TEST', 'CROWN GATE', '
 export class Match3MapScene extends Phaser.Scene {
   private world = 0;
   private transitioning = false;
+  private a11y?: AccessibilitySceneSession;
+  private readonly handleQualityChange = (): void => {
+    applyLiveSceneQuality(this, getQualityProfile());
+  };
 
   constructor() {
     super('Match3Map');
@@ -63,6 +77,11 @@ export class Match3MapScene extends Phaser.Scene {
     this.transitioning = false;
   }
 
+  preload(): void {
+    const theme = WORLD_THEMES[this.world] ?? WORLD_THEMES[0];
+    queueArtBundle(this, `realm-${theme.id}`);
+  }
+
   create(): void {
     const progress = getMatch3Progress();
     const theme = WORLD_THEMES[this.world] ?? WORLD_THEMES[0];
@@ -73,13 +92,34 @@ export class Match3MapScene extends Phaser.Scene {
     ).filter((level) => level < MATCH3_LEVEL_COUNT);
     const worldClears = worldLevels.filter((level) => progress.cleared.includes(level)).length;
     const worldStars = worldLevels.reduce((sum, level) => sum + (progress.stars[level] ?? 0), 0);
+    const reducedMotion = prefersReducedMotion();
+    const presentation = resolveWorldPresentation({
+      worldId: theme.id,
+      worldIndex: this.world,
+      finalLevel: worldStart + LEVELS_PER_WORLD - 1,
+      clearedLevels: progress.cleared,
+      mode: 'match3',
+      backgroundKey: theme.background,
+    });
+    this.a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: `match3-map-${this.world + 1}`,
+      heading: `${theme.name} Prism Cascade map`,
+      description: `${theme.subtitle}. ${presentation.label}. ${presentation.guidance}. Choose an unlocked Match-3 level or switch realm.`,
+      status: `${presentation.label}. ${worldClears} of ${LEVELS_PER_WORLD} realm levels cleared. ${worldStars} realm stars earned.`,
+      lifecycle: this.events,
+    });
+    window.addEventListener('paopao:quality-adapted', this.handleQualityChange);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      window.removeEventListener('paopao:quality-adapted', this.handleQualityChange);
+    });
 
     startMusic('story');
-    this.cameras.main.fadeIn(180, 0, 0, 0);
-    addWorldBackground(this, theme.background, 0.25);
+    this.cameras.main.fadeIn(reducedMotion ? 0 : 180, 0, 0, 0);
+    addWorldBackground(this, theme.background, 0.25, presentation);
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 24 : 18, 2);
 
     this.composeHeader(progress, worldClears, worldStars);
+    addWorldStateBadge(this, presentation, 244, true);
     this.composeWorldNavigation(progress);
     addArtPanel(this, VIEW.width / 2, 776, 660, 814, 5, 0.9);
     this.composeRoute(progress, worldLevels);
@@ -110,13 +150,14 @@ export class Match3MapScene extends Phaser.Scene {
     const theme = WORLD_THEMES[this.world] ?? WORLD_THEMES[0];
     addArtPanel(this, VIEW.width / 2, 138, 632, 250, 8, 0.97);
 
-    addArtButton(this, 88, 47, '‹  MODES', () => {
+    setArtButtonHitArea(addArtButton(this, 88, 47, '‹  MODES', () => {
       if (this.transitioning) return;
       this.transitioning = true;
       SFX.click();
-      this.cameras.main.fadeOut(150, 0, 0, 0);
-      this.time.delayedCall(160, () => this.scene.start('ModeSelect'));
-    }, 148, 50, 18);
+      const duration = prefersReducedMotion() ? 0 : 150;
+      this.cameras.main.fadeOut(duration, 0, 0, 0);
+      this.time.delayedCall(duration > 0 ? 160 : 0, () => this.scene.start('ModeSelect'));
+    }, 148, 50, 18), 160, 100);
 
     this.add.text(VIEW.width / 2, 54, '✦  PRISM CASCADE  ✦', {
       fontFamily: UI_FONT,
@@ -169,15 +210,9 @@ export class Match3MapScene extends Phaser.Scene {
   private composeWorldNavigation(progress: Match3CampaignProgress): void {
     const highestWorld = this.highestAccessibleWorld(progress);
 
-    addArtPanel(this, VIEW.width / 2, 299, 440, 74, 8, 0.95);
-    if (this.world > 0) {
-      addArtButton(this, 74, 299, '‹', () => this.switchWorld(this.world - 1), 82, 54, 16);
-    }
-    if (this.world < highestWorld) {
-      addArtButton(this, VIEW.width - 74, 299, '›', () => this.switchWorld(this.world + 1), 82, 54, 16);
-    }
+    addArtPanel(this, VIEW.width / 2, 315, 650, 104, 8, 0.95);
 
-    this.add.text(VIEW.width / 2, 285, `REALM ${this.world + 1}  /  ${WORLD_COUNT}`, {
+    this.add.text(VIEW.width / 2, 280, `REALM ${this.world + 1}  /  ${WORLD_COUNT}`, {
       fontFamily: UI_FONT,
       fontSize: TYPE.body,
       color: '#f2f6ff',
@@ -185,25 +220,43 @@ export class Match3MapScene extends Phaser.Scene {
       letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12);
 
-    const railWidth = 198;
+    const railWidth = 500;
     const railStart = VIEW.width / 2 - railWidth / 2;
     const rail = this.add.graphics().setDepth(12);
     rail.lineStyle(2, 0x6d7e96, 0.36);
-    rail.lineBetween(railStart, 319, railStart + railWidth, 319);
+    rail.lineBetween(railStart, 332, railStart + railWidth, 332);
 
     for (let world = 0; world < WORLD_COUNT; world += 1) {
       const accessible = world <= highestWorld;
       const active = world === this.world;
       const x = railStart + (railWidth / (WORLD_COUNT - 1)) * world;
       const accent = WORLD_THEMES[world]?.accent ?? 0x65dbe8;
-      const marker = this.add.container(x, 319).setDepth(13);
+      const marker = this.add.container(x, 332).setDepth(13);
       const halo = this.add.circle(0, 0, active ? 13 : 9, accent, active ? 0.26 : 0.08)
         .setStrokeStyle(active ? 2 : 1, accent, accessible ? 0.86 : 0.2);
       const core = this.add.circle(0, 0, active ? 5 : 4, accessible ? accent : 0x566173, accessible ? 1 : 0.65);
       marker.add([halo, core]);
-      marker.setSize(38, 38).setInteractive({ useHandCursor: accessible });
-      marker.on('pointerup', () => {
-        if (accessible) this.switchWorld(world);
+      marker.setSize(100, 100).setInteractive({ useHandCursor: accessible && !active });
+      const activate = (): void => {
+        if (accessible && !active) this.switchWorld(world);
+      };
+      marker.on('pointerover', () => {
+        if (accessible && !active) marker.setScale(1.08);
+      });
+      marker.on('pointerout', () => marker.setScale(1));
+      marker.on('pointerup', activate);
+      this.a11y?.registerButton({
+        id: `match3-realm-${world + 1}`,
+        label: active
+          ? `${WORLD_THEMES[world]?.name ?? `Realm ${world + 1}`}. Current realm`
+          : `Open realm ${world + 1}: ${WORLD_THEMES[world]?.name ?? 'Unknown realm'}`,
+        description: accessible
+          ? `${WORLD_THEMES[world]?.subtitle ?? ''}.`
+          : 'Locked until the previous realm path is available.',
+        disabled: !accessible || active,
+        pressed: active,
+        onActivate: activate,
+        onFocusChange: (focused) => marker.setScale(focused ? 1.08 : 1),
       });
     }
   }
@@ -250,10 +303,11 @@ export class Match3MapScene extends Phaser.Scene {
     const unlocked = isMatch3LevelUnlocked(level, progress);
     const cleared = progress.cleared.includes(level);
     const stars = progress.stars[level] ?? 0;
-    const node = this.add.container(position.x, position.y + 22)
+    const reducedMotion = prefersReducedMotion();
+    const node = this.add.container(position.x, reducedMotion ? position.y : position.y + 22)
       .setDepth(13)
-      .setAlpha(prefersReducedMotion() ? 1 : 0)
-      .setScale(prefersReducedMotion() ? 1 : 0.78);
+      .setAlpha(reducedMotion ? 1 : 0)
+      .setScale(reducedMotion ? 1 : 0.78);
 
     const aura = this.add.circle(0, 0, index === LEVELS_PER_WORLD - 1 ? 68 : 60, theme.accent, unlocked ? 0.13 : 0.035)
       .setStrokeStyle(index === LEVELS_PER_WORLD - 1 ? 3 : 2, unlocked ? theme.accent : 0x5a6475, unlocked ? 0.5 : 0.18);
@@ -288,19 +342,25 @@ export class Match3MapScene extends Phaser.Scene {
 
     node.add([aura, medallion, number, starText, stateGem, stateMark]);
     node.setSize(146, 146).setInteractive({ useHandCursor: true });
-    node.on('pointerover', () => {
-      if (unlocked) this.tweens.add({ targets: node, scale: 1.06, duration: 100 });
-    });
-    node.on('pointerout', () => this.tweens.add({ targets: node, scale: 1, duration: 120 }));
-    node.on('pointerup', () => {
+    const activate = (): void => {
       if (!unlocked) {
         this.showLockedMessage(level);
         return;
       }
       this.openLevel(level);
+    };
+    node.on('pointerover', () => {
+      if (!unlocked) return;
+      if (reducedMotion) node.setScale(1.06);
+      else this.tweens.add({ targets: node, scale: 1.06, duration: 100 });
     });
+    node.on('pointerout', () => {
+      if (reducedMotion) node.setScale(1);
+      else this.tweens.add({ targets: node, scale: 1, duration: 120 });
+    });
+    node.on('pointerup', activate);
 
-    if (!prefersReducedMotion()) {
+    if (!reducedMotion) {
       this.tweens.add({
         targets: node,
         y: position.y,
@@ -323,7 +383,7 @@ export class Match3MapScene extends Phaser.Scene {
 
     this.add.text(labelX, position.y - 42, NODE_KINDS[index], {
       fontFamily: UI_FONT,
-      fontSize: TYPE.caption,
+      fontSize: TYPE.title,
       color: unlocked ? theme.accentCss : '#798494',
       fontStyle: 'bold',
       letterSpacing: 1,
@@ -331,27 +391,48 @@ export class Match3MapScene extends Phaser.Scene {
 
     fitText(this.add.text(labelX, position.y - 12, definition.name, {
       fontFamily: UI_FONT,
-      fontSize: TYPE.control,
+      fontSize: TYPE.title,
       color: unlocked ? '#ffffff' : '#8993a2',
       fontStyle: 'bold',
       stroke: '#050914',
       strokeThickness: 4,
-    }).setOrigin(originX, 0.5).setDepth(13), 205, 0.78);
+    }).setOrigin(originX, 0.5).setDepth(13), 220, 0.72);
 
-    fitText(this.add.text(labelX, position.y + 18, unlocked ? this.objectiveLabel(definition) : this.lockReason(level), {
+    const routeState = !unlocked
+      ? 'LOCKED'
+      : cleared
+        ? 'REPLAY'
+        : 'PLAY';
+    fitText(this.add.text(labelX, position.y + 22, routeState, {
       fontFamily: UI_FONT,
-      fontSize: TYPE.caption,
+      fontSize: TYPE.title,
       color: unlocked ? '#d1dbea' : '#7f8998',
       fontStyle: unlocked ? 'normal' : 'bold',
-    }).setOrigin(originX, 0.5).setDepth(13), 210, 0.76);
+    }).setOrigin(originX, 0.5).setDepth(13), 220, 0.72);
 
     const best = progress.bestScores[level] ?? 0;
     this.add.text(labelX, position.y + 46, best > 0 ? `BEST  ${best.toLocaleString()}` : `${definition.moves} MOVES`, {
       fontFamily: UI_FONT,
-      fontSize: TYPE.caption,
+      fontSize: TYPE.section,
       color: best > 0 ? '#ffe4a0' : unlocked ? '#a9b7ca' : '#667181',
       fontStyle: 'bold',
     }).setOrigin(originX, 0.5).setDepth(13);
+
+    this.a11y?.registerButton({
+      id: `match3-world-${this.world + 1}-level-${level + 1}`,
+      label: unlocked
+        ? `Play Prism Cascade level ${level + 1}: ${definition.name}`
+        : `Prism Cascade level ${level + 1}: ${definition.name}. Locked`,
+      description: unlocked
+        ? `${this.objectiveLabel(definition)}. ${stars} of 3 stars earned.`
+        : this.lockReason(level),
+      onActivate: activate,
+      onFocusChange: (focused) => {
+        if (!unlocked) return;
+        if (reducedMotion) node.setScale(focused ? 1.06 : 1);
+        else this.tweens.add({ targets: node, scale: focused ? 1.06 : 1, duration: 100 });
+      },
+    });
   }
 
   private objectiveLabel(definition: Match3LevelDefinition): string {
@@ -374,8 +455,9 @@ export class Match3MapScene extends Phaser.Scene {
     if (this.transitioning) return;
     this.transitioning = true;
     SFX.click();
-    this.cameras.main.fadeOut(170, 0, 0, 0);
-    this.time.delayedCall(180, () => this.scene.start('Match3', { level }));
+    const duration = prefersReducedMotion() ? 0 : 170;
+    this.cameras.main.fadeOut(duration, 0, 0, 0);
+    this.time.delayedCall(duration > 0 ? 180 : 0, () => this.scene.start('Match3', { level }));
   }
 
   private switchWorld(world: number): void {
@@ -385,8 +467,9 @@ export class Match3MapScene extends Phaser.Scene {
     if (destination === this.world) return;
     this.transitioning = true;
     SFX.click();
-    this.cameras.main.fadeOut(120, 0, 0, 0);
-    this.time.delayedCall(130, () => this.scene.restart({ world: destination }));
+    const duration = prefersReducedMotion() ? 0 : 120;
+    this.cameras.main.fadeOut(duration, 0, 0, 0);
+    this.time.delayedCall(duration > 0 ? 130 : 0, () => this.scene.restart({ world: destination }));
   }
 
   private highestAccessibleWorld(progress: Match3CampaignProgress): number {
@@ -411,12 +494,16 @@ export class Match3MapScene extends Phaser.Scene {
         strokeThickness: 3,
       },
     ).setOrigin(0.5).setDepth(30), 620, 0.75);
-    this.tweens.add({
-      targets: message,
-      alpha: 0,
-      delay: 1_600,
-      duration: 380,
-      onComplete: () => message.destroy(),
-    });
+    if (prefersReducedMotion()) {
+      this.time.delayedCall(1_600, () => message.destroy());
+    } else {
+      this.tweens.add({
+        targets: message,
+        alpha: 0,
+        delay: 1_600,
+        duration: 380,
+        onComplete: () => message.destroy(),
+      });
+    }
   }
 }

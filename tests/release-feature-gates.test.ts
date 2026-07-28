@@ -22,6 +22,6 @@ describe('cumulative Phaser release feature gates', () => {
     expect(read('src/scenes/WorldMapScene.ts')).toContain('PHASER_RELEASE_FEATURES.completeGameplay || level === 0');
     expect(read('src/scenes/ChallengesScene.ts')).toContain('PHASER_RELEASE_FEATURES.endlessLiveOperations');
     expect(read('src/scenes/GalleryScene.ts')).toContain('PHASER_RELEASE_FEATURES.productionHardening');
-    expect(read('src/scenes/GameScene.ts')).toContain("PHASER_RELEASE_FEATURES.completeGameplay ? 'NEXT LEVEL' : 'FOUNDATION COMPLETE'");
+    expect(read('src/scenes/GameScene.ts')).toContain("PHASER_RELEASE_FEATURES.completeGameplay ? 'NEXT STAGE' : 'FOUNDATION COMPLETE'");
   });
 });

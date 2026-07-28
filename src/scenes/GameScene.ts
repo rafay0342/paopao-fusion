@@ -7,6 +7,7 @@ import {
   ATLAS_KEY,
   GRID,
   LEVELS,
+  campaignStageNumber,
   nextStoryLevel,
   VIEW,
   worldForLevel,
@@ -61,6 +62,8 @@ import {
   type PortalPair,
 } from '../game/mechanics';
 import { campaignLevelScore, getProgress, recordLevelClear } from '../game/progression';
+import { queueArtBundle } from '../game/art-v14';
+import { resolveWorldPresentation } from '../game/world-presentation';
 import {
   addCoins,
   addMysteryKeys,
@@ -186,6 +189,9 @@ interface GameSceneData {
 const ARENA_RESULT_WAIT_MS = 15_000;
 const GHOST_REPLAY_MAX_DELAY_MS = 30_000;
 const ARENA_ID_PATTERN = /^(?:match|usr)_[A-Za-z0-9_-]{8,120}$/;
+// The 720-wide authored canvas scales to 0.44375 at the 320x568 baseline.
+// Keeping command targets at 100 design pixels preserves a 44 CSS pixel floor.
+const MIN_MOBILE_COMMAND_TARGET = 100;
 const telemetryReasonForTerminalMessage = (message: string): GameplayTelemetryReason => {
   if (message === 'TIME EXPIRED') return 'timer';
   if (message === 'OUT OF SHOTS' || message === 'PRECISION BROKEN') return 'shot-limit';
@@ -268,6 +274,7 @@ export class GameScene extends Phaser.Scene {
   private artifact!: ArtifactDef;
   private skinId: OrbSkinId = 'nova';
   private quality!: QualityProfile;
+  private reducedMotion = false;
   private timerMs = 0;
   private elapsedMs = 0;
   private timerFrozenUntil = 0;
@@ -423,6 +430,11 @@ export class GameScene extends Phaser.Scene {
     this.tutorialInputMode = 'unknown';
   }
 
+  preload(): void {
+    const theme = worldForLevel(this.level);
+    queueArtBundle(this, `realm-${theme.id}`);
+  }
+
   create(): void {
     const { width, height } = VIEW;
     const meta = getMeta();
@@ -436,15 +448,27 @@ export class GameScene extends Phaser.Scene {
       window.removeEventListener('paopao:render-context-boundary', this.handleRenderContextBoundary);
     });
     const modeDef = MODE_DEFS[this.mode];
-    this.cameras.main.fadeIn(220, 0, 0, 0);
+    const reducedMotion = prefersReducedMotion();
+    this.reducedMotion = reducedMotion;
+    this.cameras.main.fadeIn(reducedMotion ? 0 : 220, 0, 0, 0);
     const theme = worldForLevel(this.level);
-    addWorldBackground(this, theme.background, 0.25);
+    const progress = getProgress();
+    const presentation = resolveWorldPresentation({
+      worldId: theme.id,
+      worldIndex: LEVELS[this.level]?.world ?? 0,
+      finalLevel: theme.levels[theme.levels.length - 1],
+      clearedLevels: progress.cleared,
+      mode: 'bubble-shooter',
+      backgroundKey: theme.background,
+    });
+    addWorldBackground(this, theme.background, 0.25, presentation);
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 18 : 12, 1);
 
     const def = LEVELS[Math.min(this.level, LEVELS.length - 1)];
+    const displayStage = campaignStageNumber(this.level);
     const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
       id: `game-level-${this.level + 1}`,
-      heading: `PaoPao Fusion level ${this.level + 1}: ${def.title}`,
+      heading: `PaoPao Fusion stage ${displayStage}: ${def.title}`,
       description: `${def.objective}. Aim with pointer, touch, hand tracking, or keyboard. Release pointer or press Space to launch.`,
       status: `${MODE_DEFS[this.mode].name} mode. Score ${this.score.toLocaleString()}.`,
       lifecycle: this.events,
@@ -590,7 +614,9 @@ export class GameScene extends Phaser.Scene {
     const dangerLabel = this.add.text(width - 18, this.loseLineY - 24, 'DANGER ZONE', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ff8796', fontStyle: 'bold',
     }).setOrigin(1, 0.5).setAlpha(0.72).setDepth(3);
-    this.tweens.add({ targets: [ll, dangerLabel], alpha: 0.34, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    if (!this.reducedMotion) {
+      this.tweens.add({ targets: [ll, dangerLabel], alpha: 0.34, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
 
     this.aimGfx = this.add.graphics().setDepth(2);
 
@@ -663,7 +689,7 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5, 0), 126);
     hudBar.add([this.timerText, timerMode]);
 
-    this.levelText = this.add.text(64, 0, `LEVEL ${String(this.level + 1).padStart(2, '0')}`, {
+    this.levelText = this.add.text(64, 0, `STAGE ${String(campaignStageNumber(this.level)).padStart(2, '0')}`, {
       fontFamily: UI_FONT, fontSize: TYPE.control, color: theme.accentCss, fontStyle: 'bold', stroke: '#07101f', strokeThickness: 3,
     }).setOrigin(0, 0.5);
     this.runCoinText = this.add.text(214, 0, '◆  0', {
@@ -707,24 +733,42 @@ export class GameScene extends Phaser.Scene {
     // Hand cursor is hidden until tracking is active.
     this.handCursor = this.add.circle(0, 0, 24, 0x000000, 0).setStrokeStyle(3, 0xffffff, 0.8).setDepth(6).setVisible(false);
 
-    const powerY = height - 42;
-    this.addSlimHudStrip(128, powerY, 240, 68, theme.accent, 18);
-    this.bombBtn = this.add.image(50, powerY - 2, 'power_bomb').setDisplaySize(46, 46).setDepth(20);
-    this.rainbowBtn = this.add.image(128, powerY - 2, 'power_rainbow').setDisplaySize(46, 46).setDepth(20);
-    this.superBtn = this.add.image(206, powerY - 2, this.artifact.texture).setDisplaySize(46, 46).setDepth(20).setAlpha(0.52);
+    const powerY = height - 50;
+    const bombX = 50;
+    const rainbowX = 150;
+    const superX = 250;
+    this.addSlimHudStrip(150, powerY, 300, 76, theme.accent, 18);
+    this.bombBtn = this.add.image(bombX, powerY - 2, 'power_bomb').setDisplaySize(46, 46).setDepth(20);
+    this.rainbowBtn = this.add.image(rainbowX, powerY - 2, 'power_rainbow').setDisplaySize(46, 46).setDepth(20);
+    this.superBtn = this.add.image(superX, powerY - 2, this.artifact.texture).setDisplaySize(46, 46).setDepth(20).setAlpha(0.52);
     this.bombCountText = this.add.text(68, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffd24b', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
-    this.rainbowCountText = this.add.text(146, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d6bcff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
-    this.superText = this.add.text(206, powerY + 22, '0%', {
+    this.rainbowCountText = this.add.text(168, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d6bcff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
+    this.superText = this.add.text(superX, powerY + 22, '0%', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: this.artifact.accentCss, fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(21);
-    const bombHit = this.add.zone(50, powerY, 76, 68).setDepth(22).setInteractive({ useHandCursor: true });
-    const rainbowHit = this.add.zone(128, powerY, 76, 68).setDepth(22).setInteractive({ useHandCursor: true });
-    const superHit = this.add.zone(206, powerY, 76, 68).setDepth(22).setInteractive({ useHandCursor: true });
+    const bombHit = this.add.zone(
+      bombX,
+      powerY,
+      MIN_MOBILE_COMMAND_TARGET,
+      MIN_MOBILE_COMMAND_TARGET,
+    ).setDepth(22).setInteractive({ useHandCursor: true });
+    const rainbowHit = this.add.zone(
+      rainbowX,
+      powerY,
+      MIN_MOBILE_COMMAND_TARGET,
+      MIN_MOBILE_COMMAND_TARGET,
+    ).setDepth(22).setInteractive({ useHandCursor: true });
+    const superHit = this.add.zone(
+      superX,
+      powerY,
+      MIN_MOBILE_COMMAND_TARGET,
+      MIN_MOBILE_COMMAND_TARGET,
+    ).setDepth(22).setInteractive({ useHandCursor: true });
     bombHit.on('pointerdown', () => { this.suppressNextShot = true; void this.usePowerUp('bomb'); });
     rainbowHit.on('pointerdown', () => { this.suppressNextShot = true; void this.usePowerUp('rainbow'); });
     superHit.on('pointerdown', () => { this.suppressNextShot = true; this.useArtifactSuper(); });
 
-    const queueCard = this.addSlimHudStrip(width - 148, powerY, 128, 68, theme.accent, 19);
+    const queueCard = this.addSlimHudStrip(width - 170, powerY, 136, 76, theme.accent, 19);
     const nextLabel = this.add.text(-46, -15, 'NEXT', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#aeefff', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0, 0.5);
@@ -735,14 +779,14 @@ export class GameScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffe08a', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0, 0.5), 78, 0.76);
     queueCard.add([nextLabel, this.nextOrbSprite, this.queueActionText]);
-    queueCard.setSize(128, 68).setInteractive({ useHandCursor: true });
+    queueCard.setSize(136, MIN_MOBILE_COMMAND_TARGET).setInteractive({ useHandCursor: true });
     queueCard.on('pointerdown', () => {
       this.suppressNextShot = true;
       this.handleQueueCardPressed();
     });
     this.updateQueueHud();
 
-    const handCard = this.addSlimHudStrip(width - 44, powerY, 72, 68, theme.accent, 19);
+    const handCard = this.addSlimHudStrip(width - 50, powerY, 96, 76, theme.accent, 19);
     const trackerGlyph = this.add.graphics();
     trackerGlyph.lineStyle(2, 0x8ff6ff, 0.9);
     trackerGlyph.beginPath();
@@ -759,7 +803,7 @@ export class GameScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#6f8094', fontStyle: 'bold',
     }).setOrigin(0.5);
     handCard.add([trackerGlyph, this.handBtn, this.handStatusText]);
-    handCard.setSize(72, 68).setInteractive({ useHandCursor: true });
+    handCard.setSize(MIN_MOBILE_COMMAND_TARGET, MIN_MOBILE_COMMAND_TARGET).setInteractive({ useHandCursor: true });
     handCard.on('pointerdown', () => {
       this.suppressNextShot = true;
       void this.toggleHand();
@@ -837,6 +881,19 @@ export class GameScene extends Phaser.Scene {
       label: 'Return to adventure map',
       onActivate: returnToMap,
     });
+    if (this.isTutorialActive()) {
+      a11y.registerButton({
+        id: 'game-tutorial-action',
+        label: 'Advance current tutorial instruction',
+        description: this.tutorialMachine?.snapshot().currentPrompt?.instruction,
+        onActivate: () => this.handleTutorialPanelAction(),
+      });
+      a11y.registerButton({
+        id: 'game-tutorial-skip',
+        label: 'Skip tutorial',
+        onActivate: () => this.skipTutorial(),
+      });
+    }
     const handleKeyboardControls = (event: KeyboardEvent): void => {
       const activeTag = document.activeElement?.tagName;
       if (activeTag === 'BUTTON' || activeTag === 'INPUT' || activeTag === 'TEXTAREA' || event.repeat) return;
@@ -978,7 +1035,7 @@ export class GameScene extends Phaser.Scene {
     accent: number,
     depth = 18,
   ): Phaser.GameObjects.Container {
-    const strip = this.add.container(x, y).setDepth(depth).setAlpha(0);
+    const strip = this.add.container(x, y).setDepth(depth).setAlpha(this.reducedMotion ? 1 : 0);
     const surface = this.add.graphics();
     const halfW = width / 2;
     const halfH = height / 2;
@@ -1006,7 +1063,9 @@ export class GameScene extends Phaser.Scene {
     surface.lineBetween(-Math.min(72, width * 0.18), -halfH + 1, Math.min(72, width * 0.18), -halfH + 1);
     strip.add(surface);
     strip.setSize(width, height);
-    this.tweens.add({ targets: strip, alpha: 1, duration: 220, ease: 'Quad.easeOut' });
+    if (!this.reducedMotion) {
+      this.tweens.add({ targets: strip, alpha: 1, duration: 220, ease: 'Quad.easeOut' });
+    }
     return strip;
   }
 
@@ -1060,7 +1119,7 @@ export class GameScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#dce9f7', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5), 54);
     button.add([hover, icon, label]);
-    button.setSize(60, 64).setInteractive({ useHandCursor: true });
+    button.setSize(100, 100).setInteractive({ useHandCursor: true });
     button.on('pointerover', () => drawHover(0.11, 0.46));
     button.on('pointerout', () => drawHover(0.015, 0.16));
     button.on('pointerdown', () => {
@@ -1116,7 +1175,7 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5);
     fitText(label, width - 42, 0.78);
     button.add([icon, label]);
-    button.setSize(width, 64).setInteractive({ useHandCursor: true });
+    button.setSize(Math.max(100, width), 100).setInteractive({ useHandCursor: true });
     button.on('pointerdown', () => {
       this.suppressNextShot = true;
       this.tweens.add({ targets: button, scale: 0.95, duration: 65, yoyo: true, ease: 'Quad.easeOut' });
@@ -1214,7 +1273,7 @@ export class GameScene extends Phaser.Scene {
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0, 0.5);
-    this.tutorialActionText = this.add.text(250, 35, '', {
+    this.tutorialActionText = this.add.text(230, 40, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#06101a',
@@ -1222,19 +1281,31 @@ export class GameScene extends Phaser.Scene {
       padding: { x: 11, y: 7 },
       fontStyle: 'bold',
       letterSpacing: 1,
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    }).setOrigin(0.5);
     const skip = this.add.text(316, -46, 'SKIP', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#aebdd0',
       fontStyle: 'bold',
       letterSpacing: 1,
-    }).setOrigin(1, 0.5).setInteractive({ useHandCursor: true });
-    this.tutorialActionText.on('pointerdown', () => {
+    }).setOrigin(1, 0.5);
+    const tutorialActionHit = this.add.zone(
+      230,
+      48,
+      160,
+      MIN_MOBILE_COMMAND_TARGET,
+    ).setInteractive({ useHandCursor: true });
+    const skipHit = this.add.zone(
+      310,
+      -48,
+      MIN_MOBILE_COMMAND_TARGET,
+      MIN_MOBILE_COMMAND_TARGET,
+    ).setInteractive({ useHandCursor: true });
+    tutorialActionHit.on('pointerdown', () => {
       this.suppressNextShot = true;
       this.handleTutorialPanelAction();
     });
-    skip.on('pointerdown', () => {
+    skipHit.on('pointerdown', () => {
       this.suppressNextShot = true;
       this.skipTutorial();
     });
@@ -1242,6 +1313,8 @@ export class GameScene extends Phaser.Scene {
       this.tutorialTitleText,
       this.tutorialInstructionText,
       this.tutorialProgressText,
+      tutorialActionHit,
+      skipHit,
       this.tutorialActionText,
       skip,
     ]);
@@ -1251,15 +1324,17 @@ export class GameScene extends Phaser.Scene {
       .setStrokeStyle(4, 0xffdf78, 0.96)
       .setDepth(15)
       .setVisible(false);
-    this.tweens.add({
-      targets: this.tutorialTargetRing,
-      scale: 1.18,
-      alpha: 0.52,
-      duration: 620,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
+    if (!this.reducedMotion) {
+      this.tweens.add({
+        targets: this.tutorialTargetRing,
+        scale: 1.18,
+        alpha: 0.52,
+        duration: 620,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
     this.renderTutorialHud();
   }
 
@@ -1314,7 +1389,7 @@ export class GameScene extends Phaser.Scene {
         visible: true,
         row: LEVEL_ZERO_TUTORIAL_FIXTURE.dangerLineRow,
       });
-      this.cameras.main.flash(90, 255, 92, 112, false);
+      if (!this.reducedMotion) this.cameras.main.flash(90, 255, 92, 112, false);
       return;
     }
     if (step === 'next-orb' || step === 'swap') {
@@ -1564,7 +1639,7 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({ targets: bubble.mechanicOverlay, x: position.x, y: position.y, angle: bubble.mechanicOverlay.angle + direction * 35, duration: 360, ease: 'Cubic.easeInOut' });
       }
     });
-    this.cameras.main.shake(120, 0.0035);
+    if (!this.reducedMotion) this.cameras.main.shake(120, 0.0035);
     this.toast(`POLARITY SHIFT  •  ROW ${row + 1} ROTATED ${direction > 0 ? 'RIGHT' : 'LEFT'}`);
   }
 
@@ -1591,9 +1666,12 @@ export class GameScene extends Phaser.Scene {
     }
     const objectiveKind = this.mechanicState.objective.kind;
     if (objectiveKind === 'boss') return;
+    // This rail shares one line with the authored objective. Use compact,
+    // unambiguous metric labels here; the full mechanic name remains in the
+    // instruction rail and accessible scene description.
     const label: Record<'clear' | 'seals' | 'vines' | 'portal_cores' | 'embers' | 'ice_cores' | 'polarity_nodes', string> = {
-      clear: 'CLEAR GRID', seals: 'SEALS', vines: 'VINES', portal_cores: 'PORTAL CORES', embers: 'COOLED',
-      ice_cores: 'ICE CORES', polarity_nodes: 'POLARITY NODES',
+      clear: 'CLEAR', seals: 'SEALS', vines: 'VINES', portal_cores: 'CORES', embers: 'COOLED',
+      ice_cores: 'ICE', polarity_nodes: 'NODES',
     };
     if (this.objectiveProgressText) {
       this.objectiveProgressText.setScale(1).setText(
@@ -1622,7 +1700,7 @@ export class GameScene extends Phaser.Scene {
         yoyo: true,
         ease: 'Quad.easeOut',
       });
-      this.cameras.main.flash(80, 100, 220, 255, false);
+      if (!this.reducedMotion) this.cameras.main.flash(80, 100, 220, 255, false);
     }
     return result.damage;
   }
@@ -1766,8 +1844,10 @@ export class GameScene extends Phaser.Scene {
     }
     if (result.eruptedIds.length) {
       this.toast('MAGMA CORE ERUPTED  •  MISS +1');
-      this.cameras.main.shake(190, 0.009);
-      this.cameras.main.flash(130, 255, 75, 45, false);
+      if (!this.reducedMotion) {
+        this.cameras.main.shake(190, 0.009);
+        this.cameras.main.flash(130, 255, 75, 45, false);
+      }
     }
     return result.eruptedIds.length > 0;
   }
@@ -2115,7 +2195,11 @@ export class GameScene extends Phaser.Scene {
     this.superBtn?.setAlpha(ready ? 1 : 0.52);
     if (ready && this.superBtn) {
       this.tweens.killTweensOf(this.superBtn);
-      this.tweens.add({ targets: this.superBtn, angle: 4, alpha: 0.78, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      if (this.reducedMotion) {
+        this.superBtn.setAngle(0).setAlpha(1);
+      } else {
+        this.tweens.add({ targets: this.superBtn, angle: 4, alpha: 0.78, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      }
     }
   }
 
@@ -2164,7 +2248,7 @@ export class GameScene extends Phaser.Scene {
       this.classicAuthorityFailed = true;
       const reason = error instanceof Error ? error.message : 'server-run-unavailable';
       this.serverRewardMessage = reason === 'classic-authority-prerequisite-required'
-        ? 'SERVER REWARD LOCKED  •  VERIFY THE PREVIOUS LEVEL FIRST'
+        ? 'SERVER REWARD LOCKED  •  VERIFY THE PREVIOUS STAGE FIRST'
         : 'SERVER REWARD OFFLINE  •  GAMEPLAY CONTINUES';
       this.toast(this.serverRewardMessage);
     }).finally(() => {
@@ -2188,7 +2272,7 @@ export class GameScene extends Phaser.Scene {
       this.classicAuthorityTarget = receipt.nextTarget ?? undefined;
       if (receipt.terminalChallenge) this.classicAuthorityTerminalChallenge = receipt.terminalChallenge;
       if (receipt.completed) {
-        this.serverRewardMessage = 'SERVER INPUT PROOF COMPLETE  •  FINISH THE LEVEL';
+        this.serverRewardMessage = 'SERVER INPUT PROOF COMPLETE  •  FINISH THE STAGE';
       }
     });
     this.classicAuthorityShotPipeline = pending.catch((error) => {
@@ -2234,7 +2318,7 @@ export class GameScene extends Phaser.Scene {
         if (!ticket || !terminalChallenge || this.classicAuthorityFailed) {
           this.setServerRewardMessage(won
             ? 'NO SERVER COINS  •  RESTART TO COMPLETE VERIFIED INPUT PROOF'
-            : 'NO SERVER COINS  •  LEVEL WAS NOT CLEARED');
+            : 'NO SERVER COINS  •  STAGE WAS NOT CLEARED');
           return;
         }
         const submission = createClassicRunSubmissionV3({
@@ -2265,7 +2349,7 @@ export class GameScene extends Phaser.Scene {
         } else if (reward?.alreadyClaimed) {
           this.setServerRewardMessage('FIRST-CLEAR WALLET REWARD ALREADY CLAIMED');
         } else {
-          this.setServerRewardMessage('NO SERVER COINS  •  WIN THIS LEVEL FOR ITS FIRST-CLEAR REWARD');
+          this.setServerRewardMessage('NO SERVER COINS  •  WIN THIS STAGE FOR ITS FIRST-CLEAR REWARD');
         }
       })().catch(() => this.setServerRewardMessage('SERVER REWARD QUEUED  •  RETRIES AFTER RECONNECT'));
     }
@@ -2315,6 +2399,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private pulse(s: Phaser.GameObjects.Sprite): void {
+    if (this.reducedMotion) return;
     const baseScale = this.scaleFor();
     this.tweens.add({
       targets: s,
@@ -2509,29 +2594,33 @@ export class GameScene extends Phaser.Scene {
         const p = cellPos(this.geom, r, c, this.offsetY);
         const sprite = this.makeSprite(color, p.x, p.y).setDepth(4);
         const finalScale = this.scaleFor();
-        sprite.setScale(finalScale * 0.15).setAlpha(0).setAngle(Phaser.Math.FloatBetween(-4, 4));
-        this.tweens.add({
-          targets: sprite,
-          scale: finalScale,
-          alpha: 1,
-          angle: 0,
-          delay: r * 48 + c * 18,
-          duration: 360,
-          ease: 'Back.easeOut',
-          onComplete: () => {
-            if (!sprite.active || !this.quality.parallax) return;
-            this.tweens.add({
-              targets: sprite,
-              angle: Phaser.Math.FloatBetween(-1.15, 1.15),
-              scaleX: finalScale * 1.014,
-              scaleY: finalScale * 0.986,
-              duration: Phaser.Math.Between(1900, 3100),
-              yoyo: true,
-              repeat: -1,
-              ease: 'Sine.easeInOut',
-            });
-          },
-        });
+        if (this.reducedMotion) {
+          sprite.setScale(finalScale).setAlpha(1).setAngle(0);
+        } else {
+          sprite.setScale(finalScale * 0.15).setAlpha(0).setAngle(Phaser.Math.FloatBetween(-4, 4));
+          this.tweens.add({
+            targets: sprite,
+            scale: finalScale,
+            alpha: 1,
+            angle: 0,
+            delay: r * 48 + c * 18,
+            duration: 360,
+            ease: 'Back.easeOut',
+            onComplete: () => {
+              if (!sprite.active || !this.quality.parallax) return;
+              this.tweens.add({
+                targets: sprite,
+                angle: Phaser.Math.FloatBetween(-1.15, 1.15),
+                scaleX: finalScale * 1.014,
+                scaleY: finalScale * 0.986,
+                duration: Phaser.Math.Between(1900, 3100),
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+              });
+            },
+          });
+        }
         this.bubbles.push({ id: this.idc++, row: r, col: c, color, sprite, active: true });
       }
     }
@@ -2928,7 +3017,9 @@ export class GameScene extends Phaser.Scene {
       this.addSuperCharge(8);
       this.popupScore(gained, fxPoint.x, fxPoint.y);
       SFX.pop(this.combo + 1);
-      this.cameras.main.flash(140, kind === 'bomb' ? 255 : 160, kind === 'bomb' ? 150 : 220, 255, false);
+      if (!this.reducedMotion) {
+        this.cameras.main.flash(140, kind === 'bomb' ? 255 : 160, kind === 'bomb' ? 150 : 220, 255, false);
+      }
     }
     if (fell.length) SFX.drop();
     this.applyBossDamageEvent({ bomb: kind === 'bomb' && affected.length > 0, floaters: fell.length });
@@ -3031,7 +3122,7 @@ export class GameScene extends Phaser.Scene {
     SFX.pop(Math.max(1, this.combo + 2));
     if (fell.length) SFX.drop();
     this.applyBossDamageEvent({ artifactSuper: true, floaters: fell.length });
-    this.cameras.main.flash(190, 170, 220, 255, false);
+    if (!this.reducedMotion) this.cameras.main.flash(190, 170, 220, 255, false);
     this.checkBoardState();
   }
 
@@ -3195,7 +3286,7 @@ export class GameScene extends Phaser.Scene {
         this.mechanicState = addObjectiveProgress(this.mechanicState, 'portal_cores', 1);
       }
       this.applyBossDamageEvent({ successfulMatch: true, combo: this.combo, floaters: fell.length });
-      this.cameras.main.shake(120, 0.004);
+      if (!this.reducedMotion) this.cameras.main.shake(120, 0.004);
     } else {
       this.combo = 0;
       this.streak = 0;
@@ -3322,26 +3413,33 @@ export class GameScene extends Phaser.Scene {
     const { width, height } = VIEW;
     const reveal = (text: Phaser.GameObjects.Text, delay: number, rise = 14): Phaser.GameObjects.Text => {
       const y = text.y;
+      if (this.reducedMotion) return text.setY(y).setAlpha(1);
       text.setY(y + rise).setAlpha(0);
       this.tweens.add({ targets: text, y, alpha: 1, delay, duration: 360, ease: 'Cubic.easeOut' });
       return text;
     };
-    const dim = this.add.rectangle(0, 0, width, height, 0x05070c, 0.72).setOrigin(0).setDepth(30).setAlpha(0);
-    this.tweens.add({ targets: dim, alpha: 1, duration: 260, ease: 'Quad.easeOut' });
+    const dim = this.add.rectangle(0, 0, width, height, 0x05070c, 0.72).setOrigin(0).setDepth(30)
+      .setAlpha(this.reducedMotion ? 1 : 0);
+    if (!this.reducedMotion) this.tweens.add({ targets: dim, alpha: 1, duration: 260, ease: 'Quad.easeOut' });
     addArtPanel(this, width / 2, height * 0.52, 610, 820, 31, 0.98);
     const crestAura = this.add.circle(width / 2, height * 0.28, 106, worldForLevel(this.level).accent, 0.12)
       .setStrokeStyle(3, 0xffdd83, 0.35).setBlendMode(Phaser.BlendModes.ADD).setDepth(32).setScale(0.55).setAlpha(0);
     const crest = this.add.image(width / 2, height * 0.28, 'level_medallion').setDisplaySize(190, 190).setDepth(32);
     const crestScaleX = crest.scaleX;
     const crestScaleY = crest.scaleY;
-    crest.setScale(crestScaleX * 0.58, crestScaleY * 0.58).setAngle(-10).setAlpha(0);
-    this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, alpha: 1, delay: 120, duration: 520, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: crestAura, scale: 1.1, alpha: 0.32, delay: 120, duration: 620, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: crestAura, scale: 1.18, alpha: 0.18, delay: 820, duration: 1000, yoyo: true, ease: 'Sine.easeInOut' });
-    reveal(this.add.text(width / 2, height * 0.278, String(this.level + 1), {
+    if (this.reducedMotion) {
+      crest.setScale(crestScaleX, crestScaleY).setAngle(0).setAlpha(1);
+      crestAura.setScale(1.1).setAlpha(0.22);
+    } else {
+      crest.setScale(crestScaleX * 0.58, crestScaleY * 0.58).setAngle(-10).setAlpha(0);
+      this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, alpha: 1, delay: 120, duration: 520, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: crestAura, scale: 1.1, alpha: 0.32, delay: 120, duration: 620, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: crestAura, scale: 1.18, alpha: 0.18, delay: 820, duration: 1000, yoyo: true, ease: 'Sine.easeInOut' });
+    }
+    reveal(this.add.text(width / 2, height * 0.278, String(campaignStageNumber(this.level)), {
       fontFamily: UI_FONT, fontSize: '48px', color: '#ffffff', fontStyle: 'bold', stroke: '#19152f', strokeThickness: 7,
     }).setOrigin(0.5).setDepth(33), 250, 6);
-    reveal(this.add.text(width / 2, height * 0.39, 'LEVEL CLEAR', {
+    reveal(this.add.text(width / 2, height * 0.39, 'STAGE CLEAR', {
       fontFamily: UI_FONT, fontSize: TYPE.screen, color: worldForLevel(this.level).accentCss, fontStyle: 'bold',
       stroke: '#111326', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(33).setShadow(0, 5, '#000000', 10), 300);
@@ -3351,14 +3449,20 @@ export class GameScene extends Phaser.Scene {
     const starLine = reveal(this.add.text(width / 2, height * 0.505, `${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}`, {
       fontFamily: UI_FONT, fontSize: '42px', color: '#ffe277', fontStyle: 'bold', letterSpacing: 5,
     }).setOrigin(0.5).setDepth(33).setShadow(0, 3, '#000000', 8), 400);
-    this.tweens.add({ targets: starLine, scale: 1.08, delay: 620, duration: 280, yoyo: true, ease: 'Back.easeOut' });
+    if (!this.reducedMotion) {
+      this.tweens.add({ targets: starLine, scale: 1.08, delay: 620, duration: 280, yoyo: true, ease: 'Back.easeOut' });
+    }
     reveal(this.add.text(width / 2, height * 0.565, `RUN SCORE   ${this.visibleScore().toLocaleString()}`, {
       fontFamily: UI_FONT, fontSize: '21px', color: '#dce6f5', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(33), 450);
     const clearRewardIcon = this.add.image(width / 2 - 250, height * 0.605, 'mystery_chest_closed')
       .setDisplaySize(66, 66).setDepth(33).setScale(0.2).setAlpha(0);
-    this.tweens.add({ targets: clearRewardIcon, scale: 1, alpha: 1, angle: { from: -8, to: 0 }, delay: 470, duration: 430, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: clearRewardIcon, y: clearRewardIcon.y - 4, delay: 920, duration: 850, yoyo: true, ease: 'Sine.easeInOut' });
+    if (this.reducedMotion) {
+      clearRewardIcon.setScale(1).setAlpha(1).setAngle(0);
+    } else {
+      this.tweens.add({ targets: clearRewardIcon, scale: 1, alpha: 1, angle: { from: -8, to: 0 }, delay: 470, duration: 430, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: clearRewardIcon, y: clearRewardIcon.y - 4, delay: 920, duration: 850, yoyo: true, ease: 'Sine.easeInOut' });
+    }
     this.serverRewardText = reveal(this.add.text(width / 2, height * 0.605, this.serverRewardMessage
       || `◆ +${coinsAwarded.toLocaleString()} COINS   •   KEY +1${shardAwarded ? '   •   SHARD +1' : ''}`, {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#ffdd68', fontStyle: 'bold',
@@ -3376,7 +3480,7 @@ export class GameScene extends Phaser.Scene {
       lineSpacing: 4,
       wordWrap: { width: 520, useAdvancedWrap: true },
     }).setOrigin(0.5).setDepth(33), 550, 8);
-    addArtButton(this, width / 2, height * 0.748, PHASER_RELEASE_FEATURES.completeGameplay ? 'NEXT LEVEL' : 'FOUNDATION COMPLETE', () => {
+    addArtButton(this, width / 2, height * 0.748, PHASER_RELEASE_FEATURES.completeGameplay ? 'NEXT STAGE' : 'FOUNDATION COMPLETE', () => {
       SFX.click();
       if (!PHASER_RELEASE_FEATURES.completeGameplay) {
         this.scene.start('Menu');
@@ -3408,7 +3512,8 @@ export class GameScene extends Phaser.Scene {
     this.aimGfx.clear();
     getHandTracker().suspend();
     const { width, height } = VIEW;
-    const overlay = this.add.container(0, 18).setDepth(60).setAlpha(0);
+    const overlay = this.add.container(0, this.reducedMotion ? 0 : 18).setDepth(60)
+      .setAlpha(this.reducedMotion ? 1 : 0);
     this.pauseOverlay = overlay;
     const dim = this.add.rectangle(0, 0, width, height, 0x02040a, 0.78).setOrigin(0);
     const panel = addArtPanel(this, width / 2, height * 0.48, 610, 690, 60, 0.98);
@@ -3417,8 +3522,11 @@ export class GameScene extends Phaser.Scene {
     const crest = this.add.image(width / 2, height * 0.285, 'level_medallion').setDisplaySize(170, 170).setDepth(61);
     const crestScaleX = crest.scaleX;
     const crestScaleY = crest.scaleY;
-    crest.setScale(crestScaleX * 0.7, crestScaleY * 0.7).setAngle(-7);
-    const level = this.add.text(width / 2, height * 0.285, String(this.level + 1), {
+    crest.setScale(
+      this.reducedMotion ? crestScaleX : crestScaleX * 0.7,
+      this.reducedMotion ? crestScaleY : crestScaleY * 0.7,
+    ).setAngle(this.reducedMotion ? 0 : -7);
+    const level = this.add.text(width / 2, height * 0.285, String(campaignStageNumber(this.level)), {
       fontFamily: UI_FONT, fontSize: '43px', color: '#ffffff', fontStyle: 'bold', stroke: '#17152e', strokeThickness: 7,
     }).setOrigin(0.5).setDepth(62);
     const title = this.add.text(width / 2, height * 0.405, 'ADVENTURE PAUSED', {
@@ -3439,7 +3547,7 @@ export class GameScene extends Phaser.Scene {
       this.suppressNextShot = true;
       if (getHandTracker().isWanted()) void this.startHandTracking(false);
     }, 310, 76, 62);
-    const restart = addArtButton(this, width / 2, height * 0.64, this.arena ? 'RETURN TO ARENA' : 'RESTART LEVEL', () => {
+    const restart = addArtButton(this, width / 2, height * 0.64, this.arena ? 'RETURN TO ARENA' : 'RESTART STAGE', () => {
       SFX.click();
       if (this.arena) {
         this.scene.start('Competitive');
@@ -3452,9 +3560,13 @@ export class GameScene extends Phaser.Scene {
       this.scene.start('WorldMap', { world: LEVELS[this.level].world });
     }, 270, 62, 62);
     overlay.add([dim, panel, crestAura, crest, level, title, subtitle, details, resume, restart, map]);
-    this.tweens.add({ targets: overlay, y: 0, alpha: 1, duration: 360, ease: 'Cubic.easeOut' });
-    this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, duration: 480, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: crestAura, scale: 1.14, alpha: 0.26, duration: 980, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    if (this.reducedMotion) {
+      crestAura.setScale(1.08).setAlpha(0.2);
+    } else {
+      this.tweens.add({ targets: overlay, y: 0, alpha: 1, duration: 360, ease: 'Cubic.easeOut' });
+      this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, duration: 480, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: crestAura, scale: 1.14, alpha: 0.26, duration: 980, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
     sharpenSceneText(this);
   }
 
@@ -3686,12 +3798,14 @@ export class GameScene extends Phaser.Scene {
     this.input.enabled = true;
     const reveal = (text: Phaser.GameObjects.Text, delay: number, rise = 14): Phaser.GameObjects.Text => {
       const y = text.y;
+      if (this.reducedMotion) return text.setY(y).setAlpha(1);
       text.setY(y + rise).setAlpha(0);
       this.tweens.add({ targets: text, y, alpha: 1, delay, duration: 360, ease: 'Cubic.easeOut' });
       return text;
     };
-    const dim = this.add.rectangle(0, 0, width, height, 0x05070c, 0.74).setOrigin(0).setDepth(30).setAlpha(0);
-    this.tweens.add({ targets: dim, alpha: 1, duration: 260, ease: 'Quad.easeOut' });
+    const dim = this.add.rectangle(0, 0, width, height, 0x05070c, 0.74).setOrigin(0).setDepth(30)
+      .setAlpha(this.reducedMotion ? 1 : 0);
+    if (!this.reducedMotion) this.tweens.add({ targets: dim, alpha: 1, duration: 260, ease: 'Quad.easeOut' });
     addArtPanel(this, width / 2, height * 0.5, 610, 780, 31, 0.98);
     const crestAura = this.add.circle(width / 2, height * 0.29, 106, color, 0.12)
       .setStrokeStyle(3, 0xffdc82, 0.34).setBlendMode(Phaser.BlendModes.ADD).setDepth(32).setScale(0.55).setAlpha(0);
@@ -3699,10 +3813,15 @@ export class GameScene extends Phaser.Scene {
       .setTint(won || draw ? 0xffffff : 0x9d7582);
     const crestScaleX = crest.scaleX;
     const crestScaleY = crest.scaleY;
-    crest.setScale(crestScaleX * 0.58, crestScaleY * 0.58).setAngle(won ? -9 : 7).setAlpha(0);
-    this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, alpha: 1, delay: 110, duration: 520, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: crestAura, scale: 1.12, alpha: 0.28, delay: 110, duration: 600, ease: 'Back.easeOut' });
-    this.tweens.add({ targets: crestAura, scale: 1.2, alpha: 0.16, delay: 800, duration: 1050, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    if (this.reducedMotion) {
+      crest.setScale(crestScaleX, crestScaleY).setAngle(0).setAlpha(1);
+      crestAura.setScale(1.1).setAlpha(0.22);
+    } else {
+      crest.setScale(crestScaleX * 0.58, crestScaleY * 0.58).setAngle(won ? -9 : 7).setAlpha(0);
+      this.tweens.add({ targets: crest, scaleX: crestScaleX, scaleY: crestScaleY, angle: 0, alpha: 1, delay: 110, duration: 520, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: crestAura, scale: 1.12, alpha: 0.28, delay: 110, duration: 600, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: crestAura, scale: 1.2, alpha: 0.16, delay: 800, duration: 1050, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
     reveal(this.add.text(width / 2, height * 0.29, won ? '♛' : draw ? '=' : '!', {
       fontFamily: UI_FONT, fontSize: '54px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontStyle: 'bold',
       stroke: '#161426', strokeThickness: 7,
@@ -3719,7 +3838,11 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(33), 375);
     const endRewardIcon = this.add.image(width / 2 - 250, height * 0.52, won ? 'mystery_chest_closed' : 'coin_stack')
       .setDisplaySize(64, 64).setDepth(33).setScale(0.2).setAlpha(0);
-    this.tweens.add({ targets: endRewardIcon, scale: 1, alpha: 1, angle: { from: won ? -8 : 8, to: 0 }, delay: 390, duration: 430, ease: 'Back.easeOut' });
+    if (this.reducedMotion) {
+      endRewardIcon.setScale(1).setAlpha(1).setAngle(0);
+    } else {
+      this.tweens.add({ targets: endRewardIcon, scale: 1, alpha: 1, angle: { from: won ? -8 : 8, to: 0 }, delay: 390, duration: 430, ease: 'Back.easeOut' });
+    }
     this.serverRewardText = reveal(this.add.text(width / 2, height * 0.52, this.serverRewardMessage
       || `${won ? `◆ +${coinsAwarded.toLocaleString()} COINS   •   KEY +1${shardAwarded ? '   •   SHARD +1' : ''}` : `◆ +${coinsAwarded.toLocaleString()} COINS`}`, {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#ffdd68', fontStyle: 'bold',
@@ -3748,7 +3871,7 @@ export class GameScene extends Phaser.Scene {
             ? 'RESTORE THE CROWN'
             : won
               ? 'NEW ADVENTURE'
-              : 'RETRY LEVEL';
+              : 'RETRY STAGE';
     addArtButton(this, width / 2, height * 0.66, primaryAction, () => {
       SFX.click();
       if (this.arena) {
@@ -3774,12 +3897,10 @@ export class GameScene extends Phaser.Scene {
       SFX.click();
       this.scene.start('WorldMap', { world: LEVELS[this.level].world });
     }, 280, 64, 33);
-    this.add.text(width / 2, height * 0.805, 'MAIN MENU', {
-      fontFamily: UI_FONT, fontSize: TYPE.body, color: '#c7d1e1', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(33).setInteractive({ useHandCursor: true }).on('pointerup', () => {
+    addArtButton(this, width / 2, height * 0.81, 'MAIN MENU', () => {
       SFX.click();
       this.scene.start('Menu');
-    });
+    }, 240, 60, 33);
     sharpenSceneText(this);
   }
 

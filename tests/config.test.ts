@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GRID, LEVELS } from '../src/config';
+import { GRID, LEVELS, MAP_NODES, WORLD_THEMES, campaignStageNumber } from '../src/config';
 
 const ORIGINAL_TITLES = [
   'PRISM GATE',
@@ -94,5 +94,17 @@ describe('V11 level configuration', () => {
         expect(level.boss).toBeUndefined();
       }
     });
+  });
+
+  it('keeps stable save IDs while presenting one clear 1–30 campaign route', () => {
+    expect(MAP_NODES.map(({ level }) => campaignStageNumber(level))).toEqual(
+      Array.from({ length: LEVELS.length }, (_, index) => index + 1),
+    );
+
+    // Nexus deliberately interleaves legacy and expanded canonical IDs. Those
+    // IDs cannot change without breaking saves/replays/rewards; only the
+    // player-facing stage labels are normalized.
+    expect(WORLD_THEMES[5].levels).toEqual([15, 28, 16, 29, 17]);
+    expect(WORLD_THEMES[5].levels.map(campaignStageNumber)).toEqual([26, 27, 28, 29, 30]);
   });
 });

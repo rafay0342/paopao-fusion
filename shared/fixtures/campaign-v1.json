@@ -38,7 +38,7 @@
     { "index": 25, "rows": 10, "colors": 6, "world": 3, "title": "PHOENIX ANVIL", "objective": "Forge harmony from living flame", "targetScore": 20600, "goal": "clear", "mechanic": "ember", "mechanicCount": 7, "shotLimit": 34 },
     { "index": 26, "rows": 9, "colors": 5, "world": 4, "title": "AURORA ARCHIVE", "objective": "Thaw the keeper records", "targetScore": 24800, "goal": "ice_cores", "mechanic": "ice", "mechanicCount": 6, "shotLimit": 38 },
     { "index": 27, "rows": 10, "colors": 6, "world": 4, "title": "MIRRORGLASS PASS", "objective": "Cross the fractured winter", "targetScore": 27000, "goal": "clear", "mechanic": "ice", "mechanicCount": 5, "shotLimit": 36 },
-    { "index": 28, "rows": 10, "colors": 6, "world": 5, "title": "GRAVITY WELL", "objective": "Anchor the escaping Paos", "targetScore": 31600, "goal": "polarity_nodes", "mechanic": "polarity", "mechanicCount": 5, "shotLimit": 40 },
+    { "index": 28, "rows": 10, "colors": 6, "world": 5, "title": "GRAVITY WELL", "objective": "Anchor the escaping Pao spirits", "targetScore": 31600, "goal": "polarity_nodes", "mechanic": "polarity", "mechanicCount": 5, "shotLimit": 40 },
     { "index": 29, "rows": 11, "colors": 6, "world": 5, "title": "CROWN CONVERGENCE", "objective": "Unite every restored resonance", "targetScore": 34200, "goal": "clear", "mechanic": "polarity", "mechanicCount": 6, "shotLimit": 38 }
   ]
 }

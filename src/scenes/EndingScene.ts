@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { VIEW, WORLD_THEMES } from '../config';
 import { ENDING_PASSAGES, STORY_TAGLINE } from '../game/story';
+import { queueArtBundle } from '../game/art-v14';
 import type { GameMode } from '../game/meta';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
@@ -37,6 +38,10 @@ export class EndingScene extends Phaser.Scene {
     this.passageIndex = 0;
     this.choicesShown = false;
     this.shards = [];
+  }
+
+  preload(): void {
+    queueArtBundle(this, 'realm-nexus');
   }
 
   create(): void {

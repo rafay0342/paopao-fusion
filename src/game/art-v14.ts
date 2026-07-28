@@ -801,6 +801,8 @@ interface ManagedArtResource {
   refs: number;
   managed: boolean;
   mediaKind: GameplayArtMediaKind;
+  quality: GameplayArtQuality;
+  restoreKey?: string;
 }
 
 const resourcesByGame = new WeakMap<Phaser.Game, Map<string, ManagedArtResource>>();
@@ -894,22 +896,23 @@ function queueArtFile(
   scene: Phaser.Scene,
   asset: ResolvedGameplayArtAsset,
   file: GameplayArtFile,
+  loadKey = asset.stableKey,
 ): void {
-  const { stableKey, mediaKind } = asset;
+  const { mediaKind } = asset;
   if (mediaKind === 'audio') {
-    scene.load.audio(stableKey, file.url);
+    scene.load.audio(loadKey, file.url);
   } else if (mediaKind === 'video') {
-    scene.load.video(stableKey, file.url, true);
+    scene.load.video(loadKey, file.url, true);
   } else if (mediaKind === 'rig' || mediaKind === 'semantic') {
-    scene.load.json(stableKey, file.url);
+    scene.load.json(loadKey, file.url);
   } else if (mediaKind === 'atlas') {
     // Atlas frame metadata lives in the signed manifest. Phaser receives the
     // bounded sheet here; view adapters can address the normalized frame.
-    scene.load.addFile(new VerifiedGameplayImageFile(scene.load, stableKey, file));
+    scene.load.addFile(new VerifiedGameplayImageFile(scene.load, loadKey, file));
   } else if (mediaKind === 'image' || (mediaKind === 'layered' && file.format !== 'json')) {
-    scene.load.addFile(new VerifiedGameplayImageFile(scene.load, stableKey, file));
+    scene.load.addFile(new VerifiedGameplayImageFile(scene.load, loadKey, file));
   } else {
-    scene.load.json(stableKey, file.url);
+    scene.load.json(loadKey, file.url);
   }
 }
 
@@ -990,70 +993,116 @@ export function getArtBundleLoadPlan(
 
 /**
  * Queue a V14 bundle during a scene's preload phase. The manifest must already
- * be installed. Existing textures/cache entries are never queued twice.
+ * be installed. Managed V14 resources are reference-counted; a colliding
+ * legacy texture is replaced only after a private-key candidate verifies.
  */
 export function queueArtBundle(
   scene: Phaser.Scene,
   bundle: GameplayArtBundle,
   quality: GameplayArtQuality = getMeta().quality,
 ): readonly ResolvedGameplayArtAsset[] {
+  if (bundlesByScene.get(scene)?.has(bundle)) return Object.freeze([]);
+
+  const resolved = getArtBundleLoadPlan(bundle, quality);
+  const resources = resourcesByGame.get(scene.game);
+  const existedBefore = new Set<string>();
   const queued: ResolvedGameplayArtAsset[] = [];
-  for (const asset of getArtBundleLoadPlan(bundle, quality)) {
+  const replacementKeys = new Map<string, string>();
+  const restoreKeys = new Map<string, string>();
+  for (const asset of resolved) {
     const { stableKey } = asset;
-    if (sceneHasArtAsset(scene, stableKey, asset.mediaKind)) continue;
-    queueArtFile(scene, asset, asset.candidates[0]);
+    if (sceneHasArtAsset(scene, stableKey, asset.mediaKind)) {
+      const managed = resources?.get(stableKey);
+      if (managed) {
+        // A concurrent scene may still hold the previous scene-boundary
+        // quality. Reuse it until its final reference is released; never
+        // remove a verified texture that another live scene is rendering.
+        existedBefore.add(stableKey);
+        continue;
+      }
+      if (!TEXTURE_MEDIA.has(asset.mediaKind)) {
+        // Preserve unknown non-texture cache entries. They remain unmanaged
+        // and are never removed by the V14 release path.
+        existedBefore.add(stableKey);
+        continue;
+      }
+      // Boot can install a legacy recovery texture under the same stable key.
+      // Load the integrity-verified V14 candidate transactionally under a
+      // private key, then replace the legacy texture only after verification
+      // and decode have both succeeded.
+      const replacementKey = `__paopao_v14__${scene.sys.settings.key}__${bundle}__${stableKey}`;
+      if (scene.textures.exists(replacementKey)) scene.textures.remove(replacementKey);
+      replacementKeys.set(stableKey, replacementKey);
+      queueArtFile(scene, asset, asset.candidates[0], replacementKey);
+      queued.push(asset);
+      continue;
+    }
+    queueArtFile(scene, asset, asset.candidates[0], stableKey);
     queued.push(asset);
   }
   if (queued.length > 0) {
     const retries = new Map<string, {
       asset: ResolvedGameplayArtAsset;
       nextCandidate: number;
+      loadKey: string;
     }>(
-      queued.map((asset) => [asset.stableKey, { asset, nextCandidate: 1 }]),
+      queued.map((asset) => {
+        const loadKey = replacementKeys.get(asset.stableKey) ?? asset.stableKey;
+        return [loadKey, { asset, nextCandidate: 1, loadKey }];
+      }),
     );
     const onLoadError = (file: Phaser.Loader.File): void => {
       const retry = retries.get(String(file.key));
       if (!retry) return;
       const candidate = retry.asset.candidates[retry.nextCandidate];
       if (!candidate) {
-        retries.delete(retry.asset.stableKey);
+        retries.delete(String(file.key));
         return;
       }
       retry.nextCandidate += 1;
-      queueArtFile(scene, retry.asset, candidate);
-    };
-    scene.load.on('loaderror', onLoadError);
-    scene.load.once('complete', () => scene.load.off('loaderror', onLoadError));
-  }
-  return Object.freeze(queued);
-}
-
-function startLoaderRound(
-  scene: Phaser.Scene,
-  assets: readonly ResolvedGameplayArtAsset[],
-  candidateIndex: number,
-): Promise<Set<string>> {
-  if (assets.length === 0) return Promise.resolve(new Set());
-  const expected = new Set(assets.map(({ stableKey }) => stableKey));
-  const failed = new Set<string>();
-  return new Promise((resolve) => {
-    const onError = (file: Phaser.Loader.File): void => {
-      const key = String(file.key);
-      if (expected.has(key)) failed.add(key);
+      queueArtFile(scene, retry.asset, candidate, retry.loadKey);
     };
     const onComplete = (): void => {
-      scene.load.off('loaderror', onError);
-      resolve(failed);
+      scene.load.off('loaderror', onLoadError);
+      const successful: ResolvedGameplayArtAsset[] = [];
+      for (const asset of resolved) {
+        if (existedBefore.has(asset.stableKey)) {
+          successful.push(asset);
+          continue;
+        }
+        const replacementKey = replacementKeys.get(asset.stableKey);
+        if (replacementKey) {
+          if (!scene.textures.exists(replacementKey)) continue;
+          const restoreKey = `__paopao_v14_restore__${asset.stableKey}`;
+          if (scene.textures.exists(restoreKey)) scene.textures.remove(restoreKey);
+          if (scene.textures.exists(asset.stableKey)
+            && !scene.textures.renameTexture(asset.stableKey, restoreKey)) {
+            scene.textures.remove(replacementKey);
+            continue;
+          }
+          if (!scene.textures.renameTexture(replacementKey, asset.stableKey)) {
+            scene.textures.remove(replacementKey);
+            if (scene.textures.exists(restoreKey)) {
+              scene.textures.renameTexture(restoreKey, asset.stableKey);
+            }
+            continue;
+          }
+          if (scene.textures.exists(restoreKey)) restoreKeys.set(asset.stableKey, restoreKey);
+          successful.push(asset);
+          continue;
+        }
+        if (sceneHasArtAsset(scene, asset.stableKey, asset.mediaKind)) {
+          successful.push(asset);
+        }
+      }
+      registerLoadedBundle(scene, bundle, successful, existedBefore, restoreKeys);
     };
-    scene.load.on('loaderror', onError);
+    scene.load.on('loaderror', onLoadError);
     scene.load.once('complete', onComplete);
-    for (const asset of assets) {
-      const candidate = asset.candidates[candidateIndex];
-      if (candidate) queueArtFile(scene, asset, candidate);
-      else failed.add(asset.stableKey);
-    }
-    if (!scene.load.isLoading()) scene.load.start();
-  });
+  } else {
+    registerLoadedBundle(scene, bundle, resolved, existedBefore);
+  }
+  return Object.freeze(queued);
 }
 
 function removeSceneArtAsset(
@@ -1079,6 +1128,7 @@ function registerLoadedBundle(
   bundle: GameplayArtBundle,
   successful: readonly ResolvedGameplayArtAsset[],
   existedBefore: ReadonlySet<string>,
+  restoreKeys: ReadonlyMap<string, string> = new Map(),
 ): void {
   const sceneBundles = bundlesByScene.get(scene) ?? new Map<GameplayArtBundle, readonly string[]>();
   if (sceneBundles.has(bundle)) return;
@@ -1093,6 +1143,10 @@ function registerLoadedBundle(
         refs: 1,
         managed: !existedBefore.has(asset.stableKey),
         mediaKind: asset.mediaKind,
+        quality: asset.quality,
+        ...(restoreKeys.has(asset.stableKey)
+          ? { restoreKey: restoreKeys.get(asset.stableKey) }
+          : {}),
       });
     }
   }
@@ -1131,37 +1185,29 @@ export async function loadArtBundle(
   }
 
   const resolved = getArtBundleLoadPlan(bundle, quality);
-  const existedBefore = new Set(
-    resolved
-      .filter((asset) => sceneHasArtAsset(scene, asset.stableKey, asset.mediaKind))
-      .map(({ stableKey }) => stableKey),
-  );
-  let pending = resolved.filter(({ stableKey }) => !existedBefore.has(stableKey));
-  const maximumCandidates = pending.reduce(
-    (maximum, asset) => Math.max(maximum, asset.candidates.length),
-    0,
-  );
-  for (let candidateIndex = 0; candidateIndex < maximumCandidates && pending.length > 0; candidateIndex += 1) {
-    const attempted = pending.filter((asset) => Boolean(asset.candidates[candidateIndex]));
-    const noCandidate = pending.filter((asset) => !asset.candidates[candidateIndex]);
-    const failed = await startLoaderRound(scene, attempted, candidateIndex);
-    pending = [
-      ...attempted.filter((asset) => failed.has(asset.stableKey)
-        || !sceneHasArtAsset(scene, asset.stableKey, asset.mediaKind)),
-      ...noCandidate,
-    ];
+  const queued = queueArtBundle(scene, bundle, quality);
+  const queuedKeys = new Set(queued.map(({ stableKey }) => stableKey));
+  if (queued.length > 0) {
+    await new Promise<void>((resolve) => {
+      scene.load.once('complete', () => resolve());
+      if (!scene.load.isLoading()) scene.load.start();
+    });
   }
-
-  const failedKeys = new Set(pending.map(({ stableKey }) => stableKey));
-  const successful = resolved.filter(({ stableKey }) => !failedKeys.has(stableKey));
-  registerLoadedBundle(scene, bundle, successful, existedBefore);
+  const successfulKeys = new Set(bundlesByScene.get(scene)?.get(bundle) ?? []);
+  const failedKeys = new Set(
+    resolved
+      .map(({ stableKey }) => stableKey)
+      .filter((stableKey) => !successfulKeys.has(stableKey)),
+  );
   return Object.freeze({
     bundle,
     quality,
     loaded: Object.freeze(
-      successful.filter(({ stableKey }) => !existedBefore.has(stableKey)).map(({ stableKey }) => stableKey),
+      [...successfulKeys].filter((stableKey) => queuedKeys.has(stableKey)),
     ),
-    reused: Object.freeze([...existedBefore]),
+    reused: Object.freeze(
+      [...successfulKeys].filter((stableKey) => !queuedKeys.has(stableKey)),
+    ),
     failed: Object.freeze([...failedKeys]),
   });
 }
@@ -1188,6 +1234,11 @@ export function releaseArtBundle(
     resources?.delete(stableKey);
     if (resource.managed) {
       removeSceneArtAsset(scene, stableKey, resource.mediaKind);
+      if (resource.restoreKey
+        && TEXTURE_MEDIA.has(resource.mediaKind)
+        && scene.textures.exists(resource.restoreKey)) {
+        scene.textures.renameTexture(resource.restoreKey, stableKey);
+      }
       removed.push(stableKey);
     }
   }

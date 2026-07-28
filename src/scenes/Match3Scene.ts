@@ -36,8 +36,14 @@ import {
   recordMatch3Clear,
 } from '../game/match3-progress';
 import { getMeta, getQualityProfile, type QualityProfile } from '../game/meta';
+import { queueArtBundle } from '../game/art-v14';
+import { resolveWorldPresentation } from '../game/world-presentation';
 import { startMusic } from '../game/music';
 import { SFX } from '../game/sfx';
+import {
+  accessibilityRuntimeForCanvas,
+  type AccessibilitySceneSession,
+} from '../gfx/accessibility';
 import {
   addAmbientMotes,
   addArtButton,
@@ -51,6 +57,7 @@ import {
   TYPE,
   UI_COLORS,
   UI_FONT,
+  updateArtButtonAccessibility,
 } from '../gfx/ui';
 
 interface Match3SceneData {
@@ -109,6 +116,8 @@ export class Match3Scene extends Phaser.Scene {
   private objectivesText?: Phaser.GameObjects.Text;
   private boosterButtons: Partial<Record<Match3Booster, Phaser.GameObjects.Container>> = {};
   private statusText?: Phaser.GameObjects.Text;
+  private a11y?: AccessibilitySceneSession;
+  private lastA11yAnnouncement = '';
 
   private handOn = false;
   private handStarting = false;
@@ -164,6 +173,8 @@ export class Match3Scene extends Phaser.Scene {
     this.activeBooster = null;
     this.terminalShown = false;
     this.pauseShown = false;
+    this.a11y = undefined;
+    this.lastA11yAnnouncement = '';
     this.handOn = false;
     this.handStarting = false;
     this.handHasSeen = false;
@@ -182,13 +193,35 @@ export class Match3Scene extends Phaser.Scene {
     );
   }
 
+  preload(): void {
+    const definition = getMatch3LevelDefinition(this.level);
+    const world = WORLD_THEMES[definition.world] ?? WORLD_THEMES[0];
+    queueArtBundle(this, `realm-${world.id}`);
+  }
+
   create(): void {
     const definition = getMatch3LevelDefinition(this.level);
     const world = WORLD_THEMES[definition.world];
+    const progress = getMatch3Progress();
+    const presentation = resolveWorldPresentation({
+      worldId: world.id,
+      worldIndex: definition.world,
+      finalLevel: definition.world * 5 + 4,
+      clearedLevels: progress.cleared,
+      mode: 'match3',
+      backgroundKey: world.background,
+    });
+    this.a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: `match3-level-${this.level + 1}`,
+      heading: `Prism Cascade level ${this.level + 1}: ${definition.name}`,
+      description: `${presentation.label}. ${definition.name}. Swap adjacent orbs with drag, tap-tap, arrow keys plus Space, or pinch and palm swipe. Board focus starts at row 4, column 4.`,
+      status: `Moves ${this.state.movesRemaining}. Score ${this.state.score}.`,
+      lifecycle: this.events,
+    });
     startMusic(definition.act === 4 ? 'boss' : 'game');
-    addWorldBackground(this, world.background, 0.23);
+    addWorldBackground(this, world.background, 0.23, presentation);
     addAmbientMotes(this, world.accent, 18, 2);
-    this.cameras.main.fadeIn(160, 0, 0, 0);
+    this.cameras.main.fadeIn(prefersReducedMotion() ? 0 : 160, 0, 0, 0);
 
     this.add.text(VIEW.width / 2, 48, 'PRISM CASCADE', {
       fontFamily: DISPLAY_FONT,
@@ -230,17 +263,17 @@ export class Match3Scene extends Phaser.Scene {
     this.renderBoard(this.state.board, true);
 
     addArtPanel(this, VIEW.width / 2, 932, 640, 108, 7, 0.97);
-    this.add.text(52, 895, 'OBJECTIVES', {
+    this.add.text(52, 888, 'OBJECTIVES', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#e6c982', fontStyle: 'bold', letterSpacing: 1.7,
     }).setDepth(12);
-    this.objectivesText = this.add.text(52, 928, '', {
+    this.objectivesText = this.add.text(52, 914, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.control,
       color: '#e6edf8',
       fontStyle: 'bold',
       wordWrap: { width: 616 },
-      lineSpacing: 5,
-    }).setOrigin(0, 0.5).setDepth(12);
+      lineSpacing: 4,
+    }).setOrigin(0, 0).setDepth(12);
 
     this.boosterButtons.hammer = addArtButton(this, 128, 1_030, 'HAMMER ×1', () => {
       this.selectBooster('hammer');
@@ -470,13 +503,25 @@ export class Match3Scene extends Phaser.Scene {
       void this.attemptSwap(this.selected, released);
       return;
     }
+    this.keyboardCell = { ...released };
     this.selected = { ...released };
     this.candidate = null;
     this.drawSelection();
+    this.announceBoardFocus('Selected');
   }
 
   private handleKeyboard(event: KeyboardEvent): void {
-    if (this.inputLocked || this.pauseShown || this.terminalShown || event.repeat) return;
+    const activeTag = document.activeElement?.tagName;
+    if (
+      activeTag === 'BUTTON'
+      || activeTag === 'INPUT'
+      || activeTag === 'TEXTAREA'
+      || activeTag === 'SELECT'
+      || this.inputLocked
+      || this.pauseShown
+      || this.terminalShown
+      || event.repeat
+    ) return;
     let moved = false;
     if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') {
       this.keyboardCell.col = Math.max(0, this.keyboardCell.col - 1);
@@ -501,6 +546,7 @@ export class Match3Scene extends Phaser.Scene {
       } else {
         this.selected = { ...this.keyboardCell };
         this.drawSelection();
+        this.announceBoardFocus('Selected');
       }
       return;
     }
@@ -510,7 +556,31 @@ export class Match3Scene extends Phaser.Scene {
         ? { ...this.keyboardCell }
         : null;
       this.drawSelection(this.selected ?? this.keyboardCell, this.candidate);
+      this.announceBoardFocus(this.candidate ? 'Swap target' : 'Board focus');
     }
+  }
+
+  private boardCellDescription(coordinate: Match3Coordinate): string {
+    const cell = this.state.board[coordinate.row]?.[coordinate.col];
+    if (!cell) return `Row ${coordinate.row + 1}, column ${coordinate.col + 1}, outside board`;
+    const parts = [`Row ${coordinate.row + 1}, column ${coordinate.col + 1}`];
+    if (!cell.tile) {
+      parts.push('empty');
+    } else {
+      const color = cell.tile.color ? COLORS[cell.tile.color].name : 'spectrum';
+      parts.push(`${color} orb`);
+      if (cell.tile.special) parts.push(`${cell.tile.special} special`);
+    }
+    if (cell.shell > 0) parts.push(`shell strength ${cell.shell}`);
+    if (cell.vine) parts.push('vine');
+    return parts.join(', ');
+  }
+
+  private announceBoardFocus(prefix: string): void {
+    const selected = this.selected
+      ? ` Selected ${this.boardCellDescription(this.selected)}.`
+      : '';
+    this.announceA11y(`${prefix}: ${this.boardCellDescription(this.keyboardCell)}.${selected}`);
   }
 
   private sameCell(first: Match3Coordinate | null, second: Match3Coordinate | null): boolean {
@@ -760,28 +830,43 @@ export class Match3Scene extends Phaser.Scene {
     this.scoreText?.setText(`SCORE\n${this.state.score.toLocaleString()}`);
     this.chainText?.setText(`BEST\n×${Math.max(1, this.state.comboPeak)}`);
     const objectiveParts: string[] = [
-      `SCORE ${Math.min(this.state.score, this.state.goals.targetScore).toLocaleString()} / ${this.state.goals.targetScore.toLocaleString()}`,
+      `SCORE ${Math.min(this.state.score, this.state.goals.targetScore).toLocaleString()}/${this.state.goals.targetScore.toLocaleString()}`,
     ];
     for (const [color, target] of Object.entries(this.state.goals.collect)) {
       const typedColor = color as Match3Color;
       objectiveParts.push(
-        `${COLORS[typedColor].name.toUpperCase()} ${Math.min(this.state.progress.collected[typedColor], target ?? 0)} / ${target}`,
+        `${COLORS[typedColor].name.toUpperCase()} ${Math.min(this.state.progress.collected[typedColor], target ?? 0)}/${target}`,
       );
     }
     if (this.state.goals.shells > 0) {
-      objectiveParts.push(`SHELLS ${Math.min(this.state.progress.shellsCleared, this.state.goals.shells)} / ${this.state.goals.shells}`);
+      objectiveParts.push(`SHELL ${Math.min(this.state.progress.shellsCleared, this.state.goals.shells)}/${this.state.goals.shells}`);
     }
     if (this.state.goals.vines > 0) {
-      objectiveParts.push(`VINES ${Math.min(this.state.progress.vinesCleared, this.state.goals.vines)} / ${this.state.goals.vines}`);
+      objectiveParts.push(`VINE ${Math.min(this.state.progress.vinesCleared, this.state.goals.vines)}/${this.state.goals.vines}`);
     }
-    this.objectivesText?.setText(objectiveParts.join('   •   '));
-    fitText(this.objectivesText!, 616, 0.78);
+    if (this.objectivesText) {
+      this.objectivesText
+        .setScale(1)
+        .setText([
+          objectiveParts[0],
+          objectiveParts.slice(1).join('  •  '),
+        ].filter(Boolean).join('\n'));
+      fitText(this.objectivesText, 616, 0.72);
+    }
+    this.a11y?.setStatus(
+      `Moves ${this.state.movesRemaining}. Score ${this.state.score.toLocaleString()}. Best cascade ${Math.max(1, this.state.comboPeak)}. Objectives: ${objectiveParts.join(', ')}.`,
+    );
     for (const booster of ['hammer', 'shuffle', 'spectrum'] as const) {
       const text = this.boosterButtons[booster]?.list.find(
         (child): child is Phaser.GameObjects.Text => child instanceof Phaser.GameObjects.Text,
       );
       const label = booster === 'hammer' ? 'HAMMER' : booster === 'shuffle' ? 'RESHUFFLE' : 'PRISM';
-      text?.setText(`${label} ×${this.state.boosters[booster]}`);
+      const accessibleLabel = `${label} ×${this.state.boosters[booster]}`;
+      text?.setText(accessibleLabel);
+      updateArtButtonAccessibility(this.boosterButtons[booster], {
+        label: accessibleLabel,
+        disabled: this.state.boosters[booster] <= 0,
+      });
     }
     if (definition.goals.shells === 0 && definition.goals.vines === 0) {
       this.objectivesText?.setColor('#dfefff');
@@ -789,9 +874,17 @@ export class Match3Scene extends Phaser.Scene {
   }
 
   private setStatus(message: string, color: string): void {
-    if (!this.statusText) return;
-    this.statusText.setText(message).setColor(color);
-    fitText(this.statusText, 650, 0.76);
+    if (this.statusText) {
+      this.statusText.setText(message).setColor(color);
+      fitText(this.statusText, 650, 0.76);
+    }
+    this.announceA11y(message);
+  }
+
+  private announceA11y(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
+    if (!message || message === this.lastA11yAnnouncement) return;
+    this.lastA11yAnnouncement = message;
+    this.a11y?.announce(message, priority);
   }
 
   private restartLevel(): void {
@@ -813,6 +906,11 @@ export class Match3Scene extends Phaser.Scene {
     } else {
       SFX.lose();
     }
+    const terminalStatus = won
+      ? `Realm restored. Score ${this.state.score.toLocaleString()}. Best cascade ${Math.max(1, this.state.comboPeak)}.`
+      : `Out of moves. Score ${this.state.score.toLocaleString()}.`;
+    this.a11y?.setStatus(terminalStatus);
+    this.announceA11y(terminalStatus, 'assertive');
     const shield = this.add.rectangle(VIEW.width / 2, VIEW.height / 2, VIEW.width, VIEW.height, 0x02040c, 0.82)
       .setDepth(60)
       .setInteractive();
@@ -941,6 +1039,11 @@ export class Match3Scene extends Phaser.Scene {
 
   private setHandButton(label: string, color: string): void {
     this.handButtonText?.setText(label).setColor(color);
+    updateArtButtonAccessibility(this.handButton, {
+      label,
+      pressed: label.includes('ON'),
+      disabled: label.includes('STARTING'),
+    });
   }
 
   private handFrame(sample: HandSample, cell: Match3Coordinate | null): HandGridDragFrame {

@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
-import { COLOR_KEYS, LEVELS, VIEW, orbTexture, worldForLevel } from '../config';
+import { COLOR_KEYS, LEVELS, VIEW, campaignStageNumber, orbTexture, worldForLevel } from '../config';
 import { getArtBundleKeys, queueArtBundle } from '../game/art-v14';
+import { getProgress } from '../game/progression';
+import { resolveWorldPresentation } from '../game/world-presentation';
 import { storyBeatForLevel, storyChapterForLevel } from '../game/story';
 import { hostedAssetUrl } from '../game/hostedAsset';
 import { getMeta, type GameMode } from '../game/meta';
@@ -45,6 +47,8 @@ export class StoryScene extends Phaser.Scene {
   preload(): void {
     const v14CharacterKeys = new Set(getArtBundleKeys('characters'));
     queueArtBundle(this, 'characters');
+    const theme = worldForLevel(this.level);
+    queueArtBundle(this, `realm-${theme.id}`);
     if (!this.textures.exists('lumi_guide') && !v14CharacterKeys.has('lumi_guide')) {
       this.load.image('lumi_guide', hostedAssetUrl('assets/characters/v13/lumi-guide.webp'));
     }
@@ -56,19 +60,29 @@ export class StoryScene extends Phaser.Scene {
     const theme = worldForLevel(this.level);
     const beat = storyBeatForLevel(this.level);
     const chapter = storyChapterForLevel(this.level);
+    const displayStage = campaignStageNumber(this.level);
     const meta = getMeta();
+    const progress = getProgress();
     const spiritColor = COLOR_KEYS[this.level % COLOR_KEYS.length];
     const reducedMotion = prefersReducedMotion();
+    const presentation = resolveWorldPresentation({
+      worldId: theme.id,
+      worldIndex: LEVELS[this.level]?.world ?? 0,
+      finalLevel: theme.levels[theme.levels.length - 1],
+      clearedLevels: progress.cleared,
+      mode: 'bubble-shooter',
+      backgroundKey: theme.background,
+    });
     const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
       id: `story-level-${this.level + 1}`,
       heading: `${beat.title}. ${beat.speaker} speaks.`,
-      description: `${beat.body} Objective: ${beat.purpose}`,
-      status: `Chapter ${chapter.number}, level ${this.level + 1} of ${LEVELS.length}.`,
+      description: `${presentation.label}. ${presentation.guidance}. ${beat.body} Objective: ${beat.purpose}`,
+      status: `${presentation.label}. Chapter ${chapter.number}, stage ${displayStage} of ${LEVELS.length}.`,
       lifecycle: this.events,
     });
 
     this.cameras.main.fadeIn(reducedMotion ? 0 : 260, 0, 0, 0);
-    addWorldBackground(this, theme.background, 0.34);
+    addWorldBackground(this, theme.background, 0.34, presentation);
     addAmbientMotes(this, theme.accent, 15, 2);
 
     const veil = this.add.graphics().setDepth(3);
@@ -78,7 +92,7 @@ export class StoryScene extends Phaser.Scene {
     this.add.text(width / 2, 58, `CHAPTER ${chapter.number}  •  ${chapter.title}`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: theme.accentCss, fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(8).setShadow(0, 3, '#000000', 8);
-    this.add.text(width / 2, 94, `LEVEL ${String(this.level + 1).padStart(2, '0')}  /  ${LEVELS.length}`, {
+    this.add.text(width / 2, 94, `STAGE ${String(displayStage).padStart(2, '0')}  /  ${LEVELS.length}`, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#cad5e7', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(8);
 
@@ -167,12 +181,29 @@ export class StoryScene extends Phaser.Scene {
       SFX.click();
       this.scene.start('Chronicle', { returnScene: 'Story', level: this.level, score: this.score, mode: this.mode });
     };
-    this.add.text(38, height - 36, '‹  ADVENTURE MAP', {
+    const mapAction = this.add.text(38, height - 36, '‹  ADVENTURE MAP', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#cbd5e5', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', returnToMap);
-    this.add.text(width - 38, height - 36, 'CHRONICLE  ›', {
+    }).setOrigin(0, 0.5).setDepth(10);
+    const mapHitWidth = Math.max(280, mapAction.width + 36);
+    mapAction.setInteractive(
+      new Phaser.Geom.Rectangle(-18, (mapAction.height - 100) / 2, mapHitWidth, 100),
+      Phaser.Geom.Rectangle.Contains,
+    ).on('pointerup', returnToMap);
+    mapAction.input!.cursor = 'pointer';
+    const chronicleAction = this.add.text(width - 38, height - 36, 'CHRONICLE  ›', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe19a', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(1, 0.5).setDepth(10).setInteractive({ useHandCursor: true }).on('pointerup', openChronicle);
+    }).setOrigin(1, 0.5).setDepth(10);
+    const chronicleHitWidth = Math.max(280, chronicleAction.width + 36);
+    chronicleAction.setInteractive(
+      new Phaser.Geom.Rectangle(
+        chronicleAction.width - chronicleHitWidth + 18,
+        (chronicleAction.height - 100) / 2,
+        chronicleHitWidth,
+        100,
+      ),
+      Phaser.Geom.Rectangle.Contains,
+    ).on('pointerup', openChronicle);
+    chronicleAction.input!.cursor = 'pointer';
     a11y.registerButton({
       id: 'story-adventure-map',
       label: 'Return to adventure map',

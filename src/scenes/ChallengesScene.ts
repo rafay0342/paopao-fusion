@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { LEVELS, VIEW } from '../config';
+import { LEVELS, VIEW, campaignStageNumber } from '../config';
 import { MODE_DEFS } from '../game/meta';
 import {
   ACHIEVEMENTS,
@@ -51,7 +51,7 @@ export class ChallengesScene extends Phaser.Scene {
     this.add.text(58, 162, 'DAILY PRISM', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#79d9ff', fontStyle: 'bold', letterSpacing: 2,
     }).setDepth(8);
-    fitText(this.add.text(58, 201, `L${challenge.level + 1} ${LEVELS[challenge.level].title}  •  ${MODE_DEFS[challenge.mode].name}`, {
+    fitText(this.add.text(58, 201, `STAGE ${campaignStageNumber(challenge.level)}  •  ${LEVELS[challenge.level].title}  •  ${MODE_DEFS[challenge.mode].name}`, {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#ffffff', fontStyle: 'bold',
     }).setDepth(8), 590);
     this.add.text(58, 238, `${challenge.modifier.replace('_', ' ').toUpperCase()}  •  REWARD ◆ ${challenge.rewardCoins}`, {

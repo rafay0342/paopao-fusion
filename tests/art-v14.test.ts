@@ -307,7 +307,7 @@ describe('GameplayArtManifestV1', () => {
     expect(resolveArtAsset('v14_asset_002', 'performance')).toBeNull();
   });
 
-  it('accepts the generated A1 preview with gameplay and archive keys bound to seven approved masters', () => {
+  it('accepts the generated V14 preview with Nexus corruption art bound to eight approved masters', () => {
     const projectRoot = resolve(import.meta.dirname, '..');
     const generated = JSON.parse(readFileSync(
       resolve(projectRoot, 'public/assets/v14/art-manifest.json'),
@@ -315,10 +315,12 @@ describe('GameplayArtManifestV1', () => {
     ));
     const validated = validateGameplayArtManifest(generated, { requireComplete: false });
 
-    expect(validated.entries).toHaveLength(86);
-    expect(new Set(validated.entries.map(({ pfId }) => pfId)).size).toBe(7);
+    expect(validated.entries).toHaveLength(89);
+    expect(new Set(validated.entries.map(({ pfId }) => pfId)).size).toBe(8);
     expect(validated.entries.filter(({ stableKey }) => stableKey.startsWith('bubble_'))).toHaveLength(72);
-    expect(validated.entries.filter(({ stableKey }) => stableKey.startsWith('archive.'))).toHaveLength(7);
+    expect(validated.entries.filter(({ stableKey }) => stableKey.startsWith('archive.'))).toHaveLength(8);
+    expect(validated.entries.some(({ stableKey }) => stableKey === 'world_nexus')).toBe(true);
+    expect(validated.entries.some(({ stableKey }) => stableKey === 'world_nexus_atmosphere')).toBe(true);
     expect(validated.entries.every(({ variants }) => (
       variants.performance.fallbacks?.length === 1
       && variants.balanced.fallbacks?.length === 1

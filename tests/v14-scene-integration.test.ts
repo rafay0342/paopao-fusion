@@ -43,6 +43,53 @@ describe('V14 scene art integration', () => {
     }
   });
 
+  it('loads each active realm bundle before maps and both gameplay modes render it', () => {
+    for (const path of [
+      'src/scenes/WorldMapScene.ts',
+      'src/scenes/Match3MapScene.ts',
+      'src/scenes/GameScene.ts',
+      'src/scenes/Match3Scene.ts',
+      'src/scenes/StoryScene.ts',
+    ]) {
+      const scene = readText(path);
+      expect(scene).toContain('preload(): void');
+      expect(scene).toContain('queueArtBundle(this, `realm-${');
+      expect(scene).toContain('resolveWorldPresentation({');
+      expect(scene).toContain('addWorldBackground(this,');
+    }
+  });
+
+  it('transactionally replaces legacy stable textures and releases scene-owned V14 bundles', () => {
+    const art = readText('src/game/art-v14.ts');
+
+    expect(art).toContain('const replacementKey = `__paopao_v14__');
+    expect(art).toContain('const restoreKey = `__paopao_v14_restore__');
+    expect(art).toContain('scene.textures.renameTexture(replacementKey, asset.stableKey)');
+    expect(art).toContain('registerLoadedBundle(scene, bundle, successful, existedBefore, restoreKeys)');
+    expect(art).toContain("scene.events.once('shutdown'");
+    expect(art).toContain('releaseArtBundle(scene, activeBundle)');
+    expect(art).toContain('scene.textures.renameTexture(resource.restoreKey, stableKey)');
+    expect(art).toMatch(/never\s+\/\/ remove a verified texture that another live scene is rendering/);
+  });
+
+  it('routes the dynamic bundle API through the same transactional loader', () => {
+    const art = readText('src/game/art-v14.ts');
+    const start = art.indexOf('export async function loadArtBundle');
+    const end = art.indexOf('export function releaseArtBundle', start);
+    const dynamicLoader = art.slice(start, end);
+
+    expect(dynamicLoader).toContain('const queued = queueArtBundle(scene, bundle, quality)');
+    expect(dynamicLoader).toContain("scene.load.once('complete'");
+    expect(dynamicLoader).not.toContain('startLoaderRound');
+  });
+
+  it('acquires the Nexus realm before the ending renders its stable background key', () => {
+    const ending = readText('src/scenes/EndingScene.ts');
+    expect(ending).toContain('preload(): void');
+    expect(ending).toContain("queueArtBundle(this, 'realm-nexus')");
+    expect(ending).toContain("addWorldBackground(this, 'world_nexus'");
+  });
+
   it('keeps V14 retries bounded to declared candidates and one legacy recovery URL', () => {
     const boot = readText('src/scenes/BootScene.ts');
 

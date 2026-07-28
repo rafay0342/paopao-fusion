@@ -12936,11 +12936,11 @@
         ]
       },
       "provenance": {
-        "state": "not-generated",
-        "actualTool": null,
-        "mode": null,
-        "generatedAt": null,
-        "finalPrompt": null,
+        "state": "generated",
+        "actualTool": "local-post-processing",
+        "mode": "layer-compose",
+        "generatedAt": "2026-07-28T14:53:25.000Z",
+        "finalPrompt": "Finish the selected built-in generated Nexus Candidate C as a production layered environment: preserve the immutable generated source, reduce micro-detail and contrast in the lower launcher safety zone, separate background, midground, gameplay plane and foreground into full-canvas editable composition bands, retain the independent parallax-safe atmosphere layer, and compile one deterministic runtime composite without changing the focal anchor or safe zones. Original generation brief: Create candidate C for PF-asset-231, the original PaoPao Fusion Nexus Realm hero environment master. Portrait 9:16 mobile-first composition, ultra-detailed high-end cinematic stylized-3D dark fantasy for a friendly but eerie puzzle adventure. Depict the interior of an impossible celestial archive after corruption: towering pearl-stone vaults curve into a starless rift, antique-gold crown mechanisms hang broken in zero gravity, translucent black-violet crystal curtains reveal dim turquoise memories, fine luminous hairline fractures pulse toward one distant suspended Aurora Crown reliquary as the only focal point, and a circular engraved Pao launch platform anchors the foreground. Horror mood comes from scale, silence, impossible geometry, slow fog and corrupted light—not monsters, gore, weapons or violence. Materials should feel richly tactile and physically believable: frosted crystal, carved pearl, brushed gold, smoked glass, damp obsidian, controlled bloom, volumetric shafts, layered atmosphere. Protect gameplay readability exactly: calm low-detail top 14 percent for HUD, spacious low-frequency central 58 percent with consistent dark value for Bubble Shooter and Match-3 pieces, clean lower 18 percent launcher stage, wide crop bleed for 320x568 phones, tablets and 16:9 desktop. Compose separable parallax bands and keep side detail framing the open center. Deep indigo and charcoal with cyan restorative accents and restrained gold; preserve visible detail in shadows. Original PaoPao visual language, non-photoreal mascot-game environment. No character, no face, no creature, no text, no UI, no logo, no signature, no watermark, no fighting-game content, no gore, no blood, no jump scare, no copied franchise, no proprietary studio imitation, no crowded central playfield, no pure black crushed shadows.",
         "negativeConstraints": [
           "no copied franchise character or proprietary studio design",
           "no photoreal human styling",
@@ -12948,25 +12948,142 @@
           "no watermark, signature, logo or baked typography",
           "no malformed anatomy, ornament, crop, alpha fringe or chroma spill"
         ],
-        "referenceImages": [],
+        "referenceImages": [
+          {
+            "role": "generated-source selected Candidate C",
+            "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-generated-source.png",
+            "sha256": "3c9058c8632d20fccafd45c0eb14274f45617bac4ae78467db961e5b83e90423"
+          },
+          {
+            "role": "approved-seed Aurora Crown material and silhouette reference",
+            "path": "art-source/v14/canon/approved/aurora-crown-master.png",
+            "sha256": "0dea61b08ac7f19df09bed8d5ed2943016a54a1c19eac9a9063f7104deec5879"
+          },
+          {
+            "role": "legacy Nexus spatial composition reference",
+            "path": "public/assets/worlds/v9/world-nexus-hd.jpg",
+            "sha256": "b783b13ff415cd9ca4f41b8c9acd41dd5692a9867f28af80e0904c7d1d3933a2"
+          }
+        ],
         "model": null,
         "seed": null,
         "outputId": null,
         "rightsStatement": "Original PaoPao Fusion production art; no copied franchise characters, proprietary film designs or fighting-game content.",
-        "sourceSha256": null
+        "sourceSha256": "d5ee32dabe81b849eb9502c3fe0570f0a25a9fc75c5c6f41976288d6af9389dd"
       },
       "approval": {
-        "state": "briefed",
-        "reviewer": null,
-        "reviewedAt": null,
-        "contactSheetPath": null,
-        "notes": null
+        "state": "approved",
+        "reviewer": "Codex senior motion and game art review",
+        "reviewedAt": "2026-07-28T15:45:46.000Z",
+        "contactSheetPath": "docs/art/v14/review/PF-asset-231-nexus-corruption-contact-sheet.png",
+        "notes": "Three independent candidates were reviewed at true resolution. Candidate C was preserved as the immutable generated source, then locally finished into lossless disjoint background, midground, gameplay-plane and foreground composition bands plus one independent parallax-safe atmosphere layer. The runtime composite reduces lower-launcher detail while preserving the authored focal anchor, safe zones and original non-graphic fantasy-horror tone."
       },
-      "primary": null,
-      "companions": [],
-      "technical": {},
-      "dependencies": [],
-      "usageReferences": []
+      "primary": {
+        "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-layered.json",
+        "format": "json",
+        "bytes": 3058,
+        "sha256": "d5ee32dabe81b849eb9502c3fe0570f0a25a9fc75c5c6f41976288d6af9389dd",
+        "authoredResolution": {
+          "width": 941,
+          "height": 1672
+        },
+        "durationMs": null
+      },
+      "companions": [
+        {
+          "role": "generated-source",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-generated-source.png",
+          "format": "png",
+          "bytes": 2452373,
+          "sha256": "3c9058c8632d20fccafd45c0eb14274f45617bac4ae78467db961e5b83e90423"
+        },
+        {
+          "role": "environment-plate",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-environment.png",
+          "format": "png",
+          "bytes": 2207307,
+          "sha256": "dcc7350c98521a05b309340aa7dce49641cae05827350aa9145fc7e782af66db"
+        },
+        {
+          "role": "background-layer",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-background.png",
+          "format": "png",
+          "bytes": 701240,
+          "sha256": "85719442f7697da52d4d027bb9546ee8ab40c023a24133d02cebe7921de68d17"
+        },
+        {
+          "role": "midground-layer",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-midground.png",
+          "format": "png",
+          "bytes": 528758,
+          "sha256": "deccd71e11b547a09ad7accc21e7cfcc2a9df4c2a4932c878030db18645a6f5a"
+        },
+        {
+          "role": "gameplay-plane-layer",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-gameplay-plane.png",
+          "format": "png",
+          "bytes": 758891,
+          "sha256": "01cddab6df402b451a14b51d012e693d65b4e74ad41e17fcedfe808d34e3214f"
+        },
+        {
+          "role": "foreground-layer",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-foreground.png",
+          "format": "png",
+          "bytes": 532002,
+          "sha256": "e300cabafb6e9b229252a1f2b3a6bb293a9138b3ade74adc32af0a8042c812c9"
+        },
+        {
+          "role": "atmosphere-layer",
+          "path": "art-source/v14/masters/PF-asset-231-nexus-realm-hero-atmosphere.png",
+          "format": "png",
+          "bytes": 714736,
+          "sha256": "4b5c38c690ba0180ab3e5be3c078813a0c810757bdca82bc3c9b4c571f1fa29b"
+        }
+      ],
+      "technical": {
+        "schema": "paopao.v14.layered-environment.v1",
+        "sourceCanvas": {
+          "width": 941,
+          "height": 1672
+        },
+        "safeZones": [
+          "top-hud-14-percent",
+          "central-gameplay-58-percent",
+          "bottom-launcher-18-percent",
+          "desktop-lateral-bleed-12-percent",
+          "mobile-vertical-bleed-8-percent"
+        ],
+        "layerRoles": [
+          "generated-source",
+          "environment-plate",
+          "background-layer",
+          "midground-layer",
+          "gameplay-plane-layer",
+          "foreground-layer",
+          "atmosphere-layer"
+        ],
+        "focalAnchor": {
+          "x": 0.5,
+          "y": 0.42
+        }
+      },
+      "dependencies": [
+        "PF-asset-012"
+      ],
+      "usageReferences": [
+        {
+          "kind": "runtime",
+          "target": "GameplayArtManifestV1:world_nexus"
+        },
+        {
+          "kind": "runtime",
+          "target": "GameplayArtManifestV1:world_nexus_atmosphere"
+        },
+        {
+          "kind": "production",
+          "target": "WorldMapScene, Match3MapScene, GameScene and Match3Scene presentation layers"
+        }
+      ]
     },
     {
       "id": "PF-asset-232",

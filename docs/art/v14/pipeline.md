@@ -18,7 +18,7 @@ The V2-V13 trees are frozen legacy inputs. `tools/generate-production-masters.mj
 
 ## Honest staged state
 
-The V14 manifest was initialized with all 500 entries in `briefed` state. The current A1 vertical-slice preview has seven approved real masters (`PF-asset-002`, `012`, `021`, `031`, `102`, `402` and `411`) and 493 entries still `briefed`. `primary` and actual provenance fields remain `null` until art is genuinely generated, reviewed and approved. No model, seed or output ID is invented.
+The V14 manifest was initialized with 500 fixed PF identities. The current staged preview has eight approved real masters (`PF-asset-002`, `012`, `021`, `031`, `102`, `231`, `402` and `411`) and 492 entries still `briefed`. `PF-asset-231` is the approved Nexus corrupted hero environment, selected from three independent built-in generation candidates and compiled with a separate atmosphere layer. `primary` and actual provenance fields remain `null` for every ungenerated entry. No model, seed or output ID is invented.
 
 Candidate files stay outside `masters/`. Approval is an atomic source-of-truth update: the approved source moves into `masters/`, its exact descriptor and provenance are recorded, a contact sheet and reviewer are bound, and at least one runtime consumer is declared.
 
@@ -36,7 +36,7 @@ npm run art:v14:build
 npm run art:v14:verify
 ```
 
-The compiler preserves the seven true master identities while deriving 72 colour/skin runtime textures from the one approved neutral Pao family. Those derivatives, quality tiers and fallback formats never inflate the PF count.
+The compiler preserves the eight true master identities while deriving 72 colour/skin runtime textures from the one approved neutral Pao family plus quality-tier Nexus environment/atmosphere variants. Those derivatives, quality tiers and fallback formats never inflate the PF count.
 
 ## Manifest commands
 
