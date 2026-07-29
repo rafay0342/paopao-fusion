@@ -86,12 +86,22 @@ export const ARENA_LIVENESS_TIMEOUT_MS = 16_000;
 export const ARENA_MAX_OUTBOUND_QUEUE = 64;
 const ARENA_RECONNECT_DELAYS_MS = [500, 1_000, 2_000, 4_000] as const;
 let cachedAccount: PlatformAccount | null | undefined;
+let platformApiAvailable = false;
 let volatileCsrfToken = '';
 let classicProgressSyncInFlight: Promise<PlayerSaveV4> | undefined;
 let volatileClassicRunQueue: PendingClassicRunV3[] = [];
 let classicRunFlushInFlight: Promise<ClassicRunSettlementResult> | undefined;
 let classicRunFlushOwner = '';
 let classicAuthorityStartSerial: Promise<void> = Promise.resolve();
+
+/**
+ * Static exports deliberately ship without the Fastify platform API. Runtime
+ * telemetry and other optional background traffic must remain off until the
+ * account-status contract proves that the API is actually mounted.
+ */
+export function isPlatformApiAvailable(): boolean {
+  return platformApiAvailable;
+}
 
 interface PendingClassicRunV3 {
   ownerUserId: string;
@@ -430,6 +440,7 @@ export async function requestEmailOtp(email: string): Promise<{ challengeId: str
 
 export async function verifyEmailOtp(challengeId: string, code: string, displayName: string): Promise<PlatformAccount> {
   const account = await api<PlatformAccount>('/api/auth/otp/verify', { method: 'POST', body: JSON.stringify({ challengeId, code, displayName }) });
+  platformApiAvailable = true;
   if (account.csrfToken) saveCsrfToken(account.csrfToken);
   cachedAccount = account;
   saveAccountHint(account);
@@ -445,6 +456,12 @@ export async function getPlatformAccount(force = false): Promise<PlatformAccount
   if (!force && cachedAccount !== undefined) return cachedAccount;
   try {
     const response = await api<(PlatformAccount & { authenticated: true }) | { authenticated: false }>('/api/account/status');
+    if (response.authenticated !== true && response.authenticated !== false) {
+      platformApiAvailable = false;
+      cachedAccount = null;
+      return null;
+    }
+    platformApiAvailable = true;
     if (!response.authenticated) { cachedAccount = null; return null; }
     const account = response;
     if (account.csrfToken) saveCsrfToken(account.csrfToken);
@@ -454,7 +471,10 @@ export async function getPlatformAccount(force = false): Promise<PlatformAccount
     if (progress.status === 'rejected') console.warn('Classic V4 progress sync will retry on account refresh.', progress.reason);
     if (authority.status === 'rejected') console.warn('Authoritative wallet/inventory hydration will retry on account refresh.', authority.reason);
     void flushPendingClassicRunsV3(account.userId);
-  } catch { cachedAccount = null; }
+  } catch {
+    platformApiAvailable = false;
+    cachedAccount = null;
+  }
   return cachedAccount;
 }
 
@@ -540,6 +560,7 @@ export async function getBootstrapV3(): Promise<BootstrapV3> {
     verifySignedPayloadV3(bootstrap.live),
   ]);
   if (!contentVerified || !liveVerified) throw new Error('signed-bootstrap-verification-failed');
+  platformApiAvailable = true;
   const csrfToken = typeof bootstrap.account?.csrfToken === 'string' ? bootstrap.account.csrfToken : '';
   if (csrfToken) saveCsrfToken(csrfToken);
   return bootstrap;

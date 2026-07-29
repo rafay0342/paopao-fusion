@@ -98,6 +98,8 @@ describe('V15 PaoPao Arcade cross-scene integration', () => {
     expect(hub).toContain("label: 'Previous arcade page'");
     expect(hub).toContain("label: 'Next arcade page'");
     expect(hub).toContain('fadeIn(prefersReducedMotion() ? 0 : 170');
+    expect(hub).toContain("fontSize: '26px'");
+    expect(hub).toContain(').setOrigin(0, 1).setDepth(13)');
   });
 
   it('binds each mode to its intended daily/local variant and generated realm art', () => {

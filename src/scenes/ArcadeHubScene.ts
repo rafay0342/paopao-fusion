@@ -217,16 +217,16 @@ export class ArcadeHubScene extends Phaser.Scene {
     fitText(tagline, 390, 0.8);
     const description = this.add.text(214, y - 3, game.description, {
       fontFamily: UI_FONT,
-      fontSize: '32px',
+      fontSize: '26px',
       color: '#e2ebf8',
       fontStyle: 'bold',
-      lineSpacing: 3,
+      lineSpacing: 2,
       wordWrap: { width: 390 },
     }).setDepth(13);
-    fitText(description, 390, 0.82);
+    fitText(description, 390, 0.88);
     const best = this.add.text(
       214,
-      y + 106,
+      y + 126,
       progress.plays > 0
         ? `PLAY  •  BEST ${progress.bestScore.toLocaleString()}  •  RUNS ${progress.plays}`
         : 'PLAY  •  NEW CHALLENGE',
@@ -237,7 +237,7 @@ export class ArcadeHubScene extends Phaser.Scene {
         fontStyle: 'bold',
         letterSpacing: 0.5,
       },
-    ).setDepth(13);
+    ).setOrigin(0, 1).setDepth(13);
     fitText(best, 390, 0.88);
 
     const highlight = this.add.graphics().setDepth(14);

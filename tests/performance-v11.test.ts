@@ -4,6 +4,8 @@ import {
   AdaptiveQualityController,
   BoundedFrameWindow,
   FRAME_SAMPLE_CAPACITY,
+  PERFORMANCE_TELEMETRY_INTERVAL_MS,
+  performanceTelemetryIsDue,
   resourceGrowthDetected,
   WEBGL_MEMORY_BUDGET_BYTES,
 } from '../src/game/performance';
@@ -46,5 +48,11 @@ describe('V11 maps and adaptive rendering', () => {
     expect(resourceGrowthDetected([100, 102, 101, 103, 102, 101, 103, 102, 101], 3)).toBe(false);
     expect(resourceGrowthDetected([100, 110, 120, 130, 140, 150, 160, 170, 180], 20)).toBe(true);
     expect(WEBGL_MEMORY_BUDGET_BYTES).toBe(1_200_000_000);
+  });
+
+  it('keeps performance telemetry disabled until the platform API is proven available', () => {
+    expect(performanceTelemetryIsDue(PERFORMANCE_TELEMETRY_INTERVAL_MS * 2, 0, false)).toBe(false);
+    expect(performanceTelemetryIsDue(PERFORMANCE_TELEMETRY_INTERVAL_MS - 1, 0, true)).toBe(false);
+    expect(performanceTelemetryIsDue(PERFORMANCE_TELEMETRY_INTERVAL_MS, 0, true)).toBe(true);
   });
 });

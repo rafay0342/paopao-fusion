@@ -113,9 +113,10 @@ describe('Classic cookie-session V4 progress sync', () => {
     });
     Object.defineProperty(globalThis, 'fetch', { value: fetchMock, configurable: true });
 
-    const { getPlatformAccount, verifyEmailOtp } = await import('../src/game/platform');
+    const { getPlatformAccount, isPlatformApiAvailable, verifyEmailOtp } = await import('../src/game/platform');
     const account = await verifyEmailOtp('otp-challenge-v4', '123456', 'RAFAY');
     expect(account.userId).toBe('user-v4');
+    expect(isPlatformApiAvailable()).toBe(true);
     expect(putCount).toBe(2);
 
     const putRequests = requests.filter(({ url, method }) => url === '/api/v3/progress' && method === 'PUT');
@@ -153,5 +154,15 @@ describe('Classic cookie-session V4 progress sync', () => {
     expect(requests.filter(({ url }) => url === '/api/inventory/v2')).toHaveLength(2);
     expect(requests.filter(({ url, method }) => url === '/api/v3/progress' && method === 'GET')).toHaveLength(2);
     expect(putCount).toBe(writesBeforeRefresh);
+  });
+
+  it('does not treat a static HTML fallback payload as a mounted platform API', async () => {
+    Object.defineProperty(globalThis, 'fetch', {
+      value: vi.fn(async () => response(200, {})),
+      configurable: true,
+    });
+    const { getPlatformAccount, isPlatformApiAvailable } = await import('../src/game/platform');
+    await expect(getPlatformAccount(true)).resolves.toBeNull();
+    expect(isPlatformApiAvailable()).toBe(false);
   });
 });

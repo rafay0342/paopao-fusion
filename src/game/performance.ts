@@ -1,9 +1,22 @@
 import type Phaser from 'phaser';
 import { getMeta, setQuality, type RenderQuality } from './meta';
+import { isPlatformApiAvailable } from './platform';
 import { isActiveGameplayScene } from './playable-scenes';
 
 export const FRAME_SAMPLE_CAPACITY = 600;
 export const WEBGL_MEMORY_BUDGET_BYTES = 1_200_000_000;
+export const PERFORMANCE_TELEMETRY_INTERVAL_MS = 30_000;
+
+export function performanceTelemetryIsDue(
+  now: number,
+  lastTelemetryAt: number,
+  platformAvailable: boolean,
+): boolean {
+  return platformAvailable
+    && Number.isFinite(now)
+    && Number.isFinite(lastTelemetryAt)
+    && now - lastTelemetryAt >= PERFORMANCE_TELEMETRY_INTERVAL_MS;
+}
 
 export interface RuntimeResourceSnapshot {
   jsHeapBytes: number | null;
@@ -268,7 +281,7 @@ class RuntimePerformanceMonitor {
       this.snapshot.quality = next;
       window.dispatchEvent(new CustomEvent('paopao:quality-adapted', { detail: this.current() }));
     }
-    if (now - this.lastTelemetryAt >= 30_000) {
+    if (performanceTelemetryIsDue(now, this.lastTelemetryAt, isPlatformApiAvailable())) {
       this.lastTelemetryAt = now;
       void fetch('/api/telemetry/batch', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
