@@ -10,5 +10,7 @@
 - Upstream ETag: `b0e7274907a1644404fef66b28dd6d85`
 
 The model is loaded from the game's own origin at runtime. Camera frames and
-face landmarks remain on-device; only an eight-number gaze calibration feature
-vector and bilateral blink scores cross the local worker boundary.
+the full face mesh remain on-device. Only a ten-number V2 gaze feature vector,
+bilateral blink scores, two bounded iris/eye preview contours and numeric
+quality diagnostics cross the local worker boundary. None are uploaded or used
+as an identity or biometric template.

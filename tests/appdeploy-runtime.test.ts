@@ -47,6 +47,12 @@ describe('AppDeploy portable runtime builder', () => {
     expect(builderSource).toContain('Unsafe AppDeploy runtime path remains');
   });
 
+  it('removes superseded hashed worker and Phaser artifacts before packaging', () => {
+    expect(builderSource).toContain('const staleArtifactPattern');
+    expect(builderSource).toContain('handtracking\\.worker-');
+    expect(builderSource).toContain('unlinkSync(resolve(destinationDirectory, fileName))');
+  });
+
   it('ships the generated runtime with the resolver configured before game startup', () => {
     expect(packagedRuntime).toMatch(/^globalThis\.__PAOPAO_ASSET_BASE__="https:\/\/[^"]+";\nimport/);
     expect(packagedRuntime).not.toMatch(/["'`]\/?(?:assets|mediapipe)\/(?:fight|fighting)(?:\/|["'`?#])/i);

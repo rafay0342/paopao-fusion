@@ -59,7 +59,7 @@ export interface HandWorkerResultFreshnessInput {
   captureTimestampMs: number;
   lastAcceptedCaptureTimestampMs: number;
   receivedTimestampMs: number;
-  targetFps: 15 | 20 | 30;
+  targetFps: number;
   /** Worker-only time used to bound the newest in-flight result on slow CPUs. */
   inferenceMs?: number;
 }
@@ -255,7 +255,10 @@ export function classifyHandWorkerResultFreshness(
 
   const ageMs = input.receivedTimestampMs - input.captureTimestampMs;
   if (ageMs < 0) return 'future';
-  const frameBudgetMs = 1_000 / input.targetFps;
+  const targetFps = Number.isFinite(input.targetFps)
+    ? Math.min(60, Math.max(10, input.targetFps))
+    : 15;
+  const frameBudgetMs = 1_000 / targetFps;
   const fastPathAgeMs = frameBudgetMs * HAND_RESULT_MAX_FRAME_BUDGETS;
   const measuredAgeMs = Number.isFinite(input.inferenceMs) && input.inferenceMs! >= 0
     // Bitmap creation and worker transfer sit outside worker inference time.

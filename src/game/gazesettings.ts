@@ -1,5 +1,6 @@
 export type CameraControlMode = 'off' | 'hand' | 'gaze' | 'gaze-hand';
 export type GazeActivationMode = 'double-blink' | 'dwell';
+export type GazeResponsiveness = 'fast' | 'balanced' | 'steady';
 export type GazeViewportOrientation = 'landscape' | 'portrait' | 'square';
 
 export interface GazeCalibrationIdentity {
@@ -15,10 +16,23 @@ export interface GazeCalibrationQuality {
   rmse: number;
   rmseX: number;
   rmseY: number;
+  /** Held-out 95th-percentile and worst target-median errors. */
+  p95Error: number;
+  maxPointError: number;
   /** Fraction of the normalized viewport covered by the calibration targets. */
   coverage: number;
   sampleCount: number;
   pointCount: number;
+}
+
+export interface GazeEyeRegistration {
+  /** Numeric open-eye geometry only; never an image or identity template. */
+  leftOpenness: number;
+  rightOpenness: number;
+  faceScale: number;
+  headYaw: number;
+  headPitch: number;
+  headRoll: number;
 }
 
 /**
@@ -37,6 +51,7 @@ export interface GazeCalibrationProfile {
   /** Intercept followed by one coefficient for each standardized feature. */
   yCoefficients: number[];
   quality: GazeCalibrationQuality;
+  registration: GazeEyeRegistration;
 }
 
 export interface GazeSettings {
@@ -44,11 +59,13 @@ export interface GazeSettings {
   activation: GazeActivationMode;
   dwellMs: number;
   showCursor: boolean;
+  sensitivity: number;
+  responsiveness: GazeResponsiveness;
   calibration: GazeCalibrationProfile | null;
 }
 
-export const GAZE_CALIBRATION_ALGORITHM_REVISION = 1;
-export const GAZE_CALIBRATION_FEATURE_COUNT = 8;
+export const GAZE_CALIBRATION_ALGORITHM_REVISION = 2;
+export const GAZE_CALIBRATION_FEATURE_COUNT = 10;
 const GAZE_CALIBRATION_REVISION_STRIDE = 1_000_000_000_000_000;
 export const GAZE_CALIBRATION_PROFILE_REVISION_FLOOR = (
   GAZE_CALIBRATION_ALGORITHM_REVISION * GAZE_CALIBRATION_REVISION_STRIDE
@@ -69,6 +86,8 @@ const defaults: GazeSettings = {
   activation: 'double-blink',
   dwellMs: 900,
   showCursor: true,
+  sensitivity: 1,
+  responsiveness: 'balanced',
   calibration: null,
 };
 
@@ -240,6 +259,8 @@ export function sanitizeGazeCalibrationProfile(
   const rmse = finiteNumber(qualityCandidate.rmse);
   const rmseX = finiteNumber(qualityCandidate.rmseX);
   const rmseY = finiteNumber(qualityCandidate.rmseY);
+  const p95Error = finiteNumber(qualityCandidate.p95Error);
+  const maxPointError = finiteNumber(qualityCandidate.maxPointError);
   const coverage = finiteNumber(qualityCandidate.coverage);
   const sampleCount = safeInteger(qualityCandidate.sampleCount, 27, 10_000);
   const pointCount = safeInteger(qualityCandidate.pointCount, 9, 100);
@@ -247,9 +268,27 @@ export function sanitizeGazeCalibrationProfile(
     rmse === null || rmse < 0 || rmse > 1
     || rmseX === null || rmseX < 0 || rmseX > 1
     || rmseY === null || rmseY < 0 || rmseY > 1
+    || p95Error === null || p95Error < 0 || p95Error > 1
+    || maxPointError === null || maxPointError < 0 || maxPointError > 1
     || coverage === null || coverage < 0 || coverage > 1
     || sampleCount === null
     || pointCount === null
+  ) return null;
+
+  const registrationCandidate = candidate.registration as Partial<GazeEyeRegistration> | undefined;
+  const leftOpenness = finiteNumber(registrationCandidate?.leftOpenness);
+  const rightOpenness = finiteNumber(registrationCandidate?.rightOpenness);
+  const faceScale = finiteNumber(registrationCandidate?.faceScale);
+  const headYaw = finiteNumber(registrationCandidate?.headYaw);
+  const headPitch = finiteNumber(registrationCandidate?.headPitch);
+  const headRoll = finiteNumber(registrationCandidate?.headRoll);
+  if (
+    leftOpenness === null || leftOpenness < 0.025 || leftOpenness > 0.8
+    || rightOpenness === null || rightOpenness < 0.025 || rightOpenness > 0.8
+    || faceScale === null || faceScale < 0.04 || faceScale > 1
+    || headYaw === null || Math.abs(headYaw) > 1
+    || headPitch === null || headPitch < -1 || headPitch > 1.5
+    || headRoll === null || Math.abs(headRoll) > 1
   ) return null;
 
   return {
@@ -261,7 +300,24 @@ export function sanitizeGazeCalibrationProfile(
     featureScale,
     xCoefficients,
     yCoefficients,
-    quality: { rmse, rmseX, rmseY, coverage, sampleCount, pointCount },
+    quality: {
+      rmse,
+      rmseX,
+      rmseY,
+      p95Error,
+      maxPointError,
+      coverage,
+      sampleCount,
+      pointCount,
+    },
+    registration: {
+      leftOpenness,
+      rightOpenness,
+      faceScale,
+      headYaw,
+      headPitch,
+      headRoll,
+    },
   };
 }
 
@@ -275,6 +331,12 @@ const safeActivation = (value: unknown): GazeActivationMode => (
   value === 'double-blink' || value === 'dwell' ? value : defaults.activation
 );
 
+const safeResponsiveness = (value: unknown): GazeResponsiveness => (
+  value === 'fast' || value === 'balanced' || value === 'steady'
+    ? value
+    : defaults.responsiveness
+);
+
 const sanitizeSettings = (value: unknown): GazeSettings => {
   const saved = value && typeof value === 'object' ? value as Partial<GazeSettings> : {};
   return {
@@ -282,6 +344,8 @@ const sanitizeSettings = (value: unknown): GazeSettings => {
     activation: safeActivation(saved.activation),
     dwellMs: clamp(Math.round(finiteNumber(saved.dwellMs) ?? defaults.dwellMs), 650, 2_000),
     showCursor: saved.showCursor !== false,
+    sensitivity: clamp(finiteNumber(saved.sensitivity) ?? defaults.sensitivity, 0.75, 1.35),
+    responsiveness: safeResponsiveness(saved.responsiveness),
     calibration: sanitizeGazeCalibrationProfile(saved.calibration),
   };
 };

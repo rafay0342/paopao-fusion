@@ -253,6 +253,13 @@ of the nine targets with both eyes visible; the resulting profile stays on this
 device. If the active camera, mirror setting or screen orientation changes, use
 **RECALIBRATE EYES** before playing.
 
+The setup preview draws both eye contours, iris rings and black pupil dots so
+you can verify recognition before calibration. The live line reports the exact
+quality gate, head pose, inference FPS and latency. **SENS** changes bounded
+screen gain, while **FEEL** cycles fast, balanced and steady response. Gaze V2
+uses a new iris-ring/head-pose profile, so an older eye profile is intentionally
+discarded and must be calibrated once again.
+
 In **EYES / GAZE**, look to aim and confirm with the selected deliberate action:
 **double blink** or **dwell**. In **EYES + HAND**, look to aim, pinch to lock the
 target, then release the pinch to shoot or commit the Match-3 move. Use

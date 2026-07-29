@@ -51,7 +51,13 @@ describe('gaze gameplay scene integration', () => {
   it('uses a complete nine-point, device-local calibration gate', () => {
     const setup = readText('src/scenes/GazeSetupScene.ts');
     expect(occurrences(setup, "label: '")).toBe(9);
-    expect(setup).toContain('const FRAMES_PER_POINT = 9');
+    expect(setup).toContain('const FRAMES_PER_POINT = 15');
+    expect(setup).toContain('FIXATION_WINDOW_FRAMES');
+    expect(setup).toContain('const fixationStable = this.fixationWindowStable()');
+    expect(setup).toContain('} else if (!fixationStable) {');
+    expect(setup).toContain("this.calibrationPrompt?.setText('TARGET DRIFTED");
+    expect(setup).toContain("observation.qualityReason === 'ready'");
+    expect(setup).toContain('observation.binocularAgreement >= 0.38');
     expect(setup).toContain('fitGazeCalibration(this.calibrationSamples, identity)');
     expect(setup).toContain('saveGazeCalibration(profile)');
     expect(setup).toContain('currentGazeCalibrationIdentity(hand.deviceId, hand.mirror)');
@@ -83,6 +89,16 @@ describe('gaze gameplay scene integration', () => {
       expect(firstPointerBinding).toBeGreaterThanOrEqual(0);
       expect(trackerActivation).toBeGreaterThan(firstPointerBinding);
     }
+  });
+
+  it('uses semantic target hysteresis instead of raw eye-coordinate bins', () => {
+    expect(sceneSources.GameScene).toContain('const aimAngle = Math.atan2(');
+    expect(sceneSources.GameScene).toContain('`aim-${Math.round(aimAngle / (Math.PI / 30))}`');
+    expect(sceneSources.GameScene).not.toContain('Math.round(point.x * 14)');
+    expect(sceneSources.Match3Scene).toContain('private gazeCellAtPoint(');
+    expect(sceneSources.Match3Scene).toContain('const retention = CELL_SIZE * 0.7');
+    expect(sceneSources.EndlessScene).toContain('private gazeLaneAtX(');
+    expect(sceneSources.EndlessScene).toContain('const margin = Math.abs(nextPoint.x - currentPoint.x) * 0.18');
   });
 });
 
@@ -199,6 +215,7 @@ describe('gaze runtime artifact provenance', () => {
     expect(provenance).toContain(`SHA-256: \`${hash}\``);
     expect(provenance).toContain('Bytes: `3,758,596`');
     expect(provenance).toContain('Camera frames and');
-    expect(provenance).toContain('face landmarks remain on-device');
+    expect(provenance).toContain('the full face mesh remain on-device');
+    expect(provenance).toContain('None are uploaded or used');
   });
 });

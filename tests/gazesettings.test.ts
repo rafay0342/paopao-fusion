@@ -23,17 +23,27 @@ const profile = (): GazeCalibrationProfile => ({
     viewportWidth: 1_280,
     viewportHeight: 720,
   }),
-  featureMean: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0],
-  featureScale: [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.1, 0.1],
-  xCoefficients: [0.5, 0.2, 0, 0.2, 0, 0.1, 0, 0, 0],
-  yCoefficients: [0.5, 0, 0.2, 0, 0.2, 0, 0.1, 0, 0],
+  featureMean: [0, 0, 0, 0, 0.5, 0.4, 0.25, 0, 0.35, 0],
+  featureScale: [0.2, 0.2, 0.2, 0.2, 0.08, 0.08, 0.1, 0.1, 0.1, 0.1],
+  xCoefficients: [0.5, 0.2, 0, 0.2, 0, 0.1, 0, 0, 0, 0, 0],
+  yCoefficients: [0.5, 0, 0.2, 0, 0.2, 0, 0.1, 0, 0, 0, 0],
   quality: {
     rmse: 0.04,
     rmseX: 0.035,
     rmseY: 0.045,
+    p95Error: 0.08,
+    maxPointError: 0.07,
     coverage: 0.64,
-    sampleCount: 45,
+    sampleCount: 135,
     pointCount: 9,
+  },
+  registration: {
+    leftOpenness: 0.22,
+    rightOpenness: 0.21,
+    faceScale: 0.25,
+    headYaw: 0,
+    headPitch: 0.35,
+    headRoll: 0,
   },
 });
 
@@ -59,6 +69,8 @@ describe('device-local gaze settings', () => {
       mode: 'off',
       activation: 'double-blink',
       dwellMs: 900,
+      sensitivity: 1,
+      responsiveness: 'balanced',
       calibration: null,
     });
 
@@ -67,11 +79,15 @@ describe('device-local gaze settings', () => {
       activation: 'dwell',
       dwellMs: 50,
       showCursor: false,
+      sensitivity: 99,
+      responsiveness: 'fast',
     })).toMatchObject({
       mode: 'gaze-hand',
       activation: 'dwell',
       dwellMs: 650,
       showCursor: false,
+      sensitivity: 1.35,
+      responsiveness: 'fast',
     });
 
     const key = [...values.keys()][0];
@@ -129,7 +145,7 @@ describe('device-local gaze settings', () => {
       ...saved,
       calibration: {
         ...saved.calibration,
-        xCoefficients: [0, 99, 0, 0, 0, 0, 0, 0, 0],
+        xCoefficients: [0, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     };
     values.set([...values.keys()][0], JSON.stringify(corrupt));

@@ -1,4 +1,11 @@
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 
@@ -103,6 +110,12 @@ for (const pattern of unsafeRuntimePatterns) {
 }
 
 mkdirSync(destinationDirectory, { recursive: true });
+const staleArtifactPattern = /^(?:phaser-|handtracking\.worker-).+\.js$/;
+for (const fileName of readdirSync(destinationDirectory)) {
+  if (staleArtifactPattern.test(fileName)) {
+    unlinkSync(resolve(destinationDirectory, fileName));
+  }
+}
 writeFileSync(resolve(destinationDirectory, 'main-appdeploy.js'), runtime);
 copyFileSync(resolve(sourceDirectory, phaserFile), resolve(destinationDirectory, phaserFile));
 copyFileSync(resolve(sourceDirectory, handWorkerFile), resolve(destinationDirectory, handWorkerFile));

@@ -522,6 +522,19 @@ export class Match3Scene extends Phaser.Scene {
     };
   }
 
+  private gazeCellAtPoint(x: number, y: number): Match3Coordinate | null {
+    const measured = this.cellAtPoint(x, y);
+    const current = this.gazeCell;
+    if (!measured || !current || this.sameCell(measured, current)) return measured;
+    const centre = cellCenter(current);
+    // A neighbouring cell wins only after gaze penetrates roughly 20% beyond
+    // the shared boundary. Visual cursor movement remains continuous.
+    const retention = CELL_SIZE * 0.7;
+    return Math.abs(x - centre.x) <= retention && Math.abs(y - centre.y) <= retention
+      ? current
+      : measured;
+  }
+
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     if (this.inputLocked || this.pauseShown || this.terminalShown) return;
     const cell = this.cellAtPoint(pointer.x, pointer.y);
@@ -1344,7 +1357,10 @@ export class Match3Scene extends Phaser.Scene {
       return;
     }
     const aim = profile
-      ? this.gazeAimController.update(observation, profile, now)
+      ? this.gazeAimController.update(observation, profile, now, {
+        sensitivity: settings.sensitivity,
+        responsiveness: settings.responsiveness,
+      })
       : null;
     if (!aim) {
       this.gazeCell = null;
@@ -1366,7 +1382,7 @@ export class Match3Scene extends Phaser.Scene {
     this.gazeHasSeen = true;
     this.gazeLastSeenAt = now;
     const point = { x: aim.x * VIEW.width, y: aim.y * VIEW.height };
-    const cell = this.cellAtPoint(point.x, point.y);
+    const cell = this.gazeCellAtPoint(point.x, point.y);
     this.gazeCursorTarget = cell ? cellCenter(cell) : point;
     if (!this.gazeCursorSmooth) this.gazeCursorSmooth = { ...this.gazeCursorTarget };
     this.gazeCell = cell;
@@ -1569,7 +1585,7 @@ export class Match3Scene extends Phaser.Scene {
   private advanceGazeCursor(deltaMs: number): void {
     if (!this.gazeCursorTarget || !this.handCursor) return;
     if (!this.gazeCursorSmooth) this.gazeCursorSmooth = { ...this.gazeCursorTarget };
-    const follow = 1 - Math.exp(-Math.min(50, Math.max(1, deltaMs)) / 34);
+    const follow = 1 - Math.exp(-Math.min(50, Math.max(1, deltaMs)) / 22);
     this.gazeCursorSmooth.x = Phaser.Math.Linear(
       this.gazeCursorSmooth.x,
       this.gazeCursorTarget.x,
@@ -1580,7 +1596,7 @@ export class Match3Scene extends Phaser.Scene {
       this.gazeCursorTarget.y,
       follow,
     );
-    this.handCursor.setVisible(true).setPosition(
+    this.handCursor.setVisible(getGazeSettings().showCursor).setPosition(
       this.gazeCursorSmooth.x,
       this.gazeCursorSmooth.y,
     );

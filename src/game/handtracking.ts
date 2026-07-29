@@ -26,6 +26,18 @@ import {
   handInferenceSize,
   type HandLightingMode,
 } from './handvision';
+import {
+  type GazeDebugPacket,
+  type GazeFeatureVector,
+  type GazeQualityReason,
+  type GazeRuntimeRegistration,
+} from './gazefeatures';
+import {
+  currentGazeCalibrationIdentity,
+  gazeCalibrationMatches,
+  getGazeSettings,
+  type GazeSettings,
+} from './gazesettings';
 
 const assetUrl = (path: string) => new URL(hostedAssetUrl(path), document.baseURI).toString();
 const WASM_URL = assetUrl('mediapipe/wasm');
@@ -34,7 +46,20 @@ const FACE_MODEL_URL = assetUrl('mediapipe/models/face_landmarker.task');
 
 // Hand input is gameplay-critical and must not be throttled by visual quality.
 // Players can still choose 15/20/30 FPS explicitly in Hand Control Lab.
-const captureIntervalMs = (settings = getHandSettings()): number => 1000 / settings.targetFps;
+const captureFps = (
+  settings = getHandSettings(),
+  mode: VisionTrackingMode = 'hand',
+): number => (
+  mode === 'gaze'
+    ? 30
+    : mode === 'gaze-hand'
+      ? Math.max(24, settings.targetFps)
+      : settings.targetFps
+);
+const captureIntervalMs = (
+  settings = getHandSettings(),
+  mode: VisionTrackingMode = 'hand',
+): number => 1000 / captureFps(settings, mode);
 const DROPOUT_GRACE_MS = 260;
 const BITMAP_TIMEOUT_MS = 700;
 const VIDEO_STALL_MS = 1_200;
@@ -86,16 +111,13 @@ type WorkerMessage =
   | { type: 'FRAME_ERROR'; generation: number; frameId: number; error: string };
 
 export type VisionTrackingMode = 'hand' | 'gaze' | 'gaze-hand';
-export type GazeFeatureVector = readonly [
-  number, number, number, number,
-  number, number, number, number,
-];
 
 interface CompactGazeObservation {
   features: GazeFeatureVector;
   confidence: number;
   leftBlink: number;
   rightBlink: number;
+  debug: GazeDebugPacket;
 }
 
 /**
@@ -107,6 +129,15 @@ export interface GazeObservation extends CompactGazeObservation {
   inferenceMs: number;
   trackingFps: number;
   usableForAction: boolean;
+  qualityReason: GazeQualityReason;
+  leftOpenness: number;
+  rightOpenness: number;
+  headYaw: number;
+  headPitch: number;
+  headRoll: number;
+  headMotion: number;
+  binocularAgreement: number;
+  debug: GazeDebugPacket;
 }
 
 export type HandGesture =
@@ -225,6 +256,7 @@ class HandTracker {
   private overlayCtx: CanvasRenderingContext2D;
   private stream: MediaStream | null = null;
   private settings: HandSettings = getHandSettings();
+  private gazeSettings: GazeSettings = getGazeSettings();
   private wanted = false;
   private activeDesired = false;
   private resumeAfterVisibility = false;
@@ -292,6 +324,8 @@ class HandTracker {
   private lastGazeResultAt = 0;
   private lastOverlayDrawAt = 0;
   private previewVisible = false;
+  private overlayHandLandmarks: Landmark[] | null = null;
+  private overlayGazeDebug: GazeDebugPacket | null = null;
   private directionPoint: { x: number; y: number } | null = null;
   private directionTime = 0;
   private directionVelocity = { x: 0, y: 0 };
@@ -357,6 +391,17 @@ class HandTracker {
         if (inferenceContractChanged) this.inferenceGovernor.reset();
       }
     });
+    window.addEventListener('paopao:gaze-settings', (event) => {
+      const next = (event as CustomEvent<GazeSettings>).detail;
+      if (next) this.gazeSettings = next;
+    });
+    window.addEventListener('resize', () => {
+      window.requestAnimationFrame(() => this.syncPreviewPresentation());
+      // Phaser applies FIT sizing after the browser resize event. Re-check the
+      // settled canvas rect so a desktop-side preview cannot remain over a
+      // newly narrowed phone viewport.
+      window.setTimeout(() => this.syncPreviewPresentation(), 140);
+    });
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
     window.addEventListener('pagehide', () => this.handlePageHidden());
     window.addEventListener('pageshow', () => this.handlePageVisible());
@@ -380,6 +425,19 @@ class HandTracker {
     return track?.getSettings().deviceId || '';
   }
 
+  private activeGazeRegistration(): GazeRuntimeRegistration | null {
+    if (this.trackingMode === 'hand') return null;
+    const profile = this.gazeSettings.calibration;
+    const cameraId = this.getActiveCameraDeviceId();
+    if (!profile || !cameraId) return null;
+    const identity = currentGazeCalibrationIdentity(cameraId, this.settings.mirror);
+    if (!gazeCalibrationMatches(profile, identity)) return null;
+    return {
+      revision: profile.revision,
+      ...profile.registration,
+    };
+  }
+
   /** Warm the worker/model without requesting camera permission. */
   prepare(): Promise<void> {
     return this.ensureModel();
@@ -393,11 +451,41 @@ class HandTracker {
 
   setPreviewVisible(visible: boolean): void {
     this.previewVisible = visible;
-    for (const element of [this.video, this.overlay]) {
-      element.style.display = visible ? 'block' : 'none';
-      element.style.opacity = visible ? '0.94' : '0';
-    }
+    this.syncPreviewPresentation();
     if (!visible) this.overlayCtx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+  }
+
+  /**
+   * Keep the device-local preview in unused letterbox space. Exact-fit narrow
+   * phones retain live text diagnostics without losing controls under a fixed
+   * camera rectangle.
+   */
+  private syncPreviewPresentation(): void {
+    const canvas = document.querySelector<HTMLCanvasElement>('#game canvas');
+    const rect = canvas?.getBoundingClientRect();
+    const topGap = rect?.top ?? 0;
+    const rightGap = rect ? Math.max(0, window.innerWidth - rect.right) : 0;
+    const sideGap = rect ? Math.max(rect.left, rightGap) : 0;
+    const aboveCanvas = this.previewVisible && Boolean(rect) && topGap >= 70;
+    const besideCanvas = this.previewVisible && Boolean(rect) && sideGap >= 176;
+    const rendered = aboveCanvas || besideCanvas;
+
+    for (const element of [this.video, this.overlay]) {
+      element.style.position = 'fixed';
+      element.style.display = rendered ? 'block' : 'none';
+      element.style.opacity = rendered ? '0.94' : '0';
+      if (aboveCanvas && rect) {
+        element.style.width = '88px';
+        element.style.height = '66px';
+        element.style.top = `${Math.max(3, rect.top - 69)}px`;
+        element.style.right = `${Math.max(8, rightGap + 8)}px`;
+      } else {
+        element.style.width = '168px';
+        element.style.height = '126px';
+        element.style.top = `${Math.max(8, rect?.top ?? 8)}px`;
+        element.style.right = '16px';
+      }
+    }
   }
 
   getDiagnostics(): HandTrackingDiagnostics {
@@ -592,14 +680,15 @@ class HandTracker {
     this.lastInferenceMs = message.inferenceMs;
     const pipelineMs = receivedTimestampMs - message.timestampMs;
     this.lastPipelineMs = pipelineMs;
-    this.inferenceGovernor.observe(pipelineMs, this.settings.targetFps, receivedTimestampMs);
+    const activeTargetFps = captureFps(this.settings, message.mode);
+    this.inferenceGovernor.observe(pipelineMs, activeTargetFps, receivedTimestampMs);
     const freshness = classifyHandWorkerResultFreshness({
       generation: message.generation,
       activeGeneration: this.captureGeneration,
       captureTimestampMs: message.timestampMs,
       lastAcceptedCaptureTimestampMs: this.lastAcceptedCaptureTimestampMs,
       receivedTimestampMs,
-      targetFps: this.settings.targetFps,
+      targetFps: activeTargetFps,
       inferenceMs: message.inferenceMs,
     });
     if (freshness !== 'fresh-action' && freshness !== 'visual-only') {
@@ -813,6 +902,8 @@ class HandTracker {
     this.lastCaptureHeight = 0;
     this.lastPipelineMs = 0;
     this.droppedResults = 0;
+    this.overlayHandLandmarks = null;
+    this.overlayGazeDebug = null;
     // Preserve the learned device tier across ordinary scene/camera
     // suspension. It is reset only when the camera device or target cadence
     // changes, so a long session never repeats the slow-device warm-up tax.
@@ -835,7 +926,7 @@ class HandTracker {
       await this.startCamera();
       this.cameraRetryAt = 0;
       this.cameraRetryDelay = 500;
-      this.setPreviewVisible(this.settings.preview);
+      this.setPreviewVisible(this.previewVisible || this.settings.preview);
       this.nextCaptureAt = performance.now();
       this.cameraLifecycle.dispatch('camera-ready');
       this.scheduleFrame(this.nextCaptureAt);
@@ -999,7 +1090,7 @@ class HandTracker {
     if (this.pendingPhase === 'worker') {
       const timeout = Math.min(4_000, Math.max(
         900,
-        captureIntervalMs(this.settings) * 12,
+        captureIntervalMs(this.settings, this.trackingMode) * 12,
         this.lastInferenceMs > 0 ? this.lastInferenceMs * 6 : 0,
       ));
       if (now - this.pendingSince >= timeout) {
@@ -1041,7 +1132,7 @@ class HandTracker {
 
     this.lastVideoTime = mediaTime;
     this.lastVideoProgressAt = performance.now();
-    const interval = captureIntervalMs(this.settings);
+    const interval = captureIntervalMs(this.settings, this.trackingMode);
     if (this.nextCaptureAt <= 0) this.nextCaptureAt = now;
     do this.nextCaptureAt += interval;
     while (this.nextCaptureAt <= now);
@@ -1077,7 +1168,9 @@ class HandTracker {
       : this.farDetailMode
         ? Math.max(HAND_DETAIL_FALLBACK_EDGE, this.inferenceGovernor.edgeCap())
         : this.inferenceGovernor.edgeCap();
-    const inferenceEdge = Math.min(requestedEdge, adaptiveCap);
+    const inferenceEdge = this.trackingMode === 'hand'
+      ? Math.min(requestedEdge, adaptiveCap)
+      : HAND_DETAIL_EDGE;
     const inferenceSize = handInferenceSize(sourceWidth, sourceHeight, inferenceEdge);
     const resizeWidth = inferenceSize.width;
     const resizeHeight = inferenceSize.height;
@@ -1106,6 +1199,7 @@ class HandTracker {
             generation,
             frameId,
             mode: this.trackingMode,
+            registration: this.activeGazeRegistration(),
           }, [bitmap]);
           transferred = true;
         } finally {
@@ -1124,29 +1218,69 @@ class HandTracker {
   }
 
   private drawLandmarks(landmarks: Landmark[] | null): void {
+    this.overlayHandLandmarks = landmarks;
+    this.renderTrackingOverlay();
+  }
+
+  private drawGazeMarkers(debug: GazeDebugPacket | null): void {
+    this.overlayGazeDebug = debug;
+    this.renderTrackingOverlay();
+  }
+
+  private renderTrackingOverlay(): void {
     if (!this.previewVisible) return;
     const ctx = this.overlayCtx;
     const { width, height } = this.overlay;
     const now = performance.now();
-    if (landmarks && now - this.lastOverlayDrawAt < 66) return;
+    if (now - this.lastOverlayDrawAt < 30) return;
     this.lastOverlayDrawAt = now;
     ctx.clearRect(0, 0, width, height);
-    if (!landmarks) return;
 
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = 'rgba(70,224,200,0.92)';
-    for (const [from, to] of HAND_CONNECTIONS) {
-      ctx.beginPath();
-      ctx.moveTo(landmarks[from].x * width, landmarks[from].y * height);
-      ctx.lineTo(landmarks[to].x * width, landmarks[to].y * height);
-      ctx.stroke();
+    const landmarks = this.overlayHandLandmarks;
+    if (landmarks) {
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(70,224,200,0.92)';
+      for (const [from, to] of HAND_CONNECTIONS) {
+        ctx.beginPath();
+        ctx.moveTo(landmarks[from].x * width, landmarks[from].y * height);
+        ctx.lineTo(landmarks[to].x * width, landmarks[to].y * height);
+        ctx.stroke();
+      }
+      for (let index = 0; index < landmarks.length; index++) {
+        const point = landmarks[index];
+        ctx.beginPath();
+        ctx.fillStyle = index === 8 ? '#ffffff' : index === 4 ? '#ffd24b' : '#46e0c8';
+        ctx.arc(point.x * width, point.y * height, index === 8 || index === 4 ? 5 : 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
-    for (let index = 0; index < landmarks.length; index++) {
-      const point = landmarks[index];
+
+    const debug = this.overlayGazeDebug;
+    if (!debug) return;
+    for (const eye of [debug.left, debug.right]) {
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = debug.qualityReason === 'ready' || debug.qualityReason === 'blink'
+        ? 'rgba(138,243,255,0.96)'
+        : 'rgba(255,200,121,0.96)';
       ctx.beginPath();
-      ctx.fillStyle = index === 8 ? '#ffffff' : index === 4 ? '#ffd24b' : '#46e0c8';
-      ctx.arc(point.x * width, point.y * height, index === 8 || index === 4 ? 5 : 3, 0, Math.PI * 2);
+      ctx.moveTo(eye.imageLeft.x * width, eye.imageLeft.y * height);
+      ctx.quadraticCurveTo(eye.upper.x * width, eye.upper.y * height, eye.imageRight.x * width, eye.imageRight.y * height);
+      ctx.quadraticCurveTo(eye.lower.x * width, eye.lower.y * height, eye.imageLeft.x * width, eye.imageLeft.y * height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,255,255,0.96)';
+      ctx.arc(
+        eye.iris.x * width,
+        eye.iris.y * height,
+        Math.max(3, eye.irisRadius * Math.max(width, height)),
+        0,
+        Math.PI * 2,
+      );
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.fillStyle = '#05070c';
+      ctx.arc(eye.iris.x * width, eye.iris.y * height, 3.5, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -1380,16 +1514,20 @@ class HandTracker {
     const now = performance.now();
     const gaze = result.gaze;
     const valid = gaze
-      && gaze.features.length === 8
+      && gaze.features.length === 10
       && gaze.features.every(Number.isFinite)
       && Number.isFinite(gaze.confidence)
       && Number.isFinite(gaze.leftBlink)
-      && Number.isFinite(gaze.rightBlink);
+      && Number.isFinite(gaze.rightBlink)
+      && gaze.debug
+      && Number.isFinite(gaze.debug.headMotion)
+      && Number.isFinite(gaze.debug.binocularAgreement);
     if (!valid || !gaze) {
       if (this.gazeMissingSince === 0) this.gazeMissingSince = now;
       if (now - this.gazeMissingSince >= GAZE_DROPOUT_GRACE_MS) {
         this.latestGazeObservation = null;
         this.latestGazeAt = 0;
+        this.drawGazeMarkers(null);
       }
       return;
     }
@@ -1402,6 +1540,8 @@ class HandTracker {
     }
     this.lastGazeResultAt = now;
     this.gazeMissingSince = 0;
+    const qualityAllowsAction = gaze.debug.qualityReason === 'ready'
+      || gaze.debug.qualityReason === 'blink';
     this.latestGazeObservation = {
       timestampMs: result.timestampMs,
       features: gaze.features,
@@ -1410,8 +1550,18 @@ class HandTracker {
       rightBlink: Math.min(1, Math.max(0, gaze.rightBlink)),
       inferenceMs: result.inferenceMs,
       trackingFps: this.gazeTrackingFps,
-      usableForAction: actionTimely && gaze.confidence >= 0.62,
+      usableForAction: actionTimely && qualityAllowsAction && gaze.confidence >= 0.68,
+      qualityReason: gaze.debug.qualityReason,
+      leftOpenness: gaze.debug.leftOpenness,
+      rightOpenness: gaze.debug.rightOpenness,
+      headYaw: gaze.debug.headYaw,
+      headPitch: gaze.debug.headPitch,
+      headRoll: gaze.debug.headRoll,
+      headMotion: gaze.debug.headMotion,
+      binocularAgreement: gaze.debug.binocularAgreement,
+      debug: gaze.debug,
     };
+    this.drawGazeMarkers(gaze.debug);
     this.gazeSequence++;
     this.latestGazeAt = now;
   }

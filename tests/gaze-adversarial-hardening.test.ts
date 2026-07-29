@@ -34,17 +34,27 @@ const directProfile = (): GazeCalibrationProfile => ({
   revision: 4,
   createdAtMs: 1_000,
   identity,
-  featureMean: Array(8).fill(0),
-  featureScale: Array(8).fill(1),
-  xCoefficients: [0, 1, 0, 0, 0, 0, 0, 0, 0],
-  yCoefficients: [0, 0, 1, 0, 0, 0, 0, 0, 0],
+  featureMean: Array(10).fill(0),
+  featureScale: Array(10).fill(1),
+  xCoefficients: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  yCoefficients: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   quality: {
     rmse: 0.02,
     rmseX: 0.02,
     rmseY: 0.02,
+    p95Error: 0.04,
+    maxPointError: 0.035,
     coverage: 0.64,
-    sampleCount: 36,
+    sampleCount: 135,
     pointCount: 9,
+  },
+  registration: {
+    leftOpenness: 0.22,
+    rightOpenness: 0.21,
+    faceScale: 0.24,
+    headYaw: 0,
+    headPitch: 0.35,
+    headRoll: 0,
   },
 });
 
@@ -105,7 +115,7 @@ describe('adversarial gaze control behavior', () => {
   it('accepts the freshness boundary but rejects stale, future and duplicate gaze frames', () => {
     const observation = {
       timestampMs: 5_000,
-      features: [0.45, 0.55, 0, 0, 0, 0, 0, 0] as GazeFeatureVector,
+      features: [0.45, 0.55, 0, 0, 0, 0, 0, 0, 0, 0] as GazeFeatureVector,
       confidence: 0.9,
       usableForAction: true,
     };
@@ -182,20 +192,27 @@ describe('worker blink feature hold invariants', () => {
     );
     expect(compactGaze).toContain('if (!held ||');
     expect(compactGaze).toContain('return null;');
-    expect(compactGaze).toMatch(
-      /leftBlink\s*<=\s*0\.32\s*&&\s*rightBlink\s*<=\s*0\.32\s*&&\s*compact\.confidence\s*>=\s*0\.62/,
-    );
+    expect(compactGaze).toContain('leftBlink <= 0.32');
+    expect(compactGaze).toContain('rightBlink <= 0.32');
+    expect(compactGaze).toContain("qualityReason === 'ready'");
+    expect(compactGaze).toContain('compact.confidence >= 0.68');
   });
 
   it('invalidates the hold when face translation, scale or roll changes', () => {
     expect(compactGaze).toContain(
-      'Math.hypot(faceCenterX - held.features[4], faceCenterY - held.features[5]) <= 0.04',
+      'Math.hypot(geometry.faceCenterX - held.features[4], geometry.faceCenterY - held.features[5]) <= 0.035',
     );
     expect(compactGaze).toContain(
-      'Math.abs(faceScale - held.features[6]) <= Math.max(0.018, held.features[6] * 0.16)',
+      'Math.abs(geometry.faceScale - held.features[6]) <= Math.max(0.015, held.features[6] * 0.12)',
     );
     expect(compactGaze).toContain(
-      'Math.abs(faceRoll - held.features[7]) <= 0.08',
+      'Math.abs(geometry.headYaw - held.features[7]) <= 0.1',
+    );
+    expect(compactGaze).toContain(
+      'Math.abs(geometry.headPitch - held.features[8]) <= 0.1',
+    );
+    expect(compactGaze).toContain(
+      'Math.abs(geometry.headRoll - held.features[9]) <= 0.06',
     );
     expect(compactGaze).toMatch(
       /if\s*\(!held\s*\|\|[\s\S]*\|\|\s*!headStill\)\s*return null;/,

@@ -685,7 +685,12 @@ describe('hand-tracking pipeline latency invariants', () => {
   });
 
   it('does not let render quality silently throttle recognition cadence', () => {
-    expect(tracking).toContain('1000 / settings.targetFps');
+    expect(tracking).toContain('1000 / captureFps(settings, mode)');
+    expect(tracking).toContain("mode === 'gaze'");
+    expect(tracking).toContain('? 30');
+    expect(tracking).toContain("mode === 'gaze-hand'");
+    expect(tracking).toContain('? Math.max(24, settings.targetFps)');
+    expect(tracking).toContain(': settings.targetFps');
     expect(tracking).toContain('requestVideoFrameCallback');
     expect(tracking).toContain('do this.nextCaptureAt += interval');
     expect(tracking).not.toContain('message.inferenceMs * 1.18');
@@ -750,7 +755,7 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(worker).toContain('minHandDetectionConfidence: 0.35');
     expect(worker).toContain('minHandPresenceConfidence: 0.35');
     expect(worker).toContain('minTrackingConfidence: 0.4');
-    const frameHandler = worker.slice(worker.indexOf('const { bitmap, timestampMs'));
+    const frameHandler = worker.slice(worker.indexOf('const {\n    bitmap,'));
     expect(frameHandler).toContain('finally {\n    bitmap.close();');
     expect(tracking).toContain('gestureStable: this.lightingStableFrames >= 1');
     expect(tracking).not.toContain('result.enhanced !== this.gestureEnhanced');

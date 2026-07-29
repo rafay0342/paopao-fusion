@@ -13,9 +13,14 @@ import {
   updateGazeSettings,
   type CameraControlMode,
   type GazeCalibrationIdentity,
+  type GazeResponsiveness,
 } from '../game/gazesettings';
 import { getHandSettings, updateHandSettings } from '../game/handsettings';
-import { getHandTracker, type VisionTrackingMode } from '../game/handtracking';
+import {
+  getHandTracker,
+  type GazeObservation,
+  type VisionTrackingMode,
+} from '../game/handtracking';
 import { SFX } from '../game/sfx';
 import {
   accessibilityRuntimeForCanvas,
@@ -36,20 +41,22 @@ import {
 } from '../gfx/ui';
 
 const CALIBRATION_POINTS = [
-  { x: 0.12, y: 0.16, label: 'TOP LEFT' },
-  { x: 0.5, y: 0.16, label: 'TOP CENTRE' },
-  { x: 0.88, y: 0.16, label: 'TOP RIGHT' },
-  { x: 0.12, y: 0.5, label: 'MIDDLE LEFT' },
   { x: 0.5, y: 0.5, label: 'CENTRE' },
-  { x: 0.88, y: 0.5, label: 'MIDDLE RIGHT' },
-  { x: 0.12, y: 0.84, label: 'BOTTOM LEFT' },
-  { x: 0.5, y: 0.84, label: 'BOTTOM CENTRE' },
+  { x: 0.12, y: 0.16, label: 'TOP LEFT' },
   { x: 0.88, y: 0.84, label: 'BOTTOM RIGHT' },
+  { x: 0.88, y: 0.16, label: 'TOP RIGHT' },
+  { x: 0.12, y: 0.84, label: 'BOTTOM LEFT' },
+  { x: 0.12, y: 0.5, label: 'MIDDLE LEFT' },
+  { x: 0.88, y: 0.5, label: 'MIDDLE RIGHT' },
+  { x: 0.5, y: 0.16, label: 'TOP CENTRE' },
+  { x: 0.5, y: 0.84, label: 'BOTTOM CENTRE' },
 ] as const;
 
-const FRAMES_PER_POINT = 9;
+const FRAMES_PER_POINT = 15;
 const POINT_SETTLE_MS = 560;
-const POINT_RETRY_MS = 6_500;
+const POINT_RETRY_MS = 8_500;
+const FIXATION_WINDOW_FRAMES = 7;
+const FIXATION_WINDOW_MS = 180;
 
 const MODE_LABELS: Record<CameraControlMode, string> = {
   off: 'OFF / POINTER',
@@ -63,7 +70,7 @@ type MainObject = Phaser.GameObjects.Container | Phaser.GameObjects.Text;
 /**
  * Device-local camera input centre. This scene never treats looking at a menu
  * control as activation: camera access is explicit, and calibration only
- * collects compact eight-number observations after the player starts it.
+ * collects compact ten-number V2 observations after the player starts it.
  */
 export class GazeSetupScene extends Phaser.Scene {
   private a11y?: AccessibilitySceneSession;
@@ -83,6 +90,8 @@ export class GazeSetupScene extends Phaser.Scene {
   private calibrationPoint = 0;
   private calibrationSamples: GazeCalibrationObservation[] = [];
   private pointSamples: GazeCalibrationObservation[] = [];
+  private fixationWindow: GazeObservation[] = [];
+  private pointCaptureArmed = false;
   private calibrationIdentity?: GazeCalibrationIdentity;
   private pointReadyAt = 0;
   private pointStartedAt = 0;
@@ -154,15 +163,17 @@ export class GazeSetupScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12));
     this.trackMain(fitText(this.add.text(
       VIEW.width / 2,
-      120,
-      'ON-DEVICE ONLY  •  NO VIDEO UPLOAD  •  NO CAMERA FRAME UPLOAD',
+      124,
+      'ON-DEVICE ONLY  •  NO VIDEO UPLOAD\nCAMERA FRAMES NEVER LEAVE THIS DEVICE',
       {
         fontFamily: UI_FONT,
-        fontSize: TYPE.section,
+        fontSize: '22px',
         color: '#8af3ff',
         fontStyle: 'bold',
+        align: 'center',
+        lineSpacing: 2,
       },
-    ).setOrigin(0.5).setDepth(12), 590, 0.72));
+    ).setOrigin(0.5).setDepth(12), 570, 0.86));
     this.trackMainButton(addArtButton(this, 82, 52, '‹  BACK', () => {
       SFX.click();
       this.scene.start('ModeSelect');
@@ -178,10 +189,10 @@ export class GazeSetupScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12));
     this.profileText = this.trackMain(this.add.text(VIEW.width / 2, 282, '', {
       fontFamily: UI_FONT,
-      fontSize: '24px',
+      fontSize: '22px',
       color: '#dce6f5',
       align: 'center',
-      lineSpacing: 5,
+      lineSpacing: 3,
     }).setOrigin(0.5).setDepth(12));
 
     this.trackMain(addArtPanel(this, VIEW.width / 2, 510, 630, 322, 8, 0.97));
@@ -270,16 +281,44 @@ export class GazeSetupScene extends Phaser.Scene {
       this.scene.start('HandSetup');
     }, 270, 72, 18));
     const activationLabel = settings.activation === 'double-blink'
-      ? 'ACTION  •  DOUBLE BLINK'
-      : `ACTION  •  DWELL ${settings.dwellMs} MS`;
-    this.trackMainButton(addArtButton(this, VIEW.width / 2, 1184, activationLabel, () => {
+      ? 'ACTION  BLINK ×2'
+      : `ACTION  DWELL ${settings.dwellMs}`;
+    this.trackMainButton(addArtButton(this, 130, 1184, `SENS  ${settings.sensitivity.toFixed(2)}×`, () => {
+      SFX.click();
+      const levels = [0.8, 1, 1.18, 1.35];
+      const currentIndex = levels.findIndex((value) => Math.abs(value - getGazeSettings().sensitivity) < 0.03);
+      updateGazeSettings({ sensitivity: levels[(currentIndex + 1 + levels.length) % levels.length] });
+      getHandTracker().suspend();
+      this.scene.restart();
+    }, 200, 76, 18));
+    this.trackMainButton(addArtButton(
+      this,
+      VIEW.width / 2,
+      1184,
+      `FEEL  ${settings.responsiveness.toUpperCase()}`,
+      () => {
+        SFX.click();
+        const next: Record<GazeResponsiveness, GazeResponsiveness> = {
+          fast: 'balanced',
+          balanced: 'steady',
+          steady: 'fast',
+        };
+        updateGazeSettings({ responsiveness: next[getGazeSettings().responsiveness] });
+        getHandTracker().suspend();
+        this.scene.restart();
+      },
+      210,
+      76,
+      18,
+    ));
+    this.trackMainButton(addArtButton(this, 590, 1184, activationLabel, () => {
       SFX.click();
       updateGazeSettings({
         activation: getGazeSettings().activation === 'double-blink' ? 'dwell' : 'double-blink',
       });
       getHandTracker().suspend();
       this.scene.restart();
-    }, 390, 76, 18));
+    }, 200, 76, 18));
   }
 
   private composeCalibrationOverlay(): void {
@@ -289,7 +328,7 @@ export class GazeSetupScene extends Phaser.Scene {
     this.calibrationBackdrop.lineStyle(2, UI_COLORS.cyan, 0.35);
     this.calibrationBackdrop.strokeRect(18, 18, VIEW.width - 36, VIEW.height - 36);
 
-    this.calibrationHeader = this.add.text(VIEW.width / 2, 62, '', {
+    this.calibrationHeader = this.add.text(430, 62, '', {
       fontFamily: DISPLAY_FONT,
       fontSize: TYPE.title,
       color: '#fff3dd',
@@ -322,14 +361,24 @@ export class GazeSetupScene extends Phaser.Scene {
     const identity = currentGazeCalibrationIdentity(hand.deviceId, hand.mirror);
     const profileReady = gazeCalibrationMatches(settings.calibration, identity);
     const profileState = profileReady
-      ? `EYE PROFILE READY  •  ERROR ${Math.round((settings.calibration?.quality.rmse ?? 0) * 100)}%`
+      ? `EYE PROFILE V2 READY  •  HELD-OUT ERROR ${Math.round((settings.calibration?.quality.rmse ?? 0) * 100)}%`
       : settings.calibration
         ? 'EYE PROFILE NEEDS THIS CAMERA / SCREEN RECALIBRATION'
         : 'EYE PROFILE NOT CALIBRATED';
     this.status?.setText(message ?? `${MODE_LABELS[settings.mode]} SELECTED`);
     fitText(this.status as Phaser.GameObjects.Text, 570, 0.86);
-    this.profileText?.setText(`${profileState}\nFRAMES STAY ON THIS DEVICE`);
+    const registrationState = profileReady
+      ? 'OPEN-EYE + HEAD-POSE PROFILE SAVED LOCALLY'
+      : 'CALIBRATION USES BOTH IRISES + HEAD POSE';
+    this.profileText?.setText(`${profileState}\n${registrationState}`);
+    fitText(this.profileText as Phaser.GameObjects.Text, 560, 0.82);
     this.a11y?.setStatus(`${MODE_LABELS[settings.mode]} selected. ${profileState}. Camera is ${this.cameraRunning ? 'running' : 'off'}.`);
+  }
+
+  private setCameraStatusText(text: string, color: string, minScale = 0.72): void {
+    if (!this.cameraStatus) return;
+    this.cameraStatus.setText(text).setColor(color).setScale(1);
+    fitText(this.cameraStatus, 590, minScale);
   }
 
   private selectMode(mode: CameraControlMode): void {
@@ -350,28 +399,35 @@ export class GazeSetupScene extends Phaser.Scene {
   private async startCamera(): Promise<boolean> {
     const mode = this.activeVisionMode();
     if (!mode) {
-      this.cameraStatus?.setText('CHOOSE HAND, EYES OR EYES + HAND FIRST').setColor('#ffc879');
+      this.setCameraStatusText('CHOOSE HAND, EYES OR EYES + HAND FIRST', '#ffc879');
       this.a11y?.announce('Choose hand, eyes, or eyes plus hand before starting the camera.', 'assertive');
       return false;
     }
-    this.cameraStatus?.setText(`LOADING ${MODE_LABELS[mode].toUpperCase()} MODEL ON DEVICE…`).setColor('#ffe7a6');
+    this.setCameraStatusText(`LOADING ${MODE_LABELS[mode].toUpperCase()} MODEL ON DEVICE…`, '#ffe7a6');
     this.a11y?.setStatus(`Starting the camera for ${MODE_LABELS[mode]}.`);
     const ok = await getHandTracker().enable(mode);
     if (!this.scene.isActive()) return false;
     this.cameraRunning = ok;
     if (!ok) {
       const failure = getHandTracker().getLastFailure().replace(/-/g, ' ').toUpperCase();
-      this.cameraStatus?.setText(`CAMERA ERROR  •  ${failure}`).setColor('#ff9b9b');
+      this.setCameraStatusText(`CAMERA ERROR  •  ${failure}`, '#ff9b9b', 0.66);
       this.a11y?.announce(`Camera could not start. ${failure}.`, 'assertive');
       return false;
     }
     const resolvedDeviceId = getHandTracker().getActiveCameraDeviceId();
+    if (mode === 'gaze' || mode === 'gaze-hand') {
+      // Setup must visibly prove which irises are registered. This local
+      // preview is never recorded or uploaded and closes with the scene.
+      getHandTracker().setPreviewVisible(true);
+    }
     if (mode !== 'hand' && !resolvedDeviceId) {
       getHandTracker().disable();
       this.cameraRunning = false;
-      this.cameraStatus
-        ?.setText('CAMERA ID UNAVAILABLE  •  EYE CALIBRATION CANNOT BE BOUND SAFELY')
-        .setColor('#ff9b9b');
+      this.setCameraStatusText(
+        'CAMERA ID UNAVAILABLE\nEYE CALIBRATION CANNOT BE BOUND SAFELY',
+        '#ff9b9b',
+        0.72,
+      );
       this.a11y?.announce(
         'This browser did not expose the active camera identity. Eye calibration cannot start safely.',
         'assertive',
@@ -381,7 +437,7 @@ export class GazeSetupScene extends Phaser.Scene {
     if (resolvedDeviceId && resolvedDeviceId !== getHandSettings().deviceId) {
       updateHandSettings({ deviceId: resolvedDeviceId });
     }
-    this.cameraStatus?.setText(`CAMERA READY  •  ${MODE_LABELS[mode].toUpperCase()}`).setColor('#7de2b8');
+    this.setCameraStatusText(`CAMERA READY  •  ${MODE_LABELS[mode].toUpperCase()}`, '#7de2b8');
     this.a11y?.announce(`Camera ready for ${MODE_LABELS[mode]}.`);
     return true;
   }
@@ -390,7 +446,7 @@ export class GazeSetupScene extends Phaser.Scene {
     SFX.click();
     getHandTracker().disable();
     this.cameraRunning = false;
-    this.cameraStatus?.setText('CAMERA OFF  •  START IS ALWAYS EXPLICIT').setColor('#cbd6e7');
+    this.setCameraStatusText('CAMERA OFF  •  START IS ALWAYS EXPLICIT', '#cbd6e7');
     this.a11y?.setStatus(`${MODE_LABELS[getGazeSettings().mode]} remains selected. Camera is off.`);
     this.a11y?.announce('Camera stopped.');
   }
@@ -409,6 +465,8 @@ export class GazeSetupScene extends Phaser.Scene {
     this.calibrationPoint = 0;
     this.calibrationSamples = [];
     this.pointSamples = [];
+    this.fixationWindow = [];
+    this.pointCaptureArmed = false;
     this.lastObservationTimestamp = Number.NEGATIVE_INFINITY;
     this.setCalibrationUi(true);
     this.beginCalibrationPoint();
@@ -416,7 +474,7 @@ export class GazeSetupScene extends Phaser.Scene {
       'Nine point eye calibration',
       'Look at each bright target and keep your head naturally steady. Samples are captured automatically on this device. Activate Cancel to stop.',
     );
-    this.a11y?.announce('Eye calibration started. Look at the top left target.');
+    this.a11y?.announce('Eye calibration started. Look at the centre target.');
   }
 
   private beginCalibrationPoint(): void {
@@ -424,10 +482,13 @@ export class GazeSetupScene extends Phaser.Scene {
     if (!point || !this.calibrationTarget) return;
     const now = performance.now();
     this.pointSamples = [];
+    this.fixationWindow = [];
+    this.pointCaptureArmed = false;
     this.pointStartedAt = now;
     this.pointReadyAt = now + POINT_SETTLE_MS;
     this.calibrationTarget.setPosition(point.x * VIEW.width, point.y * VIEW.height);
     this.calibrationHeader?.setText(`EYE CALIBRATION  •  POINT ${this.calibrationPoint + 1} / ${CALIBRATION_POINTS.length}`);
+    fitText(this.calibrationHeader as Phaser.GameObjects.Text, 510, 0.72);
     this.calibrationPrompt?.setText(`LOOK AT ${point.label.replace('CENTRE', 'CENTER')}  •  HOLD NATURALLY`);
     this.drawCalibrationTarget(0, false);
   }
@@ -448,12 +509,42 @@ export class GazeSetupScene extends Phaser.Scene {
     }
     this.lastObservationTimestamp = observation.timestampMs;
     const usable = observation.usableForAction
-      && observation.confidence >= 0.62
-      && observation.leftBlink <= 0.35
-      && observation.rightBlink <= 0.35;
+      && observation.qualityReason === 'ready'
+      && observation.confidence >= 0.68
+      && observation.leftBlink <= 0.32
+      && observation.rightBlink <= 0.32
+      && observation.headMotion <= 0.78
+      && observation.binocularAgreement >= 0.38;
     if (!usable) {
-      this.calibrationPrompt?.setText('HOLD STEADY  •  OPEN BOTH EYES NATURALLY');
+      this.fixationWindow = [];
+      this.pointCaptureArmed = false;
+      this.pointSamples = [];
+      this.calibrationPrompt?.setText(this.calibrationQualityPrompt(observation));
       this.drawCalibrationTarget(this.pointSamples.length / FRAMES_PER_POINT, false);
+      this.retryCalibrationPointIfNeeded(now);
+      return;
+    }
+
+    this.fixationWindow.push(observation);
+    if (this.fixationWindow.length > FIXATION_WINDOW_FRAMES) this.fixationWindow.shift();
+    const fixationStable = this.fixationWindowStable();
+    if (!this.pointCaptureArmed) {
+      if (!fixationStable) {
+        this.calibrationPrompt?.setText('LOCKING BOTH IRISES  •  KEEP LOOKING AT THE DOT');
+        this.drawCalibrationTarget(0, false);
+        this.retryCalibrationPointIfNeeded(now);
+        return;
+      }
+      this.pointCaptureArmed = true;
+      this.pointSamples = [];
+    } else if (!fixationStable) {
+      // Stability is a continuous capture contract, not a one-time arm. A
+      // head/eye drift discards the unfinished target instead of poisoning its
+      // affine fit with samples aimed somewhere else.
+      this.pointCaptureArmed = false;
+      this.pointSamples = [];
+      this.calibrationPrompt?.setText('TARGET DRIFTED  •  HOLD THE SAME DOT AGAIN');
+      this.drawCalibrationTarget(0, false);
       this.retryCalibrationPointIfNeeded(now);
       return;
     }
@@ -463,6 +554,14 @@ export class GazeSetupScene extends Phaser.Scene {
       targetY: point.y,
       features: observation.features,
       confidence: observation.confidence,
+      registration: {
+        leftOpenness: observation.leftOpenness,
+        rightOpenness: observation.rightOpenness,
+        faceScale: observation.features[6],
+        headYaw: observation.headYaw,
+        headPitch: observation.headPitch,
+        headRoll: observation.headRoll,
+      },
     });
     const frameProgress = this.pointSamples.length / FRAMES_PER_POINT;
     this.calibrationPrompt?.setText(
@@ -483,9 +582,42 @@ export class GazeSetupScene extends Phaser.Scene {
     this.beginCalibrationPoint();
   }
 
+  private fixationWindowStable(): boolean {
+    const window = this.fixationWindow;
+    if (window.length < FIXATION_WINDOW_FRAMES) return false;
+    if (window[window.length - 1].timestampMs - window[0].timestampMs < FIXATION_WINDOW_MS) return false;
+    const span = (index: number): number => {
+      const values = window.map((sample) => sample.features[index]);
+      return Math.max(...values) - Math.min(...values);
+    };
+    return [0, 1, 2, 3].every((index) => span(index) <= 0.075)
+      && Math.hypot(span(4), span(5)) <= 0.028
+      && span(6) <= 0.018
+      && span(7) <= 0.12
+      && span(8) <= 0.12
+      && span(9) <= 0.065
+      && window.every((sample) => sample.headMotion <= 0.78);
+  }
+
+  private calibrationQualityPrompt(observation: GazeObservation): string {
+    const prompts: Partial<Record<GazeObservation['qualityReason'], string>> = {
+      'face-too-far': 'MOVE CLOSER  •  BOTH IRISES NEED MORE DETAIL',
+      'face-off-center': 'CENTER YOUR FACE  •  KEEP BOTH EYES VISIBLE',
+      'head-angle': 'FACE THE CAMERA MORE DIRECTLY',
+      'head-moving': 'HOLD YOUR HEAD NATURALLY STEADY',
+      'eyes-closed': 'OPEN BOTH EYES NATURALLY',
+      'iris-uncertain': 'IRIS RINGS UNCLEAR  •  IMPROVE LIGHT OR REMOVE GLARE',
+      'binocular-mismatch': 'BOTH EYES MUST LOOK AT THE SAME DOT',
+      'poor-lighting': 'ADD SOFT FRONT LIGHT  •  AVOID BACKLIGHT',
+    };
+    return prompts[observation.qualityReason] ?? 'KEEP BOTH EYES VISIBLE  •  HOLD STEADY';
+  }
+
   private retryCalibrationPointIfNeeded(now: number): void {
     if (now - this.pointStartedAt < POINT_RETRY_MS) return;
     this.pointSamples = [];
+    this.fixationWindow = [];
+    this.pointCaptureArmed = false;
     this.pointStartedAt = now;
     this.pointReadyAt = now + POINT_SETTLE_MS;
     this.calibrationPrompt?.setText('NO STABLE SAMPLE  •  CENTRE YOUR FACE AND KEEP LOOKING');
@@ -495,12 +627,13 @@ export class GazeSetupScene extends Phaser.Scene {
   private finishCalibration(): void {
     this.calibrationTarget?.setVisible(false);
     this.calibrationHeader?.setText('VALIDATING DEVICE-LOCAL EYE PROFILE…');
+    fitText(this.calibrationHeader as Phaser.GameObjects.Text, 510, 0.72);
     this.calibrationPrompt?.setText('CHECKING COVERAGE AND ACCURACY');
     const identity = this.calibrationIdentity;
     const profile = identity ? fitGazeCalibration(this.calibrationSamples, identity) : null;
     if (!profile) {
       this.restoreMainInterface('CALIBRATION NEEDS ANOTHER PASS');
-      this.cameraStatus?.setText('PROFILE NOT SAVED  •  KEEP HEAD STEADIER AND RETRY').setColor('#ffc879');
+      this.setCameraStatusText('PROFILE NOT SAVED  •  KEEP HEAD STEADIER AND RETRY', '#ffc879', 0.68);
       this.a11y?.announce('Calibration was not accurate enough and was not saved. Keep your head steadier and retry.', 'assertive');
       return;
     }
@@ -510,22 +643,20 @@ export class GazeSetupScene extends Phaser.Scene {
       this.restoreMainInterface(
         `EYE PROFILE SAVED  •  ERROR ${Math.round((saved.calibration?.quality.rmse ?? profile.quality.rmse) * 100)}%`,
       );
-      this.cameraStatus?.setText('CAMERA READY  •  LOOK, THEN DOUBLE BLINK TO CONFIRM').setColor('#7de2b8');
+      this.setCameraStatusText('CAMERA READY  •  LOOK, THEN DOUBLE BLINK TO CONFIRM', '#7de2b8', 0.68);
       this.a11y?.announce('Eye calibration saved on this device.');
     } catch {
       const sessionProfile = getGazeSettings().calibration;
       if (identity && gazeCalibrationMatches(sessionProfile, identity)) {
         this.restoreMainInterface('EYE PROFILE ACTIVE FOR THIS SESSION');
-        this.cameraStatus
-          ?.setText('LOCAL STORAGE UNAVAILABLE  •  RECALIBRATE AFTER RELOAD')
-          .setColor('#ffc879');
+        this.setCameraStatusText('LOCAL STORAGE UNAVAILABLE  •  RECALIBRATE AFTER RELOAD', '#ffc879', 0.68);
         this.a11y?.announce(
           'Eye calibration is active for this session only. Local storage is unavailable, so recalibrate after reloading.',
           'assertive',
         );
       } else {
         this.restoreMainInterface('CALIBRATION COULD NOT BE SAVED');
-        this.cameraStatus?.setText('LOCAL STORAGE UNAVAILABLE  •  PROFILE NOT SAVED').setColor('#ff9b9b');
+        this.setCameraStatusText('LOCAL STORAGE UNAVAILABLE  •  PROFILE NOT SAVED', '#ff9b9b', 0.68);
         this.a11y?.announce('Eye calibration could not be saved on this device.', 'assertive');
       }
     }
@@ -542,6 +673,8 @@ export class GazeSetupScene extends Phaser.Scene {
     this.calibrating = false;
     this.calibrationSamples = [];
     this.pointSamples = [];
+    this.fixationWindow = [];
+    this.pointCaptureArmed = false;
     this.setCalibrationUi(false);
     this.refreshProfileSummary(message);
     this.a11y?.setHeading(
@@ -594,7 +727,7 @@ export class GazeSetupScene extends Phaser.Scene {
     if (mode === 'gaze' || mode === 'gaze-hand') {
       const observation = getHandTracker().peekGaze(260);
       if (!observation) {
-        this.cameraStatus?.setText('CAMERA READY  •  KEEP BOTH EYES IN FRAME').setColor('#ffc879');
+        this.setCameraStatusText('CAMERA READY  •  KEEP BOTH EYES IN FRAME', '#ffc879');
         return;
       }
       const hand = getHandSettings();
@@ -602,18 +735,25 @@ export class GazeSetupScene extends Phaser.Scene {
       const profile = getGazeSettings().calibration;
       const point = applyGazeCalibration(observation, profile, identity);
       const aim = point ? `  •  AIM ${Math.round(point.x * 100)},${Math.round(point.y * 100)}` : '';
-      this.cameraStatus?.setText(
-        `EYES ${Math.round(observation.confidence * 100)}%  •  ${observation.trackingFps.toFixed(0)} FPS${aim}`,
-      ).setColor(observation.usableForAction ? '#7de2b8' : '#ffc879');
+      const quality = observation.qualityReason.replace(/-/g, ' ').toUpperCase();
+      const eyes = observation.qualityReason === 'eyes-closed' ? 'CHECK EYELIDS' : 'IRISES L✓ R✓';
+      this.setCameraStatusText(
+        `EYES ${Math.round(observation.confidence * 100)}%  •  ${observation.trackingFps.toFixed(0)} FPS  •  ${quality}\n`
+        + `${eyes}  •  YAW ${observation.headYaw.toFixed(2)}  PITCH ${observation.headPitch.toFixed(2)}`
+        + `  •  ${Math.round(observation.inferenceMs)} MS${aim}`,
+        observation.usableForAction ? '#7de2b8' : '#ffc879',
+        0.68,
+      );
       return;
     }
     if (mode === 'hand') {
       const sample = getHandTracker().peekSample(260);
-      this.cameraStatus?.setText(
+      this.setCameraStatusText(
         sample
           ? `HAND ${Math.round(sample.confidence * 100)}%  •  ${sample.trackingFps.toFixed(0)} FPS`
           : 'CAMERA READY  •  KEEP YOUR HAND IN FRAME',
-      ).setColor(sample?.usableForGesture ? '#7de2b8' : '#ffc879');
+        sample?.usableForGesture ? '#7de2b8' : '#ffc879',
+      );
     }
   }
 }

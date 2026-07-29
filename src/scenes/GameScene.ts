@@ -2246,7 +2246,10 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     const point = profile
-      ? this.gazeAimController.update(observation, profile, now)
+      ? this.gazeAimController.update(observation, profile, now, {
+        sensitivity: gazeSettings.sensitivity,
+        responsiveness: gazeSettings.responsiveness,
+      })
       : null;
     if (!point) {
       this.gazeBlinkControl.reset();
@@ -2292,7 +2295,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     let activate = false;
-    const targetKey = `${Math.round(point.x * 14)}:${Math.round(point.y * 14)}`;
+    const aimAngle = Math.atan2(target.y - this.shooter.y, target.x - this.shooter.x);
+    // Dwell follows the actual launcher ray in six-degree sockets instead of
+    // arbitrary screen bins, so vertical eye shimmer cannot change intent.
+    const targetKey = `aim-${Math.round(aimAngle / (Math.PI / 30))}`;
     if (gazeSettings.activation === 'dwell') {
       const dwell = this.gazeDwellControl.update({
         targetId: targetKey,
@@ -2433,7 +2439,8 @@ export class GameScene extends Phaser.Scene {
     this.handSmooth.x = Phaser.Math.Linear(this.handSmooth.x, target.x, follow);
     this.handSmooth.y = Phaser.Math.Linear(this.handSmooth.y, target.y, follow);
     this.updateAimAt(this.handSmooth.x, this.handSmooth.y, true);
-    this.handCursor?.setVisible(true)
+    const showCameraCursor = this.visionMode === 'hand' || getGazeSettings().showCursor;
+    this.handCursor?.setVisible(showCameraCursor)
       .setPosition(this.handSmooth.x, this.handSmooth.y)
       .setStrokeStyle(3, this.handPinching ? 0x4be08a : 0xffffff, this.handPinching ? 1 : 0.82);
   }

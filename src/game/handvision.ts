@@ -104,14 +104,17 @@ export class HandInferenceGovernor {
   private healthySinceMs = 0;
   private lastObservationMs = Number.NEGATIVE_INFINITY;
 
-  observe(pipelineMs: number, targetFps: 15 | 20 | 30, timestampMs: number): number {
+  observe(pipelineMs: number, targetFps: number, timestampMs: number): number {
     if (!Number.isFinite(pipelineMs)
       || pipelineMs < 0
       || !Number.isFinite(timestampMs)
       || timestampMs <= this.lastObservationMs) return this.edgeCap();
     this.lastObservationMs = timestampMs;
 
-    const frameBudgetMs = 1_000 / targetFps;
+    const boundedTargetFps = Number.isFinite(targetFps)
+      ? clamp(targetFps, 10, 60)
+      : 15;
+    const frameBudgetMs = 1_000 / boundedTargetFps;
     const slow = pipelineMs > Math.max(42, frameBudgetMs * 1.25);
     if (slow) {
       this.healthySinceMs = 0;

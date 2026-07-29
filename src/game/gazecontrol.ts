@@ -4,26 +4,15 @@ import {
   gazeCalibrationMatches,
   type GazeCalibrationIdentity,
   type GazeCalibrationProfile,
+  type GazeEyeRegistration,
+  type GazeResponsiveness,
 } from './gazesettings';
+import type { GazeFeatureVector } from './gazefeatures';
 
 export const GAZE_FEATURE_COUNT = GAZE_CALIBRATION_FEATURE_COUNT;
 export const GAZE_ACTION_MAX_AGE_MS = 180;
-export const GAZE_MIN_ACTION_CONFIDENCE = 0.62;
-
-/**
- * Worker-to-main compact feature order. Keeping this tuple stable lets setup,
- * gameplay and recorded regression corpora share one deterministic contract.
- */
-export type GazeFeatureVector = readonly [
-  leftIrisX: number,
-  leftIrisY: number,
-  rightIrisX: number,
-  rightIrisY: number,
-  faceCenterX: number,
-  faceCenterY: number,
-  faceScale: number,
-  faceRoll: number,
-];
+export const GAZE_MIN_ACTION_CONFIDENCE = 0.68;
+export type { GazeFeatureVector } from './gazefeatures';
 
 export interface GazePoint {
   x: number;
@@ -35,6 +24,7 @@ export interface GazeCalibrationObservation {
   targetY: number;
   features: GazeFeatureVector;
   confidence?: number;
+  registration?: GazeEyeRegistration;
 }
 
 export interface GazeTrackingObservation {
@@ -52,6 +42,12 @@ export interface GazeAimSample extends GazePoint {
   usableForAction: boolean;
   stableForAction: boolean;
   saccade: boolean;
+  direction: 'left' | 'right' | 'up' | 'down' | 'steady';
+}
+
+export interface GazeAimTuning {
+  sensitivity?: number;
+  responsiveness?: GazeResponsiveness;
 }
 
 const clamp = (value: number, minimum: number, maximum: number): number => (
@@ -146,7 +142,7 @@ export function fitGazeCalibration(
     && (sample.confidence === undefined
       || (Number.isFinite(sample.confidence) && sample.confidence >= 0.55 && sample.confidence <= 1))
   ));
-  if (samples.length < 27) return null;
+  if (samples.length < 108) return null;
 
   const pointGroups = new Map<string, GazeCalibrationObservation[]>();
   for (const sample of samples) {
@@ -155,7 +151,7 @@ export function fitGazeCalibration(
     group.push(sample);
     pointGroups.set(key, group);
   }
-  const completeGroups = [...pointGroups.values()].filter((group) => group.length >= 3);
+  const completeGroups = [...pointGroups.values()].filter((group) => group.length >= 12);
   if (completeGroups.length < 9) return null;
 
   const used = completeGroups.flatMap((group) => {
@@ -178,9 +174,9 @@ export function fitGazeCalibration(
       return normalizedDistance <= 7;
     });
     // Do not let one badly captured target disappear silently.
-    return inliers.length >= 3 ? inliers : [];
+    return inliers.length >= 9 ? inliers : [];
   });
-  if (used.length < 27) return null;
+  if (used.length < 81) return null;
 
   const uniqueUsedPoints = new Set(used.map((sample) => `${sample.targetX.toFixed(3)}:${sample.targetY.toFixed(3)}`));
   if (uniqueUsedPoints.size < 9) return null;
@@ -197,37 +193,57 @@ export function fitGazeCalibration(
     || coverage < 0.42
   ) return null;
 
+  // Reserve a deterministic quarter of every target for validation. The old
+  // profile reported training error only, so an overfit map could look good
+  // while selecting the wrong neighbouring orb in real play.
+  const training: GazeCalibrationObservation[] = [];
+  const validation: GazeCalibrationObservation[] = [];
+  for (const group of completeGroups) {
+    const accepted = used.filter((sample) => (
+      sample.targetX === group[0].targetX && sample.targetY === group[0].targetY
+    ));
+    accepted.forEach((sample, index) => {
+      if (index % 4 === 3) validation.push(sample);
+      else training.push(sample);
+    });
+  }
+  if (training.length < 72 || validation.length < 18) return null;
+
   const featureMean = Array.from(
     { length: GAZE_FEATURE_COUNT },
-    (_, index) => used.reduce((sum, sample) => sum + sample.features[index], 0) / used.length,
+    (_, index) => training.reduce((sum, sample) => sum + sample.features[index], 0) / training.length,
   );
   const featureScale = Array.from({ length: GAZE_FEATURE_COUNT }, (_, index) => {
-    const variance = used.reduce(
+    const variance = training.reduce(
       (sum, sample) => sum + (sample.features[index] - featureMean[index]) ** 2,
       0,
-    ) / used.length;
-    return clamp(Math.sqrt(variance), 0.000_1, 4);
+    ) / training.length;
+    // Tiny scales turn natural runtime drift into huge extrapolation. A
+    // calibration without meaningful feature spread is intentionally rejected.
+    return clamp(Math.sqrt(variance), 0.002, 4);
   });
-  const design = used.map((sample) => [
+  const design = training.map((sample) => [
     1,
     ...sample.features.map((value, index) => (value - featureMean[index]) / featureScale[index]),
   ]);
-  let weights = used.map((sample) => clamp(sample.confidence ?? 1, 0.55, 1));
+  const trainingXs = training.map((sample) => sample.targetX);
+  const trainingYs = training.map((sample) => sample.targetY);
+  let weights = training.map((sample) => clamp(sample.confidence ?? 1, 0.55, 1));
   let xCoefficients: number[] | null = null;
   let yCoefficients: number[] | null = null;
   for (let iteration = 0; iteration < 4; iteration++) {
-    xCoefficients = fitAxis(design, targetXs, weights);
-    yCoefficients = fitAxis(design, targetYs, weights);
+    xCoefficients = fitAxis(design, trainingXs, weights);
+    yCoefficients = fitAxis(design, trainingYs, weights);
     if (!xCoefficients || !yCoefficients) return null;
     const residuals = design.map((row, index) => Math.hypot(
-      predictAxis(xCoefficients!, row) - targetXs[index],
-      predictAxis(yCoefficients!, row) - targetYs[index],
+      predictAxis(xCoefficients!, row) - trainingXs[index],
+      predictAxis(yCoefficients!, row) - trainingYs[index],
     ));
     const residualMedian = median(residuals);
     const residualMad = median(residuals.map((value) => Math.abs(value - residualMedian))) * 1.4826;
     const huberLimit = Math.max(0.025, residualMedian + 2.5 * Math.max(0.002, residualMad));
     weights = residuals.map((residual, index) => (
-      clamp(used[index].confidence ?? 1, 0.55, 1)
+      clamp(training[index].confidence ?? 1, 0.55, 1)
       * Math.min(1, huberLimit / Math.max(huberLimit, residual))
     ));
   }
@@ -238,12 +254,61 @@ export function fitGazeCalibration(
     )
   ) return null;
 
-  const squaredX = design.map((row, index) => (predictAxis(xCoefficients!, row) - targetXs[index]) ** 2);
-  const squaredY = design.map((row, index) => (predictAxis(yCoefficients!, row) - targetYs[index]) ** 2);
+  const validationRows = validation.map((sample) => [
+    1,
+    ...sample.features.map((value, index) => (value - featureMean[index]) / featureScale[index]),
+  ]);
+  const squaredX = validationRows.map(
+    (row, index) => (predictAxis(xCoefficients!, row) - validation[index].targetX) ** 2,
+  );
+  const squaredY = validationRows.map(
+    (row, index) => (predictAxis(yCoefficients!, row) - validation[index].targetY) ** 2,
+  );
   const rmseX = Math.sqrt(squaredX.reduce((sum, value) => sum + value, 0) / squaredX.length);
   const rmseY = Math.sqrt(squaredY.reduce((sum, value) => sum + value, 0) / squaredY.length);
   const rmse = Math.sqrt((rmseX ** 2 + rmseY ** 2) / 2);
-  if (rmse > 0.14 || rmseX > 0.16 || rmseY > 0.16) return null;
+  const errors = validationRows.map((row, index) => Math.hypot(
+    predictAxis(xCoefficients!, row) - validation[index].targetX,
+    predictAxis(yCoefficients!, row) - validation[index].targetY,
+  )).sort((first, second) => first - second);
+  const p95Error = errors[Math.min(errors.length - 1, Math.floor(errors.length * 0.95))];
+  const pointErrors = [...new Set(validation.map(
+    (sample) => `${sample.targetX.toFixed(3)}:${sample.targetY.toFixed(3)}`,
+  ))].map((key) => median(validationRows.flatMap((row, index) => {
+    const sample = validation[index];
+    return `${sample.targetX.toFixed(3)}:${sample.targetY.toFixed(3)}` === key
+      ? [Math.hypot(
+        predictAxis(xCoefficients!, row) - sample.targetX,
+        predictAxis(yCoefficients!, row) - sample.targetY,
+      )]
+      : [];
+  })));
+  const maxPointError = Math.max(...pointErrors);
+  if (
+    rmse > 0.085
+    || rmseX > 0.1
+    || rmseY > 0.1
+    || p95Error > 0.14
+    || maxPointError > 0.11
+  ) return null;
+
+  const registrations = used
+    .map((sample) => sample.registration)
+    .filter((value): value is GazeEyeRegistration => Boolean(value));
+  if (registrations.length < 54) return null;
+  const registration: GazeEyeRegistration = {
+    leftOpenness: median(registrations.map((value) => value.leftOpenness)),
+    rightOpenness: median(registrations.map((value) => value.rightOpenness)),
+    faceScale: median(registrations.map((value) => value.faceScale)),
+    headYaw: median(registrations.map((value) => value.headYaw)),
+    headPitch: median(registrations.map((value) => value.headPitch)),
+    headRoll: median(registrations.map((value) => value.headRoll)),
+  };
+  if (
+    registration.leftOpenness < 0.025
+    || registration.rightOpenness < 0.025
+    || registration.faceScale < 0.04
+  ) return null;
 
   return {
     algorithmRevision: GAZE_CALIBRATION_ALGORITHM_REVISION,
@@ -258,10 +323,13 @@ export function fitGazeCalibration(
       rmse,
       rmseX,
       rmseY,
+      p95Error,
+      maxPointError,
       coverage,
       sampleCount: used.length,
       pointCount: uniqueUsedPoints.size,
     },
+    registration,
   };
 }
 
@@ -299,6 +367,9 @@ export function applyGazeCalibration(
       : Number.NaN;
   });
   if (!standardized.every(Number.isFinite)) return null;
+  // Calibration defines the safe operating envelope. Do not clamp a face pose
+  // far outside that envelope into a plausible-looking edge action.
+  if (standardized.some((value) => Math.abs(value) > 6.5)) return null;
   const row = [1, ...standardized];
   const x = predictAxis(profile.xCoefficients, row);
   const y = predictAxis(profile.yCoefficients, row);
@@ -311,12 +382,13 @@ export function applyGazeCalibration(
 class AdaptiveAxisFilter {
   private value: number | null = null;
 
-  filter(next: number, dtMs: number, motion: number): number {
+  filter(next: number, dtMs: number, motion: number, baseResponseMs: number): number {
     if (this.value === null) {
       this.value = next;
       return next;
     }
-    const responseMs = 92 - 72 * clamp(motion / 0.16, 0, 1);
+    const responseMs = baseResponseMs
+      - (baseResponseMs - 16) * clamp(motion / 0.13, 0, 1);
     const alpha = 1 - Math.exp(-clamp(dtMs, 4, 120) / responseMs);
     this.value += (next - this.value) * clamp(alpha, 0.08, 0.82);
     return this.value;
@@ -335,15 +407,28 @@ export class GazeAimFilter {
   private previousAtMs = 0;
 
   filter(point: GazePoint, timestampMs: number, _confidence?: number): GazePoint {
+    return this.filterTuned(point, timestampMs, 'balanced');
+  }
+
+  filterTuned(
+    point: GazePoint,
+    timestampMs: number,
+    responsiveness: GazeResponsiveness,
+  ): GazePoint {
     if (!Number.isFinite(timestampMs)) return { x: clamp01(point.x), y: clamp01(point.y) };
     const bounded = { x: clamp01(point.x), y: clamp01(point.y) };
     const dtMs = this.previous ? clamp(timestampMs - this.previousAtMs, 4, 120) : 16;
     const motion = this.previous ? Math.hypot(bounded.x - this.previous.x, bounded.y - this.previous.y) : 0;
     this.previous = bounded;
     this.previousAtMs = timestampMs;
+    const responseMs = responsiveness === 'fast'
+      ? 28
+      : responsiveness === 'steady'
+        ? 68
+        : 44;
     return {
-      x: clamp01(this.x.filter(bounded.x, dtMs, motion)),
-      y: clamp01(this.y.filter(bounded.y, dtMs, motion)),
+      x: clamp01(this.x.filter(bounded.x, dtMs, motion, responseMs)),
+      y: clamp01(this.y.filter(bounded.y, dtMs, motion, responseMs)),
     };
   }
 
@@ -375,12 +460,14 @@ export class GazeAimController {
   private readonly filter = new GazeAimFilter();
   private lastRaw: GazePoint | null = null;
   private lastTimestampMs = Number.NEGATIVE_INFINITY;
-  private stableFrames = 0;
+  private stableSinceMs = Number.NEGATIVE_INFINITY;
+  private stableSamples = 0;
 
   update(
     observation: GazeTrackingObservation,
     profile: GazeCalibrationProfile,
     receivedAtMs: number,
+    tuning: GazeAimTuning = {},
   ): GazeAimSample | null {
     const ageMs = receivedAtMs - observation.timestampMs;
     if (
@@ -395,22 +482,46 @@ export class GazeAimController {
       this.reset();
       return null;
     }
-    const raw = applyGazeCalibration(profile, observation.features);
-    if (!raw) {
+    const mapped = applyGazeCalibration(profile, observation.features);
+    if (!mapped) {
       this.reset();
       return null;
     }
+    const sensitivity = clamp(tuning.sensitivity ?? 1, 0.75, 1.35);
+    const raw = {
+      x: clamp01(0.5 + (mapped.x - 0.5) * sensitivity),
+      y: clamp01(0.5 + (mapped.y - 0.5) * sensitivity),
+    };
     const dtSeconds = Number.isFinite(this.lastTimestampMs)
       ? clamp((observation.timestampMs - this.lastTimestampMs) / 1_000, 1 / 120, 0.18)
       : 1 / 30;
     const displacement = this.lastRaw ? Math.hypot(raw.x - this.lastRaw.x, raw.y - this.lastRaw.y) : 0;
+    const deltaX = this.lastRaw ? raw.x - this.lastRaw.x : 0;
+    const deltaY = this.lastRaw ? raw.y - this.lastRaw.y : 0;
     const speed = displacement / dtSeconds;
     const saccade = Boolean(this.lastRaw && displacement >= 0.055 && speed >= 1.5);
-    if (saccade || !observation.usableForAction) this.stableFrames = 0;
-    else if (displacement <= 0.032 && speed <= 1.15) this.stableFrames = Math.min(120, this.stableFrames + 1);
-    else this.stableFrames = 0;
+    if (saccade || !observation.usableForAction || displacement > 0.04 || speed > 1.35) {
+      this.stableSinceMs = Number.NEGATIVE_INFINITY;
+      this.stableSamples = 0;
+    } else {
+      if (!Number.isFinite(this.stableSinceMs)) this.stableSinceMs = observation.timestampMs;
+      this.stableSamples = Math.min(120, this.stableSamples + 1);
+    }
+    const stableForAction = observation.usableForAction
+      && !saccade
+      && this.stableSamples >= 2
+      && observation.timestampMs - this.stableSinceMs >= 72;
 
-    const point = this.filter.filter(raw, observation.timestampMs);
+    const point = this.filter.filterTuned(
+      raw,
+      observation.timestampMs,
+      tuning.responsiveness ?? 'balanced',
+    );
+    const direction = speed < 0.22
+      ? 'steady'
+      : Math.abs(deltaX) >= Math.abs(deltaY)
+        ? deltaX < 0 ? 'left' : 'right'
+        : deltaY < 0 ? 'up' : 'down';
     this.lastRaw = raw;
     this.lastTimestampMs = observation.timestampMs;
     return {
@@ -420,8 +531,9 @@ export class GazeAimController {
       confidence: observation.confidence,
       timestampMs: observation.timestampMs,
       usableForAction: observation.usableForAction && !saccade,
-      stableForAction: observation.usableForAction && !saccade && this.stableFrames >= 3,
+      stableForAction,
       saccade,
+      direction,
     };
   }
 
@@ -429,7 +541,8 @@ export class GazeAimController {
     this.filter.reset();
     this.lastRaw = null;
     this.lastTimestampMs = Number.NEGATIVE_INFINITY;
-    this.stableFrames = 0;
+    this.stableSinceMs = Number.NEGATIVE_INFINITY;
+    this.stableSamples = 0;
   }
 }
 
@@ -513,7 +626,7 @@ export class DoubleBlinkControl {
       case 'seeking-open':
         if (bothOpen) {
           if (this.openSinceMs === 0) this.openSinceMs = timestampMs;
-          if (timestampMs - this.openSinceMs >= 90) {
+          if (timestampMs - this.openSinceMs >= 70) {
             this.phase = 'armed';
             this.phaseAtMs = timestampMs;
           }
@@ -617,6 +730,9 @@ export class GazeDwellControl {
   private enteredAtMs = 0;
   private lastTimestampMs = Number.NEGATIVE_INFINITY;
   private latched = false;
+  private uncertaintySinceMs = 0;
+  private pausedAtMs = 0;
+  private lastProgress = 0;
 
   constructor(private readonly dwellMs = 900) {}
 
@@ -641,19 +757,48 @@ export class GazeDwellControl {
         if (Number.isFinite(timestampMs)) this.lastTimestampMs = timestampMs;
         return { targetId: this.targetId, progress: 1, action: false };
       }
+      const uncertain = !invalidTimestamp
+        && Boolean(this.targetId)
+        && (!frame.usableForAction || !frame.stableForAction);
+      if (uncertain) {
+        if (this.uncertaintySinceMs === 0) {
+          this.uncertaintySinceMs = timestampMs;
+          this.pausedAtMs = timestampMs;
+        }
+        this.lastTimestampMs = timestampMs;
+        if (timestampMs - this.uncertaintySinceMs <= 220) {
+          return {
+            targetId: this.targetId,
+            progress: this.lastProgress,
+            action: false,
+          };
+        }
+      }
       this.reset();
       if (Number.isFinite(timestampMs)) this.lastTimestampMs = timestampMs;
       return { targetId: frame.targetId, progress: 0, action: false };
     }
     this.lastTimestampMs = timestampMs;
+    if (this.uncertaintySinceMs > 0) {
+      if (frame.targetId !== this.targetId) {
+        this.reset();
+        this.lastTimestampMs = timestampMs;
+      } else {
+        this.enteredAtMs += Math.max(0, timestampMs - this.pausedAtMs);
+        this.uncertaintySinceMs = 0;
+        this.pausedAtMs = 0;
+      }
+    }
     if (frame.targetId !== this.targetId) {
       this.targetId = frame.targetId;
       this.enteredAtMs = timestampMs;
       this.latched = false;
+      this.lastProgress = 0;
       return { targetId: frame.targetId, progress: 0, action: false };
     }
     const duration = clamp(this.dwellMs, 650, 2_000);
     const progress = clamp01((timestampMs - this.enteredAtMs) / duration);
+    this.lastProgress = progress;
     if (progress >= 1 && !this.latched) {
       this.latched = true;
       return { targetId: frame.targetId, progress: 1, action: true };
@@ -666,5 +811,8 @@ export class GazeDwellControl {
     this.enteredAtMs = 0;
     this.lastTimestampMs = Number.NEGATIVE_INFINITY;
     this.latched = false;
+    this.uncertaintySinceMs = 0;
+    this.pausedAtMs = 0;
+    this.lastProgress = 0;
   }
 }

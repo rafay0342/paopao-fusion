@@ -490,6 +490,24 @@ export class EndlessScene extends Phaser.Scene {
     this.drawAim();
   }
 
+  private gazeLaneAtX(x: number): number {
+    const grid = this.grid;
+    if (!grid) return this.selectedLane;
+    const measured = endlessLaneForBoardX(grid, x);
+    const current = this.gazeStableLane?.lane ?? this.selectedLane;
+    if (measured === current) return measured;
+    const currentPoint = this.gridCell(1, current);
+    const nextLane = measured > current
+      ? Math.min(current + 1, ENDLESS_REPLAY_RULES.laneCount - 1)
+      : Math.max(current - 1, 0);
+    const nextPoint = this.gridCell(1, nextLane);
+    const boundary = (currentPoint.x + nextPoint.x) / 2;
+    const margin = Math.abs(nextPoint.x - currentPoint.x) * 0.18;
+    if (nextLane > current && x < boundary + margin) return current;
+    if (nextLane < current && x > boundary - margin) return current;
+    return measured;
+  }
+
   private drawAim(lane = this.selectedLane): void {
     if (!this.aimGraphics || !this.grid || !this.launcher) return;
     const target = this.targets[this.recorder?.snapshot().length ?? 0];
@@ -943,7 +961,10 @@ export class EndlessScene extends Phaser.Scene {
       return;
     }
     const aim = profile
-      ? this.gazeAimController.update(observation, profile, now)
+      ? this.gazeAimController.update(observation, profile, now, {
+        sensitivity: settings.sensitivity,
+        responsiveness: settings.responsiveness,
+      })
       : null;
     if (!aim) {
       this.gazeBlinkControl.reset();
@@ -966,7 +987,7 @@ export class EndlessScene extends Phaser.Scene {
     };
     const insidePlayfield = aim.y * VIEW.height >= BOARD_TOP - 45
       && aim.y * VIEW.height <= LAUNCHER_Y;
-    const lane = endlessLaneForBoardX(this.grid, point.x);
+    const lane = this.gazeLaneAtX(point.x);
     this.gazeHasSeen = true;
     this.gazeLastSeenAt = now;
     this.gazeCursorTarget = point;
@@ -1123,14 +1144,14 @@ export class EndlessScene extends Phaser.Scene {
     this.gazeCursorSmooth.x = Phaser.Math.Linear(
       this.gazeCursorSmooth.x,
       this.gazeCursorTarget.x,
-      0.34,
+      0.46,
     );
     this.gazeCursorSmooth.y = Phaser.Math.Linear(
       this.gazeCursorSmooth.y,
       this.gazeCursorTarget.y,
-      0.34,
+      0.46,
     );
-    this.handCursor.setVisible(true).setPosition(
+    this.handCursor.setVisible(getGazeSettings().showCursor).setPosition(
       this.gazeCursorSmooth.x,
       this.gazeCursorSmooth.y,
     );

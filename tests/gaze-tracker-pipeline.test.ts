@@ -7,6 +7,7 @@ const readText = (path: string): string => readFileSync(path, 'utf8');
 describe('shared-camera gaze tracker pipeline', () => {
   const tracker = readText('src/game/handtracking.ts');
   const worker = readText('src/game/handtracking.worker.ts');
+  const features = readText('src/game/gazefeatures.ts');
 
   it('pins the audited first-party MediaPipe face model', () => {
     const model = readFileSync('public/mediapipe/models/face_landmarker.task');
@@ -58,28 +59,46 @@ describe('shared-camera gaze tracker pipeline', () => {
     expect(worker).not.toContain('visionFileset');
   });
 
-  it('shares one transferred frame and caps face work at 15 Hz in both eye modes', () => {
+  it('shares one transferred frame and runs gaze at responsive mode-specific cadence', () => {
     expect(tracker).toContain("type VisionTrackingMode = 'hand' | 'gaze' | 'gaze-hand'");
     expect(tracker).toContain('mode: this.trackingMode');
     expect(worker).toContain("const needsHand = mode !== 'gaze'");
     expect(worker).toContain("const needsGaze = mode !== 'hand'");
-    expect(worker).toContain('const GAZE_FACE_INTERVAL_MS = 1_000 / 15');
-    expect(worker).toContain('timestampMs - lastFaceInferenceTimestampMs >= GAZE_FACE_INTERVAL_MS - GAZE_FACE_EARLY_TOLERANCE_MS');
-    const frameHandler = worker.slice(worker.indexOf('const { bitmap, timestampMs'));
+    expect(worker).toContain('const GAZE_ONLY_INTERVAL_MS = 1_000 / 30');
+    expect(worker).toContain('const GAZE_HYBRID_INTERVAL_MS = 1_000 / 30');
+    expect(worker).toContain("const gazeIntervalMs = mode === 'gaze' ? GAZE_ONLY_INTERVAL_MS : GAZE_HYBRID_INTERVAL_MS");
+    expect(tracker).toContain("mode === 'gaze'\n    ? 30");
+    expect(tracker).toContain("mode === 'gaze-hand'\n      ? Math.max(24, settings.targetFps)");
+    expect(tracker).toContain("this.trackingMode === 'hand'\n      ? Math.min(requestedEdge, adaptiveCap)\n      : HAND_DETAIL_EDGE");
+    const frameHandler = worker.slice(worker.indexOf('const {\n    bitmap,'));
     expect(frameHandler).toContain('finally {\n    bitmap.close();');
     expect(worker).not.toContain('getUserMedia');
   });
 
   it('exports only compact calibration features and fail-closed freshness', () => {
     expect(worker).toContain('landmarks.length < 478');
-    expect(worker).toContain('left.x,\n      left.y,\n      right.x,\n      right.y,\n      faceCenterX,\n      faceCenterY,\n      faceScale,\n      faceRoll,');
+    expect(worker).toContain('extractGazeGeometry(landmarks, frameAspect)');
+    expect(worker).toContain('const frameAspect = bitmap.width / Math.max(1, bitmap.height)');
+    expect(tracker).toContain('registration: this.activeGazeRegistration()');
+    expect(worker).toContain('bindGazeRegistration(registration)');
+    expect(worker).toContain('generation !== activeGazeGeneration');
+    expect(tracker).toContain('const activeTargetFps = captureFps(this.settings, message.mode)');
+    expect(features).toContain('[473, 474, 475, 476, 477]');
+    expect(features).toContain('[468, 469, 470, 471, 472]');
+    expect(features).toContain('362,\n    263');
+    expect(features).toContain('33,\n    133');
+    expect(features).toContain('headYaw');
+    expect(features).toContain('headPitch');
+    expect(features).not.toContain('cameraFrame');
     expect(worker).toContain("blendshape('eyeBlinkLeft')");
     expect(worker).toContain("blendshape('eyeBlinkRight')");
     expect(worker).toContain('outputFaceBlendshapes: true');
     expect(worker).toContain('outputFacialTransformationMatrixes: true');
     const resultMessage = worker.slice(worker.lastIndexOf('workerScope.postMessage({'));
     expect(resultMessage).not.toContain('faceLandmarks');
-    expect(tracker).toContain('usableForAction: actionTimely && gaze.confidence >= 0.62');
+    expect(tracker).toContain('usableForAction: actionTimely && qualityAllowsAction && gaze.confidence >= 0.68');
+    expect(tracker).toContain("gaze.debug.qualityReason === 'ready'");
+    expect(tracker).toContain('drawGazeMarkers(gaze.debug)');
     expect(tracker).toContain('peekGaze(maxAgeMs = 160)');
     expect(tracker).toContain('sampleGaze(): GazeObservation | null');
   });

@@ -22,25 +22,56 @@ const identity = createGazeCalibrationIdentity({
 });
 
 const featuresFor = (x: number, y: number, noise = 0): GazeFeatureVector => [
-  0.2 + 0.55 * x + 0.03 * y + noise,
-  0.24 + 0.03 * x + 0.58 * y - noise,
-  0.22 + 0.53 * x + 0.025 * y - noise * 0.5,
-  0.23 + 0.02 * x + 0.57 * y + noise * 0.5,
+  -0.24 + 0.46 * x + 0.03 * y + noise,
+  -0.16 + 0.02 * x + 0.34 * y - noise,
+  -0.23 + 0.45 * x + 0.025 * y - noise * 0.5,
+  -0.15 + 0.018 * x + 0.33 * y + noise * 0.5,
   0.43 + 0.08 * x + noise * 0.2,
   0.44 + 0.08 * y - noise * 0.2,
   0.24 + 0.025 * y,
-  -0.04 + 0.08 * x - 0.03 * y,
+  -0.06 + 0.1 * x - 0.03 * y,
+  0.34 + 0.04 * y - 0.02 * x,
+  -0.025 + 0.05 * x - 0.03 * y,
 ];
 
 const calibrationSamples = (): GazeCalibrationObservation[] => {
   const samples: GazeCalibrationObservation[] = [];
   for (const y of [0.1, 0.5, 0.9]) {
     for (const x of [0.1, 0.5, 0.9]) {
-      [-0.004, -0.001, 0.0015, 0.004].forEach((noise) => {
-        samples.push({ targetX: x, targetY: y, features: featuresFor(x, y, noise), confidence: 0.92 });
+      [
+        -0.006, -0.005, -0.004, -0.003, -0.002, -0.001, -0.0005,
+        0, 0.0005, 0.001, 0.002, 0.003, 0.004, 0.005, 0.006,
+      ].forEach((noise) => {
+        samples.push({
+          targetX: x,
+          targetY: y,
+          features: featuresFor(x, y, noise),
+          confidence: 0.92,
+          registration: {
+            leftOpenness: 0.22 + noise * 0.1,
+            rightOpenness: 0.21 - noise * 0.1,
+            faceScale: 0.24 + 0.025 * y,
+            headYaw: -0.06 + 0.1 * x - 0.03 * y,
+            headPitch: 0.34 + 0.04 * y - 0.02 * x,
+            headRoll: -0.025 + 0.05 * x - 0.03 * y,
+          },
+        });
       });
       // One extreme capture per target must not drag the fit.
-      samples.push({ targetX: x, targetY: y, features: featuresFor(x, y, 0.18), confidence: 0.7 });
+      samples.push({
+        targetX: x,
+        targetY: y,
+        features: featuresFor(x, y, 0.18),
+        confidence: 0.7,
+        registration: {
+          leftOpenness: 0.22,
+          rightOpenness: 0.21,
+          faceScale: 0.24,
+          headYaw: 0,
+          headPitch: 0.35,
+          headRoll: 0,
+        },
+      });
     }
   }
   return samples;
@@ -51,17 +82,27 @@ const directProfile = (): GazeCalibrationProfile => ({
   revision: 0,
   createdAtMs: 0,
   identity,
-  featureMean: Array(8).fill(0),
-  featureScale: Array(8).fill(1),
-  xCoefficients: [0, 1, 0, 0, 0, 0, 0, 0, 0],
-  yCoefficients: [0, 0, 1, 0, 0, 0, 0, 0, 0],
+  featureMean: Array(10).fill(0),
+  featureScale: Array(10).fill(1),
+  xCoefficients: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  yCoefficients: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   quality: {
     rmse: 0.02,
     rmseX: 0.02,
     rmseY: 0.02,
+    p95Error: 0.04,
+    maxPointError: 0.035,
     coverage: 0.64,
-    sampleCount: 36,
+    sampleCount: 135,
     pointCount: 9,
+  },
+  registration: {
+    leftOpenness: 0.22,
+    rightOpenness: 0.21,
+    faceScale: 0.24,
+    headYaw: 0,
+    headPitch: 0.35,
+    headRoll: 0,
   },
 });
 
@@ -75,6 +116,13 @@ describe('robust gaze calibration', () => {
     expect(profile!.quality.pointCount).toBe(9);
     expect(profile!.quality.coverage).toBeCloseTo(0.64, 6);
     expect(profile!.quality.rmse).toBeLessThan(0.08);
+    expect(profile!.quality.p95Error).toBeLessThan(0.14);
+    expect(profile!.quality.maxPointError).toBeLessThan(0.11);
+    expect(profile!.registration).toMatchObject({
+      leftOpenness: expect.any(Number),
+      rightOpenness: expect.any(Number),
+      faceScale: expect.any(Number),
+    });
   });
 
   it('rejects incomplete, narrow and high-error captures', () => {
@@ -91,20 +139,24 @@ describe('robust gaze calibration', () => {
       features: featuresFor((index * 7) % 10 / 10, (index * 3) % 10 / 10),
     }));
     expect(fitGazeCalibration(contradictory, identity)).toBeNull();
+    expect(fitGazeCalibration(
+      calibrationSamples().map(({ registration: _registration, ...sample }) => sample),
+      identity,
+    )).toBeNull();
   });
 
   it('fails closed on extrapolated or malformed features', () => {
-    expect(applyGazeCalibration(directProfile(), [0.5, 0.4, 0, 0, 0, 0, 0, 0])).toEqual({
+    expect(applyGazeCalibration(directProfile(), [0.5, 0.4, 0, 0, 0, 0, 0, 0, 0, 0])).toEqual({
       x: 0.5,
       y: 0.4,
     });
     expect(applyGazeCalibration(
       directProfile(),
-      [3, 3, 0, 0, 0, 0, 0, 0],
+      [3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
     )).toBeNull();
     expect(applyGazeCalibration(
       directProfile(),
-      [Number.NaN, 0, 0, 0, 0, 0, 0, 0],
+      [Number.NaN, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     )).toBeNull();
   });
 });
@@ -114,24 +166,44 @@ describe('gaze aim safety', () => {
     const aim = new GazeAimController();
     const frame = (timestampMs: number, x: number, y: number) => aim.update({
       timestampMs,
-      features: [x, y, 0, 0, 0, 0, 0, 0],
+      features: [x, y, 0, 0, 0, 0, 0, 0, 0, 0],
       confidence: 0.9,
       usableForAction: true,
     }, directProfile(), timestampMs + 20);
 
     expect(frame(1_000, 0.4, 0.4)?.stableForAction).toBe(false);
     expect(frame(1_033, 0.402, 0.401)?.stableForAction).toBe(false);
-    expect(frame(1_066, 0.401, 0.402)?.stableForAction).toBe(true);
-    const saccade = frame(1_099, 0.8, 0.2);
+    expect(frame(1_075, 0.401, 0.402)?.stableForAction).toBe(true);
+    const saccade = frame(1_108, 0.8, 0.2);
     expect(saccade?.saccade).toBe(true);
     expect(saccade?.stableForAction).toBe(false);
+    expect(saccade?.direction).toBe('right');
+  });
+
+  it('applies bounded sensitivity around calibrated screen centre', () => {
+    const observation = {
+      timestampMs: 1_000,
+      features: [0.7, 0.3, 0, 0, 0, 0, 0, 0, 0, 0] as GazeFeatureVector,
+      confidence: 0.9,
+      usableForAction: true,
+    };
+    const normal = new GazeAimController().update(observation, directProfile(), 1_010, {
+      sensitivity: 1,
+      responsiveness: 'fast',
+    });
+    const amplified = new GazeAimController().update(observation, directProfile(), 1_010, {
+      sensitivity: 1.35,
+      responsiveness: 'fast',
+    });
+    expect(amplified!.x).toBeGreaterThan(normal!.x);
+    expect(amplified!.y).toBeLessThan(normal!.y);
   });
 
   it('rejects stale, duplicated, low-confidence and unusable action frames', () => {
     const aim = new GazeAimController();
     const base = {
       timestampMs: 1_000,
-      features: [0.5, 0.5, 0, 0, 0, 0, 0, 0] as GazeFeatureVector,
+      features: [0.5, 0.5, 0, 0, 0, 0, 0, 0, 0, 0] as GazeFeatureVector,
       confidence: 0.9,
       usableForAction: true,
     };
@@ -166,6 +238,25 @@ describe('deliberate gaze activation', () => {
     expect(blink.update(blinkFrame(1_220, false))).toBe('none');
     expect(blink.update(blinkFrame(1_300, true))).toBe('none');
     expect(blink.update(blinkFrame(1_370, false))).toBe('action');
+  });
+
+  it.each([24, 30])('detects deliberate double blinks across %i FPS phase offsets', (fps) => {
+    const interval = 1_000 / fps;
+    for (const phase of [0, interval * 0.25, interval * 0.5, interval * 0.75]) {
+      const blink = new DoubleBlinkControl();
+      let actions = 0;
+      for (let elapsed = phase; elapsed <= 650; elapsed += interval) {
+        const closed = (elapsed >= 150 && elapsed < 245)
+          || (elapsed >= 345 && elapsed < 440);
+        const result = blink.update(blinkFrame(
+          10_000 + elapsed,
+          closed,
+          { stableForAction: !closed },
+        ));
+        if (result === 'action') actions++;
+      }
+      expect(actions, `phase ${phase.toFixed(1)}ms at ${fps} FPS`).toBe(1);
+    }
   });
 
   it('keeps a recent stable aim locked through bilateral eyelid geometry disturbance', () => {
@@ -295,5 +386,27 @@ describe('deliberate gaze activation', () => {
       action: false,
     });
     expect(dwell.update(frame(2_380, 'lane-4'))).toMatchObject({ progress: 0, action: false });
+  });
+
+  it('pauses unfinished dwell across a brief uncertain frame instead of restarting', () => {
+    const dwell = new GazeDwellControl(700);
+    const frame = (
+      timestampMs: number,
+      usableForAction = true,
+      stableForAction = true,
+    ) => ({
+      timestampMs,
+      targetId: 'orb-4',
+      usableForAction,
+      stableForAction,
+    });
+    dwell.update(frame(1_000));
+    dwell.update(frame(1_140));
+    const before = dwell.update(frame(1_280));
+    expect(before.progress).toBeCloseTo(0.4, 3);
+    expect(dwell.update(frame(1_360, false, false)).progress).toBeCloseTo(before.progress, 3);
+    const resumed = dwell.update(frame(1_440));
+    expect(resumed.progress).toBeGreaterThanOrEqual(before.progress);
+    expect(resumed.progress).toBeLessThan(0.55);
   });
 });

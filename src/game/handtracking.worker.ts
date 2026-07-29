@@ -12,6 +12,13 @@ import {
   type HandLightingProfile,
   type HandLightingStats,
 } from './handvision';
+import {
+  extractGazeGeometry,
+  type GazeDebugPacket,
+  type GazeFeatureVector,
+  type GazeQualityReason,
+  type GazeRuntimeRegistration,
+} from './gazefeatures';
 import { isolateVisionLoader, type VisionTaskAttempt } from './visionruntime';
 
 interface InitMessage {
@@ -27,6 +34,7 @@ interface FrameMessage {
   generation: number;
   frameId: number;
   mode: VisionTrackingMode;
+  registration: GazeRuntimeRegistration | null;
 }
 
 interface PrepareGazeMessage {
@@ -42,16 +50,13 @@ interface CleanupMessage {
 type IncomingMessage = InitMessage | FrameMessage | PrepareGazeMessage | CleanupMessage;
 
 type VisionTrackingMode = 'hand' | 'gaze' | 'gaze-hand';
-type GazeFeatureVector = [
-  number, number, number, number,
-  number, number, number, number,
-];
 
 interface CompactGazeObservation {
   features: GazeFeatureVector;
   confidence: number;
   leftBlink: number;
   rightBlink: number;
+  debug: GazeDebugPacket;
 }
 
 const workerScope = self as unknown as {
@@ -67,10 +72,25 @@ let lastOpenGaze: {
   features: GazeFeatureVector;
   confidence: number;
   timestampMs: number;
+  debug: GazeDebugPacket;
 } | null = null;
-const GAZE_FACE_INTERVAL_MS = 1_000 / 15;
 const GAZE_FACE_EARLY_TOLERANCE_MS = 3;
 const GAZE_BLINK_FEATURE_HOLD_MS = 320;
+const GAZE_ONLY_INTERVAL_MS = 1_000 / 30;
+const GAZE_HYBRID_INTERVAL_MS = 1_000 / 30;
+let leftOpenBaseline = 0;
+let rightOpenBaseline = 0;
+let activeGazeGeneration = -1;
+let activeGazeRegistration: GazeRuntimeRegistration | null = null;
+let previousGazePose: {
+  timestampMs: number;
+  centerX: number;
+  centerY: number;
+  scale: number;
+  yaw: number;
+  pitch: number;
+  roll: number;
+} | null = null;
 const PROBE_WIDTH = 32;
 const PROBE_HEIGHT = 24;
 const PROBE_INTERVAL_MS = 180;
@@ -90,6 +110,16 @@ let canvasInputSupported: boolean | null = null;
 let filterPipelineSupported: boolean | null = null;
 const enhancementBudget = new HandEnhancementBudget();
 
+function resetGazeSession(): void {
+  lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
+  lastOpenGaze = null;
+  leftOpenBaseline = 0;
+  rightOpenBaseline = 0;
+  activeGazeGeneration = -1;
+  activeGazeRegistration = null;
+  previousGazePose = null;
+}
+
 function resetLighting(): void {
   probeCanvas = null;
   inferenceCanvas = null;
@@ -105,8 +135,7 @@ function resetLighting(): void {
   canvasInputSupported = null;
   filterPipelineSupported = null;
   enhancementBudget.reset();
-  lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
-  lastOpenGaze = null;
+  resetGazeSession();
 }
 
 function analyseLighting(bitmap: ImageBitmap): HandLightingStats | null {
@@ -356,62 +385,141 @@ async function createFaceRecognizer(wasmUrl: string, modelUrl: string): Promise<
   lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
 }
 
-interface Point2D {
-  x: number;
-  y: number;
-}
-
-const finitePoint = (point: Point2D | undefined): point is Point2D => (
-  Boolean(point) && Number.isFinite(point?.x) && Number.isFinite(point?.y)
-);
-
-const pointDistance = (a: Point2D, b: Point2D): number => Math.hypot(a.x - b.x, a.y - b.y);
-
-function eyeRatios(
-  landmarks: Point2D[],
-  irisIndex: number,
-  outerIndex: number,
-  innerIndex: number,
-  upperIndex: number,
-  lowerIndex: number,
-): { x: number; y: number; width: number; valid: boolean } {
-  const iris = landmarks[irisIndex];
-  const outer = landmarks[outerIndex];
-  const inner = landmarks[innerIndex];
-  const upper = landmarks[upperIndex];
-  const lower = landmarks[lowerIndex];
-  if (![iris, outer, inner, upper, lower].every(finitePoint)) {
-    return { x: 0.5, y: 0.5, width: 0, valid: false };
-  }
-
-  const axisX = inner.x - outer.x;
-  const axisY = inner.y - outer.y;
-  const widthSquared = axisX * axisX + axisY * axisY;
-  const lidX = lower.x - upper.x;
-  const lidY = lower.y - upper.y;
-  const lidSquared = lidX * lidX + lidY * lidY;
-  if (widthSquared < 0.0001 || lidSquared < 0.0000025) {
-    return { x: 0.5, y: 0.5, width: Math.sqrt(Math.max(0, widthSquared)), valid: false };
-  }
-
-  return {
-    x: ((iris.x - outer.x) * axisX + (iris.y - outer.y) * axisY) / widthSquared,
-    y: ((iris.x - upper.x) * lidX + (iris.y - upper.y) * lidY) / lidSquared,
-    width: Math.sqrt(widthSquared),
-    valid: true,
-  };
-}
-
 const clamp01 = (value: number): number => Math.min(1, Math.max(0, value));
 
+const personalizedBlink = (
+  rawBlink: number,
+  openness: number,
+  side: 'left' | 'right',
+): number => {
+  let baseline = side === 'left' ? leftOpenBaseline : rightOpenBaseline;
+  const registered = side === 'left'
+    ? activeGazeRegistration?.leftOpenness
+    : activeGazeRegistration?.rightOpenness;
+  if (baseline === 0) baseline = registered ?? openness;
+  if (rawBlink <= 0.28 && openness >= baseline * 0.72) {
+    // Follow natural open-eye geometry slowly, but never let an active squint
+    // redefine "open" in one frame.
+    baseline = Math.max(baseline * 0.997, baseline * 0.97 + openness * 0.03);
+  }
+  if (side === 'left') leftOpenBaseline = baseline;
+  else rightOpenBaseline = baseline;
+  const geometricClosure = baseline > 0.03
+    ? clamp01((baseline - openness) / Math.max(0.025, baseline * 0.58))
+    : 0;
+  return clamp01(Math.max(rawBlink, geometricClosure * 0.9));
+};
+
+const bindGazeRegistration = (candidate: GazeRuntimeRegistration | null): void => {
+  const valid = candidate
+    && Number.isSafeInteger(candidate.revision)
+    && candidate.revision > 0
+    && Number.isFinite(candidate.leftOpenness)
+    && candidate.leftOpenness >= 0.025
+    && candidate.leftOpenness <= 0.8
+    && Number.isFinite(candidate.rightOpenness)
+    && candidate.rightOpenness >= 0.025
+    && candidate.rightOpenness <= 0.8
+    && Number.isFinite(candidate.faceScale)
+    && candidate.faceScale >= 0.04
+    && candidate.faceScale <= 1
+    && Number.isFinite(candidate.headYaw)
+    && Math.abs(candidate.headYaw) <= 1
+    && Number.isFinite(candidate.headPitch)
+    && candidate.headPitch >= -1
+    && candidate.headPitch <= 1.5
+    && Number.isFinite(candidate.headRoll)
+    && Math.abs(candidate.headRoll) <= 1;
+  const next = valid ? candidate : null;
+  if (next?.revision === activeGazeRegistration?.revision) return;
+  activeGazeRegistration = next;
+  leftOpenBaseline = next?.leftOpenness ?? 0;
+  rightOpenBaseline = next?.rightOpenness ?? 0;
+  lastOpenGaze = null;
+  previousGazePose = null;
+};
+
+const gazeHeadMotion = (
+  geometry: NonNullable<ReturnType<typeof extractGazeGeometry>>,
+  timestampMs: number,
+): number => {
+  const previous = previousGazePose;
+  previousGazePose = {
+    timestampMs,
+    centerX: geometry.faceCenterX,
+    centerY: geometry.faceCenterY,
+    scale: geometry.faceScale,
+    yaw: geometry.headYaw,
+    pitch: geometry.headPitch,
+    roll: geometry.headRoll,
+  };
+  if (!previous || timestampMs <= previous.timestampMs) return 0;
+  const dtSeconds = Math.min(0.18, Math.max(1 / 120, (timestampMs - previous.timestampMs) / 1_000));
+  const translationSpeed = Math.hypot(
+    geometry.faceCenterX - previous.centerX,
+    geometry.faceCenterY - previous.centerY,
+  ) / dtSeconds;
+  const scaleSpeed = Math.abs(geometry.faceScale - previous.scale) / dtSeconds;
+  const poseSpeed = (
+    Math.abs(geometry.headYaw - previous.yaw)
+    + Math.abs(geometry.headPitch - previous.pitch)
+    + Math.abs(geometry.headRoll - previous.roll)
+  ) / dtSeconds;
+  return clamp01(translationSpeed / 0.45 + scaleSpeed / 0.32 + poseSpeed / 2.8);
+};
+
+const gazeQualityReason = (
+  geometry: NonNullable<ReturnType<typeof extractGazeGeometry>>,
+  headMotion: number,
+  lightingMode: HandLightingMode,
+): GazeQualityReason => {
+  const registration = activeGazeRegistration;
+  const minimumFaceScale = registration
+    ? Math.max(0.07, registration.faceScale * 0.52)
+    : 0.105;
+  if (geometry.faceScale < minimumFaceScale) return 'face-too-far';
+  if (
+    geometry.faceCenterX < 0.07
+    || geometry.faceCenterX > 0.93
+    || geometry.faceCenterY < 0.05
+    || geometry.faceCenterY > 0.78
+  ) return 'face-off-center';
+  const headOutsideRegistration = registration
+    ? Math.abs(geometry.headYaw - registration.headYaw) > 0.5
+      || Math.abs(geometry.headPitch - registration.headPitch) > 0.52
+      || Math.abs(geometry.headRoll - registration.headRoll) > 0.24
+    : Math.abs(geometry.headYaw) > 0.58
+      || geometry.headPitch < 0.05
+      || geometry.headPitch > 0.78
+      || Math.abs(geometry.headRoll) > 0.28;
+  if (headOutsideRegistration) return 'head-angle';
+  if (headMotion > 0.88) return 'head-moving';
+  const minimumLeftOpenness = registration
+    ? Math.max(0.025, registration.leftOpenness * 0.32)
+    : 0.055;
+  const minimumRightOpenness = registration
+    ? Math.max(0.025, registration.rightOpenness * 0.32)
+    : 0.055;
+  if (
+    geometry.leftOpenness < minimumLeftOpenness
+    || geometry.rightOpenness < minimumRightOpenness
+  ) return 'eyes-closed';
+  if (geometry.ringQuality < 0.35) return 'iris-uncertain';
+  if (geometry.binocularAgreement < 0.34) return 'binocular-mismatch';
+  if (lightingMode === 'blurred' || lightingMode === 'low-contrast') return 'poor-lighting';
+  return 'ready';
+};
+
 /**
- * Reduce MediaPipe's 478-point face output to the eight calibration features
- * required by the game. Full face landmarks and camera pixels never cross the
- * worker boundary.
+ * Reduce MediaPipe's 478-point face output to robust V2 eye geometry. Only two
+ * eye contours, iris dots and numeric quality diagnostics cross the worker
+ * boundary; full face landmarks and camera pixels never do.
  */
 function compactGazeResult(
   result: FaceLandmarkerResult,
   timestampMs: number,
+  lightingMode: HandLightingMode,
+  frameAspect: number,
 ): CompactGazeObservation | null {
   const landmarks = result.faceLandmarks?.[0];
   if (!landmarks || landmarks.length < 478) return null;
@@ -421,22 +529,28 @@ function compactGazeResult(
     const category = categories.find((candidate) => candidate.categoryName === name);
     return clamp01(category?.score ?? 0);
   };
-  const leftBlink = blendshape('eyeBlinkLeft');
-  const rightBlink = blendshape('eyeBlinkRight');
+  const rawLeftBlink = blendshape('eyeBlinkLeft');
+  const rawRightBlink = blendshape('eyeBlinkRight');
   const hasBlinkSignals = categories.some((candidate) => candidate.categoryName === 'eyeBlinkLeft')
     && categories.some((candidate) => candidate.categoryName === 'eyeBlinkRight');
-
-  // MediaPipe names these from the subject's perspective.
-  const left = eyeRatios(landmarks, 473, 263, 362, 386, 374);
-  const right = eyeRatios(landmarks, 468, 33, 133, 159, 145);
-  const leftOuter = landmarks[263];
-  const rightOuter = landmarks[33];
-  if (!finitePoint(leftOuter) || !finitePoint(rightOuter)) return null;
-
-  const faceScale = pointDistance(leftOuter, rightOuter);
-  const faceCenterX = (leftOuter.x + rightOuter.x) / 2;
-  const faceCenterY = (leftOuter.y + rightOuter.y) / 2;
-  const faceRoll = Math.atan2(leftOuter.y - rightOuter.y, leftOuter.x - rightOuter.x) / Math.PI;
+  if (!hasBlinkSignals) return null;
+  const geometry = extractGazeGeometry(landmarks, frameAspect);
+  if (!geometry) return null;
+  const leftBlink = personalizedBlink(rawLeftBlink, geometry.leftOpenness, 'left');
+  const rightBlink = personalizedBlink(rawRightBlink, geometry.rightOpenness, 'right');
+  const headMotion = gazeHeadMotion(geometry, timestampMs);
+  const qualityReason = gazeQualityReason(geometry, headMotion, lightingMode);
+  const debug: GazeDebugPacket = {
+    ...geometry.markers,
+    leftOpenness: geometry.leftOpenness,
+    rightOpenness: geometry.rightOpenness,
+    headYaw: geometry.headYaw,
+    headPitch: geometry.headPitch,
+    headRoll: geometry.headRoll,
+    headMotion,
+    binocularAgreement: geometry.binocularAgreement,
+    qualityReason,
+  };
 
   // Eyelid closure makes iris-to-lid ratios mathematically unstable. During a
   // short, bilateral blink only, hold the last verified open-eye features.
@@ -446,49 +560,44 @@ function compactGazeResult(
   if (bilateralClosure) {
     const held = lastOpenGaze;
     const headStill = held
-      && Math.hypot(faceCenterX - held.features[4], faceCenterY - held.features[5]) <= 0.04
-      && Math.abs(faceScale - held.features[6]) <= Math.max(0.018, held.features[6] * 0.16)
-      && Math.abs(faceRoll - held.features[7]) <= 0.08;
+      && Math.hypot(geometry.faceCenterX - held.features[4], geometry.faceCenterY - held.features[5]) <= 0.035
+      && Math.abs(geometry.faceScale - held.features[6]) <= Math.max(0.015, held.features[6] * 0.12)
+      && Math.abs(geometry.headYaw - held.features[7]) <= 0.1
+      && Math.abs(geometry.headPitch - held.features[8]) <= 0.1
+      && Math.abs(geometry.headRoll - held.features[9]) <= 0.06
+      && headMotion <= 0.9;
     if (!held || timestampMs - held.timestampMs > GAZE_BLINK_FEATURE_HOLD_MS || !headStill) return null;
     return {
       features: [...held.features] as GazeFeatureVector,
       confidence: held.confidence,
       leftBlink,
       rightBlink,
+      debug: { ...held.debug, headMotion, qualityReason: 'blink' },
     };
   }
 
-  if (!left.valid || !right.valid) return null;
-
-  let confidence = 1;
-  confidence *= clamp01((faceScale - 0.08) / 0.1);
-  confidence *= clamp01(Math.min(left.width, right.width) / 0.025);
-  if (faceCenterX < 0.08 || faceCenterX > 0.92 || faceCenterY < 0.06 || faceCenterY > 0.72) confidence *= 0.55;
-  if (Math.abs(faceRoll) > 0.34) confidence *= 0.65;
-  const ratios = [left.x, left.y, right.x, right.y];
-  if (ratios.some((value) => !Number.isFinite(value) || value < -0.35 || value > 1.35)) confidence = 0;
-  if (!hasBlinkSignals) confidence = Math.min(confidence, 0.45);
+  let confidence = geometry.baseConfidence;
+  if (qualityReason !== 'ready') confidence *= qualityReason === 'head-moving' ? 0.72 : 0.52;
+  if (lightingMode === 'dark' || lightingMode === 'bright' || lightingMode === 'backlit') confidence *= 0.82;
 
   const compact: CompactGazeObservation = {
-    features: [
-      left.x,
-      left.y,
-      right.x,
-      right.y,
-      faceCenterX,
-      faceCenterY,
-      faceScale,
-      faceRoll,
-    ],
+    features: geometry.features,
     confidence: clamp01(confidence),
     leftBlink,
     rightBlink,
+    debug,
   };
-  if (leftBlink <= 0.32 && rightBlink <= 0.32 && compact.confidence >= 0.62) {
+  if (
+    leftBlink <= 0.32
+    && rightBlink <= 0.32
+    && qualityReason === 'ready'
+    && compact.confidence >= 0.68
+  ) {
     lastOpenGaze = {
       features: [...compact.features] as GazeFeatureVector,
       confidence: compact.confidence,
       timestampMs,
+      debug,
     };
   }
   return compact;
@@ -535,9 +644,21 @@ workerScope.onmessage = async (event): Promise<void> => {
     return;
   }
 
-  const { bitmap, timestampMs, generation, frameId, mode } = message;
+  const {
+    bitmap,
+    timestampMs,
+    generation,
+    frameId,
+    mode,
+    registration,
+  } = message;
   const needsHand = mode !== 'gaze';
   const needsGaze = mode !== 'hand';
+  if (needsGaze && generation !== activeGazeGeneration) {
+    resetGazeSession();
+    activeGazeGeneration = generation;
+  }
+  if (needsGaze) bindGazeRegistration(registration);
   if ((needsHand && !recognizer) || (needsGaze && !faceRecognizer)) {
     bitmap.close();
     workerScope.postMessage({
@@ -551,6 +672,7 @@ workerScope.onmessage = async (event): Promise<void> => {
 
   const startedAt = performance.now();
   try {
+    const frameAspect = bitmap.width / Math.max(1, bitmap.height);
     const prepared = inferenceSource(bitmap, startedAt);
     let enhanced = prepared.enhanced;
     let enhancedFallback = false;
@@ -573,8 +695,9 @@ workerScope.onmessage = async (event): Promise<void> => {
       }
     }
 
+    const gazeIntervalMs = mode === 'gaze' ? GAZE_ONLY_INTERVAL_MS : GAZE_HYBRID_INTERVAL_MS;
     if (needsGaze && faceRecognizer
-      && timestampMs - lastFaceInferenceTimestampMs >= GAZE_FACE_INTERVAL_MS - GAZE_FACE_EARLY_TOLERANCE_MS) {
+      && timestampMs - lastFaceInferenceTimestampMs >= gazeIntervalMs - GAZE_FACE_EARLY_TOLERANCE_MS) {
       gazeEvaluated = true;
       lastFaceInferenceTimestampMs = timestampMs;
       let faceResult: FaceLandmarkerResult;
@@ -589,7 +712,7 @@ workerScope.onmessage = async (event): Promise<void> => {
         enhancedFallback = true;
         faceResult = faceRecognizer.detectForVideo(bitmap, timestampMs);
       }
-      gaze = compactGazeResult(faceResult, timestampMs);
+      gaze = compactGazeResult(faceResult, timestampMs, activeLighting.mode, frameAspect);
     }
 
     const totalFrameMs = performance.now() - startedAt;
