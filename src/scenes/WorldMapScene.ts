@@ -336,6 +336,10 @@ export class WorldMapScene extends Phaser.Scene {
       { x: 470, y: 924, side: -1 },
       { x: 275, y: 1068, side: 1 },
     ];
+    const currentLevel = theme.levels.find(
+      (level) => isLevelUnlocked(level, progress) && !isLevelCleared(level, progress),
+    ) ?? [...theme.levels].reverse().find((level) => isLevelUnlocked(level, progress))
+      ?? theme.levels[0];
     // A crooked rune rail makes the route feel like a fracture through the
     // Shattered Crown instead of a generic progress connector.
     const path = this.add.graphics().setDepth(7);
@@ -383,10 +387,14 @@ export class WorldMapScene extends Phaser.Scene {
       const mapNode = mapNodeForLevel(level);
       const displayStage = campaignStageNumber(level);
       const kindColor = nodeKindColor(mapNode.kind, theme.accent);
+      const current = level === currentLevel;
+      const restingAlpha = current ? 1 : unlocked ? 0.54 : 0.3;
       const node = this.add.container(pos.x, reducedMotion ? pos.y : pos.y + 26)
         .setDepth(13)
-        .setAlpha(reducedMotion ? 1 : 0)
-        .setScale(reducedMotion ? 1 : 0.74);
+        .setAlpha(reducedMotion ? restingAlpha : 0)
+        .setScale(reducedMotion ? (current ? 1.08 : 1) : 0.74);
+      const currentHalo = this.add.circle(0, 0, 84, current ? UI_COLORS.gold : kindColor, current ? 0.12 : 0)
+        .setStrokeStyle(current ? 5 : 0, current ? UI_COLORS.gold : kindColor, current ? 0.94 : 0);
       const kindFrame = addNodeKindFrame(this, mapNode.kind, kindColor, unlocked);
       const medallion = this.add.image(0, 0, 'level_medallion').setDisplaySize(132, 132);
       if (!unlocked) medallion.setTint(0x5b6070).setAlpha(0.72);
@@ -410,14 +418,34 @@ export class WorldMapScene extends Phaser.Scene {
               ? 'verification-pending'
               : 'available';
       const rewardText = mapRewardLabel(mapNode.reward, rewardAvailability);
-      node.add([kindFrame, medallion, number, starText]);
+      const currentBadge = this.add.text(0, -92, current ? 'CURRENT' : '', {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.caption,
+        color: '#fff1a8',
+        fontStyle: 'bold',
+        stroke: '#050814',
+        strokeThickness: 4,
+        letterSpacing: 1,
+      }).setOrigin(0.5);
+      node.add([currentHalo, kindFrame, medallion, number, starText, currentBadge]);
       node.setSize(180, 180).setInteractive({ useHandCursor: true });
+      if (current && !reducedMotion) {
+        this.tweens.add({
+          targets: currentHalo,
+          scale: 1.08,
+          alpha: 0.66,
+          duration: 840,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+      }
       if (!reducedMotion) {
         this.tweens.add({
           targets: node,
           y: pos.y,
-          alpha: 1,
-          scale: 1,
+          alpha: restingAlpha,
+          scale: current ? 1.08 : 1,
           delay: 120 + index * 150,
           duration: 470,
           ease: 'Cubic.easeOut',
@@ -425,12 +453,12 @@ export class WorldMapScene extends Phaser.Scene {
       }
       node.on('pointerover', () => {
         if (!unlocked) return;
-        if (reducedMotion) node.setScale(1.06);
-        else this.tweens.add({ targets: node, scale: 1.06, duration: 100 });
+        if (reducedMotion) node.setScale(current ? 1.12 : 1.06).setAlpha(1);
+        else this.tweens.add({ targets: node, scale: current ? 1.12 : 1.06, alpha: 1, duration: 100 });
       });
       node.on('pointerout', () => {
-        if (reducedMotion) node.setScale(1);
-        else this.tweens.add({ targets: node, scale: 1, duration: 120 });
+        if (reducedMotion) node.setScale(current ? 1.08 : 1).setAlpha(restingAlpha);
+        else this.tweens.add({ targets: node, scale: current ? 1.08 : 1, alpha: restingAlpha, duration: 120 });
       });
       const activateLevel = (): void => {
         if (!releaseAvailable) {
@@ -452,7 +480,7 @@ export class WorldMapScene extends Phaser.Scene {
       a11y.registerButton({
         id: `world-${this.world + 1}-level-${level + 1}`,
         label: unlocked
-          ? `Play stage ${displayStage}: ${def.title}. ${def.objective}`
+          ? `${current ? 'Current stage. ' : ''}Play stage ${displayStage}: ${def.title}. ${def.objective}`
           : `Stage ${displayStage}: ${def.title}. Locked`,
         description: unlocked
           ? `Realm step ${index + 1} of ${theme.levels.length}. ${NODE_KIND_LABEL[mapNode.kind]} route. ${stars} of 3 stars earned.${progress.bestScores[level] ? ` Best score ${progress.bestScores[level].toLocaleString()}.` : ''} First-clear reward status: ${rewardText}.`
@@ -460,8 +488,10 @@ export class WorldMapScene extends Phaser.Scene {
         onActivate: activateLevel,
         onFocusChange: (focused) => {
           if (!unlocked) return;
-          if (reducedMotion) node.setScale(focused ? 1.06 : 1);
-          else this.tweens.add({ targets: node, scale: focused ? 1.06 : 1, duration: 100 });
+          const targetScale = focused ? (current ? 1.12 : 1.06) : current ? 1.08 : 1;
+          const targetAlpha = focused ? 1 : restingAlpha;
+          if (reducedMotion) node.setScale(targetScale).setAlpha(targetAlpha);
+          else this.tweens.add({ targets: node, scale: targetScale, alpha: targetAlpha, duration: 100 });
         },
       });
 
@@ -470,6 +500,7 @@ export class WorldMapScene extends Phaser.Scene {
       const labelRail = this.add.graphics().setDepth(12);
       const chipWidth = 232;
       const chipCenterX = labelX + pos.side * chipWidth / 2;
+      const labelAlpha = current ? 1 : unlocked ? 0.58 : 0.36;
       const railStart = pos.x + pos.side * 70;
       const railEnd = labelX - pos.side * 8;
       labelRail.lineStyle(6, 0x020611, 0.7);
@@ -478,6 +509,9 @@ export class WorldMapScene extends Phaser.Scene {
       labelRail.lineBetween(railStart, pos.y - 14, railEnd, pos.y - 55);
       labelRail.fillStyle(0x0b0818, 0.88);
       labelRail.fillRoundedRect(chipCenterX - chipWidth / 2, pos.y - 76, chipWidth, 42, 12);
+      const labelBoxLeft = pos.side > 0 ? labelX - 12 : labelX - chipWidth - 8;
+      labelRail.fillStyle(0x050711, current ? 0.94 : 0.82);
+      labelRail.fillRoundedRect(labelBoxLeft, pos.y - 25, chipWidth + 20, 101, 14);
       labelRail.lineStyle(2, kindColor, unlocked ? 0.76 : 0.3);
       labelRail.strokeRoundedRect(chipCenterX - chipWidth / 2, pos.y - 76, chipWidth, 42, 12);
       labelRail.fillStyle(unlocked ? kindColor : 0x697586, unlocked ? 0.8 : 0.46);
@@ -487,13 +521,17 @@ export class WorldMapScene extends Phaser.Scene {
         { x: railEnd, y: pos.y - 49 },
         { x: railEnd - pos.side * 6, y: pos.y - 55 },
       ], true);
-      fitText(this.add.text(chipCenterX, pos.y - 55, `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${theme.levels.length}`, {
+      labelRail.setAlpha(labelAlpha);
+      const routeLabel = current
+        ? `CURRENT  ·  ${NODE_KIND_LABEL[mapNode.kind]}`
+        : `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${theme.levels.length}`;
+      fitText(this.add.text(chipCenterX, pos.y - 55, routeLabel, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
         color: unlocked ? '#f4f1ff' : '#bac4d4',
         fontStyle: 'bold',
         letterSpacing: 0.45,
-      }).setOrigin(0.5).setDepth(13), chipWidth - 24, 0.88);
+      }).setOrigin(0.5).setDepth(13).setAlpha(labelAlpha), chipWidth - 24, 0.88);
       this.add.text(labelX, pos.y + 2, def.title, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
@@ -505,7 +543,7 @@ export class WorldMapScene extends Phaser.Scene {
         lineSpacing: -2,
         maxLines: 2,
         wordWrap: { width: chipWidth, useAdvancedWrap: true },
-      }).setOrigin(originX, 0.5).setDepth(13);
+      }).setOrigin(originX, 0.5).setDepth(13).setAlpha(labelAlpha);
       const routeState = !unlocked
         ? 'LOCKED'
         : cleared
@@ -525,7 +563,7 @@ export class WorldMapScene extends Phaser.Scene {
         letterSpacing: 0.2,
         stroke: '#060914',
         strokeThickness: 2,
-      }).setOrigin(originX, 0.5).setDepth(13), chipWidth, 0.88);
+      }).setOrigin(originX, 0.5).setDepth(13).setAlpha(labelAlpha), chipWidth, 0.88);
     });
 
     addArtPanel(this, width / 2, height - 66, 620, 82, 13, 0.94);

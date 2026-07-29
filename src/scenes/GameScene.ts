@@ -238,6 +238,7 @@ export class GameScene extends Phaser.Scene {
   private tutorialInputMode: GameplayInputMode = 'unknown';
   private aimGfx!: Phaser.GameObjects.Graphics;
   private launcher!: Phaser.GameObjects.Image;
+  private launcherGlow?: Phaser.GameObjects.Image;
   private launcherFocus!: Phaser.GameObjects.Container;
   private launcherPivotY = 0;
 
@@ -332,6 +333,7 @@ export class GameScene extends Phaser.Scene {
   private mechanicState!: MechanicRunState;
   private objectiveText?: Phaser.GameObjects.Text;
   private objectiveProgressText?: Phaser.GameObjects.Text;
+  private objectiveCollapsed = false;
   private bossHpFill?: Phaser.GameObjects.Rectangle;
   private bossHpWidth = 0;
   private bossIcon?: Phaser.GameObjects.Image;
@@ -514,9 +516,10 @@ export class GameScene extends Phaser.Scene {
     this.configureTutorialSession();
 
     this.geom = computeGeom(width);
-    // The unified HUD ends at y=118. Keep one quiet visual gap before the
+    // The unified HUD ends at y=144. Keep one quiet visual gap before the
     // first bubble row instead of reserving space for stacked card rows.
     this.geom.topPad = this.isTutorialActive() ? 288 : 154;
+    if (!this.isTutorialActive()) this.geom.topPad += 20;
     this.shooter.x = width / 2;
     this.shooter.y = height - Math.max(110, height * 0.14);
     this.loseLineY = this.shooter.y - this.geom.radius * 2.6;
@@ -593,6 +596,7 @@ export class GameScene extends Phaser.Scene {
     this.classicAuthorityHitsAtStart = 0;
     this.objectiveText = undefined;
     this.objectiveProgressText = undefined;
+    this.objectiveCollapsed = false;
     this.bossHpFill = undefined;
     this.bossHpWidth = 0;
     this.bossIcon = undefined;
@@ -658,15 +662,49 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: [ll, dangerLabel], alpha: 0.34, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
 
-    this.aimGfx = this.add.graphics().setDepth(2);
+    this.launcherPivotY = this.shooter.y + 111;
+
+    // A local, layered vignette separates the launcher from detailed realm
+    // art without flattening or darkening the whole playfield.
+    this.add.ellipse(this.shooter.x, this.shooter.y + 70, 690, 430, 0x05040f, 0.28).setDepth(1);
+    this.add.ellipse(this.shooter.x, this.shooter.y + 78, 520, 318, 0x02040c, 0.54).setDepth(1);
+    this.add.ellipse(this.shooter.x, this.launcherPivotY + 32, 252, 92, 0x000000, 0.56).setDepth(2);
+
+    this.aimGfx = this.add.graphics().setDepth(3);
+    if (!this.reducedMotion) {
+      this.tweens.add({
+        targets: this.aimGfx,
+        alpha: 0.74,
+        duration: 520,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
 
     // The launcher art stays premium and readable, while the old expanding
     // radius circles are replaced by compact angular energy brackets.
-    this.launcherPivotY = this.shooter.y + 111;
+    this.launcherGlow = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
+      .setOrigin(0.5, 0.74)
+      .setDisplaySize(244, 244)
+      .setTint(0xbffaff)
+      .setAlpha(0.34)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setDepth(3);
     this.launcher = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
       .setOrigin(0.5, 0.74)
       .setDisplaySize(226, 226)
       .setDepth(4);
+    if (!this.reducedMotion) {
+      this.tweens.add({
+        targets: this.launcherGlow,
+        alpha: 0.18,
+        duration: 980,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
     const focusSeed = this.muzzlePosition();
     this.launcherFocus = this.add.container(focusSeed.x, focusSeed.y).setDepth(3);
     const focusGlow = this.add.ellipse(0, 7, 102, 42, theme.accent, 0.055)
@@ -693,10 +731,10 @@ export class GameScene extends Phaser.Scene {
     this.pulse(this.loadedSprite);
 
     // One command bar replaces the previous stack of six competing cards.
-    const hudBar = this.addHudPlate(width / 2, 42, width - 24, 72, theme.accent, 19);
+    const hudBar = this.addHudPlate(width / 2, 58, width - 24, 82, theme.accent, 19);
     const dividers = this.add.graphics();
     dividers.lineStyle(1, theme.accent, 0.28);
-    for (const x of [-290, -94, 48, 160, 224, 288]) dividers.lineBetween(x, -25, x, 25);
+    for (const x of [-290, -92, 48, 154, 220, 286]) dividers.lineBetween(x, -29, x, 29);
     hudBar.add(dividers);
 
     this.addHudIconControl(hudBar, -318, 'back', 'MAP', () => {
@@ -712,37 +750,37 @@ export class GameScene extends Phaser.Scene {
       SFX.click();
     }, theme.accent);
 
-    this.scoreText = this.add.text(-276, -23, this.visibleScore().toLocaleString(), {
-      fontFamily: UI_FONT, fontSize: '24px', color: '#ffffff', fontStyle: 'bold', stroke: '#07101f', strokeThickness: 3,
+    this.scoreText = this.add.text(-276, -25, this.visibleScore().toLocaleString(), {
+      fontFamily: UI_FONT, fontSize: '22px', color: '#dce7f5', fontStyle: 'bold', stroke: '#07101f', strokeThickness: 3,
     }).setOrigin(0, 0);
-    this.hitText = this.add.text(-276, 13, 'HITS 0  •  0%', {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#aeefff', fontStyle: 'bold', letterSpacing: 1,
+    this.hitText = this.add.text(-276, 10, 'HITS 0  •  0%', {
+      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#c9f7ff', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0, 0);
     hudBar.add([this.scoreText, this.hitText]);
 
-    this.timerText = this.add.text(-22, -15, this.formatClock(), {
-      fontFamily: UI_FONT, fontSize: TYPE.control, color: MODE_DEFS[this.mode].accentCss, fontStyle: 'bold',
+    this.timerText = this.add.text(103, -16, this.formatClock(), {
+      fontFamily: UI_FONT, fontSize: '24px', color: MODE_DEFS[this.mode].accentCss, fontStyle: 'bold',
       stroke: '#08101d', strokeThickness: 3,
     }).setOrigin(0.5, 0);
-    const timerMode = fitText(this.add.text(-22, 12, MODE_DEFS[this.mode].name, {
+    const timerMode = fitText(this.add.text(103, 13, MODE_DEFS[this.mode].name, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d2deef', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0.5, 0), 126);
+    }).setOrigin(0.5, 0), 100);
     hudBar.add([this.timerText, timerMode]);
 
-    this.levelText = this.add.text(64, 0, `STAGE ${String(campaignStageNumber(this.level)).padStart(2, '0')}`, {
-      fontFamily: UI_FONT, fontSize: TYPE.control, color: theme.accentCss, fontStyle: 'bold', stroke: '#07101f', strokeThickness: 3,
-    }).setOrigin(0, 0.5);
-    this.runCoinText = this.add.text(214, 0, '◆  0', {
+    this.levelText = this.add.text(-22, -1, `STAGE ${String(campaignStageNumber(this.level)).padStart(2, '0')}`, {
+      fontFamily: UI_FONT, fontSize: '28px', color: '#ffffff', fontStyle: 'bold', stroke: '#07101f', strokeThickness: 4,
+    }).setOrigin(0.5);
+    this.runCoinText = this.add.text(206, 0, '◆  0', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffdc64', fontStyle: 'bold', stroke: '#101225', strokeThickness: 2,
     }).setOrigin(1, 0.5);
     hudBar.add([this.levelText, this.runCoinText]);
 
-    this.comboText = this.add.text(width / 2, 101, '', {
+    this.comboText = this.add.text(width / 2, 126, '', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe27a', fontStyle: 'bold',
       stroke: '#09101e', strokeThickness: 4,
       backgroundColor: 'rgba(41,20,82,0.92)', padding: { x: 12, y: 4 },
     }).setOrigin(0.5).setDepth(22).setAlpha(0);
-    const modeRibbon = this.addSlimHudStrip(width / 2, 101, width - 48, 34, theme.accent, 18);
+    const modeRibbon = this.addSlimHudStrip(width / 2, 126, width - 48, 38, theme.accent, 18);
     if (this.mechanicState.boss) {
       const bossTexture: Record<MechanicKind, string> = {
         crystal: 'boss_prism', vine: 'boss_heartwood', portal: 'boss_astral', ember: 'boss_inferno',
@@ -762,12 +800,27 @@ export class GameScene extends Phaser.Scene {
       modeRibbon.add([this.bossIcon, this.objectiveText, hpBack, this.bossHpFill, this.objectiveProgressText]);
     } else {
       this.objectiveText = fitText(this.add.text(-316, 0, def.objective.toUpperCase(), {
-        fontFamily: UI_FONT, fontSize: TYPE.caption, color: theme.accentCss, fontStyle: 'bold', letterSpacing: 1,
+        fontFamily: UI_FONT, fontSize: TYPE.label, color: '#fff2b5', fontStyle: 'bold',
+        stroke: '#07101f', strokeThickness: 3, letterSpacing: 1,
       }).setOrigin(0, 0.5), 356);
       this.objectiveProgressText = this.add.text(316, 0, '', {
         fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d7e5f4', fontStyle: 'bold', letterSpacing: 1,
       }).setOrigin(1, 0.5);
       modeRibbon.add([this.objectiveText, this.objectiveProgressText]);
+      if (!this.isTutorialActive()) {
+        this.time.delayedCall(3_000, () => {
+          if (!this.scene.isActive() || this.mechanicState.boss) return;
+          this.objectiveCollapsed = true;
+          this.tweens.add({
+            targets: this.objectiveText,
+            alpha: 0,
+            duration: 220,
+            onComplete: () => this.objectiveText?.setVisible(false),
+          });
+          this.tweens.add({ targets: modeRibbon, alpha: 0.82, duration: 220 });
+          this.updateObjectiveHud();
+        });
+      }
     }
 
     // Hand cursor is hidden until tracking is active.
@@ -1135,27 +1188,27 @@ export class GameScene extends Phaser.Scene {
     };
     drawHover(0.015, 0.16);
     const icon = this.add.graphics();
-    icon.lineStyle(3, 0xe9fbff, 0.96);
+    icon.lineStyle(4, 0xe9fbff, 0.98);
     if (kind === 'back') {
-      icon.lineBetween(4, -15, -6, -7);
-      icon.lineBetween(-6, -7, 4, 1);
-      icon.lineBetween(-5, -7, 8, -7);
+      icon.lineBetween(6, -17, -8, -7);
+      icon.lineBetween(-8, -7, 6, 3);
+      icon.lineBetween(-7, -7, 10, -7);
     } else if (kind === 'pause') {
       icon.fillStyle(0xe9fbff, 0.96);
-      icon.fillRoundedRect(-7, -16, 5, 18, 2);
-      icon.fillRoundedRect(3, -16, 5, 18, 2);
+      icon.fillRoundedRect(-8, -18, 6, 22, 2);
+      icon.fillRoundedRect(3, -18, 6, 22, 2);
     } else {
       icon.fillStyle(0xe9fbff, 0.96);
       icon.fillPoints([
-        { x: -9, y: -11 }, { x: -3, y: -11 }, { x: 4, y: -17 },
-        { x: 4, y: 3 }, { x: -3, y: -3 }, { x: -9, y: -3 },
+        { x: -11, y: -12 }, { x: -4, y: -12 }, { x: 5, y: -19 },
+        { x: 5, y: 5 }, { x: -4, y: -3 }, { x: -11, y: -3 },
       ], true);
       icon.lineStyle(2, 0xe9fbff, 0.78);
       icon.beginPath();
-      icon.arc(4, -7, 8, -0.78, 0.78, false);
+      icon.arc(5, -7, 10, -0.78, 0.78, false);
       icon.strokePath();
     }
-    const label = fitText(this.add.text(0, 17, caption, {
+    const label = fitText(this.add.text(0, 20, caption, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#dce9f7', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5), 54);
     button.add([hover, icon, label]);
@@ -1719,10 +1772,15 @@ export class GameScene extends Phaser.Scene {
       ice_cores: 'ICE', polarity_nodes: 'NODES',
     };
     if (this.objectiveProgressText) {
-      this.objectiveProgressText.setScale(1).setText(
+      this.objectiveProgressText
+        .setScale(1)
+        .setOrigin(this.objectiveCollapsed ? 0.5 : 1, 0.5)
+        .setX(this.objectiveCollapsed ? 0 : 316)
+        .setColor(this.objectiveCollapsed ? '#f4fbff' : '#d7e5f4')
+        .setText(
         `${label[objectiveKind]}  ${progress.current}/${progress.target}${limits.length ? `  •  ${limits.join('  •  ')}` : ''}`,
       );
-      fitText(this.objectiveProgressText, 280, 0.84);
+      fitText(this.objectiveProgressText, this.objectiveCollapsed ? 430 : 280, 0.84);
     }
   }
 
@@ -3012,18 +3070,19 @@ export class GameScene extends Phaser.Scene {
     this.launcher.angle = handInput
       ? targetAngle
       : Phaser.Math.Linear(this.launcher.angle, targetAngle, 0.34);
+    this.launcherGlow?.setAngle(this.launcher.angle);
     const muzzle = this.muzzlePosition();
     this.loadedSprite.setPosition(muzzle.x, muzzle.y);
     this.launcherFocus.setPosition(muzzle.x, muzzle.y).setAngle(this.launcher.angle * 0.16);
     this.aimGfx.clear();
-    this.aimGfx.fillStyle(0x9cf8ff, 0.66);
     let px = muzzle.x;
     let py = muzzle.y;
     let sx = d.x;
     let sy = d.y;
-    const step = this.geom.radius * 0.9;
+    const step = this.geom.radius * 0.74;
     const r = this.geom.radius;
-    for (let i = 0; i < 46; i++) {
+    const guidePoints: { x: number; y: number }[] = [];
+    for (let i = 0; i < 56; i++) {
       px += sx * step;
       py += sy * step;
       if (px < r) {
@@ -3035,7 +3094,18 @@ export class GameScene extends Phaser.Scene {
         sx = -sx;
       }
       if (py < this.geom.topPad + this.offsetY) break;
-      if (i % 2 === 0) this.aimGfx.fillCircle(px, py, 3.5);
+      if (i % 2 === 0) guidePoints.push({ x: px, y: py });
+    }
+    this.aimGfx.fillStyle(0x020611, 0.88);
+    guidePoints.forEach((point) => this.aimGfx.fillCircle(point.x, point.y, 7.5));
+    this.aimGfx.fillStyle(0x48eaff, 0.5);
+    guidePoints.forEach((point) => this.aimGfx.fillCircle(point.x, point.y, 6));
+    this.aimGfx.fillStyle(0xf3ffff, 0.98);
+    guidePoints.forEach((point) => this.aimGfx.fillCircle(point.x, point.y, 3.2));
+    const tip = guidePoints[guidePoints.length - 1];
+    if (tip) {
+      this.aimGfx.lineStyle(3, 0xe9ffff, 0.92);
+      this.aimGfx.strokeCircle(tip.x, tip.y, 10);
     }
   }
 
@@ -3151,15 +3221,17 @@ export class GameScene extends Phaser.Scene {
     this.aimGfx.clear();
     // Art-synced recoil, muzzle energy and projectile squash.
     this.tweens.killTweensOf(this.launcher);
+    const recoilTargets = this.launcherGlow ? [this.launcher, this.launcherGlow] : [this.launcher];
     this.tweens.add({
-      targets: this.launcher,
+      targets: recoilTargets,
       y: this.launcherPivotY + 12,
       duration: 70,
       yoyo: true,
       ease: 'Quad.easeOut',
     });
+    if (!this.reducedMotion) this.cameras.main.shake(72, 0.0024);
     const muzzle = this.muzzlePosition();
-    const flash = this.add.circle(muzzle.x, muzzle.y, 28, 0xc9fbff, 0.95)
+    const flash = this.add.circle(muzzle.x, muzzle.y, 34, 0xe9ffff, 0.98)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setDepth(6);
     this.tweens.add({
@@ -3584,7 +3656,7 @@ export class GameScene extends Phaser.Scene {
           delay: 700,
           duration: 360,
           onComplete: () => {
-            this.objectiveText?.setVisible(true);
+            this.objectiveText?.setVisible(!this.objectiveCollapsed);
             this.objectiveProgressText?.setVisible(true);
           },
         }),

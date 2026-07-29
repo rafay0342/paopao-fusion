@@ -29,6 +29,28 @@ interface ChronicleLaunchData {
 }
 
 const PAGE_NAMES = ['ORIGIN', 'CHARACTERS', 'SIX REALMS', 'LIVING LORE', 'YOUR JOURNEY'] as const;
+const ORIGIN_CARDS = [
+  {
+    title: 'THE CROWN',
+    body: 'The Aurora Crown kept colour, memory, flame, frost, nature and motion in harmony.',
+  },
+  {
+    title: 'THE SHATTERING',
+    body: 'The Nexus Architect broke the Crown into six shards and opened the Rift.',
+  },
+  {
+    title: 'THE LAST KEEPER',
+    body: 'You are the final Prism Keeper, carrying the launcher and the gift of Fusion.',
+  },
+  {
+    title: 'THE PAO SPIRITS',
+    body: 'Pao spirits guide you to corrupted guardians. Heal each one—never destroy them.',
+  },
+  {
+    title: 'THE OATH',
+    body: 'Restore the guardians, recover every shard, close the Rift and reunite the Crown.',
+  },
+] as const;
 
 export class ChronicleScene extends Phaser.Scene {
   private page = 0;
@@ -131,22 +153,36 @@ export class ChronicleScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.title, color: '#ffffff', fontStyle: 'bold',
       stroke: '#151a35', strokeThickness: 4,
     }).setOrigin(0.5), 560);
-    const premise = this.add.text(VIEW.width / 2, 385, PREMISE, {
-      fontFamily: UI_FONT, fontSize: TYPE.body, color: '#dfe8f5', align: 'center',
-      wordWrap: { width: 535, useAdvancedWrap: true }, lineSpacing: 9,
-    }).setOrigin(0.5, 0);
-    const oathTitle = this.add.text(VIEW.width / 2, 680, 'THE KEEPER OATH', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#83e6ff', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5);
-    const oath = this.add.text(VIEW.width / 2, 727,
-      '“Power must be shared. Memory must stay true.\nNo harmony is real unless every spirit chooses it.”', {
-        fontFamily: UI_FONT, fontSize: TYPE.body, color: '#ffe8b0', fontStyle: 'italic', align: 'center', lineSpacing: 9,
-      }).setOrigin(0.5, 0);
-    const stakes = this.add.text(VIEW.width / 2, 865,
-      'RESTORE THE GUARDIANS  •  RECOVER SIX SHARDS\nCLOSE THE RIFT  •  REFORM THE AURORA CROWN', {
-        fontFamily: UI_FONT, fontSize: TYPE.label, color: '#c5d7eb', fontStyle: 'bold', align: 'center', lineSpacing: 12, letterSpacing: 1,
-      }).setOrigin(0.5, 0);
-    this.pageLayer?.add([title, premise, oathTitle, oath, stakes]);
+    this.pageLayer?.add(title);
+
+    ORIGIN_CARDS.forEach((card, index) => {
+      const y = 400 + index * 136;
+      const accent = index === ORIGIN_CARDS.length - 1 ? 0xffdf8a : index % 2 ? 0xb49aff : 0x83e6ff;
+      const cardArt = this.add.graphics();
+      cardArt.fillStyle(0x050817, 0.9);
+      cardArt.fillRoundedRect(67, y - 64, 586, 128, 16);
+      cardArt.lineStyle(2, accent, 0.48);
+      cardArt.strokeRoundedRect(67, y - 64, 586, 128, 16);
+      cardArt.fillStyle(accent, 0.88);
+      cardArt.fillRoundedRect(67, y - 64, 7, 128, 4);
+      const number = this.add.text(96, y + 4, String(index + 1).padStart(2, '0'), {
+        fontFamily: DISPLAY_FONT, fontSize: TYPE.section, color: index === ORIGIN_CARDS.length - 1 ? '#ffe6a2' : '#bfefff',
+        fontStyle: 'bold',
+      }).setOrigin(0.5);
+      const cardTitle = this.add.text(127, y - 34, card.title, {
+        fontFamily: UI_FONT, fontSize: TYPE.caption, color: index === ORIGIN_CARDS.length - 1 ? '#ffe6a2' : '#9cecff',
+        fontStyle: 'bold', letterSpacing: 2,
+      }).setOrigin(0, 0);
+      const body = this.add.text(127, y - 5, card.body, {
+        fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#e2eaf5',
+        wordWrap: { width: 486, useAdvancedWrap: true }, lineSpacing: 3,
+      }).setOrigin(0, 0);
+      this.pageLayer?.add([cardArt, number, cardTitle, body]);
+    });
+
+    // Keep the canonical long-form premise in the source-of-truth story file;
+    // this screen deliberately presents it as five mobile-readable beats.
+    void PREMISE;
   }
 
   private renderCharacters(): void {

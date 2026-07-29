@@ -19,6 +19,13 @@ function addModeCrystalIdentity(
   const art = scene.add.graphics().setDepth(9);
   const alpha = selected ? 0.17 : 0.085;
 
+  // Carry a restrained, mode-specific colour field across the whole card.
+  // The silhouette below remains the secondary cue for colour-blind players.
+  art.fillStyle(accent, selected ? 0.115 : 0.055);
+  art.fillRoundedRect(174, y - 108, 474, 49, 13);
+  art.fillStyle(accent, selected ? 0.86 : 0.48);
+  art.fillRoundedRect(174, y - 108, 7, 216, 4);
+
   // Each challenge grows from a differently cut left crystal plane so the
   // repeated card layout still reads as three distinct game modes.
   const leftShard = index === 0
@@ -131,6 +138,13 @@ export class ModeSelectScene extends Phaser.Scene {
       this.add.text(195, y - 78, def.name, {
         fontFamily: UI_FONT, fontSize: TYPE.title, color: def.accentCss, fontStyle: 'bold', stroke: '#101225', strokeThickness: 4,
       }).setDepth(12);
+      if (selected) {
+        this.add.text(610, y - 79, 'ACTIVE', {
+          fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#fff0a8', fontStyle: 'bold',
+          backgroundColor: 'rgba(43,30,79,0.94)', padding: { x: 9, y: 5 },
+          stroke: '#070915', strokeThickness: 2, letterSpacing: 1,
+        }).setOrigin(1, 0.5).setDepth(13);
+      }
       this.add.text(195, y - 42, def.tagline, {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe5a0', fontStyle: 'bold', letterSpacing: 2,
       }).setDepth(12);
@@ -153,13 +167,13 @@ export class ModeSelectScene extends Phaser.Scene {
           });
         }, 190, 52, 14);
       }
-      addArtButton(this, 548, y + 108, selected ? 'SELECTED' : 'PLAY MODE', () => {
+      addArtButton(this, 538, y + 101, selected ? 'PLAY SELECTED' : 'PLAY MODE', () => {
         setMode(mode);
         SFX.click();
         const progress = getProgress();
         this.cameras.main.fadeOut(160, 0, 0, 0);
         this.time.delayedCall(170, () => this.scene.start('WorldMap', { world: furthestUnlockedWorld(progress) }));
-      }, 180, 52, 14);
+      }, 216, 64, 14);
     });
 
     if (PHASER_RELEASE_FEATURES.completeGameplay && PHASER_RELEASE_FEATURES.endlessLiveOperations) {
