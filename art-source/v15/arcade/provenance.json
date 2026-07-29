@@ -1,0 +1,54 @@
+{
+  "schema": "PaoPaoArcadeArtProvenanceV1",
+  "release": "v15-arcade-foundation",
+  "generatedAt": "2026-07-29",
+  "generationMode": "OpenAI built-in image generation with approved PaoPao visual-language references",
+  "rights": "Original PaoPao Fusion project art. No proprietary film, fighting-game, or copied franchise characters were requested or used.",
+  "sourceResolution": {
+    "width": 941,
+    "height": 1672
+  },
+  "runtimeTierPolicy": {
+    "performance": "720x1280 derived runtime copy",
+    "balanced": "1080x1920 derived runtime copy",
+    "ultra": "1440x2560 derived runtime copy; this tier improves delivery density but is not claimed as native generated detail"
+  },
+  "masters": [
+    {
+      "id": "PF-V15-ARCADE-WORLD-001",
+      "stableKey": "world_arcade_rainway",
+      "title": "Aurora Rainway",
+      "source": "world-aurora-rainway-master.png",
+      "sourceSha256": "354f9f1790aaa7ec3e1e9b1287e1f2bcd855d893ca7d8cd4c9e071ebd57a3a30",
+      "referenceRoles": [
+        "world-luma-orchard-hd.jpg: material, hopeful lighting, portrait playfield reference only",
+        "world-nexus-hd.jpg: depth, edge framing, celestial architecture reference only"
+      ],
+      "brief": "Five-lane celestial crystal rain sanctuary with a quiet HUD band, readable central playfield and pearl-gold catcher dais.",
+      "negativeConstraints": "No humans, weapons, fighting, gore, readable text, logos, UI, watermark or copied characters.",
+      "reviewState": "approved-for-v15-arcade-runtime"
+    },
+    {
+      "id": "PF-V15-ARCADE-WORLD-002",
+      "stableKey": "world_arcade_memory",
+      "title": "Pearl Memory Archive",
+      "source": "world-pearl-memory-master.png",
+      "sourceSha256": "0e5b9f45ab65eff1d76e3b74bb9a2c6b014ca66b134d6c10c602f00fe0454afe",
+      "referenceRoles": [
+        "world-luma-orchard-hd.jpg: pearl, crystal and gold visual-language reference only",
+        "world-nexus-hd.jpg: quiet central field and celestial atmosphere reference only"
+      ],
+      "brief": "Celestial archive garden framing an uncluttered 4x4 memory stage with safe HUD and control zones.",
+      "negativeConstraints": "No humans, weapons, fighting, gore, readable text, logos, UI, pre-drawn cards, watermark or copied characters.",
+      "reviewState": "approved-for-v15-arcade-runtime"
+    }
+  ],
+  "runtimeHashes": {
+    "aurora-rainway-performance.webp": "a8def18681d43ec1a806cc1112906f363e65e518d22b03336986050fb43f7247",
+    "aurora-rainway-balanced.webp": "82a6e13ddb00cd30f17909e16e1c0dfffc269b137d8082cb6ea8892fcd135f3f",
+    "aurora-rainway-ultra.webp": "459ec7a5330a9f17d911e8f8c812ef5d74cfc6bb378c574baea1edaa94b18696",
+    "pearl-memory-performance.webp": "0f667c53eb22a7d0d19bedd1975314c8732dca376e3f673eae83b1e652341bf6",
+    "pearl-memory-balanced.webp": "8d2cb19012a35828e60b7831e12b8d8075f077573a2dac6b4200f4ab73d378b2",
+    "pearl-memory-ultra.webp": "d46bc5bbf3a64881a10f9d99f21c173792922aeaa5e2d781dc423308f565908e"
+  }
+}

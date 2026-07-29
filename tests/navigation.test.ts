@@ -15,6 +15,7 @@ describe('navigation ownership and route restoration', () => {
 
   it('gives Escape one owner and pauses Game rather than abandoning the attempt', () => {
     expect(source).toContain("const sceneOwnedEscape = new Set(['Menu', 'Chronicle'])");
+    expect(source).toContain('isActiveGameplayScene(active.scene.key)');
     expect(source).toContain("active.events.emit('paopao:back-request')");
     expect(source).toContain('event.defaultPrevented');
     expect(source).toContain('editableTarget(event.target)');

@@ -43,7 +43,7 @@ describe('V9 unified premium UI system', () => {
 
     expect(icons).toContain('strokeCircle');
     expect(icons).not.toContain('tweens.add');
-    expect(motes).toContain('Math.min(10');
+    expect(motes).toContain('quality.glints ? 18');
     expect(motes).toContain('prefersReducedMotion()');
     expect(motes).not.toContain('BlendModes.ADD');
   });

@@ -35,9 +35,15 @@ import {
   gazeCalibrationMatches,
   getGazeSettings,
 } from '../game/gazesettings';
+import { recordArcadeResult } from '../game/arcade-progress';
+import { arcadeWorldTextureKey } from '../game/arcade-art';
 import { getMeta } from '../game/meta';
 import { getBootstrapV3, submitRunV3, syncClassicProgressV4 } from '../game/platform';
 import { SFX } from '../game/sfx';
+import {
+  accessibilityRuntimeForCanvas,
+  type AccessibilitySceneSession,
+} from '../gfx/accessibility';
 import {
   addAmbientMotes,
   addArtButton,
@@ -45,13 +51,16 @@ import {
   addWorldBackground,
   DISPLAY_FONT,
   fitText,
+  prefersReducedMotion,
+  setArtButtonHitArea,
   sharpenSceneText,
   TYPE,
   UI_FONT,
+  updateArtButtonAccessibility,
 } from '../gfx/ui';
 
 type EndlessTarget = ReturnType<typeof buildEndlessTargetSequence>[number];
-type EndlessSceneData = { event?: boolean };
+type EndlessSceneData = { event?: boolean; practice?: boolean };
 
 const BOARD_TOP = 244;
 const BOARD_ROWS = 7;
@@ -63,6 +72,17 @@ const BOSS_TEXTURES: Record<string, string> = {
   'astral-sentinel': 'boss_astral',
   'inferno-sovereign': 'boss_inferno',
 };
+
+/** Stable UTC-day seed for the offline Nexus Aim practice board. */
+export function nexusAimDailySeed(nowMs = Date.now()): number {
+  const day = new Date(nowMs).toISOString().slice(0, 10);
+  const label = `paopao-nexus-aim-v1:${day}`;
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < label.length; index += 1) {
+    hash = Math.imul(hash ^ label.charCodeAt(index), 0x01000193) >>> 0;
+  }
+  return (hash & 0x7fffffff) || 1;
+}
 
 function runId(): string {
   try {
@@ -80,7 +100,9 @@ function failureMessage(failure: HandTrackingFailure): string {
 }
 
 export class EndlessScene extends Phaser.Scene {
+  private a11y?: AccessibilitySceneSession;
   private preferEvent = false;
+  private practice = false;
   private session?: EndlessSessionV3;
   private grid?: EndlessHexGrid;
   private targets: EndlessTarget[] = [];
@@ -96,6 +118,7 @@ export class EndlessScene extends Phaser.Scene {
   private targetHalo?: Phaser.GameObjects.Arc;
   private aimGraphics?: Phaser.GameObjects.Graphics;
   private launcher?: Phaser.GameObjects.Image;
+  private cameraButton?: Phaser.GameObjects.Container;
   private handCursor?: Phaser.GameObjects.Arc;
   private handStatus?: Phaser.GameObjects.Text;
   private stateText?: Phaser.GameObjects.Text;
@@ -157,7 +180,9 @@ export class EndlessScene extends Phaser.Scene {
   }
 
   init(data: EndlessSceneData = {}): void {
-    this.preferEvent = data.event === true;
+    this.a11y = undefined;
+    this.practice = data.practice === true;
+    this.preferEvent = !this.practice && data.event === true;
     this.session = undefined;
     this.grid = undefined;
     this.targets = [];
@@ -169,6 +194,7 @@ export class EndlessScene extends Phaser.Scene {
     this.pendingSubmission = undefined;
     this.targetSprite = undefined;
     this.targetHalo = undefined;
+    this.cameraButton = undefined;
     this.handOn = false;
     this.handStarting = false;
     this.handHasSeen = false;
@@ -199,33 +225,72 @@ export class EndlessScene extends Phaser.Scene {
   }
 
   create(): void {
-    addWorldBackground(this, 'world_nexus', 0.22);
+    this.a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
+      id: this.practice ? 'nexus-aim' : this.preferEvent ? 'live-crownfall' : 'endless-nexus',
+      heading: this.practice
+        ? 'Nexus Aim Trial: thirty-shot daily practice'
+        : this.preferEvent
+          ? 'Live Crownfall event'
+          : 'Endless Nexus',
+      description: this.practice
+        ? 'Aim across an eleven-lane deterministic hex field and complete thirty local practice shots. Use pointer or touch, left and right arrows plus Space or Enter, calibrated eyes with a double blink, or hand movement with pinch contact and release. Practice never changes campaign progress or wallet rewards.'
+        : 'Aim across the authoritative eleven-lane hex field. Use pointer, keyboard, calibrated eyes, or hand tracking. Signed rewards are verified by the server.',
+      status: this.practice
+        ? 'Practice ready. Score zero. Shot one of thirty.'
+        : 'Verifying the current signed live configuration.',
+      lifecycle: this.events,
+    });
+    addWorldBackground(
+      this,
+      this.practice ? arcadeWorldTextureKey('rainway', getMeta().quality) : 'world_nexus',
+      this.practice ? 0.1 : 0.22,
+    );
     addAmbientMotes(this, 0xa88cff, 16, 2);
-    this.cameras.main.fadeIn(180, 0, 0, 0);
-    this.add.text(VIEW.width / 2, 52, this.preferEvent ? 'LIVE CROWNFALL' : 'ENDLESS NEXUS', {
-      fontFamily: DISPLAY_FONT,
-      fontSize: TYPE.screen,
-      color: '#ffffff',
-      fontStyle: 'bold',
-      stroke: '#251752',
-      strokeThickness: 7,
-    }).setOrigin(0.5).setDepth(12);
-    fitText(this.add.text(VIEW.width / 2, 98, 'SERVER-SEEDED • VERIFIED REPLAY • 11-LANE HEX FIELD', {
-      fontFamily: UI_FONT,
-      fontSize: TYPE.caption,
-      color: '#c9b7ff',
-      fontStyle: 'bold',
-      letterSpacing: 1,
-    }).setOrigin(0.5).setDepth(12), 680);
-    this.add.text(34, 35, '‹  BACK', {
-      fontFamily: UI_FONT, fontSize: TYPE.body, color: '#e7e1ff', fontStyle: 'bold',
-    }).setDepth(14).setInteractive({ useHandCursor: true }).on('pointerup', () => this.leaveScene());
+    this.cameras.main.fadeIn(prefersReducedMotion() ? 0 : 180, 0, 0, 0);
+    this.add.text(
+      VIEW.width / 2,
+      52,
+      this.practice ? 'NEXUS AIM TRIAL' : this.preferEvent ? 'LIVE CROWNFALL' : 'ENDLESS NEXUS',
+      {
+        fontFamily: DISPLAY_FONT,
+        fontSize: TYPE.screen,
+        color: '#ffffff',
+        fontStyle: 'bold',
+        stroke: '#251752',
+        strokeThickness: 7,
+      },
+    ).setOrigin(0.5).setDepth(12);
+    fitText(this.add.text(
+      VIEW.width / 2,
+      98,
+      this.practice
+        ? 'DAILY-SEED PRACTICE • 30 SHOTS • 11-LANE HEX FIELD'
+        : 'SERVER-SEEDED • VERIFIED REPLAY • 11-LANE HEX FIELD',
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.caption,
+        color: '#c9b7ff',
+        fontStyle: 'bold',
+        letterSpacing: 1,
+      },
+    ).setOrigin(0.5).setDepth(12), 680);
+    setArtButtonHitArea(addArtButton(this, 88, 50, '‹  BACK', () => {
+      SFX.click();
+      this.leaveScene();
+    }, 150, 58, 14), 160, 100);
 
     addArtPanel(this, VIEW.width / 2, 154, 650, 76, 8, 0.97);
-    this.stateText = this.add.text(VIEW.width / 2, 154, 'VERIFYING CURRENT SIGNED LIVE CONFIG…', {
-      fontFamily: UI_FONT, fontSize: TYPE.control, color: '#ffe39a', fontStyle: 'bold', align: 'center',
-      wordWrap: { width: 620 },
-    }).setOrigin(0.5).setDepth(12);
+    this.stateText = this.add.text(
+      VIEW.width / 2,
+      154,
+      this.practice
+        ? 'PRACTICE • LOCAL • NO WALLET REWARD'
+        : 'VERIFYING CURRENT SIGNED LIVE CONFIG…',
+      {
+        fontFamily: UI_FONT, fontSize: TYPE.control, color: '#ffe39a', fontStyle: 'bold', align: 'center',
+        wordWrap: { width: 620 },
+      },
+    ).setOrigin(0.5).setDepth(12);
 
     const handleBack = (): void => this.leaveScene();
     this.events.on('paopao:back-request', handleBack);
@@ -260,18 +325,38 @@ export class EndlessScene extends Phaser.Scene {
       this.fuseText?.setText(`FUSE  ${(remaining / 1000).toFixed(2)}s`).setColor(remaining > 300 ? '#ffe08a' : '#ff7388');
     } else this.fuseText?.setText('FUSE  ∞').setColor('#8fead6');
 
-    const correctedNow = Date.now() + this.session.serverTimeOffsetMs;
-    if (correctedNow >= Date.parse(this.session.endsAt)) {
-      this.failClosed('LIVE WINDOW ENDED — THIS RUN CANNOT MINT A REWARD');
-      return;
-    }
-    const lastAt = trace[trace.length - 1]?.atMs;
-    if (lastAt !== undefined && !this.flying && now - this.startedAtMs - lastAt >= AUTO_BANK_IDLE_MS) {
-      void this.finishRun('AUTO-BANKED AFTER 12s IDLE');
+    if (!this.practice) {
+      const correctedNow = Date.now() + this.session.serverTimeOffsetMs;
+      if (correctedNow >= Date.parse(this.session.endsAt)) {
+        this.failClosed('LIVE WINDOW ENDED — THIS RUN CANNOT MINT A REWARD');
+        return;
+      }
+      const lastAt = trace[trace.length - 1]?.atMs;
+      if (lastAt !== undefined && !this.flying && now - this.startedAtMs - lastAt >= AUTO_BANK_IDLE_MS) {
+        void this.finishRun('AUTO-BANKED AFTER 12s IDLE');
+      }
     }
   }
 
   private async bootstrapRun(): Promise<void> {
+    if (this.practice) {
+      const now = Date.now();
+      const seed = nexusAimDailySeed(now);
+      this.session = {
+        contentVersion: 'nexus-aim-practice-v1',
+        seasonId: `local-${new Date(now).toISOString().slice(0, 10)}`,
+        seed,
+        level: seed % 30,
+        maximumShots: 30,
+        pointsPerRewardTier: 0,
+        serverTimeOffsetMs: 0,
+        startsAt: new Date(now - 86_400_000).toISOString(),
+        endsAt: new Date(now + 86_400_000).toISOString(),
+        modifier: null,
+      };
+      this.buildPlayableField();
+      return;
+    }
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       this.showGate('OFFLINE — ENDLESS REWARDS REQUIRE THE AUTHORITATIVE SERVER', 'RETRY');
       return;
@@ -303,7 +388,7 @@ export class EndlessScene extends Phaser.Scene {
     addArtButton(this, VIEW.width / 2, 260, action, () => {
       SFX.click();
       if (account) this.scene.start('Account');
-      else this.scene.restart({ event: this.preferEvent });
+      else this.scene.restart({ event: this.preferEvent, practice: this.practice });
     }, 330, 64, 20);
     this.add.text(VIEW.width / 2, 330, 'FAIL-CLOSED: CAMERA FRAMES STAY LOCAL; WALLET AND EVENT PROGRESS STAY SERVER-OWNED.', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#b9c6d9', fontStyle: 'bold', align: 'center',
@@ -315,9 +400,11 @@ export class EndlessScene extends Phaser.Scene {
   private buildPlayableField(): void {
     const session = this.session!;
     const event = session.event;
-    this.stateText?.setText(event
-      ? `${event.boss.replace(/-/g, ' ').toUpperCase()}  •  ${event.modifier.replace(/-/g, ' ').toUpperCase()}  •  WIN ◆ ${event.reward.amount}`
-      : `${session.seasonId.toUpperCase()}  •  BANK FOR SERVER VERIFICATION`)
+    this.stateText?.setText(this.practice
+      ? 'PRACTICE • LOCAL • NO WALLET REWARD'
+      : event
+        ? `${event.boss.replace(/-/g, ' ').toUpperCase()}  •  ${event.modifier.replace(/-/g, ' ').toUpperCase()}  •  WIN ◆ ${event.reward.amount}`
+        : `${session.seasonId.toUpperCase()}  •  BANK FOR SERVER VERIFICATION`)
       .setColor(event ? '#ffe39a' : '#a9f5e7');
 
     this.grid = createEndlessHexGrid(VIEW.width, BOARD_TOP, BOARD_ROWS);
@@ -339,8 +426,27 @@ export class EndlessScene extends Phaser.Scene {
     this.handCursor = this.add.circle(0, 0, 22, 0x000000, 0)
       .setStrokeStyle(3, 0xaefcff, 0.9).setDepth(16).setVisible(false);
 
-    addArtButton(this, 184, 1_205, 'BANK RUN', () => void this.finishRun('PLAYER BANKED RUN'), 300, 62, 22);
-    addArtButton(this, 536, 1_205, `${this.visionLabel()} CAMERA`, () => void this.toggleHand(), 300, 62, 22);
+    addArtButton(
+      this,
+      184,
+      1_205,
+      this.practice ? 'END PRACTICE' : 'BANK RUN',
+      () => void this.finishRun(this.practice ? 'PRACTICE COMPLETE' : 'PLAYER BANKED RUN'),
+      300,
+      62,
+      22,
+    );
+    this.cameraButton = addArtButton(
+      this,
+      536,
+      1_205,
+      `${this.visionLabel()} CAMERA`,
+      () => void this.toggleHand(),
+      300,
+      62,
+      22,
+    );
+    this.updateCameraButtonAccessibility();
     this.handStatus = this.add.text(536, 1_160, `${this.visionLabel()} OFF`, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#8595aa', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(23);
@@ -361,8 +467,8 @@ export class EndlessScene extends Phaser.Scene {
       this.fireSelectedLane('pointer');
     });
     const keyboard = this.input.keyboard;
-    const left = (): void => this.selectLane(this.selectedLane - 1);
-    const right = (): void => this.selectLane(this.selectedLane + 1);
+    const left = (): void => this.selectLane(this.selectedLane - 1, true);
+    const right = (): void => this.selectLane(this.selectedLane + 1, true);
     const fire = (): void => this.fireSelectedLane('keyboard');
     const hand = (): void => { void this.toggleHand(); };
     keyboard?.on('keydown-LEFT', left);
@@ -405,9 +511,16 @@ export class EndlessScene extends Phaser.Scene {
       field.lineStyle(1, cell.lane === 5 ? 0xb894ff : 0x5575a6, cell.lane === 5 ? 0.28 : 0.15);
       field.strokePoints(points, true);
     }
-    fitText(this.add.text(VIEW.width / 2, 205, 'SIGNED TARGET STREAM  •  ONE SEED STEP PER SHOT', {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#9eb1ca', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0.5).setDepth(9), 670);
+    fitText(this.add.text(
+      VIEW.width / 2,
+      205,
+      this.practice
+        ? 'DETERMINISTIC LOCAL TARGET STREAM • ONE SEED STEP PER SHOT'
+        : 'SIGNED TARGET STREAM  •  ONE SEED STEP PER SHOT',
+      {
+        fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#9eb1ca', fontStyle: 'bold', letterSpacing: 1,
+      },
+    ).setOrigin(0.5).setDepth(9), 670);
   }
 
   private drawHud(): void {
@@ -465,18 +578,33 @@ export class EndlessScene extends Phaser.Scene {
       .setDisplaySize((this.grid?.radius ?? 24) * 1.72, (this.grid?.radius ?? 24) * 1.72).setDepth(10);
     const spriteScaleX = this.targetSprite.scaleX;
     const spriteScaleY = this.targetSprite.scaleY;
-    this.tweens.add({ targets: this.targetHalo, scaleX: 1.08, scaleY: 1.08, duration: 440, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    this.tweens.add({
-      targets: this.targetSprite,
-      scaleX: spriteScaleX * 1.08,
-      scaleY: spriteScaleY * 1.08,
-      duration: 440,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
+    if (!prefersReducedMotion()) {
+      this.tweens.add({
+        targets: this.targetHalo,
+        scaleX: 1.08,
+        scaleY: 1.08,
+        duration: 440,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+      this.tweens.add({
+        targets: this.targetSprite,
+        scaleX: spriteScaleX * 1.08,
+        scaleY: spriteScaleY * 1.08,
+        duration: 440,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
     this.targetText?.setText(`TARGET  LANE ${target.lane + 1}  •  ${target.toleranceLanes ? 'NEAR HIT ±1' : 'EXACT ONLY'}`);
     this.waveText?.setText(`WAVE  ${target.wave}  •  SHOT  ${sequence + 1}`);
+    this.a11y?.setStatus(
+      `Shot ${sequence + 1} of ${this.session?.maximumShots ?? ENDLESS_REPLAY_RULES.maximumShots}. `
+      + `Target lane ${target.lane + 1}; ${target.toleranceLanes ? 'one adjacent lane also scores' : 'exact lane required'}. `
+      + `Aim is on lane ${this.selectedLane + 1}.`,
+    );
   }
 
   private selectLaneAt(x: number): void {
@@ -484,10 +612,18 @@ export class EndlessScene extends Phaser.Scene {
     this.selectLane(endlessLaneForBoardX(this.grid, x));
   }
 
-  private selectLane(lane: number): void {
+  private selectLane(lane: number, announce = false): void {
     if (!this.grid || !this.running || this.handLockedLane !== null) return;
-    this.selectedLane = Phaser.Math.Clamp(Math.trunc(lane), 0, ENDLESS_REPLAY_RULES.laneCount - 1);
+    const previous = this.selectedLane;
+    this.selectedLane = Phaser.Math.Clamp(
+      Math.trunc(lane),
+      0,
+      ENDLESS_REPLAY_RULES.laneCount - 1,
+    );
     this.drawAim();
+    if (announce && this.selectedLane !== previous) {
+      this.a11y?.announce(`Aim lane ${this.selectedLane + 1}.`);
+    }
   }
 
   private gazeLaneAtX(x: number): number {
@@ -593,6 +729,13 @@ export class EndlessScene extends Phaser.Scene {
     }
     this.scoreText?.setText(`SCORE  ${result.score.toLocaleString()}`);
     this.accuracyText?.setText(`HITS  ${result.hits} / ${result.shots}`);
+    const accessibleOutcome = `${exact ? 'Perfect hit' : hit ? 'Hit' : 'Miss'}. `
+      + `Score ${result.score}. Hits ${result.hits} of ${result.shots}. Shot ${Math.min(
+        result.shots + 1,
+        this.session?.maximumShots ?? ENDLESS_REPLAY_RULES.maximumShots,
+      )} selected.`;
+    this.a11y?.setStatus(accessibleOutcome);
+    this.a11y?.announce(accessibleOutcome);
     if (result.boss && this.bossHpFill) {
       this.bossHpFill.width = this.bossHpWidth * (result.boss.hp / result.boss.maxHp);
     }
@@ -630,6 +773,36 @@ export class EndlessScene extends Phaser.Scene {
       } else this.toast(sealed.error === 'replay-empty' ? 'FIRE AT LEAST ONE SHOT BEFORE BANKING' : sealed.error.toUpperCase().replace(/-/g, ' '));
       return;
     }
+    if (this.practice) {
+      const simulation = simulateEndlessReplay({
+        seed: this.session.seed,
+        level: this.session.level,
+        durationMs: sealed.durationMs,
+        shotTrace: sealed.shotTrace,
+        modifier: this.session.modifier,
+        eventBoss: false,
+      });
+      if (!simulation.ok) {
+        this.failClosed(`LOCAL PRACTICE TRACE REJECTED — ${simulation.error}`);
+        return;
+      }
+      this.running = false;
+      this.submitting = false;
+      this.pinchControl.reset();
+      this.handCursor?.setVisible(false);
+      getHandTracker().suspend();
+      const result = simulation.result;
+      recordArcadeResult('nexus-aim', { score: result.score, combo: result.maxCombo });
+      this.a11y?.setHeading(
+        'Nexus Aim Trial complete',
+        'Your deterministic local practice result is ready. No wallet reward or campaign progress changed.',
+      );
+      this.a11y?.setStatus(
+        `Score ${result.score}. Hits ${result.hits} of ${result.shots}. Maximum combo ${result.maxCombo}.`,
+      );
+      this.presentPracticeResult(result, reason);
+      return;
+    }
     this.running = false;
     this.submitting = true;
     this.pinchControl.reset();
@@ -653,6 +826,80 @@ export class EndlessScene extends Phaser.Scene {
     } catch (error) {
       this.showSubmissionFailure(error instanceof Error ? error.message : 'submission-build-failed');
     }
+  }
+
+  private presentPracticeResult(
+    result: {
+      score: number;
+      hits: number;
+      shots: number;
+      wave: number;
+      maxCombo: number;
+    },
+    reason: string,
+  ): void {
+    const accuracy = result.shots > 0 ? Math.round((result.hits / result.shots) * 100) : 0;
+    this.stateText?.setText('PRACTICE SAVED LOCALLY • NO WALLET REWARD').setColor('#76f0c7');
+    const overlay = this.add.container(0, 0).setDepth(50);
+    const dim = this.add.rectangle(0, 0, VIEW.width, VIEW.height, 0x02040b, 0.88).setOrigin(0);
+    const panel = addArtPanel(this, VIEW.width / 2, 625, 640, 720, 51, 0.99);
+    const title = this.add.text(VIEW.width / 2, 346, 'NEXUS AIM COMPLETE', {
+      fontFamily: DISPLAY_FONT,
+      fontSize: TYPE.screen,
+      color: '#c9adff',
+      fontStyle: 'bold',
+      stroke: '#21164a',
+      strokeThickness: 7,
+    }).setOrigin(0.5).setDepth(52);
+    const stats = this.add.text(
+      VIEW.width / 2,
+      486,
+      `SCORE  ${result.score.toLocaleString()}\nACCURACY  ${accuracy}%  •  HITS ${result.hits}/${result.shots}\nMAX COMBO  ${result.maxCombo}  •  WAVE ${result.wave}`,
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.title,
+        color: '#ffffff',
+        fontStyle: 'bold',
+        align: 'center',
+        lineSpacing: 14,
+      },
+    ).setOrigin(0.5).setDepth(52);
+    const localOnly = this.add.text(
+      VIEW.width / 2,
+      690,
+      `${reason}\n\nLOCAL PRACTICE RECORD UPDATED\nNO COINS, WALLET BALANCE, EVENT REWARD, OR CAMPAIGN PROGRESS CHANGED.`,
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.body,
+        color: '#cbd8ec',
+        fontStyle: 'bold',
+        align: 'center',
+        lineSpacing: 10,
+        wordWrap: { width: 550 },
+      },
+    ).setOrigin(0.5).setDepth(52);
+    const again = addArtButton(
+      this,
+      VIEW.width / 2,
+      892,
+      'PLAY AGAIN',
+      () => this.scene.restart({ practice: true }),
+      380,
+      70,
+      53,
+    );
+    const exit = addArtButton(
+      this,
+      VIEW.width / 2,
+      986,
+      'ARCADE HUB',
+      () => this.scene.start('ArcadeHub'),
+      380,
+      70,
+      53,
+    );
+    overlay.add([dim, panel, title, stats, localOnly, again, exit]);
+    sharpenSceneText(this);
   }
 
   private async submitPending(): Promise<void> {
@@ -734,10 +981,12 @@ export class EndlessScene extends Phaser.Scene {
       }
     }
     this.handStarting = true;
+    this.updateCameraButtonAccessibility();
     this.handStatus?.setText(`${this.visionLabel()} STARTING`).setColor('#ffe083');
     const tracker = getHandTracker();
     const ok = await tracker.enable(this.visionMode);
     this.handStarting = false;
+    this.updateCameraButtonAccessibility();
     if (!this.sys.isActive()) {
       tracker.suspend();
       return;
@@ -750,12 +999,14 @@ export class EndlessScene extends Phaser.Scene {
       if (!resolvedCameraId || !gazeCalibrationMatches(gazeSettings.calibration, activeIdentity)) {
         tracker.disable();
         this.handOn = false;
+        this.updateCameraButtonAccessibility();
         this.handStatus?.setText(`${this.visionLabel()} NEEDS RECALIBRATION`).setColor('#ff8fa2');
         if (showError) this.toast('ACTIVE CAMERA CHANGED  •  RECALIBRATE IN CAMERA CONTROLS');
         return;
       }
     }
     this.handOn = ok;
+    this.updateCameraButtonAccessibility();
     this.handHasSeen = false;
     this.handLastSeenAt = 0;
     if (ok) tracker.setPreviewVisible(false);
@@ -770,6 +1021,7 @@ export class EndlessScene extends Phaser.Scene {
     if (this.handOn) {
       tracker.disable();
       this.handOn = false;
+      this.updateCameraButtonAccessibility();
       this.handHasSeen = false;
       this.handLockedLane = null;
       this.handOpenLane = null;
@@ -789,6 +1041,19 @@ export class EndlessScene extends Phaser.Scene {
       return;
     }
     await this.startHandTracking(true);
+  }
+
+  private updateCameraButtonAccessibility(): void {
+    const vision = this.visionLabel().toLowerCase();
+    updateArtButtonAccessibility(this.cameraButton, {
+      label: this.handStarting
+        ? `${vision} camera starting`
+        : this.handOn
+          ? `Turn ${vision} camera off`
+          : `Turn ${vision} camera on`,
+      pressed: this.handOn,
+      disabled: this.handStarting,
+    });
   }
 
   private visionLabel(): string {
@@ -1179,7 +1444,16 @@ export class EndlessScene extends Phaser.Scene {
     getHandTracker().suspend();
     this.stateText?.setText(message).setColor('#ff8fa2');
     this.toast('RUN CLOSED WITHOUT REWARD');
-    addArtButton(this, VIEW.width / 2, 1_102, 'RESTART VERIFIED RUN', () => this.scene.restart({ event: this.preferEvent }), 380, 66, 40);
+    addArtButton(
+      this,
+      VIEW.width / 2,
+      1_102,
+      this.practice ? 'RESTART PRACTICE' : 'RESTART VERIFIED RUN',
+      () => this.scene.restart({ event: this.preferEvent, practice: this.practice }),
+      380,
+      66,
+      40,
+    );
   }
 
   private clearTargetVisual(): void {
@@ -1195,7 +1469,7 @@ export class EndlessScene extends Phaser.Scene {
     this.running = false;
     this.pinchControl.reset();
     getHandTracker().suspend();
-    this.scene.start(this.preferEvent ? 'Challenges' : 'ModeSelect');
+    this.scene.start(this.practice ? 'ArcadeHub' : this.preferEvent ? 'Challenges' : 'ModeSelect');
   }
 
   private toast(message: string): void {

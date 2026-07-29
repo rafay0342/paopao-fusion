@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import { getMeta, setQuality, type RenderQuality } from './meta';
+import { isActiveGameplayScene } from './playable-scenes';
 
 export const FRAME_SAMPLE_CAPACITY = 600;
 export const WEBGL_MEMORY_BUDGET_BYTES = 1_200_000_000;
@@ -258,7 +259,7 @@ class RuntimePerformanceMonitor {
     // hand inference cadence and deterministic simulation clocks are separate.
     // Upgrades wait for a non-game scene to avoid introducing work mid-shot.
     const gameActive = game.scene.getScenes(true).some(
-      (scene) => scene.scene.key === 'Game' || scene.scene.key === 'Match3',
+      (scene) => isActiveGameplayScene(scene.scene.key),
     );
     const candidate = this.controller.evaluate({ ...this.snapshot, sampledAt: now }, true);
     const next = gameActive && QUALITY_ORDER.indexOf(candidate) > QUALITY_ORDER.indexOf(current) ? current : candidate;

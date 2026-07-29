@@ -168,7 +168,7 @@ export const MODE_DEFS: Record<GameMode, ModeDef> = {
 };
 
 export const QUALITY_PROFILES: Record<RenderQuality, QualityProfile> = {
-  ultra: { motes: 1, particles: 1, parallax: true, glints: false, bloom: true, dprCap: 2, handFps: 30 },
+  ultra: { motes: 1, particles: 1, parallax: true, glints: true, bloom: true, dprCap: 2, handFps: 30 },
   balanced: { motes: 0.56, particles: 0.64, parallax: true, glints: false, bloom: false, dprCap: 1.5, handFps: 20 },
   performance: { motes: 0.22, particles: 0.3, parallax: false, glints: false, bloom: false, dprCap: 1, handFps: 15 },
 };

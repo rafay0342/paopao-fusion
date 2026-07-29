@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { isActiveGameplayScene } from './playable-scenes';
 
 interface RouteEntry { scene: string; data?: Record<string, unknown> }
 const stack: RouteEntry[] = [];
@@ -49,7 +50,7 @@ export function installNavigation(game: Phaser.Game): void {
     event.preventDefault();
     // Escape pauses gameplay through the scene's single back owner. It must
     // never skip a live attempt or race the scene's own pause state.
-    if (active.scene.key === 'Game' || active.scene.key === 'Match3') active.events.emit('paopao:back-request');
+    if (isActiveGameplayScene(active.scene.key)) active.events.emit('paopao:back-request');
     else navigateBack(active);
   };
   const handlePopState = (): void => {
@@ -61,7 +62,7 @@ export function installNavigation(game: Phaser.Game): void {
       history.back();
       return;
     }
-    if (active.scene.key === 'Game' || active.scene.key === 'Match3') {
+    if (isActiveGameplayScene(active.scene.key)) {
       active.events.emit('paopao:back-request');
       history.pushState({ paopaoGuard: true }, document.title);
       return;

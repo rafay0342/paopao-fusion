@@ -169,12 +169,17 @@ export function addWorldBackground(
     world_nexus: 0xa88cff,
     world_prize_vault: 0x82edff,
   };
+  const lightColor = texture.startsWith('world_arcade_rainway')
+    ? 0x73eaff
+    : texture.startsWith('world_arcade_memory')
+      ? 0xb69cff
+      : realmLight[texture] ?? UI_COLORS.cyan;
   scene.add.ellipse(
     VIEW.width / 2,
     VIEW.height * 0.68,
     VIEW.width * 0.9,
     250,
-    realmLight[texture] ?? UI_COLORS.cyan,
+    lightColor,
     texture === 'world_crystal'
       ? quality.bloom ? 0.075 : 0.04
       : quality.bloom ? 0.035 : 0.018,
@@ -189,7 +194,60 @@ export function addWorldBackground(
       quality.bloom ? 0.055 : 0.028,
     ).setDepth(1);
   }
+  if (quality.glints) addUltraWorldOptics(scene, lightColor, reducedMotion);
   return image;
+}
+
+/**
+ * Bounded optical finish for Ultra. These are small additive planes and pooled
+ * spark textures, not a fake full-screen blur or a gameplay-affecting shader.
+ */
+function addUltraWorldOptics(
+  scene: Phaser.Scene,
+  tint: number,
+  reducedMotion: boolean,
+): void {
+  const shafts = scene.add.graphics()
+    .setDepth(1.06)
+    .setBlendMode(Phaser.BlendModes.ADD)
+    .setData({ paopaoResourceRole: 'world-ultra-optic' });
+  shafts.fillStyle(tint, 0.025);
+  shafts.fillTriangle(74, 0, 244, 0, 454, VIEW.height);
+  shafts.fillStyle(UI_COLORS.gold, 0.018);
+  shafts.fillTriangle(VIEW.width - 196, 0, VIEW.width - 48, 0, 244, VIEW.height);
+
+  const positions = [
+    { x: 102, y: 268, scale: 0.18 },
+    { x: 618, y: 338, scale: 0.13 },
+    { x: 174, y: 684, scale: 0.1 },
+    { x: 552, y: 792, scale: 0.16 },
+    { x: 332, y: 1_016, scale: 0.11 },
+    { x: 406, y: 454, scale: 0.08 },
+  ] as const;
+  positions.forEach((position, index) => {
+    const glint = scene.add.image(position.x, position.y, 'spark')
+      .setTint(index % 3 === 0 ? UI_COLORS.gold : tint)
+      .setAlpha(0.12)
+      .setScale(position.scale)
+      .setDepth(1.08)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setData({
+        paopaoResourceRole: 'world-ultra-optic',
+        paopaoOpticIndex: index,
+      });
+    if (reducedMotion) return;
+    scene.tweens.add({
+      targets: glint,
+      alpha: 0.28,
+      scale: position.scale * 1.55,
+      angle: 90,
+      duration: 2_800 + index * 430,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+      delay: index * 260,
+    });
+  });
 }
 
 function addCinematicRealmLayers(
@@ -641,7 +699,8 @@ export function addIconFrame(
 export function addAmbientMotes(scene: Phaser.Scene, tint: number, count = 18, depth = 2): void {
   const quality = getQualityProfile();
   const reducedMotion = prefersReducedMotion();
-  const adjustedCount = Math.min(10, Math.max(3, Math.round(count * quality.motes)));
+  const cap = quality.glints ? 18 : quality.parallax ? 10 : 4;
+  const adjustedCount = Math.min(cap, Math.max(3, Math.round(count * quality.motes)));
   for (let i = 0; i < adjustedCount; i++) {
     const mote = scene.add.image(
       Phaser.Math.Between(20, VIEW.width - 20),
@@ -676,7 +735,8 @@ export function addAmbientMotes(scene: Phaser.Scene, tint: number, count = 18, d
  * Deterministic gameplay and MediaPipe cadence are not changed here.
  */
 export function applyLiveSceneQuality(scene: Phaser.Scene, profile: QualityProfile): void {
-  const moteLimit = Math.min(10, Math.max(3, Math.round(18 * profile.motes)));
+  const moteCap = profile.glints ? 18 : profile.parallax ? 10 : 4;
+  const moteLimit = Math.min(moteCap, Math.max(3, Math.round(18 * profile.motes)));
   for (const child of scene.children.list) {
     const dataObject = child as Phaser.GameObjects.GameObject & {
       getData?: (key: string) => unknown;
@@ -705,6 +765,11 @@ export function applyLiveSceneQuality(scene: Phaser.Scene, profile: QualityProfi
       continue;
     }
     if (role === 'world-atmosphere' && !profile.parallax) {
+      scene.tweens.killTweensOf(child);
+      dataObject.setVisible?.(false);
+      continue;
+    }
+    if (role === 'world-ultra-optic' && !profile.glints) {
       scene.tweens.killTweensOf(child);
       dataObject.setVisible?.(false);
     }

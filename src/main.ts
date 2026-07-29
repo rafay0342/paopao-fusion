@@ -24,6 +24,8 @@ import { HandSetupScene } from './scenes/HandSetupScene';
 import { GazeSetupScene } from './scenes/GazeSetupScene';
 import { Match3MapScene } from './scenes/Match3MapScene';
 import { Match3Scene } from './scenes/Match3Scene';
+import { ArcadeHubScene } from './scenes/ArcadeHubScene';
+import { MemoryConstellationScene } from './scenes/MemoryConstellationScene';
 import { registerOfflineShell } from './game/offline';
 import { installNavigation } from './game/navigation';
 import { runtimePerformance } from './game/performance';
@@ -31,6 +33,8 @@ import { getHandTracker, type VisionTrackingMode } from './game/handtracking';
 import { getPlatformAccount } from './game/platform';
 import { initializeClassicPlayerSaveV4 } from './game/save-v4';
 import { PHASER_RELEASE_FEATURES, PHASER_RELEASE_GATE } from './game/release-profile';
+import { currentRenderSurfaceResolution, installLogicalRenderSurface } from './game/render-surface';
+import { getMeta } from './game/meta';
 import {
   CANVAS_FALLBACK_SESSION_KEY,
   RenderContextRecoveryController,
@@ -43,6 +47,9 @@ import {
 } from './game/render-context';
 
 const canvasFallbackRequested = isCanvasFallbackRequested(window.location.search);
+const renderSurfaceResolution = canvasFallbackRequested
+  ? 1
+  : currentRenderSurfaceResolution(getMeta().quality);
 
 const config: Phaser.Types.Core.GameConfig = {
   type: canvasFallbackRequested ? Phaser.CANVAS : Phaser.AUTO,
@@ -51,8 +58,8 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: VIEW.width,
-    height: VIEW.height,
+    width: VIEW.width * renderSurfaceResolution,
+    height: VIEW.height * renderSurfaceResolution,
   },
   render: {
     antialias: true,
@@ -69,6 +76,9 @@ const config: Phaser.Types.Core.GameConfig = {
     deltaHistory: 120,
     panicMax: 120,
   },
+  callbacks: {
+    postBoot: (game) => installLogicalRenderSurface(game, renderSurfaceResolution),
+  },
   scene: [
     BootScene,
     ...(PHASER_RELEASE_FEATURES.cinematicPresentation ? [IntroScene] : []),
@@ -83,6 +93,8 @@ const config: Phaser.Types.Core.GameConfig = {
     ...(PHASER_RELEASE_FEATURES.completeGameplay ? [
       Match3MapScene,
       Match3Scene,
+      ArcadeHubScene,
+      MemoryConstellationScene,
       ChronicleScene,
       EndingScene,
       InventoryScene,
@@ -303,10 +315,39 @@ async function startGame(): Promise<void> {
         releaseFeatures: PHASER_RELEASE_FEATURES,
         report: () => {
           const context = renderContext.observeContextLost(rendererContextIsLost(game));
+          const activeScenes = game.scene.getScenes(true);
+          const canvasBounds = game.canvas.getBoundingClientRect();
           return {
             ...applyRenderContextBudget(runtimePerformance.report(), context),
-            activeScenes: game.scene.getScenes(true).map((scene) => scene.scene.key),
+            activeScenes: activeScenes.map((scene) => scene.scene.key),
             renderer: context.renderer,
+            renderSurface: {
+              scale: renderSurfaceResolution,
+              backingWidth: game.canvas.width,
+              backingHeight: game.canvas.height,
+              cssWidth: canvasBounds.width,
+              cssHeight: canvasBounds.height,
+              cameras: activeScenes.map((scene) => {
+                const camera = scene.cameras.main;
+                return {
+                  scene: scene.scene.key,
+                  viewport: {
+                    x: camera.x,
+                    y: camera.y,
+                    width: camera.width,
+                    height: camera.height,
+                  },
+                  zoom: { x: camera.zoomX, y: camera.zoomY },
+                  scroll: { x: camera.scrollX, y: camera.scrollY },
+                  worldView: {
+                    x: camera.worldView.x,
+                    y: camera.worldView.y,
+                    width: camera.worldView.width,
+                    height: camera.worldView.height,
+                  },
+                };
+              }),
+            },
             context,
             contextStatus: context.status,
             contextLost: context.contextLost,

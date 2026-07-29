@@ -51,6 +51,27 @@ describe('Prism Cascade delivery wiring', () => {
     expect(scene).not.toMatch(/\b(?:addCoins|grantCoins|setCoins|submitRunV3)\s*\(/);
   });
 
+  it('routes Prism Sprint through the same deterministic board with no reward authority', () => {
+    const scene = read('src/scenes/Match3Scene.ts');
+    expect(scene).toContain("variant?: 'campaign' | 'sprint'");
+    expect(scene).toContain('seed?: number');
+    expect(scene).toContain('const PRISM_SPRINT_MOVES = 20');
+    expect(scene).toContain('this.state = createMatch3State(PRISM_SPRINT_LEVEL, this.sprintSeed)');
+    expect(scene).toContain('this.state.movesRemaining = PRISM_SPRINT_MOVES');
+    expect(scene).toContain('this.state.boosters = { hammer: 0, shuffle: 0, spectrum: 0 }');
+    expect(scene).toContain("recordArcadeResult('prism-sprint', {");
+    expect(scene).toContain("this.scene.restart({ variant: 'sprint', seed: this.sprintSeed })");
+    expect(scene).toContain("this.scene.start('ArcadeHub')");
+
+    const sprintTerminal = scene.slice(
+      scene.indexOf('private showSprintTerminal(): void'),
+      scene.indexOf('private showPause(): void'),
+    );
+    expect(sprintTerminal).not.toContain('recordMatch3Clear');
+    expect(sprintTerminal).not.toMatch(/\b(?:addCoins|grantCoins|setCoins|submitRunV3|fetch)\s*\(/);
+    expect(sprintTerminal).toContain('no campaign reward or purchase was submitted');
+  });
+
   it('cleans camera, listeners and gesture state at every lifecycle boundary', () => {
     const scene = read('src/scenes/Match3Scene.ts');
     expect(scene).toContain('Phaser.Scenes.Events.SHUTDOWN');
@@ -66,8 +87,8 @@ describe('Prism Cascade delivery wiring', () => {
   it('protects live boards from Escape, browser Back and mid-cascade quality upgrades', () => {
     const navigation = read('src/game/navigation.ts');
     const performance = read('src/game/performance.ts');
-    expect(navigation).toContain("active.scene.key === 'Game' || active.scene.key === 'Match3'");
-    expect(performance).toContain("scene.scene.key === 'Game' || scene.scene.key === 'Match3'");
+    expect(navigation).toContain('isActiveGameplayScene(active.scene.key)');
+    expect(performance).toContain('isActiveGameplayScene(scene.scene.key)');
   });
 });
 

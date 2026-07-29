@@ -50,6 +50,8 @@ import {
   match3StarsForScore,
   recordMatch3Clear,
 } from '../game/match3-progress';
+import { recordArcadeResult } from '../game/arcade-progress';
+import { arcadeWorldTextureKey } from '../game/arcade-art';
 import { getMeta, getQualityProfile, type QualityProfile } from '../game/meta';
 import { queueArtBundle } from '../game/art-v14';
 import { resolveWorldPresentation } from '../game/world-presentation';
@@ -77,6 +79,8 @@ import {
 
 interface Match3SceneData {
   level?: number;
+  variant?: 'campaign' | 'sprint';
+  seed?: number;
 }
 
 const BOARD_X = 72;
@@ -87,6 +91,19 @@ const BOARD_HEIGHT = CELL_SIZE * MATCH3_ROWS;
 const BOARD_BOTTOM = BOARD_Y + BOARD_HEIGHT;
 const HAND_LOSS_HIDE_MS = 450;
 const HAND_LOSS_RESET_MS = 1_200;
+const PRISM_SPRINT_LEVEL = 0;
+const PRISM_SPRINT_MOVES = 20;
+const PRISM_SPRINT_TARGET = Number.MAX_SAFE_INTEGER;
+const UTC_DAY_MS = 86_400_000;
+
+function dailyPrismSprintSeed(timestampMs = Date.now()): number {
+  const utcDay = Math.floor(timestampMs / UTC_DAY_MS);
+  return (0x53505249 ^ Math.imul(utcDay + 1, 0x9e3779b1)) >>> 0;
+}
+
+function boundedPrismSprintSeed(seed: unknown): number {
+  return Number.isFinite(seed) ? Number(seed) >>> 0 : dailyPrismSprintSeed();
+}
 
 const coordinateKey = ({ row, col }: Match3Coordinate): string => `${row}:${col}`;
 
@@ -109,6 +126,8 @@ function handFailureMessage(failure: HandTrackingFailure): string {
 
 export class Match3Scene extends Phaser.Scene {
   private level = 0;
+  private variant: 'campaign' | 'sprint' = 'campaign';
+  private sprintSeed = 0;
   private state!: Match3State;
   private quality!: QualityProfile;
   private readonly reducedMotion = prefersReducedMotion();
@@ -199,11 +218,26 @@ export class Match3Scene extends Phaser.Scene {
   }
 
   init(data: Match3SceneData = {}): void {
-    const requested = Number.isInteger(data.level) ? Number(data.level) : 0;
-    const progress = getMatch3Progress();
-    const highestOpen = Math.max(0, progress.unlocked - 1);
-    this.level = Phaser.Math.Clamp(requested, 0, Math.min(MATCH3_LEVEL_COUNT - 1, highestOpen));
-    this.state = createMatch3State(this.level);
+    this.variant = data.variant === 'sprint' ? 'sprint' : 'campaign';
+    this.sprintSeed = boundedPrismSprintSeed(data.seed);
+    if (this.variant === 'sprint') {
+      this.level = PRISM_SPRINT_LEVEL;
+      this.state = createMatch3State(PRISM_SPRINT_LEVEL, this.sprintSeed);
+      this.state.movesRemaining = PRISM_SPRINT_MOVES;
+      this.state.goals = {
+        targetScore: PRISM_SPRINT_TARGET,
+        collect: {},
+        shells: 0,
+        vines: 0,
+      };
+      this.state.boosters = { hammer: 0, shuffle: 0, spectrum: 0 };
+    } else {
+      const requested = Number.isInteger(data.level) ? Number(data.level) : 0;
+      const progress = getMatch3Progress();
+      const highestOpen = Math.max(0, progress.unlocked - 1);
+      this.level = Phaser.Math.Clamp(requested, 0, Math.min(MATCH3_LEVEL_COUNT - 1, highestOpen));
+      this.state = createMatch3State(this.level);
+    }
     this.quality = getQualityProfile();
     this.selected = null;
     this.candidate = null;
@@ -213,6 +247,7 @@ export class Match3Scene extends Phaser.Scene {
     this.activeBooster = null;
     this.terminalShown = false;
     this.pauseShown = false;
+    this.boosterButtons = {};
     this.a11y = undefined;
     this.lastA11yAnnouncement = '';
     this.handOn = false;
@@ -266,18 +301,27 @@ export class Match3Scene extends Phaser.Scene {
       backgroundKey: world.background,
     });
     this.a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
-      id: `match3-level-${this.level + 1}`,
-      heading: `Prism Cascade level ${this.level + 1}: ${definition.name}`,
-      description: `${presentation.label}. ${definition.name}. Swap adjacent orbs with drag, tap-tap, arrow keys plus Space, or pinch and palm swipe. Board focus starts at row 4, column 4.`,
+      id: this.isSprint() ? 'prism-sprint' : `match3-level-${this.level + 1}`,
+      heading: this.isSprint()
+        ? 'Prism Sprint: twenty-move score attack'
+        : `Prism Cascade level ${this.level + 1}: ${definition.name}`,
+      description: this.isSprint()
+        ? 'Make the highest score in exactly twenty moves. There are no boosters, purchases, campaign rewards, or paid advantages. Swap adjacent orbs with drag, tap-tap, arrow keys plus Space, calibrated eyes, or pinch and palm swipe. Every player receives the same daily board seed.'
+        : `${presentation.label}. ${definition.name}. Swap adjacent orbs with drag, tap-tap, arrow keys plus Space, or pinch and palm swipe. Board focus starts at row 4, column 4.`,
       status: `Moves ${this.state.movesRemaining}. Score ${this.state.score}.`,
       lifecycle: this.events,
     });
     startMusic(definition.act === 4 ? 'boss' : 'game');
-    addWorldBackground(this, world.background, 0.23, presentation);
+    addWorldBackground(
+      this,
+      this.isSprint() ? arcadeWorldTextureKey('rainway', getMeta().quality) : world.background,
+      this.isSprint() ? 0.1 : 0.23,
+      this.isSprint() ? undefined : presentation,
+    );
     addAmbientMotes(this, world.accent, 18, 2);
     this.cameras.main.fadeIn(prefersReducedMotion() ? 0 : 160, 0, 0, 0);
 
-    this.add.text(VIEW.width / 2, 48, 'PRISM CASCADE', {
+    this.add.text(VIEW.width / 2, 48, this.isSprint() ? 'PRISM SPRINT' : 'PRISM CASCADE', {
       fontFamily: DISPLAY_FONT,
       fontSize: TYPE.screen,
       color: '#ffffff',
@@ -286,14 +330,21 @@ export class Match3Scene extends Phaser.Scene {
       strokeThickness: 7,
       letterSpacing: 1.2,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    fitText(this.add.text(VIEW.width / 2, 94, `${world.name.toUpperCase()}  •  ${definition.name.toUpperCase()}`, {
-      fontFamily: UI_FONT,
-      fontSize: TYPE.label,
-      color: world.accentCss,
-      fontStyle: 'bold',
-      letterSpacing: 1.1,
-    }).setOrigin(0.5).setDepth(12), 500);
-    addArtButton(this, 82, 48, '‹ MAP', () => this.showPause(), 132, 50, 16);
+    fitText(this.add.text(
+      VIEW.width / 2,
+      94,
+      this.isSprint()
+        ? `DAILY BOARD ${this.sprintSeed.toString(16).toUpperCase().padStart(8, '0')}  •  20-MOVE SCORE ATTACK`
+        : `${world.name.toUpperCase()}  •  ${definition.name.toUpperCase()}`,
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.label,
+        color: world.accentCss,
+        fontStyle: 'bold',
+        letterSpacing: 1.1,
+      },
+    ).setOrigin(0.5).setDepth(12), 500);
+    addArtButton(this, 82, 48, this.isSprint() ? '‹ ARCADE' : '‹ MAP', () => this.showPause(), 132, 50, 16);
 
     addArtPanel(this, VIEW.width / 2, 170, 640, 112, 8, 0.97);
     this.movesText = this.add.text(112, 154, '', {
@@ -305,9 +356,20 @@ export class Match3Scene extends Phaser.Scene {
     this.chainText = this.add.text(608, 154, '', {
       fontFamily: UI_FONT, fontSize: TYPE.control, color: '#8fffd0', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(12);
-    this.add.text(VIEW.width / 2, 202, 'SWAP ADJACENT ORBS  •  CASCADES BUILD SCORE', {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#b8c9dc', fontStyle: 'bold', letterSpacing: 0.5,
-    }).setOrigin(0.5).setDepth(12);
+    this.add.text(
+      VIEW.width / 2,
+      202,
+      this.isSprint()
+        ? '20 MOVES  •  NO BOOSTERS  •  HIGHEST SCORE WINS'
+        : 'SWAP ADJACENT ORBS  •  CASCADES BUILD SCORE',
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.caption,
+        color: '#b8c9dc',
+        fontStyle: 'bold',
+        letterSpacing: 0.5,
+      },
+    ).setOrigin(0.5).setDepth(12);
 
     addArtPanel(this, VIEW.width / 2, BOARD_Y + BOARD_HEIGHT / 2, 628, 604, 5, 0.97);
     this.drawBoardGrid(world.accent);
@@ -317,7 +379,7 @@ export class Match3Scene extends Phaser.Scene {
     this.renderBoard(this.state.board, true);
 
     addArtPanel(this, VIEW.width / 2, 932, 640, 108, 7, 0.97);
-    this.add.text(52, 888, 'OBJECTIVES', {
+    this.add.text(52, 888, this.isSprint() ? 'SPRINT RULES' : 'OBJECTIVES', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#e6c982', fontStyle: 'bold', letterSpacing: 1.7,
     }).setDepth(12);
     this.objectivesText = this.add.text(52, 914, '', {
@@ -329,15 +391,25 @@ export class Match3Scene extends Phaser.Scene {
       lineSpacing: 4,
     }).setOrigin(0, 0).setDepth(12);
 
-    this.boosterButtons.hammer = addArtButton(this, 128, 1_030, 'HAMMER ×1', () => {
-      this.selectBooster('hammer');
-    }, 196, 58, 16);
-    this.boosterButtons.shuffle = addArtButton(this, 360, 1_030, 'RESHUFFLE ×1', () => {
-      void this.activateShuffle();
-    }, 224, 58, 16);
-    this.boosterButtons.spectrum = addArtButton(this, 592, 1_030, 'PRISM ×1', () => {
-      this.selectBooster('spectrum');
-    }, 196, 58, 16);
+    if (this.isSprint()) {
+      this.add.text(VIEW.width / 2, 1_030, 'PURE SCORE ATTACK  •  ZERO PAID BOOSTERS', {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.control,
+        color: '#ffe7a6',
+        fontStyle: 'bold',
+        letterSpacing: 0.8,
+      }).setOrigin(0.5).setDepth(12);
+    } else {
+      this.boosterButtons.hammer = addArtButton(this, 128, 1_030, 'HAMMER ×1', () => {
+        this.selectBooster('hammer');
+      }, 196, 58, 16);
+      this.boosterButtons.shuffle = addArtButton(this, 360, 1_030, 'RESHUFFLE ×1', () => {
+        void this.activateShuffle();
+      }, 224, 58, 16);
+      this.boosterButtons.spectrum = addArtButton(this, 592, 1_030, 'PRISM ×1', () => {
+        this.selectBooster('spectrum');
+      }, 196, 58, 16);
+    }
 
     addArtButton(this, 112, 1_112, 'HINT', () => this.showHint(), 168, 58, 16);
     this.handButton = addArtButton(this, 360, 1_112, `${this.visionLabel()}  •  OFF`, () => {
@@ -522,6 +594,10 @@ export class Match3Scene extends Phaser.Scene {
     };
   }
 
+  private pointerWorldPoint(pointer: Phaser.Input.Pointer): Phaser.Math.Vector2 {
+    return pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
+  }
+
   private gazeCellAtPoint(x: number, y: number): Match3Coordinate | null {
     const measured = this.cellAtPoint(x, y);
     const current = this.gazeCell;
@@ -537,7 +613,8 @@ export class Match3Scene extends Phaser.Scene {
 
   private handlePointerDown(pointer: Phaser.Input.Pointer): void {
     if (this.inputLocked || this.pauseShown || this.terminalShown) return;
-    const cell = this.cellAtPoint(pointer.x, pointer.y);
+    const point = this.pointerWorldPoint(pointer);
+    const cell = this.cellAtPoint(point.x, point.y);
     if (!cell) return;
     if (this.activeBooster) {
       this.pointerDown = cell;
@@ -552,7 +629,8 @@ export class Match3Scene extends Phaser.Scene {
 
   private handlePointerMove(pointer: Phaser.Input.Pointer): void {
     if (!pointer.isDown || !this.pointerDown || this.inputLocked || this.activeBooster) return;
-    const cell = this.cellAtPoint(pointer.x, pointer.y);
+    const point = this.pointerWorldPoint(pointer);
+    const cell = this.cellAtPoint(point.x, point.y);
     this.candidate = cell && areMatch3Neighbors(this.pointerDown, cell) ? { ...cell } : null;
     this.drawSelection(this.pointerDown, this.candidate);
   }
@@ -561,7 +639,8 @@ export class Match3Scene extends Phaser.Scene {
     if (!this.pointerDown || this.inputLocked || this.pauseShown || this.terminalShown) return;
     const down = this.pointerDown;
     this.pointerDown = null;
-    const released = this.cellAtPoint(pointer.x, pointer.y) ?? down;
+    const point = this.pointerWorldPoint(pointer);
+    const released = this.cellAtPoint(point.x, point.y) ?? down;
     if (this.activeBooster) {
       const booster = this.activeBooster;
       this.activeBooster = null;
@@ -771,9 +850,17 @@ export class Match3Scene extends Phaser.Scene {
     this.renderBoard(this.state.board);
     this.updateHud();
     this.inputLocked = false;
-    if (this.state.status === 'won') this.showTerminal(true);
+    if (this.isSprint() && this.state.status !== 'active') this.showTerminal(false);
+    else if (this.state.status === 'won') this.showTerminal(true);
     else if (this.state.status === 'lost') this.showTerminal(false);
-    else this.setStatus('READY — BUILD THE NEXT CASCADE', '#aebdd1');
+    else {
+      this.setStatus(
+        this.isSprint()
+          ? `SPRINT READY  •  ${this.state.movesRemaining} MOVES LEFT`
+          : 'READY — BUILD THE NEXT CASCADE',
+        '#aebdd1',
+      );
+    }
   }
 
   private async animateClearStep(step: Match3ResolutionStep): Promise<void> {
@@ -835,6 +922,10 @@ export class Match3Scene extends Phaser.Scene {
     return new Promise((resolve) => {
       this.time.delayedCall(milliseconds, resolve);
     });
+  }
+
+  private isSprint(): boolean {
+    return this.variant === 'sprint';
   }
 
   private selectBooster(booster: Match3Booster): void {
@@ -901,7 +992,22 @@ export class Match3Scene extends Phaser.Scene {
     const definition = getMatch3LevelDefinition(this.level);
     this.movesText?.setText(`MOVES\n${this.state.movesRemaining}`);
     this.scoreText?.setText(`SCORE\n${this.state.score.toLocaleString()}`);
-    this.chainText?.setText(`BEST\n×${Math.max(1, this.state.comboPeak)}`);
+    this.chainText?.setText(
+      `${this.isSprint() ? 'CASCADE' : 'BEST'}\n×${Math.max(1, this.state.comboPeak)}`,
+    );
+    if (this.isSprint()) {
+      this.objectivesText
+        ?.setScale(1)
+        .setText([
+          `SCORE  ${this.state.score.toLocaleString()}  •  MOVES LEFT  ${this.state.movesRemaining}`,
+          'NO BOOSTERS  •  SAME DAILY SEED  •  BUILD THE BIGGEST CASCADE',
+        ].join('\n'));
+      if (this.objectivesText) fitText(this.objectivesText, 616, 0.72);
+      this.a11y?.setStatus(
+        `Prism Sprint. Moves ${this.state.movesRemaining} of ${PRISM_SPRINT_MOVES} remaining. Score ${this.state.score.toLocaleString()}. Best cascade ${Math.max(1, this.state.comboPeak)}. No boosters or campaign rewards.`,
+      );
+      return;
+    }
     const objectiveParts: string[] = [
       `SCORE ${Math.min(this.state.score, this.state.goals.targetScore).toLocaleString()}/${this.state.goals.targetScore.toLocaleString()}`,
     ];
@@ -963,10 +1069,16 @@ export class Match3Scene extends Phaser.Scene {
   private restartLevel(): void {
     if (this.inputLocked) return;
     SFX.click();
-    this.scene.restart({ level: this.level });
+    this.scene.restart(this.isSprint()
+      ? { variant: 'sprint', seed: this.sprintSeed }
+      : { level: this.level });
   }
 
   private showTerminal(won: boolean): void {
+    if (this.isSprint()) {
+      this.showSprintTerminal();
+      return;
+    }
     if (this.terminalShown || !this.sys.isActive()) return;
     this.terminalShown = true;
     this.inputLocked = true;
@@ -1019,6 +1131,67 @@ export class Match3Scene extends Phaser.Scene {
     shield.on('pointerup', () => undefined);
   }
 
+  private showSprintTerminal(): void {
+    if (this.terminalShown || !this.sys.isActive()) return;
+    this.terminalShown = true;
+    this.inputLocked = true;
+    this.clearSelection();
+    this.handCursor?.setVisible(false);
+    this.suspendHandTracking();
+    recordArcadeResult('prism-sprint', {
+      score: this.state.score,
+      combo: this.state.comboPeak,
+    });
+    SFX.win();
+    const terminalStatus = `Prism Sprint complete. Score ${this.state.score.toLocaleString()}. Best cascade ${Math.max(1, this.state.comboPeak)}. The result is stored locally; no campaign reward or purchase was submitted.`;
+    this.a11y?.setStatus(terminalStatus);
+    this.announceA11y(terminalStatus, 'assertive');
+    const shield = this.add.rectangle(
+      VIEW.width / 2,
+      VIEW.height / 2,
+      VIEW.width,
+      VIEW.height,
+      0x02040c,
+      0.82,
+    ).setDepth(60).setInteractive();
+    addArtPanel(this, VIEW.width / 2, 640, 628, 520, 62, 1);
+    this.add.text(VIEW.width / 2, 474, 'SPRINT COMPLETE', {
+      fontFamily: DISPLAY_FONT,
+      fontSize: TYPE.screen,
+      color: '#fff0a8',
+      fontStyle: 'bold',
+      stroke: '#21123f',
+      strokeThickness: 7,
+    }).setOrigin(0.5).setDepth(66);
+    this.add.text(VIEW.width / 2, 548, '20 MOVES  •  SAME DAILY BOARD', {
+      fontFamily: UI_FONT,
+      fontSize: TYPE.control,
+      color: '#8fffd0',
+      fontStyle: 'bold',
+      letterSpacing: 0.7,
+    }).setOrigin(0.5).setDepth(66);
+    this.add.text(
+      VIEW.width / 2,
+      625,
+      `SCORE  ${this.state.score.toLocaleString()}   •   CASCADE  ×${Math.max(1, this.state.comboPeak)}`,
+      {
+        fontFamily: UI_FONT,
+        fontSize: TYPE.control,
+        color: '#e5edf8',
+        fontStyle: 'bold',
+      },
+    ).setOrigin(0.5).setDepth(66);
+    addArtButton(this, VIEW.width / 2, 720, 'PLAY AGAIN', () => {
+      SFX.click();
+      this.scene.restart({ variant: 'sprint', seed: this.sprintSeed });
+    }, 330, 66, 70);
+    addArtButton(this, VIEW.width / 2, 808, 'ARCADE HUB', () => {
+      SFX.click();
+      this.scene.start('ArcadeHub');
+    }, 330, 62, 70);
+    shield.on('pointerup', () => undefined);
+  }
+
   private showPause(): void {
     if (this.pauseShown || this.terminalShown || this.inputLocked) return;
     this.pauseShown = true;
@@ -1030,7 +1203,7 @@ export class Match3Scene extends Phaser.Scene {
       .setDepth(60)
       .setInteractive();
     const panel = addArtPanel(this, VIEW.width / 2, 640, 610, 410, 62, 1);
-    const title = this.add.text(VIEW.width / 2, 520, 'CASCADE PAUSED', {
+    const title = this.add.text(VIEW.width / 2, 520, this.isSprint() ? 'SPRINT PAUSED' : 'CASCADE PAUSED', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold',
       stroke: '#23143e', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(66);
@@ -1039,12 +1212,16 @@ export class Match3Scene extends Phaser.Scene {
       overlay.forEach((object) => object.destroy());
       this.pauseShown = false;
       this.inputLocked = false;
-      this.setStatus('READY — CONTINUE THE CASCADE', '#aebdd1');
+      this.setStatus(
+        this.isSprint() ? 'READY — CONTINUE THE 20-MOVE SPRINT' : 'READY — CONTINUE THE CASCADE',
+        '#aebdd1',
+      );
       if (getHandTracker().isWanted()) void this.startHandTracking();
     }, 330, 66, 70);
-    const leave = addArtButton(this, VIEW.width / 2, 730, 'RETURN TO MAP', () => {
+    const leave = addArtButton(this, VIEW.width / 2, 730, this.isSprint() ? 'ARCADE HUB' : 'RETURN TO MAP', () => {
       SFX.click();
-      this.scene.start('Match3Map', { world: Math.floor(this.level / 5) });
+      if (this.isSprint()) this.scene.start('ArcadeHub');
+      else this.scene.start('Match3Map', { world: Math.floor(this.level / 5) });
     }, 330, 62, 70);
     overlay.push(shield, panel, title, resume, leave);
   }

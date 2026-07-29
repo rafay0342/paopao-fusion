@@ -18,6 +18,7 @@ import { furthestUnlockedWorld, getProgress } from '../game/progression';
 import { makeOrbCanvas, makeSparkCanvas, makeBgCanvas } from '../gfx/textures';
 import { DISPLAY_FONT, TYPE, UI_FONT } from '../gfx/ui';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
+import { ARCADE_WORLD_IMAGES } from '../game/arcade-art';
 import { INTRO_SEEN_KEY } from './IntroScene';
 
 const LOAD_STAGES = [
@@ -78,6 +79,7 @@ const LEGACY_BOOT_IMAGES: readonly LegacyBootImage[] = [
   { key: 'tier_silver', url: 'assets/ui/v6/tier-silver.png' },
   { key: 'tier_gold', url: 'assets/ui/v6/tier-gold.png' },
   { key: 'tier_prismatic', url: 'assets/ui/v6/tier-prismatic.png' },
+  ...ARCADE_WORLD_IMAGES.map(({ key, url }) => ({ key, url })),
 ] as const;
 
 function loadStageFor(progress: number): string {
@@ -102,6 +104,7 @@ function fileProgressLabel(key: string): string {
 export class BootScene extends Phaser.Scene {
   private readonly failedAssetKeys = new Set<string>();
   private readonly v14Retries = new Map<string, BootArtRetry>();
+  private readonly arcadeFallbackQueued = new Set<string>();
   private legacyBootQueued = false;
   private v14ManifestFailure: string | null = null;
 
@@ -112,6 +115,7 @@ export class BootScene extends Phaser.Scene {
   preload(): void {
     this.failedAssetKeys.clear();
     this.v14Retries.clear();
+    this.arcadeFallbackQueued.clear();
     this.legacyBootQueued = false;
     this.v14ManifestFailure = null;
     clearGameplayArtManifest();
@@ -323,6 +327,13 @@ export class BootScene extends Phaser.Scene {
           return;
         }
         this.v14Retries.delete(key);
+      }
+      const arcadeAsset = ARCADE_WORLD_IMAGES.find((asset) => asset.key === key);
+      if (arcadeAsset && !this.arcadeFallbackQueued.has(key)) {
+        this.arcadeFallbackQueued.add(key);
+        detail.setText(`Restoring JPEG compatibility art for ${fileProgressLabel(key).toLowerCase()}`);
+        this.load.image(key, hostedAssetUrl(arcadeAsset.fallbackUrl));
+        return;
       }
       this.failedAssetKeys.add(key);
       recovery.setText(`RECOVERY MODE  ·  ${this.failedAssetKeys.size} ART ASSET${this.failedAssetKeys.size === 1 ? '' : 'S'} WILL USE FALLBACKS`);

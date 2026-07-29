@@ -49,6 +49,25 @@ cross-device revisioned progress, authoritative economy, full deterministic
 endless/live-event replay, classic server-observed ticket/input proof, arena
 protocol replay, leaderboards and telemetry batching.
 
+The **V15 PaoPao Arcade and Ultra-Density upgrade** adds three independently
+playable, deterministic local challenges without changing the campaign,
+economy or server-authoritative rewards:
+
+- **Prism Sprint** — a same-seed, 20-move Match-3 score attack with no boosters
+  or paid advantage.
+- **Nexus Aim Trial** — a same-seed, 30-shot, 11-lane precision challenge using
+  the existing pointer, keyboard, hand and calibrated gaze controls.
+- **Memory Constellation** — a 4×4, eight-pair memory game whose pieces remain
+  identifiable by rune and material as well as colour.
+
+Arcade records are stored in one bounded device-local V1 record and never mint
+coins, inventory, campaign progress or live-event rewards. Two original V15
+portrait environment masters ship as WebP with JPEG fallback in 720×1280,
+1080×1920 and 1440×2560 delivery tiers. Ultra mode also selects a
+capability-bounded 1.5× framebuffer, while Balanced may select 1.25× and weak
+devices remain at 1×. Simulation, input mapping and camera coordinates stay on
+the unchanged 720×1280 logical plane.
+
 ## Current production release
 
 This repository now ships one gameplay client: Phaser 3.90.0. Unity is
@@ -133,6 +152,9 @@ src/
     gazecontrol.ts        calibrated gaze aim, smoothing, double-blink and dwell controls
     gazesettings.ts       device-local gaze mode, action and calibration profile
     render-context.ts     WebGL loss/restore state and one-time Canvas fallback
+    render-surface.ts     capability-bounded 1×/1.25×/1.5× framebuffer selection
+    arcade.ts             three-game catalog and deterministic memory state machine
+    arcade-progress.ts    bounded local arcade records, isolated from the economy
     online.ts             offline queue, cloud sync, leaderboards and ghost retrieval
     progression.ts        local level unlocks, stars and best scores
   gfx/
@@ -144,6 +166,10 @@ src/
     WorldMapScene.ts      six-world map + interactive level medallions
     GazeSetupScene.ts     explicit camera controls and nine-point eye calibration
     GameScene.ts          themed HUD, pause/results, launcher, levels + fx
+    ArcadeHubScene.ts     paged launcher for local deterministic challenges
+    MemoryConstellationScene.ts  deterministic eight-pair memory challenge
+    Match3Scene.ts        campaign play and the isolated 20-move Prism Sprint
+    EndlessScene.ts       live authority and isolated 30-shot Nexus Aim practice
     RewardsScene.ts       animated mystery vault, prize pool, skins and tiers
     ChallengesScene.ts    daily/weekly orders, streak, badges and mastery
     CompetitiveScene.ts   Daily/Weekly rankings and ghost replay launcher
@@ -166,6 +192,7 @@ public/
   assets/ui/v6/           mystery chests, gifts, coins, prize pool and tier crests
   assets/worlds/v6/       cinematic portrait Prize Vault environment
   assets/worlds/v9/       Frostbound Citadel and Magnetic Nexus environments
+  assets/worlds/v15/      Arcade performance/balanced/ultra WebP + JPEG worlds
 art-source/
   full-art-v2/            preserved world and interface masters
   full-art-v3/            full-resolution generated V3 source artwork
@@ -173,6 +200,7 @@ art-source/
   full-art-v6/            full-resolution V6 orb/reward/vault source artwork
   full-art-v7/            full-resolution V7 seamless-orb source artwork
   full-art-v8/            full-resolution V8 mechanic and boss source artwork
+  v15/arcade/             approved Arcade masters and cryptographic provenance
 tools/
   process-v6-assets.py    border-safe matte extraction and runtime sprite build
   serve-dist.mjs          gzip-enabled static server used by the live Funnel

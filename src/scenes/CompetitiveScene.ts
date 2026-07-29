@@ -115,7 +115,8 @@ export class CompetitiveScene extends Phaser.Scene {
       `${String(index + 1).padStart(2, '0')}  ${entry.displayName.padEnd(14, ' ')} ${entry.score.toLocaleString().padStart(9, ' ')}  ${(entry.durationMs / 1000).toFixed(1).padStart(6, ' ')}s`
     )).join('\n\n'));
     board.setInteractive({ useHandCursor: true }).on('pointerup', async (pointer: Phaser.Input.Pointer) => {
-      const localY = pointer.y - board.y;
+      const worldPoint = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
+      const localY = worldPoint.y - board.y;
       const index = Phaser.Math.Clamp(Math.floor(localY / 62), 0, Math.min(9, entries.length - 1));
       const entry = entries[index];
       const challenge = this.activeChallenge;

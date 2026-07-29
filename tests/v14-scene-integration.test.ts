@@ -55,7 +55,7 @@ describe('V14 scene art integration', () => {
       expect(scene).toContain('preload(): void');
       expect(scene).toContain('queueArtBundle(this, `realm-${');
       expect(scene).toContain('resolveWorldPresentation({');
-      expect(scene).toContain('addWorldBackground(this,');
+      expect(scene).toMatch(/addWorldBackground\(\s*this,/);
     }
   });
 

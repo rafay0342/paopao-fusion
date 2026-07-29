@@ -82,7 +82,7 @@ export class ModeSelectScene extends Phaser.Scene {
     accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
       id: 'mode-select',
       heading: 'Choose your PaoPao Fusion challenge',
-      description: 'Classic Adventure, timed Rush, Precision, Prism Cascade match-three, and live modes each preserve the same campaign progress.',
+      description: 'Choose Classic Adventure, timed Rush, Precision, Prism Cascade, PaoPao Arcade, or verified Endless play.',
       status: `${MODE_DEFS[meta.mode].name} is currently selected.`,
       lifecycle: this.events,
     });
@@ -163,14 +163,18 @@ export class ModeSelectScene extends Phaser.Scene {
     });
 
     if (PHASER_RELEASE_FEATURES.completeGameplay && PHASER_RELEASE_FEATURES.endlessLiveOperations) {
-      addArtButton(this, 202, 1_126, 'PRISM CASCADE  •  MATCH-3', () => {
+      addArtButton(this, 116, 1_126, 'MATCH-3', () => {
         SFX.click();
         this.scene.start('Match3Map');
-      }, 304, 56, 18);
-      addArtButton(this, 518, 1_126, 'ENDLESS NEXUS  •  LIVE', () => {
+      }, 206, 60, 18);
+      addArtButton(this, 360, 1_126, 'PAOPAO ARCADE', () => {
+        SFX.click();
+        this.scene.start('ArcadeHub');
+      }, 250, 60, 18);
+      addArtButton(this, 604, 1_126, 'ENDLESS', () => {
         SFX.click();
         this.scene.start('Endless', { event: false });
-      }, 304, 56, 18);
+      }, 206, 60, 18);
     } else if (PHASER_RELEASE_FEATURES.completeGameplay) {
       addArtButton(this, width / 2, 1_126, 'PRISM CASCADE  •  MATCH-3 ADVENTURE', () => {
         SFX.click();
