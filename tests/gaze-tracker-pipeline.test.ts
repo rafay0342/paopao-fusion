@@ -25,9 +25,37 @@ describe('shared-camera gaze tracker pipeline', () => {
     expect(prepareGaze).toContain('return this.ensureGazeModel()');
     expect(prepareGaze).not.toContain('getUserMedia');
     expect(worker).toContain("message.type === 'PREPARE_GAZE'");
-    expect(worker).toContain('await createFaceRecognizer(message.modelUrl)');
-    expect(worker.indexOf('createFaceRecognizer(message.modelUrl)'))
+    expect(tracker).toContain(
+      "worker.postMessage({ type: 'PREPARE_GAZE', wasmUrl: WASM_URL, modelUrl: FACE_MODEL_URL })",
+    );
+    expect(worker).toContain('await createFaceRecognizer(message.wasmUrl, message.modelUrl)');
+    expect(worker.indexOf('createFaceRecognizer(message.wasmUrl, message.modelUrl)'))
       .toBeGreaterThan(worker.indexOf("message.type === 'PREPARE_GAZE'"));
+  });
+
+  it('recreates the consumed MediaPipe module factory for every task and delegate attempt', () => {
+    const freshFileset = worker.slice(
+      worker.indexOf('async function freshVisionFileset('),
+      worker.indexOf('async function createRecognizer('),
+    );
+    expect(freshFileset).toContain(
+      'isolateVisionLoader(fileset, task, ++visionRuntimeGeneration, self.location.href)',
+    );
+
+    const createHand = worker.slice(
+      worker.indexOf('async function createRecognizer('),
+      worker.indexOf('async function createFaceRecognizer('),
+    );
+    expect(createHand).toContain("freshVisionFileset(wasmUrl, 'hand-gpu')");
+    expect(createHand).toContain("freshVisionFileset(wasmUrl, 'hand-cpu')");
+
+    const createFace = worker.slice(
+      worker.indexOf('async function createFaceRecognizer('),
+      worker.indexOf('interface Point2D'),
+    );
+    expect(createFace).toContain("freshVisionFileset(wasmUrl, 'face-gpu')");
+    expect(createFace).toContain("freshVisionFileset(wasmUrl, 'face-cpu')");
+    expect(worker).not.toContain('visionFileset');
   });
 
   it('shares one transferred frame and caps face work at 15 Hz in both eye modes', () => {

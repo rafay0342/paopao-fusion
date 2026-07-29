@@ -477,7 +477,7 @@ class HandTracker {
       this.gazeInitTimer = null;
       reject?.(new Error('Face model initialization timed out'));
     }, GAZE_INIT_TIMEOUT_MS);
-    worker.postMessage({ type: 'PREPARE_GAZE', modelUrl: FACE_MODEL_URL });
+    worker.postMessage({ type: 'PREPARE_GAZE', wasmUrl: WASM_URL, modelUrl: FACE_MODEL_URL });
     return this.gazeInitPromise;
   }
 

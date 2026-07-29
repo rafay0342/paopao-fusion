@@ -12,6 +12,7 @@ import {
   type HandLightingProfile,
   type HandLightingStats,
 } from './handvision';
+import { isolateVisionLoader, type VisionTaskAttempt } from './visionruntime';
 
 interface InitMessage {
   type: 'INIT';
@@ -30,6 +31,7 @@ interface FrameMessage {
 
 interface PrepareGazeMessage {
   type: 'PREPARE_GAZE';
+  wasmUrl: string;
   modelUrl: string;
 }
 
@@ -59,7 +61,7 @@ const workerScope = self as unknown as {
 
 let recognizer: HandLandmarker | null = null;
 let faceRecognizer: FaceLandmarker | null = null;
-let visionFileset: Awaited<ReturnType<typeof FilesetResolver.forVisionTasks>> | null = null;
+let visionRuntimeGeneration = 0;
 let lastFaceInferenceTimestampMs = Number.NEGATIVE_INFINITY;
 let lastOpenGaze: {
   features: GazeFeatureVector;
@@ -266,12 +268,26 @@ function primeRecognizer(): void {
   }
 }
 
+/**
+ * MediaPipe clears its global ModuleFactory after every task is created.
+ * Module workers load the Emscripten bootstrap through dynamic import(), whose
+ * module cache otherwise prevents that factory from being recreated for a
+ * second task (or a GPU-to-CPU retry). Give every creation attempt a distinct
+ * loader-module URL while keeping the large WASM binary URL stable/cacheable.
+ */
+async function freshVisionFileset(
+  wasmUrl: string,
+  task: VisionTaskAttempt,
+): Promise<Awaited<ReturnType<typeof FilesetResolver.forVisionTasks>>> {
+  const fileset = await FilesetResolver.forVisionTasks(wasmUrl, true);
+  return isolateVisionLoader(fileset, task, ++visionRuntimeGeneration, self.location.href);
+}
+
 async function createRecognizer(wasmUrl: string, modelUrl: string): Promise<void> {
-  const [vision, modelResponse] = await Promise.all([
-    FilesetResolver.forVisionTasks(wasmUrl, true),
+  const [gpuVision, modelResponse] = await Promise.all([
+    freshVisionFileset(wasmUrl, 'hand-gpu'),
     fetch(modelUrl),
   ]);
-  visionFileset = vision;
   if (!modelResponse.ok) throw new Error(`Hand model HTTP ${modelResponse.status}`);
   const model = new Uint8Array(await modelResponse.arrayBuffer());
 
@@ -288,18 +304,21 @@ async function createRecognizer(wasmUrl: string, modelUrl: string): Promise<void
   // on laptops and phones. The worker owns its context; CPU remains the broad
   // compatibility fallback when a worker GPU delegate is unavailable.
   try {
-    recognizer = await HandLandmarker.createFromOptions(vision, options('GPU'));
+    recognizer = await HandLandmarker.createFromOptions(gpuVision, options('GPU'));
   } catch (gpuError) {
     console.warn('Hand GPU delegate unavailable; trying CPU.', gpuError);
-    recognizer = await HandLandmarker.createFromOptions(vision, options('CPU'));
+    const cpuVision = await freshVisionFileset(wasmUrl, 'hand-cpu');
+    recognizer = await HandLandmarker.createFromOptions(cpuVision, options('CPU'));
   }
   primeRecognizer();
 }
 
-async function createFaceRecognizer(modelUrl: string): Promise<void> {
+async function createFaceRecognizer(wasmUrl: string, modelUrl: string): Promise<void> {
   if (faceRecognizer) return;
-  if (!visionFileset) throw new Error('Vision runtime is not ready');
-  const modelResponse = await fetch(modelUrl);
+  const [gpuVision, modelResponse] = await Promise.all([
+    freshVisionFileset(wasmUrl, 'face-gpu'),
+    fetch(modelUrl),
+  ]);
   if (!modelResponse.ok) throw new Error(`Face model HTTP ${modelResponse.status}`);
   const model = new Uint8Array(await modelResponse.arrayBuffer());
   const options = (delegate: 'CPU' | 'GPU') => ({
@@ -313,10 +332,11 @@ async function createFaceRecognizer(modelUrl: string): Promise<void> {
     outputFacialTransformationMatrixes: true,
   });
   try {
-    faceRecognizer = await FaceLandmarker.createFromOptions(visionFileset, options('GPU'));
+    faceRecognizer = await FaceLandmarker.createFromOptions(gpuVision, options('GPU'));
   } catch (gpuError) {
     console.warn('Face GPU delegate unavailable; trying CPU.', gpuError);
-    faceRecognizer = await FaceLandmarker.createFromOptions(visionFileset, options('CPU'));
+    const cpuVision = await freshVisionFileset(wasmUrl, 'face-cpu');
+    faceRecognizer = await FaceLandmarker.createFromOptions(cpuVision, options('CPU'));
   }
   if (typeof OffscreenCanvas !== 'undefined') {
     try {
@@ -482,7 +502,6 @@ workerScope.onmessage = async (event): Promise<void> => {
       faceRecognizer?.close();
       recognizer = null;
       faceRecognizer = null;
-      visionFileset = null;
       resetLighting();
       await createRecognizer(message.wasmUrl, message.modelUrl);
       workerScope.postMessage({ type: 'READY' });
@@ -494,7 +513,7 @@ workerScope.onmessage = async (event): Promise<void> => {
 
   if (message.type === 'PREPARE_GAZE') {
     try {
-      await createFaceRecognizer(message.modelUrl);
+      await createFaceRecognizer(message.wasmUrl, message.modelUrl);
       workerScope.postMessage({ type: 'GAZE_READY' });
     } catch (error) {
       faceRecognizer?.close();
@@ -512,7 +531,6 @@ workerScope.onmessage = async (event): Promise<void> => {
     faceRecognizer?.close();
     recognizer = null;
     faceRecognizer = null;
-    visionFileset = null;
     resetLighting();
     return;
   }
