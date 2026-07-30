@@ -311,11 +311,11 @@ export class WorldMapScene extends Phaser.Scene {
     ).setOrigin(0.5).setDepth(12), 430, 0.9);
 
     const positions: readonly RoutePosition[] = [
-      { x: 236, y: 492, side: 1 },
-      { x: 484, y: 636, side: -1 },
-      { x: 250, y: 780, side: 1 },
-      { x: 470, y: 924, side: -1 },
-      { x: 275, y: 1068, side: 1 },
+      { x: 220, y: 468, side: 1 },
+      { x: 500, y: 638, side: -1 },
+      { x: 224, y: 808, side: 1 },
+      { x: 496, y: 978, side: -1 },
+      { x: 232, y: 1_138, side: 1 },
     ];
     const currentLevel = theme.levels.find(
       (level) => isLevelUnlocked(level, progress) && !isLevelCleared(level, progress),
@@ -441,8 +441,8 @@ export class WorldMapScene extends Phaser.Scene {
         },
       });
 
-      const chipWidth = 232;
-      const preferredChipCenterX = pos.x + pos.side * (112 + chipWidth / 2);
+      const chipWidth = 214;
+      const preferredChipCenterX = pos.x + pos.side * (106 + chipWidth / 2);
       const chipCenterX = clampFloatingCenterX(preferredChipCenterX, chipWidth + 20);
       const labelX = pos.side > 0 ? chipCenterX - chipWidth / 2 : chipCenterX + chipWidth / 2;
       const originX = pos.side > 0 ? 0 : 1;
@@ -451,35 +451,35 @@ export class WorldMapScene extends Phaser.Scene {
       const railStart = pos.x + pos.side * 70;
       const railEnd = labelX - pos.side * 8;
       labelRail.lineStyle(6, 0x020611, 0.7);
-      labelRail.lineBetween(railStart, pos.y - 14, railEnd, pos.y - 55);
+      labelRail.lineBetween(railStart, pos.y - 10, railEnd, pos.y - 43);
       labelRail.lineStyle(2, kindColor, unlocked ? 0.72 : 0.28);
-      labelRail.lineBetween(railStart, pos.y - 14, railEnd, pos.y - 55);
+      labelRail.lineBetween(railStart, pos.y - 10, railEnd, pos.y - 43);
       labelRail.fillStyle(0x0b0818, 0.88);
-      labelRail.fillRoundedRect(chipCenterX - chipWidth / 2, pos.y - 76, chipWidth, 42, 12);
+      labelRail.fillRoundedRect(chipCenterX - chipWidth / 2, pos.y - 62, chipWidth, 34, 10);
       const labelBoxLeft = pos.side > 0 ? labelX - 12 : labelX - chipWidth - 8;
       labelRail.fillStyle(0x050711, current ? 0.94 : 0.82);
-      labelRail.fillRoundedRect(labelBoxLeft, pos.y - 25, chipWidth + 20, 101, 14);
+      labelRail.fillRoundedRect(labelBoxLeft, pos.y - 20, chipWidth + 20, 78, 12);
       labelRail.lineStyle(2, kindColor, unlocked ? 0.76 : 0.3);
-      labelRail.strokeRoundedRect(chipCenterX - chipWidth / 2, pos.y - 76, chipWidth, 42, 12);
+      labelRail.strokeRoundedRect(chipCenterX - chipWidth / 2, pos.y - 62, chipWidth, 34, 10);
       labelRail.fillStyle(unlocked ? kindColor : 0x697586, unlocked ? 0.8 : 0.46);
       labelRail.fillPoints([
-        { x: railEnd, y: pos.y - 61 },
-        { x: railEnd + pos.side * 6, y: pos.y - 55 },
         { x: railEnd, y: pos.y - 49 },
-        { x: railEnd - pos.side * 6, y: pos.y - 55 },
+        { x: railEnd + pos.side * 6, y: pos.y - 43 },
+        { x: railEnd, y: pos.y - 37 },
+        { x: railEnd - pos.side * 6, y: pos.y - 43 },
       ], true);
       labelRail.setAlpha(labelAlpha);
       const routeLabel = current
         ? `NEXT STAGE  ·  ${NODE_KIND_LABEL[mapNode.kind]}`
         : `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${theme.levels.length}`;
-      fitText(this.add.text(chipCenterX, pos.y - 55, routeLabel, {
+      fitText(this.add.text(chipCenterX, pos.y - 45, routeLabel, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
         color: unlocked ? '#f4f1ff' : '#bac4d4',
         fontStyle: 'bold',
         letterSpacing: 0.45,
       }).setOrigin(0.5).setDepth(13).setAlpha(labelAlpha), chipWidth - 24, 0.88);
-      this.add.text(labelX, pos.y + 2, def.title, {
+      this.add.text(labelX, pos.y, def.title, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
         color: unlocked ? '#f4f1ff' : '#bac4d4',
@@ -501,7 +501,7 @@ export class WorldMapScene extends Phaser.Scene {
         : rewardAvailability === 'verification-pending'
           ? `VERIFY  ·  ${mapNode.reward.amount} COINS`
           : `${routeState}  ·  ${mapNode.reward.amount} COINS`;
-      fitText(this.add.text(labelX, pos.y + 51, actionCopy, {
+      fitText(this.add.text(labelX, pos.y + 36, actionCopy, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
         color: unlocked ? '#d7e0ec' : '#bac4d4',
@@ -513,11 +513,11 @@ export class WorldMapScene extends Phaser.Scene {
       }).setOrigin(originX, 0.5).setDepth(13).setAlpha(labelAlpha), chipWidth, 0.88);
     });
 
-    addArtPanel(this, width / 2, height - 66, 620, 82, 13, 0.94);
+    addArtPanel(this, width / 2, height - 43, 620, 54, 13, 0.94);
     const footerCopy = accountBound
       ? 'ONE VERIFIED FIRST-CLEAR CLAIM PER STAGE'
       : 'LOCAL PLAY REMAINS AVAILABLE';
-    fitText(this.add.text(width / 2, height - 66, footerCopy, {
+    fitText(this.add.text(width / 2, height - 43, footerCopy, {
       fontFamily: UI_FONT,
       fontSize: TYPE.section,
       color: '#f4f7ff',

@@ -654,14 +654,12 @@ describe('hand-tracking pipeline latency invariants', () => {
   const endless = readText('src/scenes/EndlessScene.ts');
   const worker = readText('src/game/handtracking.worker.ts');
 
-  it('prewarms the model for an uncalibrated first-time player during app startup', () => {
+  it('does not prewarm vision models during ordinary touch startup', () => {
     const startGame = main.slice(main.indexOf('async function startGame()'));
-    const warm = startGame.indexOf('getHandTracker().prepare()');
-    const fontWait = startGame.indexOf('await waitForGameFonts()');
+    const setupStart = setup.slice(setup.indexOf('create(): void'));
 
-    expect(warm).toBeGreaterThan(-1);
-    expect(warm).toBeLessThan(fontWait);
-    expect(startGame.slice(0, fontWait)).not.toContain('getHandSettings');
+    expect(startGame).not.toContain('getHandTracker().prepare()');
+    expect(setupStart).toContain('getHandTracker().prepare()');
   });
 
   it('keeps prewarm camera-free, idempotent and primes the first inference', () => {

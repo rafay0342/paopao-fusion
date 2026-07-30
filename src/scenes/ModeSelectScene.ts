@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { orbTexture, VIEW } from '../config';
 import { furthestUnlockedWorld, getProgress } from '../game/progression';
 import { cycleQuality, getMeta, MODE_DEFS, setMode, type GameMode } from '../game/meta';
-import { getHandTracker } from '../game/handtracking';
 import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
@@ -93,7 +92,6 @@ export class ModeSelectScene extends Phaser.Scene {
       status: `${MODE_DEFS[meta.mode].name} is currently selected.`,
       lifecycle: this.events,
     });
-    void getHandTracker().prepare().catch(() => undefined);
     this.cameras.main.fadeIn(180, 0, 0, 0);
     addWorldBackground(this, 'world_celestial', 0.25);
     addAmbientMotes(this, 0x82dcff, 22, 2);
@@ -203,16 +201,17 @@ export class ModeSelectScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(12);
     }
 
-    addArtPanel(this, width / 2, height - 66, 640, 76, 7, 0.96);
-    const settingsX = flowRowCenters([280, 280], width / 2, 24);
-    addArtButton(this, settingsX[0], height - 66, 'CAMERA CONTROLS', () => {
+    // App-host sharing chrome occupies the bottom-right corner on narrow
+    // phones. Keep non-gameplay settings in a compact left-aligned rail.
+    addArtPanel(this, 215, height - 66, 430, 76, 7, 0.96);
+    addArtButton(this, 110, height - 66, 'CAMERA INPUT', () => {
       SFX.click(); this.scene.start('GazeSetup');
-    }, 280, 58, 18);
-    addArtButton(this, settingsX[1], height - 66, `QUALITY  •  ${meta.quality.toUpperCase()}`, () => {
+    }, 190, 58, 18);
+    addArtButton(this, 320, height - 66, `QUALITY  •  ${meta.quality.toUpperCase()}`, () => {
       SFX.click();
       cycleQuality();
       this.scene.restart();
-    }, 280, 58, 18);
+    }, 190, 58, 18);
     sharpenSceneText(this);
   }
 }

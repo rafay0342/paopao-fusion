@@ -276,13 +276,9 @@ async function startGame(): Promise<void> {
   // never waits for the network, while an authenticated response performs the
   // revision-aware V4 GET/PUT merge before account UI refreshes.
   void getPlatformAccount(true);
-  // First-time players have no calibration flag yet, but still need the same
-  // zero-wait hand startup as returning players. Begin downloading, compiling
-  // and priming the local model while fonts and the opening screens load. This
-  // never requests camera permission; enable() remains the only camera gate.
-  void getHandTracker().prepare().catch((error: unknown) => {
-    console.warn('Hand model background warm-up will retry on use.', error);
-  });
+  // Hand and gaze models are intentionally demand-loaded from their explicit
+  // controls. A normal touch session should not spend mobile GPU, memory or
+  // network budget on vision features the player never enabled.
   const fontsReady = await waitForGameFonts();
   document.documentElement.dataset.gameFonts = fontsReady ? 'ready' : 'fallback';
   document.documentElement.dataset.gameBuild = `level-100-r${PHASER_RELEASE_GATE}`;

@@ -827,16 +827,18 @@ export class GameScene extends Phaser.Scene {
 
     // Hand cursor is hidden until tracking is active.
     this.handCursor = this.add.circle(0, 0, 24, 0x000000, 0).setStrokeStyle(4, 0x4be08a, 1).setDepth(7).setVisible(false);
-    const powerY = height - 50;
-    const bombX = 50;
-    const rainbowX = 150;
-    const superX = 250;
-    this.addSlimHudStrip(150, powerY, 300, 76, theme.accent, 18);
+    // Keep the command wings above mobile hosting chrome while preserving the
+    // launcher silhouette and loaded Pao in the clear centre lane.
+    const powerY = height - 162;
+    const bombX = 46;
+    const rainbowX = 134;
+    const superX = 222;
+    this.addSlimHudStrip(134, powerY, 268, 76, theme.accent, 18);
     this.bombBtn = this.add.image(bombX, powerY - 2, 'power_bomb').setDisplaySize(46, 46).setDepth(20);
     this.rainbowBtn = this.add.image(rainbowX, powerY - 2, 'power_rainbow').setDisplaySize(46, 46).setDepth(20);
     this.superBtn = this.add.image(superX, powerY - 2, this.artifact.texture).setDisplaySize(46, 46).setDepth(20).setAlpha(0.52);
-    this.bombCountText = this.add.text(68, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffd24b', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
-    this.rainbowCountText = this.add.text(168, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d6bcff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
+    this.bombCountText = this.add.text(bombX + 18, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffd24b', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
+    this.rainbowCountText = this.add.text(rainbowX + 18, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d6bcff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
     this.superText = this.add.text(superX, powerY + 22, 'POWER 0%', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: this.artifact.accentCss, fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(21);
@@ -1019,10 +1021,6 @@ export class GameScene extends Phaser.Scene {
     const tracker = getHandTracker();
     if (tracker.isWanted()) {
       void this.startHandTracking(false);
-    } else {
-      // This is idempotent with app-start warm-up and also covers a recoverable
-      // background-load failure before the player presses HAND.
-      void tracker.prepare().catch(() => undefined);
     }
 
     // release the camera when leaving this scene (preference is remembered)
@@ -1343,31 +1341,31 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createTutorialHud(accent: number): void {
-    const panel = this.addHudPlate(VIEW.width / 2, 225, VIEW.width - 36, 110, accent, 24);
+    const panel = this.addHudPlate(VIEW.width / 2, 216, VIEW.width - 36, 94, accent, 24);
     this.tutorialPanel = panel;
-    this.tutorialTitleText = fitText(this.add.text(-318, -38, '', {
+    this.tutorialTitleText = fitText(this.add.text(-318, -32, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.label,
       color: '#ffe7a6',
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0, 0.5), 470, 0.78);
-    this.tutorialInstructionText = this.add.text(-318, -12, '', {
+    this.tutorialInstructionText = this.add.text(-318, -5, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#dce8f7',
       fontStyle: 'bold',
       lineSpacing: 2,
-      wordWrap: { width: 430, useAdvancedWrap: true },
+      wordWrap: { width: 426, useAdvancedWrap: true },
     }).setOrigin(0, 0);
-    this.tutorialProgressText = this.add.text(-318, 40, '', {
+    this.tutorialProgressText = this.add.text(-318, 31, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#8fefff',
       fontStyle: 'bold',
       letterSpacing: 1,
-    }).setOrigin(0, 0.5);
-    this.tutorialActionText = this.add.text(245, 34, '', {
+    }).setOrigin(0, 0.5).setVisible(false);
+    this.tutorialActionText = this.add.text(245, 29, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#06101a',
@@ -1376,7 +1374,7 @@ export class GameScene extends Phaser.Scene {
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0.5);
-    const skip = this.add.text(316, -38, 'SKIP', {
+    const skip = this.add.text(316, -32, 'SKIP', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#aebdd0',
@@ -1385,13 +1383,13 @@ export class GameScene extends Phaser.Scene {
     }).setOrigin(1, 0.5);
     const tutorialActionHit = this.add.zone(
       245,
-      36,
+      30,
       160,
       MIN_MOBILE_COMMAND_TARGET,
     ).setInteractive({ useHandCursor: true });
     const skipHit = this.add.zone(
       310,
-      -40,
+      -34,
       MIN_MOBILE_COMMAND_TARGET,
       MIN_MOBILE_COMMAND_TARGET,
     ).setInteractive({ useHandCursor: true });
@@ -1453,11 +1451,10 @@ export class GameScene extends Phaser.Scene {
     const snapshot = this.tutorialMachine?.snapshot();
     const prompt = snapshot?.currentPrompt;
     if (!snapshot || snapshot.status !== 'active' || !prompt) return;
-    this.tutorialTitleText?.setText(prompt.title.toUpperCase());
-    this.tutorialInstructionText?.setText(prompt.instruction);
-    this.tutorialProgressText?.setText(
-      `TRAINING  ${snapshot.stepIndex + 1}/${snapshot.stepCount}  •  ${snapshot.runMode === 'replay' ? 'REPLAY' : 'FIRST RUN'}`,
+    this.tutorialTitleText?.setText(
+      `${prompt.title.toUpperCase()}  ·  ${snapshot.stepIndex + 1}/${snapshot.stepCount}`,
     );
+    this.tutorialInstructionText?.setText(prompt.instruction);
     this.tutorialActionText?.setText(this.tutorialActionLabel(prompt.step));
     fitText(this.tutorialActionText!, 142, 0.7);
     const showTarget = prompt.step === 'aim'

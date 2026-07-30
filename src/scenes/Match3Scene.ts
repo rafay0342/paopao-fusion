@@ -402,30 +402,33 @@ export class Match3Scene extends Phaser.Scene {
     } else {
       this.boosterButtons.hammer = addArtButton(this, 128, 1_030, 'HAMMER ×1', () => {
         this.selectBooster('hammer');
-      }, 196, 58, 16);
+      }, 196, 64, 16);
       this.boosterButtons.shuffle = addArtButton(this, 360, 1_030, 'RESHUFFLE ×1', () => {
         void this.activateShuffle();
-      }, 224, 58, 16);
+      }, 224, 64, 16);
       this.boosterButtons.spectrum = addArtButton(this, 592, 1_030, 'PRISM ×1', () => {
         this.selectBooster('spectrum');
-      }, 196, 58, 16);
+      }, 196, 64, 16);
     }
 
-    addArtButton(this, 112, 1_112, 'HINT', () => this.showHint(), 168, 58, 16);
-    this.handButton = addArtButton(this, 360, 1_112, `${this.visionLabel()}  •  OFF`, () => {
+    addArtButton(this, 112, 1_096, 'HINT', () => this.showHint(), 168, 68, 16);
+    this.handButton = addArtButton(this, 360, 1_096, `${this.visionLabel()}  •  OFF`, () => {
       void this.toggleHand();
-    }, 286, 58, 16);
+    }, 286, 68, 16);
     this.handButtonText = this.handButton.list.find(
       (child): child is Phaser.GameObjects.Text => child instanceof Phaser.GameObjects.Text,
     );
-    addArtButton(this, 608, 1_112, 'RESTART', () => this.restartLevel(), 168, 58, 16);
+    addArtButton(this, 608, 1_096, 'RESTART', () => this.restartLevel(), 168, 68, 16);
 
-    this.statusText = this.add.text(VIEW.width / 2, 1_176, 'DRAG, TAP-TAP, ARROWS + SPACE, PINCH, OR CALIBRATED EYES', {
+    addArtPanel(this, VIEW.width / 2, 1_166, 664, 52, 11, 0.96);
+    this.statusText = this.add.text(VIEW.width / 2, 1_166, 'DRAG OR TAP-TAP  •  ARROWS + SPACE  •  HAND / EYES OPTIONAL', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
-      color: '#aebdd1',
+      color: '#eef5ff',
       fontStyle: 'bold',
       align: 'center',
+      stroke: '#030611',
+      strokeThickness: 2,
     }).setOrigin(0.5).setDepth(12);
     fitText(this.statusText, 650);
     this.handCursor = this.add.circle(0, 0, 19, 0x5ef2e3, 0.14)
@@ -456,7 +459,6 @@ export class Match3Scene extends Phaser.Scene {
     });
     const tracker = getHandTracker();
     if (tracker.isWanted()) void this.startHandTracking();
-    else void tracker.prepare().catch(() => undefined);
     sharpenSceneText(this);
   }
 
