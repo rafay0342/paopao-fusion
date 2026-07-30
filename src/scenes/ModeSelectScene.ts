@@ -6,7 +6,7 @@ import { getHandTracker } from '../game/handtracking';
 import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
-import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addWorldBackground, DISPLAY_FONT, sharpenSceneText, TYPE, UI_COLORS, UI_FONT } from '../gfx/ui';
+import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addUiScrim, addWorldBackground, DISPLAY_FONT, flowRowCenters, sharpenSceneText, TYPE, UI_COLORS, UI_FONT } from '../gfx/ui';
 
 const MODE_ORDER: GameMode[] = ['classic', 'rush', 'precision'];
 function addModeCrystalIdentity(
@@ -97,6 +97,7 @@ export class ModeSelectScene extends Phaser.Scene {
     this.cameras.main.fadeIn(180, 0, 0, 0);
     addWorldBackground(this, 'world_celestial', 0.25);
     addAmbientMotes(this, 0x82dcff, 22, 2);
+    addUiScrim(this, 0.4, 3);
 
     addArtPanel(this, width / 2, 118, 620, 215, 8, 0.97);
     this.add.text(width / 2, 58, 'CHOOSE YOUR CHALLENGE', {
@@ -156,7 +157,7 @@ export class ModeSelectScene extends Phaser.Scene {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#b9c8df', fontStyle: 'bold', letterSpacing: 1,
       }).setDepth(12);
       if (mode === 'classic') {
-        addArtButton(this, 348, y + 108, 'LEARN CONTROLS', () => {
+        addArtButton(this, 318, y + 108, 'LEARN CONTROLS', () => {
           setMode('classic');
           SFX.click();
           this.scene.start('Game', {
@@ -165,30 +166,32 @@ export class ModeSelectScene extends Phaser.Scene {
             mode: 'classic',
             tutorialReplay: true,
           });
-        }, 190, 52, 14);
+        }, 188, 52, 14);
       }
-      addArtButton(this, 538, y + 101, selected ? 'PLAY SELECTED' : 'PLAY MODE', () => {
+      addArtButton(this, mode === 'classic' ? 540 : 520, y + 101, 'PLAY', () => {
         setMode(mode);
         SFX.click();
         const progress = getProgress();
         this.cameras.main.fadeOut(160, 0, 0, 0);
         this.time.delayedCall(170, () => this.scene.start('WorldMap', { world: furthestUnlockedWorld(progress) }));
-      }, 216, 64, 14);
+      }, mode === 'classic' ? 188 : 236, 64, 14);
     });
 
     if (PHASER_RELEASE_FEATURES.completeGameplay && PHASER_RELEASE_FEATURES.endlessLiveOperations) {
-      addArtButton(this, 116, 1_126, 'MATCH-3', () => {
+      addArtPanel(this, width / 2, 1_126, 684, 76, 7, 0.82);
+      const modeNavX = flowRowCenters([190, 238, 190], width / 2, 14);
+      addArtButton(this, modeNavX[0], 1_126, 'MATCH-3', () => {
         SFX.click();
         this.scene.start('Match3Map');
-      }, 206, 60, 18);
-      addArtButton(this, 360, 1_126, 'PAOPAO ARCADE', () => {
+      }, 190, 60, 18);
+      addArtButton(this, modeNavX[1], 1_126, 'PAOPAO ARCADE', () => {
         SFX.click();
         this.scene.start('ArcadeHub');
-      }, 250, 60, 18);
-      addArtButton(this, 604, 1_126, 'ENDLESS', () => {
+      }, 238, 60, 18);
+      addArtButton(this, modeNavX[2], 1_126, 'ENDLESS', () => {
         SFX.click();
         this.scene.start('Endless', { event: false });
-      }, 206, 60, 18);
+      }, 190, 60, 18);
     } else if (PHASER_RELEASE_FEATURES.completeGameplay) {
       addArtButton(this, width / 2, 1_126, 'PRISM CASCADE  •  MATCH-3 ADVENTURE', () => {
         SFX.click();
@@ -200,10 +203,12 @@ export class ModeSelectScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(12);
     }
 
-    addArtButton(this, 214, height - 66, 'CAMERA CONTROLS', () => {
+    addArtPanel(this, width / 2, height - 66, 640, 76, 7, 0.96);
+    const settingsX = flowRowCenters([280, 280], width / 2, 24);
+    addArtButton(this, settingsX[0], height - 66, 'CAMERA CONTROLS', () => {
       SFX.click(); this.scene.start('GazeSetup');
     }, 280, 58, 18);
-    addArtButton(this, 520, height - 66, `QUALITY  •  ${meta.quality.toUpperCase()}`, () => {
+    addArtButton(this, settingsX[1], height - 66, `QUALITY  •  ${meta.quality.toUpperCase()}`, () => {
       SFX.click();
       cycleQuality();
       this.scene.restart();

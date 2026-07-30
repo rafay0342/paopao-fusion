@@ -30,7 +30,8 @@ describe('world presentation-only corruption states', () => {
     expect(result.state).toBe('corrupted');
     expect(result.backgroundKey).toBe('world_nexus');
     expect(result.atmosphereKey).toBe('world_nexus_atmosphere');
-    expect(result.label).toBe('RIFT VEIL ACTIVE');
+    expect(result.label).toBe('REALM NEEDS RESTORING');
+    expect(result.guidance).toBe('CLEAR THE FINAL STAGE TO RESTORE THIS REALM');
     expect(result.intensity).toBeLessThanOrEqual(0.84);
     expect(cleared).toEqual([25, 26]);
     expect(Object.isFrozen(result)).toBe(true);
@@ -48,7 +49,7 @@ describe('world presentation-only corruption states', () => {
     });
 
     expect(result.state).toBe('restored');
-    expect(result.label).toBe('RIFT STABILIZED');
+    expect(result.label).toBe('REALM RESTORED');
     expect(result.intensity).toBe(0.14);
     expect(cleared).toEqual([25, 26, 27, 28, 29]);
   });

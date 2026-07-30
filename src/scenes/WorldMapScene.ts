@@ -21,9 +21,10 @@ import {
   addAmbientMotes,
   addArtButton,
   addArtPanel,
+  addUiScrim,
   applyLiveSceneQuality,
   addWorldBackground,
-  addWorldStateBadge,
+  clampFloatingCenterX,
   DISPLAY_FONT,
   fitText,
   prefersReducedMotion,
@@ -33,6 +34,7 @@ import {
   UI_COLORS,
   UI_FONT,
   updateArtButtonAccessibility,
+  wrapText,
 } from '../gfx/ui';
 
 interface RoutePosition {
@@ -190,47 +192,30 @@ export class WorldMapScene extends Phaser.Scene {
     this.cameras.main.fadeIn(reducedMotion ? 0 : 180, 0, 0, 0);
     addWorldBackground(this, theme.background, 0.23, presentation);
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 24 : 18, 2);
+    addUiScrim(this, 0.4, 3);
 
-    addArtPanel(this, width / 2, 160, 620, 328, 8, 0.96);
-    this.add.text(width / 2, 64, '✦  ADVENTURE MAP  ✦', {
+    addArtPanel(this, width / 2, 143, 620, 238, 8, 0.96);
+    this.add.text(width / 2, 90, 'ADVENTURE MAP', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe6a6', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 2, '#000000', 6);
-    this.add.text(width / 2, 110, theme.name, {
+    this.add.text(width / 2, 140, theme.name, {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: theme.accentCss, fontStyle: 'bold',
       stroke: '#101225', strokeThickness: 5,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    this.add.text(width / 2, 148, theme.subtitle, {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#f4f1ff', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(12);
-    fitText(this.add.text(
-      width / 2,
-      184,
-      `${mode.name}  ·  OPEN ${progress.unlocked}/${LEVELS.length}  ·  STARS ${totalStars(progress)}/${LEVELS.length * 3}`,
-      {
-        fontFamily: UI_FONT,
-        fontSize: TYPE.section,
-        color: '#f4f7ff',
-        fontStyle: 'bold',
-        letterSpacing: 0.45,
-        stroke: '#050814',
-        strokeThickness: 2,
-      },
-    ).setOrigin(0.5).setDepth(12), 560, 0.9);
-
-    const detailsButton = this.add.container(126, 220).setDepth(16);
+    const detailsButton = this.add.container(104, 207).setDepth(16);
     const detailsSurface = this.add.graphics();
     const detailsLabel = this.add.text(0, 0, 'DETAILS  +', {
       fontFamily: UI_FONT,
-      fontSize: TYPE.section,
+      fontSize: TYPE.caption,
       color: '#f4f1ff',
       fontStyle: 'bold',
       letterSpacing: 0.5,
     }).setOrigin(0.5);
     detailsButton.add([detailsSurface, detailsLabel]);
-    detailsButton.setSize(184, 100).setInteractive({ useHandCursor: true });
-    const detailsSummary = this.add.text(232, 220, '', {
+    detailsButton.setSize(154, 100).setInteractive({ useHandCursor: true });
+    const detailsSummary = this.add.text(194, 207, '', {
       fontFamily: UI_FONT,
-      fontSize: TYPE.section,
+      fontSize: TYPE.caption,
       color: '#f4f7ff',
       fontStyle: 'bold',
       letterSpacing: 0.25,
@@ -241,18 +226,16 @@ export class WorldMapScene extends Phaser.Scene {
     const drawDetailsToggle = (focused = false): void => {
       detailsSurface.clear();
       detailsSurface.fillStyle(focused ? 0x4d3877 : 0x171029, 0.94);
-      detailsSurface.fillRoundedRect(-88, -25, 176, 50, 15);
+      detailsSurface.fillRoundedRect(-72, -25, 144, 50, 15);
       detailsSurface.lineStyle(2, focused ? UI_COLORS.gold : theme.accent, focused ? 0.9 : 0.66);
-      detailsSurface.strokeRoundedRect(-88, -25, 176, 50, 15);
+      detailsSurface.strokeRoundedRect(-72, -25, 144, 50, 15);
     };
-    const collapsedSummary = accountBound
-      ? 'FIRST-CLEAR COINS VERIFIED'
-      : 'SIGN IN ONCE FOR FIRST-CLEAR COINS';
-    const expandedSummary = `${artifact.name}  ·  ${meta.coins.toLocaleString()} COINS  ·  ${meta.mysteryKeys} ${meta.mysteryKeys === 1 ? 'KEY' : 'KEYS'}`;
+    const collapsedSummary = presentation.guidance;
+    const expandedSummary = `${theme.subtitle}  ·  ${mode.name}  ·  OPEN ${progress.unlocked}/${LEVELS.length}  ·  STARS ${totalStars(progress)}/${LEVELS.length * 3}\n${artifact.name}  ·  ${meta.coins.toLocaleString()} COINS  ·  ${meta.mysteryKeys} ${meta.mysteryKeys === 1 ? 'KEY' : 'KEYS'}${accountBound ? '  ·  REWARDS VERIFIED' : ''}`;
     const renderDetails = (): void => {
       detailsLabel.setText(detailsExpanded ? 'DETAILS  −' : 'DETAILS  +');
-      detailsSummary.setScale(1).setText(detailsExpanded ? expandedSummary : collapsedSummary);
-      fitText(detailsSummary, 448, 0.88);
+      detailsSummary.setText(detailsExpanded ? expandedSummary : collapsedSummary);
+      wrapText(detailsSummary, 458, 2);
     };
     const toggleDetails = (): void => {
       detailsExpanded = !detailsExpanded;
@@ -278,8 +261,6 @@ export class WorldMapScene extends Phaser.Scene {
     });
     detailsButton.once(Phaser.GameObjects.Events.DESTROY, () => detailsRegistration.unregister());
 
-    addWorldStateBadge(this, presentation, 288);
-
     setArtButtonHitArea(addArtButton(this, 92, 54, '‹  MENU', () => {
       SFX.click();
       const duration = prefersReducedMotion() ? 0 : 160;
@@ -297,7 +278,7 @@ export class WorldMapScene extends Phaser.Scene {
     const next = (this.world + 1) % WORLD_THEMES.length;
     if (PHASER_RELEASE_FEATURES.completeGameplay) {
       const previousButton = setArtButtonHitArea(
-        addArtButton(this, 84, 384, '‹', () => this.switchWorld(previous), 100, 100, 16),
+        addArtButton(this, 84, 326, '‹', () => this.switchWorld(previous), 100, 100, 16),
         112,
         104,
       );
@@ -305,7 +286,7 @@ export class WorldMapScene extends Phaser.Scene {
         label: `Previous realm: ${WORLD_THEMES[previous].name}`,
       });
       const nextButton = setArtButtonHitArea(
-        addArtButton(this, width - 84, 384, '›', () => this.switchWorld(next), 100, 100, 16),
+        addArtButton(this, width - 84, 326, '›', () => this.switchWorld(next), 100, 100, 16),
         112,
         104,
       );
@@ -316,7 +297,7 @@ export class WorldMapScene extends Phaser.Scene {
     const realmStages = theme.levels.map(campaignStageNumber);
     fitText(this.add.text(
       width / 2,
-      384,
+      326,
       `WORLD ${this.world + 1}/${WORLD_THEMES.length}  ·  STAGES ${realmStages[0]}–${realmStages[realmStages.length - 1]}`,
       {
         fontFamily: UI_FONT,
@@ -340,42 +321,16 @@ export class WorldMapScene extends Phaser.Scene {
       (level) => isLevelUnlocked(level, progress) && !isLevelCleared(level, progress),
     ) ?? [...theme.levels].reverse().find((level) => isLevelUnlocked(level, progress))
       ?? theme.levels[0];
-    // A crooked rune rail makes the route feel like a fracture through the
-    // Shattered Crown instead of a generic progress connector.
-    const path = this.add.graphics().setDepth(7);
+    // The route is subordinate navigation: a quiet dashed rail behind nodes
+    // and labels, never a competing foreground illustration.
+    const path = this.add.graphics().setDepth(5);
     const route = [...positions];
-    const drawRoute = (lineWidth: number, color: number, alpha: number): void => {
-      path.lineStyle(lineWidth, color, alpha);
-      path.beginPath();
-      path.moveTo(route[0].x, route[0].y);
-      route.slice(1).forEach((point) => path.lineTo(point.x, point.y));
-      path.strokePath();
-    };
-    drawRoute(15, 0x020611, 0.64);
     route.slice(1).forEach((point, index) => {
       const start = route[index];
       const kind = mapNodeForLevel(theme.levels[index + 1]).kind;
       const color = nodeKindColor(kind, theme.accent);
       const unlocked = isLevelUnlocked(theme.levels[index + 1], progress);
-      const alpha = unlocked ? 0.78 : 0.28;
-      if (kind === 'mystery') {
-        drawDashedSegment(path, start, point, color, alpha);
-      } else {
-        path.lineStyle(kind === 'boss' ? 6 : kind === 'elite' ? 5 : 4, color, alpha);
-        path.lineBetween(start.x, start.y, point.x, point.y);
-        if (kind === 'elite') {
-          path.lineStyle(2, UI_COLORS.gold, unlocked ? 0.7 : 0.22);
-          path.lineBetween(start.x + 5, start.y, point.x + 5, point.y);
-        }
-      }
-      const radius = kind === 'boss' || kind === 'elite' ? 7 : 5;
-      path.fillStyle(color, unlocked ? 0.74 : 0.3);
-      path.fillPoints([
-        { x: point.x, y: point.y - radius },
-        { x: point.x + radius, y: point.y },
-        { x: point.x, y: point.y + radius },
-        { x: point.x - radius, y: point.y },
-      ], true);
+      drawDashedSegment(path, start, point, color, unlocked ? 0.28 : 0.12);
     });
 
     theme.levels.forEach((level, index) => {
@@ -388,7 +343,7 @@ export class WorldMapScene extends Phaser.Scene {
       const displayStage = campaignStageNumber(level);
       const kindColor = nodeKindColor(mapNode.kind, theme.accent);
       const current = level === currentLevel;
-      const restingAlpha = current ? 1 : unlocked ? 0.54 : 0.3;
+      const restingAlpha = current ? 1 : unlocked ? 0.82 : 0.46;
       const node = this.add.container(pos.x, reducedMotion ? pos.y : pos.y + 26)
         .setDepth(13)
         .setAlpha(reducedMotion ? restingAlpha : 0)
@@ -398,7 +353,7 @@ export class WorldMapScene extends Phaser.Scene {
       const kindFrame = addNodeKindFrame(this, mapNode.kind, kindColor, unlocked);
       const medallion = this.add.image(0, 0, 'level_medallion').setDisplaySize(132, 132);
       if (!unlocked) medallion.setTint(0x5b6070).setAlpha(0.72);
-      const number = this.add.text(0, -3, String(displayStage), {
+      const number = this.add.text(0, -10, String(displayStage), {
         fontFamily: UI_FONT,
         fontSize: TYPE.title,
         color: unlocked ? '#ffffff' : '#c8d0dd',
@@ -418,16 +373,7 @@ export class WorldMapScene extends Phaser.Scene {
               ? 'verification-pending'
               : 'available';
       const rewardText = mapRewardLabel(mapNode.reward, rewardAvailability);
-      const currentBadge = this.add.text(0, -92, current ? 'CURRENT' : '', {
-        fontFamily: UI_FONT,
-        fontSize: TYPE.caption,
-        color: '#fff1a8',
-        fontStyle: 'bold',
-        stroke: '#050814',
-        strokeThickness: 4,
-        letterSpacing: 1,
-      }).setOrigin(0.5);
-      node.add([currentHalo, kindFrame, medallion, number, starText, currentBadge]);
+      node.add([currentHalo, kindFrame, medallion, number, starText]);
       node.setSize(180, 180).setInteractive({ useHandCursor: true });
       if (current && !reducedMotion) {
         this.tweens.add({
@@ -495,12 +441,13 @@ export class WorldMapScene extends Phaser.Scene {
         },
       });
 
-      const labelX = pos.x + pos.side * 112;
+      const chipWidth = 232;
+      const preferredChipCenterX = pos.x + pos.side * (112 + chipWidth / 2);
+      const chipCenterX = clampFloatingCenterX(preferredChipCenterX, chipWidth + 20);
+      const labelX = pos.side > 0 ? chipCenterX - chipWidth / 2 : chipCenterX + chipWidth / 2;
       const originX = pos.side > 0 ? 0 : 1;
       const labelRail = this.add.graphics().setDepth(12);
-      const chipWidth = 232;
-      const chipCenterX = labelX + pos.side * chipWidth / 2;
-      const labelAlpha = current ? 1 : unlocked ? 0.58 : 0.36;
+      const labelAlpha = unlocked ? 1 : 0.62;
       const railStart = pos.x + pos.side * 70;
       const railEnd = labelX - pos.side * 8;
       labelRail.lineStyle(6, 0x020611, 0.7);
@@ -523,7 +470,7 @@ export class WorldMapScene extends Phaser.Scene {
       ], true);
       labelRail.setAlpha(labelAlpha);
       const routeLabel = current
-        ? `CURRENT  ·  ${NODE_KIND_LABEL[mapNode.kind]}`
+        ? `NEXT STAGE  ·  ${NODE_KIND_LABEL[mapNode.kind]}`
         : `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${theme.levels.length}`;
       fitText(this.add.text(chipCenterX, pos.y - 55, routeLabel, {
         fontFamily: UI_FONT,

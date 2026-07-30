@@ -100,8 +100,6 @@ export function resolveWorldPresentation(request: WorldPresentationRequest): Wor
   const intensity = state === 'restored'
     ? 0.14
     : Math.min(0.84, 0.46 + worldIndex * 0.065);
-  const modeLabel = request.mode === 'match3' ? 'PRISM VEIL' : 'RIFT VEIL';
-
   return Object.freeze({
     worldId: request.worldId,
     worldIndex,
@@ -113,10 +111,10 @@ export function resolveWorldPresentation(request: WorldPresentationRequest): Wor
     ember: profile.ember,
     backgroundKey: request.backgroundKey,
     atmosphereKey: `${request.backgroundKey}_atmosphere`,
-    label: state === 'restored' ? 'RIFT STABILIZED' : `${modeLabel} ACTIVE`,
+    label: state === 'restored' ? 'REALM RESTORED' : 'REALM NEEDS RESTORING',
     guidance: state === 'restored'
-      ? 'SCARS REMAIN • MEMORY FLOWS'
-      : 'CLEAR REALM TRIAL TO HEAL',
+      ? 'REPLAY A STAGE OR CONTINUE TO THE NEXT REALM'
+      : `CLEAR THE FINAL ${request.mode === 'match3' ? 'PUZZLE' : 'STAGE'} TO RESTORE THIS REALM`,
     motionSeed: profile.motionSeed,
   });
 }

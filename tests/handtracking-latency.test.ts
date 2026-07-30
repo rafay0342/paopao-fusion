@@ -762,7 +762,7 @@ describe('hand-tracking pipeline latency invariants', () => {
     expect(game).toContain('this.handContinuity.observe(s.gestureStable && s.usableForGesture');
     expect(game).toContain('this.pinchControl.resetForContinuity()');
     expect(game).toContain("continuity === 'cancel'");
-    expect(game).toContain("this.handBtn?.setText(s.gestureStable ? 'UNCERTAIN' : 'STABLE')");
+    expect(game).toContain("this.renderVisionHud('unstable')");
   });
 
   it('feeds capture-time dual pinch evidence into a single physical pinch/release shot', () => {

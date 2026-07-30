@@ -22,7 +22,7 @@ describe('measured hand aim authority', () => {
     const game = read('src/scenes/GameScene.ts');
     const handPoll = section(game, '  private pollHand(): void {', '  /** Interpolate every Phaser frame');
     const latch = section(handPoll, "if (pinchEvent === 'latched')", "} else if (pinchEvent === 'aim-locked')");
-    const release = section(handPoll, "if (pinchEvent === 'released')", '    const phase =');
+    const release = section(handPoll, "if (pinchEvent === 'released')", '    this.renderVisionHud(this.handPinching');
 
     expect(latch).toContain('const measuredAim = this.handOpenAim');
     expect(latch).toContain(': this.handTarget');

@@ -88,6 +88,67 @@ export function fitText(text: Phaser.GameObjects.Text, maxWidth: number, minScal
   return text;
 }
 
+/**
+ * Canvas equivalent of a min-width:0, wrapping text item. Prefer this for
+ * player-facing copy; fitText remains useful for short, single-line metrics.
+ */
+export function wrapText(
+  text: Phaser.GameObjects.Text,
+  maxWidth: number,
+  maxLines = 2,
+): Phaser.GameObjects.Text {
+  text.setScale(1);
+  text.setWordWrapWidth(maxWidth, true);
+  text.setMaxLines(maxLines);
+  return text;
+}
+
+/** Return centered positions for a gap-driven row instead of hand-tuned x offsets. */
+export function flowRowCenters(
+  itemWidths: readonly number[],
+  centerX: number,
+  gap: number,
+): number[] {
+  const totalWidth = itemWidths.reduce((sum, width) => sum + Math.max(0, width), 0)
+    + Math.max(0, itemWidths.length - 1) * Math.max(0, gap);
+  let cursor = centerX - totalWidth / 2;
+  return itemWidths.map((width) => {
+    const safeWidth = Math.max(0, width);
+    const x = cursor + safeWidth / 2;
+    cursor += safeWidth + Math.max(0, gap);
+    return x;
+  });
+}
+
+/** Clamp a floating card or tooltip so both edges remain inside the viewport. */
+export function clampFloatingCenterX(
+  preferredCenterX: number,
+  width: number,
+  padding = 18,
+): number {
+  const halfWidth = Math.max(0, width) / 2;
+  return Phaser.Math.Clamp(preferredCenterX, padding + halfWidth, VIEW.width - padding - halfWidth);
+}
+
+/**
+ * Shared art/UI separation plane. Scenes add this after the world background
+ * and before route/game/UI objects, keeping text contrast predictable.
+ */
+export function addUiScrim(
+  scene: Phaser.Scene,
+  alpha = 0.4,
+  depth = 2,
+): Phaser.GameObjects.Rectangle {
+  return scene.add.rectangle(
+    VIEW.width / 2,
+    VIEW.height / 2,
+    VIEW.width,
+    VIEW.height,
+    0x050711,
+    Phaser.Math.Clamp(alpha, 0.35, 0.45),
+  ).setDepth(depth).setData({ paopaoResourceRole: 'ui-scrim' });
+}
+
 /** Render canvas text at device-aware resolution after a scene is composed. */
 export function sharpenSceneText(scene: Phaser.Scene): void {
   const resolution = Phaser.Math.Clamp(window.devicePixelRatio || 1, 1, getQualityProfile().dprCap);

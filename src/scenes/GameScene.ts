@@ -94,6 +94,7 @@ import {
   addAmbientMotes,
   addArtButton,
   addArtPanel,
+  addUiScrim,
   addWorldBackground,
   applyLiveSceneQuality,
   fitText,
@@ -237,6 +238,7 @@ export class GameScene extends Phaser.Scene {
   private tutorialShotPending = false;
   private tutorialInputMode: GameplayInputMode = 'unknown';
   private aimGfx!: Phaser.GameObjects.Graphics;
+  private orbCueGfx!: Phaser.GameObjects.Graphics;
   private launcher!: Phaser.GameObjects.Image;
   private launcherGlow?: Phaser.GameObjects.Image;
   private launcherFocus!: Phaser.GameObjects.Container;
@@ -501,6 +503,7 @@ export class GameScene extends Phaser.Scene {
     });
     addWorldBackground(this, theme.background, 0.25, presentation);
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 18 : 12, 1);
+    addUiScrim(this, 0.4, 1.5);
 
     const def = LEVELS[Math.min(this.level, LEVELS.length - 1)];
     const displayStage = campaignStageNumber(this.level);
@@ -516,10 +519,9 @@ export class GameScene extends Phaser.Scene {
     this.configureTutorialSession();
 
     this.geom = computeGeom(width);
-    // The unified HUD ends at y=144. Keep one quiet visual gap before the
+    // The grouped HUD and objective end near y=165. Keep a quiet visual gap before the
     // first bubble row instead of reserving space for stacked card rows.
-    this.geom.topPad = this.isTutorialActive() ? 288 : 154;
-    if (!this.isTutorialActive()) this.geom.topPad += 20;
+    this.geom.topPad = this.isTutorialActive() ? 288 : 200;
     this.shooter.x = width / 2;
     this.shooter.y = height - Math.max(110, height * 0.14);
     this.loseLineY = this.shooter.y - this.geom.radius * 2.6;
@@ -653,16 +655,18 @@ export class GameScene extends Phaser.Scene {
 
     // lose line
     const ll = this.add.graphics().setDepth(2);
-    ll.lineStyle(2, 0xff5a6e, 0.34);
+    ll.lineStyle(3, 0xff5a6e, 0.62);
     ll.lineBetween(0, this.loseLineY, width, this.loseLineY);
-    const dangerLabel = this.add.text(width - 18, this.loseLineY - 24, 'DANGER ZONE', {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ff8796', fontStyle: 'bold',
-    }).setOrigin(1, 0.5).setAlpha(0.72).setDepth(3);
+    const dangerChip = this.add.rectangle(width - 92, this.loseLineY - 26, 164, 38, 0x240914, 0.96)
+      .setStrokeStyle(2, 0xff5a6e, 0.92).setDepth(3);
+    const dangerLabel = this.add.text(width - 92, this.loseLineY - 26, 'DANGER ZONE', {
+      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffafba', fontStyle: 'bold', letterSpacing: 1,
+    }).setOrigin(0.5).setDepth(4);
     if (!this.reducedMotion) {
-      this.tweens.add({ targets: [ll, dangerLabel], alpha: 0.34, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      this.tweens.add({ targets: [ll, dangerChip], alpha: 0.58, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
 
-    this.launcherPivotY = this.shooter.y + 111;
+    this.launcherPivotY = this.shooter.y + 45;
 
     // A local, layered vignette separates the launcher from detailed realm
     // art without flattening or darkening the whole playfield.
@@ -686,14 +690,14 @@ export class GameScene extends Phaser.Scene {
     // radius circles are replaced by compact angular energy brackets.
     this.launcherGlow = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
       .setOrigin(0.5, 0.74)
-      .setDisplaySize(244, 244)
+      .setDisplaySize(190, 190)
       .setTint(0xbffaff)
       .setAlpha(0.34)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setDepth(3);
     this.launcher = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
       .setOrigin(0.5, 0.74)
-      .setDisplaySize(226, 226)
+      .setDisplaySize(176, 176)
       .setDepth(4);
     if (!this.reducedMotion) {
       this.tweens.add({
@@ -730,11 +734,13 @@ export class GameScene extends Phaser.Scene {
     this.loadedSprite = this.makeSprite(this.loaded, muzzle.x, muzzle.y).setDepth(5);
     this.pulse(this.loadedSprite);
 
-    // One command bar replaces the previous stack of six competing cards.
-    const hudBar = this.addHudPlate(width / 2, 58, width - 24, 82, theme.accent, 19);
+    // Two priority rows: navigation and run state above, secondary metrics below.
+    const hudBar = this.addHudPlate(width / 2, 66, width - 24, 110, theme.accent, 19);
     const dividers = this.add.graphics();
     dividers.lineStyle(1, theme.accent, 0.28);
-    for (const x of [-290, -92, 48, 154, 220, 286]) dividers.lineBetween(x, -29, x, 29);
+    dividers.lineBetween(-286, 0, 286, 0);
+    dividers.lineBetween(-286, -45, -286, 45);
+    dividers.lineBetween(226, -45, 226, 45);
     hudBar.add(dividers);
 
     this.addHudIconControl(hudBar, -318, 'back', 'MAP', () => {
@@ -743,44 +749,41 @@ export class GameScene extends Phaser.Scene {
       getHandTracker().suspend();
       this.scene.start('WorldMap', { world: LEVELS[this.level].world });
     }, theme.accent);
-    this.addHudIconControl(hudBar, 246, 'pause', 'PAUSE', () => this.showPauseCard(), theme.accent);
+    this.addHudIconControl(hudBar, 258, 'pause', 'PAUSE', () => this.showPauseCard(), theme.accent);
     this.addHudIconControl(hudBar, 320, 'sound', SFX.isMuted() ? 'OFF' : 'SFX', (label) => {
       const muted = SFX.toggleMute();
       label.setText(muted ? 'OFF' : 'SFX');
       SFX.click();
     }, theme.accent);
 
-    this.scoreText = this.add.text(-276, -25, this.visibleScore().toLocaleString(), {
+    this.scoreText = this.add.text(-270, 24, `SCORE ${this.visibleScore().toLocaleString()}`, {
       fontFamily: UI_FONT, fontSize: '22px', color: '#dce7f5', fontStyle: 'bold', stroke: '#07101f', strokeThickness: 3,
     }).setOrigin(0, 0);
-    this.hitText = this.add.text(-276, 10, 'HITS 0  •  0%', {
+    this.hitText = this.add.text(-20, 24, 'HITS 0  ·  ACC 0%', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#c9f7ff', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0, 0);
+    }).setOrigin(0.5, 0);
     hudBar.add([this.scoreText, this.hitText]);
 
-    this.timerText = this.add.text(103, -16, this.formatClock(), {
+    this.timerText = this.add.text(78, -27, this.formatClock(), {
       fontFamily: UI_FONT, fontSize: '24px', color: MODE_DEFS[this.mode].accentCss, fontStyle: 'bold',
       stroke: '#08101d', strokeThickness: 3,
     }).setOrigin(0.5, 0);
-    const timerMode = fitText(this.add.text(103, 13, MODE_DEFS[this.mode].name, {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d2deef', fontStyle: 'bold', letterSpacing: 1,
-    }).setOrigin(0.5, 0), 100);
-    hudBar.add([this.timerText, timerMode]);
+    hudBar.add(this.timerText);
 
-    this.levelText = this.add.text(-22, -1, `STAGE ${String(campaignStageNumber(this.level)).padStart(2, '0')}`, {
+    this.levelText = this.add.text(-92, -27, `STAGE ${String(campaignStageNumber(this.level)).padStart(2, '0')}  ·`, {
       fontFamily: UI_FONT, fontSize: '28px', color: '#ffffff', fontStyle: 'bold', stroke: '#07101f', strokeThickness: 4,
     }).setOrigin(0.5);
-    this.runCoinText = this.add.text(206, 0, '◆  0', {
+    this.runCoinText = this.add.text(206, 24, 'COINS  ◆ 0', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffdc64', fontStyle: 'bold', stroke: '#101225', strokeThickness: 2,
     }).setOrigin(1, 0.5);
     hudBar.add([this.levelText, this.runCoinText]);
 
-    this.comboText = this.add.text(width / 2, 126, '', {
+    this.comboText = this.add.text(width / 2, 146, '', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe27a', fontStyle: 'bold',
       stroke: '#09101e', strokeThickness: 4,
       backgroundColor: 'rgba(41,20,82,0.92)', padding: { x: 12, y: 4 },
     }).setOrigin(0.5).setDepth(22).setAlpha(0);
-    const modeRibbon = this.addSlimHudStrip(width / 2, 126, width - 48, 38, theme.accent, 18);
+    const modeRibbon = this.addSlimHudStrip(width / 2, 146, width - 48, 38, theme.accent, 18);
     if (this.mechanicState.boss) {
       const bossTexture: Record<MechanicKind, string> = {
         crystal: 'boss_prism', vine: 'boss_heartwood', portal: 'boss_astral', ember: 'boss_inferno',
@@ -824,7 +827,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     // Hand cursor is hidden until tracking is active.
-    this.handCursor = this.add.circle(0, 0, 24, 0x000000, 0).setStrokeStyle(3, 0xffffff, 0.8).setDepth(6).setVisible(false);
+    this.handCursor = this.add.circle(0, 0, 24, 0x000000, 0).setStrokeStyle(4, 0x4be08a, 1).setDepth(7).setVisible(false);
+    this.orbCueGfx = this.add.graphics().setDepth(6);
 
     const powerY = height - 50;
     const bombX = 50;
@@ -836,7 +840,7 @@ export class GameScene extends Phaser.Scene {
     this.superBtn = this.add.image(superX, powerY - 2, this.artifact.texture).setDisplaySize(46, 46).setDepth(20).setAlpha(0.52);
     this.bombCountText = this.add.text(68, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffd24b', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
     this.rainbowCountText = this.add.text(168, powerY - 25, '×1', { fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d6bcff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
-    this.superText = this.add.text(superX, powerY + 22, '0%', {
+    this.superText = this.add.text(superX, powerY + 22, 'POWER 0%', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: this.artifact.accentCss, fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(21);
     const bombHit = this.add.zone(
@@ -1342,31 +1346,31 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createTutorialHud(accent: number): void {
-    const panel = this.addHudPlate(VIEW.width / 2, 190, VIEW.width - 36, 132, accent, 24);
+    const panel = this.addHudPlate(VIEW.width / 2, 225, VIEW.width - 36, 110, accent, 24);
     this.tutorialPanel = panel;
-    this.tutorialTitleText = fitText(this.add.text(-318, -46, '', {
+    this.tutorialTitleText = fitText(this.add.text(-318, -38, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.label,
       color: '#ffe7a6',
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0, 0.5), 470, 0.78);
-    this.tutorialInstructionText = this.add.text(-318, -13, '', {
+    this.tutorialInstructionText = this.add.text(-318, -12, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#dce8f7',
       fontStyle: 'bold',
       lineSpacing: 2,
-      wordWrap: { width: 470, useAdvancedWrap: true },
+      wordWrap: { width: 430, useAdvancedWrap: true },
     }).setOrigin(0, 0);
-    this.tutorialProgressText = this.add.text(-318, 51, '', {
+    this.tutorialProgressText = this.add.text(-318, 40, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#8fefff',
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0, 0.5);
-    this.tutorialActionText = this.add.text(230, 40, '', {
+    this.tutorialActionText = this.add.text(245, 34, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#06101a',
@@ -1375,7 +1379,7 @@ export class GameScene extends Phaser.Scene {
       fontStyle: 'bold',
       letterSpacing: 1,
     }).setOrigin(0.5);
-    const skip = this.add.text(316, -46, 'SKIP', {
+    const skip = this.add.text(316, -38, 'SKIP', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#aebdd0',
@@ -1383,14 +1387,14 @@ export class GameScene extends Phaser.Scene {
       letterSpacing: 1,
     }).setOrigin(1, 0.5);
     const tutorialActionHit = this.add.zone(
-      230,
-      48,
+      245,
+      36,
       160,
       MIN_MOBILE_COMMAND_TARGET,
     ).setInteractive({ useHandCursor: true });
     const skipHit = this.add.zone(
       310,
-      -48,
+      -40,
       MIN_MOBILE_COMMAND_TARGET,
       MIN_MOBILE_COMMAND_TARGET,
     ).setInteractive({ useHandCursor: true });
@@ -1956,13 +1960,29 @@ export class GameScene extends Phaser.Scene {
   }
 
   private setHandBtn(state: 'off' | 'loading' | 'on' | 'denied' | 'error'): void {
+    const mapped = state === 'loading' ? 'starting'
+      : state === 'on' ? 'ready'
+        : state === 'denied' ? 'blocked'
+          : state;
+    this.renderVisionHud(mapped);
+  }
+
+  /** One deterministic state machine owns the bottom-right camera copy. */
+  private renderVisionHud(
+    state: 'off' | 'starting' | 'searching' | 'ready' | 'active' | 'busy' | 'unstable' | 'lost' | 'calibrate' | 'blocked' | 'error',
+  ): void {
     if (!this.handBtn) return;
-    const controlLabel = this.visionControlLabel();
     const visual: Record<typeof state, { label: string; text: string; dot: string }> = {
-      off: { label: controlLabel, text: '#b9c5d6', dot: '#6f8094' },
-      loading: { label: 'WAIT', text: '#ffd970', dot: '#ffd970' },
-      on: { label: controlLabel, text: '#54e8cf', dot: '#54e8cf' },
-      denied: { label: 'BLOCK', text: '#ff8496', dot: '#ff8496' },
+      off: { label: this.visionControlLabel(), text: '#b9c5d6', dot: '#6f8094' },
+      starting: { label: 'START', text: '#ffd970', dot: '#ffd970' },
+      searching: { label: 'SEARCH', text: '#ffe083', dot: '#ffe083' },
+      ready: { label: 'READY', text: '#54e8cf', dot: '#54e8cf' },
+      active: { label: 'ACTIVE', text: '#4be08a', dot: '#4be08a' },
+      busy: { label: 'BUSY', text: '#ffd970', dot: '#ffd970' },
+      unstable: { label: 'STEADY', text: '#ffd970', dot: '#ffd970' },
+      lost: { label: 'LOST', text: '#ffc56f', dot: '#ffc56f' },
+      calibrate: { label: 'CALIBRATE', text: '#ff9a99', dot: '#ff9a99' },
+      blocked: { label: 'BLOCKED', text: '#ff8496', dot: '#ff8496' },
       error: { label: 'ERROR', text: '#ffc56f', dot: '#ffc56f' },
     };
     const next = visual[state];
@@ -2098,16 +2118,14 @@ export class GameScene extends Phaser.Scene {
     const s = getHandTracker().sample();
     if (!s) {
       if (!this.handHasSeen) {
-        this.handBtn?.setText('SEARCH').setColor('#ffe083');
-        this.handStatusText?.setColor('#ffe083');
+        this.renderVisionHud('searching');
         return;
       }
       const lostFor = now - this.handLastSeenAt;
       if (this.pinchControl.cancelForLoss(now, this.handLastSeenAt) === 'cancelled') {
         this.handPinching = false;
         this.handLockedAim = null;
-        this.handBtn?.setText('LOST').setColor('#ffc56f');
-        this.handStatusText?.setColor('#ffc56f');
+        this.renderVisionHud('lost');
       }
       if (lostFor > 450) {
         this.handTarget = null;
@@ -2124,8 +2142,7 @@ export class GameScene extends Phaser.Scene {
         this.handContinuity.reset();
         this.pinchControl.reset();
         this.handPinching = false;
-        this.handBtn?.setText('SHOW').setColor('#ffc56f');
-        this.handStatusText?.setColor('#ffc56f');
+        this.renderVisionHud('lost');
       }
       return;
     }
@@ -2150,8 +2167,7 @@ export class GameScene extends Phaser.Scene {
       this.handContinuity.reset();
       this.handLockedAim = null;
       this.handPinching = false;
-      this.handBtn?.setText('WAIT').setColor('#ffd970');
-      this.handStatusText?.setColor('#ffd970');
+      this.renderVisionHud('busy');
       return;
     }
 
@@ -2167,8 +2183,7 @@ export class GameScene extends Phaser.Scene {
       } else {
         this.pinchControl.holdForUncertainty(s.timestampMs);
       }
-      this.handBtn?.setText(s.gestureStable ? 'UNCERTAIN' : 'STABLE').setColor('#ffd970');
-      this.handStatusText?.setColor('#ffd970');
+      this.renderVisionHud('unstable');
       return;
     }
 
@@ -2234,17 +2249,7 @@ export class GameScene extends Phaser.Scene {
       this.shootAt(aim.x, aim.y);
     }
 
-    const phase = this.pinchControl.getPhase();
-    const phaseLabel = this.handPinching
-      ? 'TOUCH'
-      : phase === 'open'
-        ? 'FREE'
-        : phase === 'ready'
-          ? 'READY'
-          : 'FREE';
-    const contactColor = this.handPinching ? '#4be08a' : '#54e8cf';
-    this.handBtn?.setText(phaseLabel).setColor(contactColor);
-    this.handStatusText?.setText('●').setColor(contactColor);
+    this.renderVisionHud(this.handPinching ? 'active' : 'ready');
   }
 
   private pollGaze(): void {
@@ -2253,8 +2258,7 @@ export class GameScene extends Phaser.Scene {
     const observation = getHandTracker().sampleGaze();
     if (!observation) {
       if (!this.gazeHasSeen) {
-        this.handBtn?.setText('FACE').setColor('#ffe083');
-        this.handStatusText?.setColor('#ffe083');
+        this.renderVisionHud('searching');
         return;
       }
       const lostFor = now - this.gazeLastSeenAt;
@@ -2278,8 +2282,7 @@ export class GameScene extends Phaser.Scene {
       if (lostFor > 1_200) {
         this.gazeAimController.reset();
         this.gazeHasSeen = false;
-        this.handBtn?.setText('FACE').setColor('#ffc56f');
-        this.handStatusText?.setColor('#ffc56f');
+        this.renderVisionHud('lost');
       }
       return;
     }
@@ -2299,8 +2302,7 @@ export class GameScene extends Phaser.Scene {
       this.gazeBlinkAim = null;
       this.handTarget = null;
       this.handCursor?.setVisible(false);
-      this.handBtn?.setText('RECAL').setColor('#ff9a99');
-      this.handStatusText?.setColor('#ff9a99');
+      this.renderVisionHud('calibrate');
       return;
     }
     const point = profile
@@ -2321,8 +2323,7 @@ export class GameScene extends Phaser.Scene {
       this.gazeStableAim = null;
       this.gazeBlinkAim = null;
       this.handCursor?.setVisible(false);
-      this.handBtn?.setText('CAL').setColor('#ff9a99');
-      this.handStatusText?.setColor('#ff9a99');
+      this.renderVisionHud('calibrate');
       return;
     }
 
@@ -2347,8 +2348,7 @@ export class GameScene extends Phaser.Scene {
     if (this.visionMode === 'gaze-hand') {
       this.gazeBlinkAim = null;
       const locked = this.gazeStableAim && now - this.gazeStableAim.timestampMs <= 260;
-      this.handBtn?.setText(locked ? 'LOOK' : 'STEADY').setColor(locked ? '#54e8cf' : '#ffd970');
-      this.handStatusText?.setColor(locked ? '#54e8cf' : '#ffd970');
+      this.renderVisionHud(locked ? 'ready' : 'unstable');
       return;
     }
 
@@ -2365,9 +2365,7 @@ export class GameScene extends Phaser.Scene {
         stableForAction: point.stableForAction,
       });
       activate = dwell.action;
-      const progress = Math.round(dwell.progress * 100);
-      this.handBtn?.setText(stableTarget && progress > 0 ? `${progress}%` : 'DWELL')
-        .setColor(stableTarget ? '#54e8cf' : '#ffd970');
+      this.renderVisionHud(stableTarget && dwell.progress > 0 ? 'active' : 'ready');
     } else {
       const blinkEvent = this.gazeBlinkControl.update({
         timestampMs: observation.timestampMs,
@@ -2388,9 +2386,7 @@ export class GameScene extends Phaser.Scene {
           this.gazeBlinkAim = null;
         }
       }
-      this.handBtn?.setText(
-        point.stableForAction ? 'BLINK ×2' : 'HOLD',
-      ).setColor('#54e8cf');
+      this.renderVisionHud(point.stableForAction ? 'ready' : 'unstable');
     }
     this.handStatusText?.setColor(stableTarget ? '#54e8cf' : '#ffd970');
     if (!activate || this.flying) return;
@@ -2477,8 +2473,7 @@ export class GameScene extends Phaser.Scene {
       this.handSmooth = { ...aim };
       this.shootAt(aim.x, aim.y);
     }
-    this.handBtn?.setText(this.handPinching ? 'PINCH' : 'LOOK').setColor('#54e8cf');
-    this.handStatusText?.setColor(this.handPinching ? '#4be08a' : '#54e8cf');
+    this.renderVisionHud(this.handPinching ? 'active' : 'ready');
   }
 
   /** Interpolate every Phaser frame so 15–20 recognition FPS still feels fluid. */
@@ -2497,10 +2492,37 @@ export class GameScene extends Phaser.Scene {
     this.handSmooth.x = Phaser.Math.Linear(this.handSmooth.x, target.x, follow);
     this.handSmooth.y = Phaser.Math.Linear(this.handSmooth.y, target.y, follow);
     this.updateAimAt(this.handSmooth.x, this.handSmooth.y, true);
-    const showCameraCursor = this.visionMode === 'hand' || getGazeSettings().showCursor;
-    this.handCursor?.setVisible(showCameraCursor)
-      .setPosition(this.handSmooth.x, this.handSmooth.y)
-      .setStrokeStyle(3, this.handPinching ? 0x4be08a : 0xffffff, this.handPinching ? 1 : 0.82);
+    const gestureActive = this.handPinching || this.pinchControl.isEngaged();
+    this.renderGestureRing(gestureActive, this.handSmooth.x, this.handSmooth.y);
+  }
+
+  private renderGestureRing(active: boolean, x: number, y: number): void {
+    const ring = this.handCursor;
+    if (!ring) return;
+    if (active) {
+      this.tweens.killTweensOf(ring);
+      ring.setData('fading', false)
+        .setPosition(x, y)
+        .setStrokeStyle(4, 0x4be08a, 1)
+        .setScale(1)
+        .setAlpha(1)
+        .setVisible(true);
+      return;
+    }
+    if (!ring.visible || ring.getData('fading')) return;
+    ring.setData('fading', true);
+    if (this.reducedMotion) {
+      ring.setVisible(false).setAlpha(0).setData('fading', false);
+      return;
+    }
+    this.tweens.add({
+      targets: ring,
+      alpha: 0,
+      scale: 1.16,
+      duration: 140,
+      ease: 'Sine.easeOut',
+      onComplete: () => ring.setVisible(false).setScale(1).setData('fading', false),
+    });
   }
 
   private toast(msg: string): void {
@@ -2555,13 +2577,13 @@ export class GameScene extends Phaser.Scene {
   private updateStatsHud(): void {
     const accuracy = this.shots ? Math.round((this.hits / this.shots) * 100) : 0;
     if (this.hitText) {
-      this.hitText.setScale(1).setText(`HITS ${this.hits}  •  ${accuracy}%`);
-      fitText(this.hitText, 200, 0.84);
+      this.hitText.setScale(1).setText(`HITS ${this.hits}  ·  ACC ${accuracy}%`);
+      fitText(this.hitText, 190, 0.78);
     }
     const projected = Math.round(this.runCoins * MODE_DEFS[this.mode].coinMultiplier * (this.artifact.id === 'fortune' ? 2 : 1));
     if (this.runCoinText) {
-      this.runCoinText.setScale(1).setText(`◆  ${projected.toLocaleString()}`);
-      fitText(this.runCoinText, 82, 0.84);
+      this.runCoinText.setScale(1).setText(`COINS  ◆ ${projected.toLocaleString()}`);
+      fitText(this.runCoinText, 126, 0.78);
     }
     this.updateObjectiveHud();
   }
@@ -2575,7 +2597,7 @@ export class GameScene extends Phaser.Scene {
     const multiplier = this.artifact.id === 'void' ? 1.25 : 1;
     this.superCharge = Phaser.Math.Clamp(this.superCharge + amount * multiplier, 0, 100);
     const ready = this.superCharge >= 100;
-    this.superText?.setText(ready ? 'READY' : `${Math.floor(this.superCharge)}%`)
+    this.superText?.setText(ready ? 'POWER READY' : `POWER ${Math.floor(this.superCharge)}%`)
       .setColor(ready ? '#fff1a1' : this.artifact.accentCss);
     this.superBtn?.setAlpha(ready ? 1 : 0.52);
     if (ready && this.superBtn) {
@@ -2781,6 +2803,44 @@ export class GameScene extends Phaser.Scene {
       : this.add.sprite(x, y, texture);
     s.setScale(this.scaleFor());
     return s;
+  }
+
+  /** High-contrast inner glyphs keep every orb identifiable without colour. */
+  private drawOrbAccessibilityCues(): void {
+    const graphics = this.orbCueGfx;
+    if (!graphics) return;
+    graphics.clear();
+    const draw = (color: ColorKey, x: number, y: number, radius = 10): void => {
+      graphics.fillStyle(0x07101d, 0.64).fillCircle(x, y, radius + 4);
+      graphics.lineStyle(3, 0xf8fbff, 0.94);
+      if (color === 'red') {
+        graphics.strokeTriangle(x, y - radius, x + radius, y + radius, x - radius, y + radius);
+      } else if (color === 'green') {
+        graphics.lineBetween(x - radius, y - 3, x, y + radius);
+        graphics.lineBetween(x, y + radius, x + radius, y - 3);
+      } else if (color === 'blue') {
+        graphics.strokeCircle(x, y, radius - 1);
+      } else if (color === 'yellow') {
+        graphics.lineBetween(x - radius, y, x + radius, y);
+        graphics.lineBetween(x, y - radius, x, y + radius);
+      } else if (color === 'purple') {
+        graphics.strokePoints([
+          { x, y: y - radius }, { x: x + radius, y },
+          { x, y: y + radius }, { x: x - radius, y },
+        ], true);
+      } else {
+        graphics.lineBetween(x - radius, y - 5, x + radius, y - 5);
+        graphics.lineBetween(x - radius, y + 5, x + radius, y + 5);
+      }
+    };
+    this.bubbles.filter((bubble) => bubble.active && bubble.sprite.visible)
+      .forEach((bubble) => draw(bubble.color, bubble.sprite.x, bubble.sprite.y));
+    if (this.loadedSprite?.visible && this.loadedSprite.active) {
+      draw(this.loaded, this.loadedSprite.x, this.loadedSprite.y, 9);
+    }
+    if (this.ballSprite?.visible && this.ballSprite.active) {
+      draw(this.loaded, this.ballSprite.x, this.ballSprite.y, 9);
+    }
   }
 
   private pulse(s: Phaser.GameObjects.Sprite): void {
@@ -3030,7 +3090,7 @@ export class GameScene extends Phaser.Scene {
 
   private muzzlePosition(): { x: number; y: number } {
     const angle = Phaser.Math.DegToRad(this.launcher?.angle ?? 0);
-    const barrelLength = 111;
+    const barrelLength = 45;
     return {
       x: (this.launcher?.x ?? this.shooter.x) + Math.sin(angle) * barrelLength,
       y: (this.launcher?.y ?? this.launcherPivotY) - Math.cos(angle) * barrelLength,
@@ -3082,7 +3142,8 @@ export class GameScene extends Phaser.Scene {
     const step = this.geom.radius * 0.74;
     const r = this.geom.radius;
     const guidePoints: { x: number; y: number }[] = [];
-    for (let i = 0; i < 56; i++) {
+    const maxGuideDistance = 420;
+    for (let i = 0; i < 32 && i * step < maxGuideDistance; i++) {
       px += sx * step;
       py += sy * step;
       if (px < r) {
@@ -3409,7 +3470,7 @@ export class GameScene extends Phaser.Scene {
     const fallGain = fell.length * 40;
     const gained = Math.round((rawGain + fallGain) * (this.artifact.id === 'phoenix' ? 1.1 : 1));
     this.score += Math.round(gained * this.scoreMultiplier);
-    this.scoreText.setText(this.visibleScore().toLocaleString());
+    this.scoreText.setText(`SCORE ${this.visibleScore().toLocaleString()}`);
     if (affected.length) {
       this.specialHits++;
       this.addRunCoins(Math.max(3, affected.length * 2 + fell.length));
@@ -3443,7 +3504,7 @@ export class GameScene extends Phaser.Scene {
       this.tweens.killTweensOf(this.superBtn);
       this.superBtn.setAngle(0).setAlpha(0.52);
     }
-    this.superText?.setText('0%').setColor(this.artifact.accentCss);
+    this.superText?.setText('POWER 0%').setColor(this.artifact.accentCss);
 
     const active = this.bubbles.filter((bubble) => bubble.active);
     let targets: Bub[] = [];
@@ -3514,7 +3575,7 @@ export class GameScene extends Phaser.Scene {
     if (this.artifact.id === 'phoenix') bonusScore = Math.round(bonusScore * 1.1);
     this.score += Math.round(bonusScore * this.scoreMultiplier);
     if (targets.length) this.addRunCoins(Math.max(4, targets.length * 2 + fell.length));
-    this.scoreText.setText(this.visibleScore().toLocaleString());
+    this.scoreText.setText(`SCORE ${this.visibleScore().toLocaleString()}`);
     this.bubbles = this.bubbles.filter((bubble) => bubble.active || bubble.sprite.active);
     this.reconcilePreShotQueueWithBoard();
     this.updateStatsHud();
@@ -3527,6 +3588,7 @@ export class GameScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     this.updateModeClock(delta);
+    this.drawOrbAccessibilityCues();
     if (!this.running) return;
     if (this.visionMode === 'hand') {
       this.pollHand();
@@ -3713,7 +3775,7 @@ export class GameScene extends Phaser.Scene {
         });
       }
     }
-    this.scoreText.setText(this.visibleScore().toLocaleString());
+    this.scoreText.setText(`SCORE ${this.visibleScore().toLocaleString()}`);
     this.bubbles = this.bubbles.filter((b) => b.active || b.sprite.active);
     const emberErupted = this.advanceEmbersAfterShot();
     this.finishResolvedShot(matched, emberErupted);

@@ -14,7 +14,8 @@ describe('World map layout regression', () => {
   const campaign = readProjectFile('shared/fixtures/campaign-v1.json');
 
   it('uses bounded, non-repeating reward and status presentation', () => {
-    expect(worldMap).toContain('SIGN IN ONCE FOR FIRST-CLEAR COINS');
+    expect(worldMap).toContain('const collapsedSummary = presentation.guidance');
+    expect(worldMap).toContain('wrapText(detailsSummary, 458, 2)');
     expect(worldMap).toContain("'LOCAL PLAY REMAINS AVAILABLE'");
     expect(worldMap).toContain('node.setSize(180, 180)');
     expect(worldMap).not.toContain('const rewardChest');
@@ -30,8 +31,9 @@ describe('World map layout regression', () => {
     expect(worldMap).toContain('polygonPoints(4, 82)');
     expect(worldMap).toContain('polygonPoints(8, 76');
     expect(worldMap).toContain('polygonPoints(6, 79)');
-    expect(worldMap).toContain('addWorldStateBadge(this, presentation, 288)');
-    expect(worldMap).toContain("addArtButton(this, 84, 384, '‹'");
+    expect(worldMap).not.toContain('addWorldStateBadge(this');
+    expect(worldMap).toContain("addArtButton(this, 84, 326, '‹'");
+    expect(worldMap).toContain('clampFloatingCenterX');
     expect(worldMap).toContain('112,\n        104');
   });
 

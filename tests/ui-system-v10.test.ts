@@ -87,11 +87,11 @@ describe('V10 Crownshard visual grammar', () => {
     }
   });
 
-  it('renders the map route as a fractured, kind-specific rune rail with bounded reward copy', () => {
+  it('renders the map route as a subtle, kind-specific dashed rail with bounded reward copy', () => {
     const map = readText('src/scenes/WorldMapScene.ts');
     expect(map).toContain('const route = [');
-    expect(map).toContain('drawRoute(15, 0x020611');
     expect(map).toContain('drawDashedSegment(path, start, point');
+    expect(map).toContain('unlocked ? 0.28 : 0.12');
     expect(map).toContain('addNodeKindFrame(this, mapNode.kind');
     expect(map).toContain('labelRail');
     expect(map).toContain('node.setSize(180, 180)');

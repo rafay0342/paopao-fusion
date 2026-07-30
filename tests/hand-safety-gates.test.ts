@@ -91,7 +91,11 @@ describe('hand worker and gameplay safety gates', () => {
       const source = readText(path);
       const poll = source.slice(source.indexOf('private pollHand(): void'));
       expect(poll).toContain('if (!this.handHasSeen)');
-      expect(poll).toContain('SEARCH');
+      if (path.endsWith('GameScene.ts')) {
+        expect(poll).toContain("this.renderVisionHud('searching')");
+      } else {
+        expect(poll).toContain('SEARCH');
+      }
     }
     const gamePoll = readText('src/scenes/GameScene.ts').slice(
       readText('src/scenes/GameScene.ts').indexOf('private pollHand(): void'),

@@ -89,8 +89,18 @@ function loadStageFor(progress: number): string {
 function fileProgressLabel(key: string): string {
   if (key === 'intro_poster') return 'Framing the opening chapter';
   if (key.startsWith('world_')) {
-    const worldName = key.replace('world_', '').replace('frostbound', 'frost').toUpperCase();
-    return `Mapping ${worldName} realm`;
+    const worldCopy = [
+      ['arcade_rainway', 'the Rainway Arcade'],
+      ['arcade_memory', 'the Memory Arcade'],
+      ['frostbound', 'the Frost Realm'],
+      ['crystal', 'the Crystal Realm'],
+      ['emerald', 'the Emerald Realm'],
+      ['celestial', 'the Celestial Realm'],
+      ['ember', 'the Ember Realm'],
+      ['nexus', 'the Nexus Realm'],
+    ] as const;
+    const friendly = worldCopy.find(([token]) => key.includes(token))?.[1] ?? 'the next realm';
+    return `Mapping ${friendly}`;
   }
   if (key.startsWith('bubble_')) return 'Tuning the equipped orb family';
   if (key.startsWith('ui_') || key === 'level_medallion') return 'Forging the royal interface';
@@ -204,7 +214,7 @@ export class BootScene extends Phaser.Scene {
         .setStrokeStyle(2, 0x6d5635, 0.75);
       const core = this.add.circle(x, 640, 12, 0x211b30, 1)
         .setStrokeStyle(1, world.accent, 0.22);
-      const label = this.add.text(x, 680, REALM_SHORT_NAMES[index], {
+      const label = this.add.text(x, index % 2 === 0 ? 676 : 706, REALM_SHORT_NAMES[index], {
         fontFamily: UI_FONT,
         fontSize: TYPE.caption,
         color: '#665d75',
@@ -219,13 +229,13 @@ export class BootScene extends Phaser.Scene {
     const track = this.add.rectangle(VIEW.width / 2, 751, 432, 16, 0x0e1123, 1)
       .setStrokeStyle(1, 0x8c6d3d, 0.9);
     const bar = this.add.graphics();
-    const percent = this.add.text(VIEW.width / 2, 751, '0%', {
+    const percent = this.add.text(610, 751, '0%', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#ead5aa',
       fontStyle: 'bold',
       resolution: textResolution,
-    }).setOrigin(0.5);
+    }).setOrigin(0, 0.5);
     const status = this.add.text(VIEW.width / 2, 797, LOAD_STAGES[0].label, {
       fontFamily: UI_FONT,
       fontSize: TYPE.label,
@@ -303,7 +313,8 @@ export class BootScene extends Phaser.Scene {
 
     const onProgress = (value: number): void => renderProgress(value);
     const onFileProgress = (file: Phaser.Loader.File, value: number): void => {
-      detail.setText(`${fileProgressLabel(String(file.key))}  ·  ${Math.round(Phaser.Math.Clamp(value, 0, 1) * 100)}%`);
+      void value;
+      detail.setText(fileProgressLabel(String(file.key)));
     };
     const onLoadError = (file: Phaser.Loader.File): void => {
       const key = String(file.key);

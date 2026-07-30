@@ -15,19 +15,23 @@ describe('production-readiness gameplay clarity pass', () => {
 
   it('prioritizes stage, objective, mobile spacing and larger icon art', () => {
     const source = read('../src/scenes/GameScene.ts');
-    expect(source).toContain('this.geom.topPad += 20');
-    expect(source).toContain("width / 2, 58, width - 24, 82");
+    expect(source).toContain('this.geom.topPad = this.isTutorialActive() ? 288 : 200');
+    expect(source).toContain("width / 2, 66, width - 24, 110");
+    expect(source).toContain('SCORE ${this.visibleScore().toLocaleString()}');
+    expect(source).toContain('ACC ${accuracy}%');
     expect(source).toContain("fontSize: '28px'");
     expect(source).toContain('this.time.delayedCall(3_000');
     expect(source).toContain('icon.lineStyle(4');
   });
 
-  it('makes the current map route visually dominant', () => {
+  it('makes the current map node dominant while keeping the route subordinate', () => {
     const source = read('../src/scenes/WorldMapScene.ts');
     expect(source).toContain('const currentLevel =');
-    expect(source).toContain('current ? 1 : unlocked ? 0.54 : 0.3');
-    expect(source).toContain("current ? 'CURRENT' : ''");
-    expect(source).toContain('labelAlpha = current ? 1 : unlocked ? 0.58 : 0.36');
+    expect(source).toContain('current ? 1 : unlocked ? 0.82 : 0.46');
+    expect(source).not.toContain("current ? 'CURRENT' : ''");
+    expect(source).toContain('labelAlpha = unlocked ? 1 : 0.62');
+    expect(source).toContain('drawDashedSegment(path');
+    expect(source).toContain('clampFloatingCenterX');
     expect(source).toContain('fillRoundedRect(labelBoxLeft');
   });
 
@@ -37,8 +41,9 @@ describe('production-readiness gameplay clarity pass', () => {
     expect(source).toContain('if (index === 0)');
     expect(source).toContain('} else if (index === 1) {');
     expect(source).toContain("'ACTIVE'");
-    expect(source).toContain("selected ? 'PLAY SELECTED' : 'PLAY MODE'");
-    expect(source).toContain('216, 64, 14');
+    expect(source).toContain("y + 101, 'PLAY'");
+    expect(source).not.toContain('PLAY SELECTED');
+    expect(source).toContain('flowRowCenters');
   });
 
   it('presents the origin story as five short mobile cards', () => {

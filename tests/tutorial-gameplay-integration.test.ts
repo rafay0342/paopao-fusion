@@ -38,7 +38,7 @@ describe('Level-0 tutorial gameplay adapter', () => {
     expect(create).toContain('LEVEL_ZERO_TUTORIAL_FIXTURE.opening');
     expect(create).toContain('buildCampaignOpening({ level: this.level, mode: this.mode })');
     expect(create).toContain('this.buildGrid(def.rows, campaignOpening?.grid)');
-    expect(create).toContain('this.geom.topPad = this.isTutorialActive() ? 288 : 154');
+    expect(create).toContain('this.geom.topPad = this.isTutorialActive() ? 288 : 200');
 
     const grid = section('  private buildGrid(', '  private toCells():');
     expect(grid).toContain('if (authoredColor === null) continue;');
@@ -144,7 +144,7 @@ describe('Level-0 tutorial gameplay adapter', () => {
       '  private pollGaze(): void {',
     );
     expect(poll).toContain('if (!this.handHasSeen)');
-    expect(poll).toContain("this.handBtn?.setText('SEARCH')");
+    expect(poll).toContain("this.renderVisionHud('searching')");
     expect(poll).not.toContain('getHandTracker().disable()');
     expect(poll).not.toContain('this.fallbackTutorialToPointerInput()');
 
@@ -180,10 +180,11 @@ describe('Level-0 tutorial gameplay adapter', () => {
 });
 
 describe('Tutorial replay entry point', () => {
-  it('exposes Learn Controls from Classic without replacing normal Play Mode', () => {
+  it('exposes Learn Controls from Classic without replacing the normal Play action', () => {
     expect(modes).toContain("'LEARN CONTROLS'");
     expect(modes).toContain('tutorialReplay: true');
     expect(modes).toContain("this.scene.start('WorldMap'");
-    expect(modes).toContain("'PLAY MODE'");
+    expect(modes).toContain("y + 101, 'PLAY'");
+    expect(modes).not.toContain('PLAY SELECTED');
   });
 });
