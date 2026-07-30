@@ -65,3 +65,20 @@ describe('GameScene transactional effects', () => {
     expect(end).toContain('if (!this.terminalLatch.tryEnter()) return;');
   });
 });
+
+describe('GameScene premium gameplay art integrity', () => {
+  it('keeps the original launcher proportions and muzzle geometry', () => {
+    const create = section('  create(): void {', '  /** Build a faceted crystal command plate');
+    const muzzle = section('  private muzzlePosition():', '  private tutorialTargetPoint');
+    expect(create).toContain('this.launcherPivotY = this.shooter.y + 111;');
+    expect(create).toContain('.setDisplaySize(244, 244)');
+    expect(create).toContain('.setDisplaySize(226, 226)');
+    expect(muzzle).toContain('const barrelLength = 111;');
+  });
+
+  it('renders equipped orb textures without hard-coded glyph overlays', () => {
+    expect(source).not.toContain('orbCueGfx');
+    expect(source).not.toContain('drawOrbAccessibilityCues');
+    expect(source).not.toContain('strokeTriangle');
+  });
+});

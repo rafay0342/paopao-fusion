@@ -238,7 +238,6 @@ export class GameScene extends Phaser.Scene {
   private tutorialShotPending = false;
   private tutorialInputMode: GameplayInputMode = 'unknown';
   private aimGfx!: Phaser.GameObjects.Graphics;
-  private orbCueGfx!: Phaser.GameObjects.Graphics;
   private launcher!: Phaser.GameObjects.Image;
   private launcherGlow?: Phaser.GameObjects.Image;
   private launcherFocus!: Phaser.GameObjects.Container;
@@ -666,7 +665,7 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: [ll, dangerChip], alpha: 0.58, duration: 760, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
 
-    this.launcherPivotY = this.shooter.y + 45;
+    this.launcherPivotY = this.shooter.y + 111;
 
     // A local, layered vignette separates the launcher from detailed realm
     // art without flattening or darkening the whole playfield.
@@ -690,14 +689,14 @@ export class GameScene extends Phaser.Scene {
     // radius circles are replaced by compact angular energy brackets.
     this.launcherGlow = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
       .setOrigin(0.5, 0.74)
-      .setDisplaySize(190, 190)
+      .setDisplaySize(244, 244)
       .setTint(0xbffaff)
       .setAlpha(0.34)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setDepth(3);
     this.launcher = this.add.image(this.shooter.x, this.launcherPivotY, 'crystal_launcher')
       .setOrigin(0.5, 0.74)
-      .setDisplaySize(176, 176)
+      .setDisplaySize(226, 226)
       .setDepth(4);
     if (!this.reducedMotion) {
       this.tweens.add({
@@ -828,8 +827,6 @@ export class GameScene extends Phaser.Scene {
 
     // Hand cursor is hidden until tracking is active.
     this.handCursor = this.add.circle(0, 0, 24, 0x000000, 0).setStrokeStyle(4, 0x4be08a, 1).setDepth(7).setVisible(false);
-    this.orbCueGfx = this.add.graphics().setDepth(6);
-
     const powerY = height - 50;
     const bombX = 50;
     const rainbowX = 150;
@@ -2805,44 +2802,6 @@ export class GameScene extends Phaser.Scene {
     return s;
   }
 
-  /** High-contrast inner glyphs keep every orb identifiable without colour. */
-  private drawOrbAccessibilityCues(): void {
-    const graphics = this.orbCueGfx;
-    if (!graphics) return;
-    graphics.clear();
-    const draw = (color: ColorKey, x: number, y: number, radius = 10): void => {
-      graphics.fillStyle(0x07101d, 0.64).fillCircle(x, y, radius + 4);
-      graphics.lineStyle(3, 0xf8fbff, 0.94);
-      if (color === 'red') {
-        graphics.strokeTriangle(x, y - radius, x + radius, y + radius, x - radius, y + radius);
-      } else if (color === 'green') {
-        graphics.lineBetween(x - radius, y - 3, x, y + radius);
-        graphics.lineBetween(x, y + radius, x + radius, y - 3);
-      } else if (color === 'blue') {
-        graphics.strokeCircle(x, y, radius - 1);
-      } else if (color === 'yellow') {
-        graphics.lineBetween(x - radius, y, x + radius, y);
-        graphics.lineBetween(x, y - radius, x, y + radius);
-      } else if (color === 'purple') {
-        graphics.strokePoints([
-          { x, y: y - radius }, { x: x + radius, y },
-          { x, y: y + radius }, { x: x - radius, y },
-        ], true);
-      } else {
-        graphics.lineBetween(x - radius, y - 5, x + radius, y - 5);
-        graphics.lineBetween(x - radius, y + 5, x + radius, y + 5);
-      }
-    };
-    this.bubbles.filter((bubble) => bubble.active && bubble.sprite.visible)
-      .forEach((bubble) => draw(bubble.color, bubble.sprite.x, bubble.sprite.y));
-    if (this.loadedSprite?.visible && this.loadedSprite.active) {
-      draw(this.loaded, this.loadedSprite.x, this.loadedSprite.y, 9);
-    }
-    if (this.ballSprite?.visible && this.ballSprite.active) {
-      draw(this.loaded, this.ballSprite.x, this.ballSprite.y, 9);
-    }
-  }
-
   private pulse(s: Phaser.GameObjects.Sprite): void {
     if (this.reducedMotion) return;
     const baseScale = this.scaleFor();
@@ -3090,7 +3049,7 @@ export class GameScene extends Phaser.Scene {
 
   private muzzlePosition(): { x: number; y: number } {
     const angle = Phaser.Math.DegToRad(this.launcher?.angle ?? 0);
-    const barrelLength = 45;
+    const barrelLength = 111;
     return {
       x: (this.launcher?.x ?? this.shooter.x) + Math.sin(angle) * barrelLength,
       y: (this.launcher?.y ?? this.launcherPivotY) - Math.cos(angle) * barrelLength,
@@ -3588,7 +3547,6 @@ export class GameScene extends Phaser.Scene {
 
   update(_time: number, delta: number): void {
     this.updateModeClock(delta);
-    this.drawOrbAccessibilityCues();
     if (!this.running) return;
     if (this.visionMode === 'hand') {
       this.pollHand();
