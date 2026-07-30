@@ -3249,7 +3249,6 @@ export class GameScene extends Phaser.Scene {
       yoyo: true,
       ease: 'Quad.easeOut',
     });
-    if (!this.reducedMotion) this.cameras.main.shake(72, 0.0024);
     const muzzle = this.muzzlePosition();
     const flash = this.add.circle(muzzle.x, muzzle.y, 34, 0xe9ffff, 0.98)
       .setBlendMode(Phaser.BlendModes.ADD)

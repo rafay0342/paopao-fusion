@@ -10,7 +10,9 @@ describe('production-readiness gameplay clarity pass', () => {
     expect(source).toContain('690, 430, 0x05040f, 0.28');
     expect(source).toContain('fillCircle(point.x, point.y, 7.5)');
     expect(source).toContain('fillCircle(point.x, point.y, 3.2)');
-    expect(source).toContain('this.cameras.main.shake(72, 0.0024)');
+    expect(source).not.toContain('this.cameras.main.shake(72, 0.0024)');
+    expect(source).toContain('y: this.launcherPivotY + 12');
+    expect(source).toContain('const flash = this.add.circle(muzzle.x, muzzle.y, 34');
   });
 
   it('prioritizes stage, objective, mobile spacing and larger icon art', () => {
