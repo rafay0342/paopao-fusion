@@ -19,6 +19,7 @@ import { ChronicleScene } from './scenes/ChronicleScene';
 import { EndingScene } from './scenes/EndingScene';
 import { AccountScene } from './scenes/AccountScene';
 import { InventoryScene } from './scenes/InventoryScene';
+import { SocialScene } from './scenes/SocialScene';
 import { IntroScene } from './scenes/IntroScene';
 import { HandSetupScene } from './scenes/HandSetupScene';
 import { GazeSetupScene } from './scenes/GazeSetupScene';
@@ -102,6 +103,7 @@ const config: Phaser.Types.Core.GameConfig = {
       RewardsScene,
       ChallengesScene,
       CompetitiveScene,
+      SocialScene,
     ] : []),
     ...(PHASER_RELEASE_FEATURES.cinematicPresentation ? [GalleryScene] : []),
     ...(PHASER_RELEASE_FEATURES.endlessLiveOperations ? [EndlessScene] : []),

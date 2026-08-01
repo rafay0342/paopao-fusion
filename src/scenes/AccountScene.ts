@@ -7,7 +7,7 @@ import {
   type AccountSnapshot,
 } from '../game/online';
 import { getPlayerSave } from '../game/retention';
-import { getPlatformAccount, logoutPlatform, requestEmailOtp, verifyEmailOtp, type PlatformAccount } from '../game/platform';
+import { beginOAuth, getAuthProviders, getPlatformAccount, logoutPlatform, requestEmailOtp, verifyEmailOtp, type AuthProviderStatus, type PlatformAccount } from '../game/platform';
 import { requestTextInput } from '../gfx/dom';
 import { SFX } from '../game/sfx';
 import {
@@ -62,6 +62,8 @@ export class AccountScene extends Phaser.Scene {
     addArtButton(this, 530, 548, 'PLAY AS GUEST', () => this.goGuest(), 290, 58, 12);
     addArtButton(this, 190, 632, 'SECURE CLOUD SYNC', () => void this.goOnline(), 290, 58, 12);
     addArtButton(this, 530, 632, 'SIGN OUT', () => void this.signOut(), 290, 58, 12);
+    addArtButton(this, 190, 716, 'CONTINUE WITH GOOGLE', () => void this.socialLogin('google'), 290, 58, 12);
+    addArtButton(this, 530, 716, 'CONTINUE WITH FACEBOOK', () => void this.socialLogin('facebook'), 290, 58, 12);
 
     addArtPanel(this, width / 2, 872, 640, 260, 5, 0.96);
     this.add.text(width / 2, 808, 'SECURE ACCOUNT', {
@@ -130,6 +132,17 @@ export class AccountScene extends Phaser.Scene {
       if (!this.scene.isActive()) return;
       this.renderAccount(getAccountSnapshot());
       this.toast(error instanceof Error ? error.message.toUpperCase().replace(/-/g, ' ') : 'EMAIL LOGIN FAILED', 0xff756f);
+    }
+  }
+
+  private async socialLogin(provider: AuthProviderStatus['provider']): Promise<void> {
+    SFX.click();
+    try {
+      const configured = (await getAuthProviders()).find((candidate) => candidate.provider === provider)?.configured;
+      if (!configured) throw new Error(`${provider}-oauth-setup-required`);
+      beginOAuth(provider);
+    } catch (error) {
+      if (this.scene.isActive()) this.toast(error instanceof Error ? error.message.toUpperCase().replace(/-/g, ' ') : 'SOCIAL LOGIN FAILED', 0xffc879);
     }
   }
 

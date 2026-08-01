@@ -20,6 +20,7 @@ import {
 } from '../shared/runtime/classic-authority.mjs';
 import { classicFirstClearReward } from '../shared/runtime/classic-economy.mjs';
 import { signPublicPayload } from './signing-keyring.mjs';
+import { installSocialPlatform, SOCIAL_BUNDLES } from './social-platform.mjs';
 
 const nowIso = () => new Date().toISOString();
 const id = (prefix) => `${prefix}_${randomBytes(16).toString('base64url')}`;
@@ -402,6 +403,9 @@ const CATALOG = [
   ['phoenix_optical_skin', 'PHOENIX OPTICAL', 'diamonds', 640, 'entitlement', 'skin:phoenix_optical', 1],
   ['frostglass_optical_skin', 'FROST OPTICAL', 'diamonds', 720, 'entitlement', 'skin:frostglass_optical', 1],
   ['nexus_crown_optical_skin', 'NEXUS OPTICAL', 'diamonds', 880, 'entitlement', 'skin:nexus_crown_optical', 1],
+  ['aurora_media_pack', 'AURORA PLAYER CARD', 'coins', 320, 'entitlement', 'media:aurora-card', 1],
+  ['friendship_hamper', 'FRIENDSHIP HAMPER', 'coins', 420, 'bundle', 'hamper:friendship', 1],
+  ['royal_hamper', 'ROYAL REALM HAMPER', 'diamonds', 75, 'bundle', 'hamper:royal', 1],
 ];
 
 const V3_CONTENT = Object.freeze({
@@ -1128,7 +1132,12 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
       .run(orderId, userId, offerId, idempotencyKey, 'settled', offer.currency, offer.price, timestamp);
     if (offer.grant_kind === 'inventory') db.prepare('INSERT INTO inventory_ledger(entry_id,user_id,item_id,delta,reason,reference_id,created_at) VALUES(?,?,?,?,?,?,?)')
       .run(id('inv'), userId, offer.grant_id, offer.grant_quantity, 'purchase', orderId, timestamp);
-    else db.prepare('INSERT INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)').run(userId, offer.grant_id, orderId, timestamp);
+    else if (offer.grant_kind === 'bundle') {
+      const grants = SOCIAL_BUNDLES[offer.grant_id];
+      if (!grants) throw Object.assign(new Error('bundle-not-found'), { statusCode: 409 });
+      for (const grant of grants) db.prepare('INSERT INTO inventory_ledger(entry_id,user_id,item_id,delta,reason,reference_id,created_at) VALUES(?,?,?,?,?,?,?)')
+        .run(id('inv'), userId, grant.itemId, grant.quantity, 'purchase', orderId, timestamp);
+    } else db.prepare('INSERT INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)').run(userId, offer.grant_id, orderId, timestamp);
     const payload = { receiptId, orderId, offerId, status: 'settled', currency: offer.currency, amount: offer.price, balance: nextBalance, grant: { kind: offer.grant_kind, id: offer.grant_id, quantity: offer.grant_quantity }, createdAt: timestamp };
     db.prepare('INSERT INTO purchase_receipts(receipt_id,order_id,user_id,payload_json,created_at) VALUES(?,?,?,?,?)').run(receiptId, orderId, userId, JSON.stringify(payload), timestamp);
     return payload;
@@ -1871,6 +1880,7 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
   app.post('/api/telemetry/batch', { schema: telemetrySchema, preValidation: rejectUnknownTelemetryFields }, acceptTelemetry);
   app.post('/api/v3/telemetry/batch', { schema: telemetrySchema, preValidation: rejectUnknownTelemetryFields }, acceptTelemetry);
 
+  installSocialPlatform({ app, db, requireSession, sessionFor: accountFor, publicProfile, setSessionCookie });
   installArena({ app, db, sessionFor: accountFor, options: arenaOptions });
   return Object.freeze({ liveConfigAdmin });
 }
