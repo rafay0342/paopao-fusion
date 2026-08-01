@@ -484,7 +484,8 @@ export class MenuScene extends Phaser.Scene {
     if (PHASER_RELEASE_FEATURES.completeGameplay) {
       addActionButton(moreLayer, 515, 570, 276, 'STORE', 0xffe7a6, () => this.scene.start('Store'), 72);
       addActionButton(moreLayer, 205, 676, 276, 'CHALLENGES', 0x8fffd0, () => this.scene.start('Challenges'), 72);
-      addActionButton(moreLayer, width / 2, 782, 586, 'RANKINGS', 0xffc879, () => this.scene.start('Competitive'), 72);
+      addActionButton(moreLayer, 205, 782, 276, 'SOCIAL', 0x79e9ff, () => this.scene.start('Social'), 72);
+      addActionButton(moreLayer, 515, 782, 276, 'RANKINGS', 0xffc879, () => this.scene.start('Competitive'), 72);
     }
     if (PHASER_RELEASE_FEATURES.cinematicPresentation) {
       addActionButton(moreLayer, 515, 676, 276, 'GALLERY', 0x79e9ff, () => this.scene.start('Gallery'), 72);

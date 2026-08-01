@@ -224,7 +224,7 @@ describe('server-authoritative platform', () => {
   it('reports database-backed readiness', async () => {
     const health = await app.inject({ method: 'GET', url: '/api/health' });
     const ready = await app.inject({ method: 'GET', url: '/api/ready' });
-    expect(health.statusCode).toBe(200); expect(health.json()).toMatchObject({ ok: true, database: 'ready', schemaVersion: 20 });
+    expect(health.statusCode).toBe(200); expect(health.json()).toMatchObject({ ok: true, database: 'ready', schemaVersion: 21 });
     expect(ready.statusCode).toBe(200); expect(ready.json()).toMatchObject({ ok: true, database: 'ready' });
   });
 });

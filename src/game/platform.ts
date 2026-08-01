@@ -18,7 +18,7 @@ import { verifySignedPayloadV3 } from './endless';
 
 export interface PlatformWallet { coins: number; diamonds: number; revision: number; updatedAt: string }
 export interface PlatformAccount { userId: string; displayName: string; updatedAt: string; wallet: PlatformWallet; csrfToken?: string }
-export interface CatalogOffer { offerId: string; title: string; currency: 'coins' | 'diamonds'; price: number; grantKind: 'inventory' | 'entitlement'; grantId: string; quantity: number }
+export interface CatalogOffer { offerId: string; title: string; currency: 'coins' | 'diamonds'; price: number; grantKind: 'inventory' | 'entitlement' | 'bundle'; grantId: string; quantity: number }
 export interface PurchaseReceipt { receiptId: string; orderId: string; offerId: string; status: 'settled'; currency: 'coins' | 'diamonds'; amount: number; balance: number; grant: { kind: string; id: string; quantity: number }; createdAt: string }
 export interface PlatformInventoryV2 {
   revision: number;
@@ -30,6 +30,27 @@ export interface PlatformInventoryConsumption {
   entryId: string;
   inventory: PlatformInventoryV2;
   local: InventorySnapshot;
+}
+
+export interface AuthProviderStatus { provider: 'google' | 'facebook'; configured: boolean }
+export interface SocialFriend { userId: string; displayName: string; friendCode: string; connectedAt: string; online: boolean }
+export interface SocialSnapshot {
+  friendCode: string;
+  presenceVisibility: 'friends';
+  friends: SocialFriend[];
+  pendingGifts: number;
+  online: boolean;
+}
+export interface SocialGift {
+  giftId: string;
+  senderUserId: string;
+  senderName: string;
+  offerId: 'friendship_hamper' | 'royal_hamper';
+  title: string;
+  status: 'pending' | 'claimed';
+  message: string;
+  createdAt: string;
+  claimedAt: string | null;
 }
 
 export interface ClassicRunSettlementResult {
@@ -487,6 +508,49 @@ export async function getCatalog(): Promise<CatalogOffer[]> {
   return (await api<{ offers: CatalogOffer[] }>('/api/catalog')).offers;
 }
 
+export async function getAuthProviders(): Promise<AuthProviderStatus[]> {
+  return (await api<{ providers: AuthProviderStatus[] }>('/api/auth/providers')).providers;
+}
+
+export function beginOAuth(provider: AuthProviderStatus['provider']): void {
+  if (typeof location === 'undefined') return;
+  location.assign(`/api/auth/${provider}/start?returnTo=${encodeURIComponent('/')}`);
+}
+
+export async function getSocialSnapshot(): Promise<SocialSnapshot> {
+  return api<SocialSnapshot>('/api/social/me');
+}
+
+export async function connectFriendCode(friendCode: string): Promise<SocialSnapshot> {
+  const result = await api<{ connected: true; social: SocialSnapshot }>('/api/social/connect', {
+    method: 'POST', body: JSON.stringify({ friendCode: friendCode.trim().toUpperCase() }),
+  });
+  return result.social;
+}
+
+export async function getSocialGifts(): Promise<SocialGift[]> {
+  return (await api<{ gifts: SocialGift[] }>('/api/social/gifts')).gifts;
+}
+
+export async function sendSocialGift(
+  recipientUserId: string,
+  offerId: SocialGift['offerId'],
+  message = '',
+): Promise<{ duplicate: boolean; giftId: string; balance?: number; currency?: 'coins' | 'diamonds' }> {
+  return api('/api/social/gifts', {
+    method: 'POST',
+    body: JSON.stringify({ recipientUserId, offerId, message, idempotencyKey: idempotencyKey('social-gift') }),
+  });
+}
+
+export async function claimSocialGift(giftId: string): Promise<{ duplicate: boolean; giftId: string }> {
+  const result = await api<{ duplicate: boolean; giftId: string }>(`/api/social/gifts/${encodeURIComponent(giftId)}/claim`, {
+    method: 'POST', body: '{}',
+  });
+  cachedAccount = undefined;
+  return result;
+}
+
 export async function purchaseOffer(offerId: string): Promise<PurchaseReceipt> {
   const requestKey = idempotencyKey('purchase');
   const receipt = await api<PurchaseReceipt>('/api/purchases', { method: 'POST', headers: { 'Idempotency-Key': requestKey }, body: JSON.stringify({ offerId }) });
@@ -837,5 +901,86 @@ export class ArenaConnection {
     this.shutdownSocket();
     this.onMessage = undefined;
     this.onState = undefined;
+  }
+}
+
+export type SocialMessage = Record<string, unknown> & { type: string };
+
+/** Lightweight resilient socket for presence and social inbox notifications. */
+export class SocialConnection {
+  private socket?: WebSocket;
+  private heartbeat?: ReturnType<typeof setInterval>;
+  private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private generation = 0;
+  private reconnectAttempt = 0;
+  private manuallyClosed = true;
+  private onMessage?: (message: SocialMessage) => void;
+  private onState?: (state: 'connecting' | 'open' | 'closed') => void;
+
+  connect(onMessage: (message: SocialMessage) => void, onState: (state: 'connecting' | 'open' | 'closed') => void): void {
+    this.close();
+    this.manuallyClosed = false;
+    this.onMessage = onMessage;
+    this.onState = onState;
+    this.open(this.generation);
+  }
+
+  private open(generation: number): void {
+    if (this.manuallyClosed || generation !== this.generation) return;
+    this.onState?.('connecting');
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const socket = new WebSocket(`${protocol}//${location.host}/ws/v3/social`);
+    this.socket = socket;
+    socket.onopen = () => {
+      if (socket !== this.socket || generation !== this.generation) return;
+      this.reconnectAttempt = 0;
+      this.onState?.('open');
+      this.heartbeat = globalThis.setInterval(() => {
+        try { if (socket.readyState === 1) socket.send(JSON.stringify({ type: 'heartbeat' })); }
+        catch { try { socket.close(); } catch { /* reconnect below */ } }
+      }, ARENA_HEARTBEAT_MS);
+    };
+    socket.onmessage = (event) => {
+      if (socket !== this.socket || generation !== this.generation) return;
+      try {
+        const message = JSON.parse(String(event.data)) as SocialMessage;
+        if (message && typeof message.type === 'string') this.onMessage?.(message);
+      } catch { /* malformed social frames are ignored */ }
+    };
+    socket.onerror = () => { try { socket.close(); } catch { /* onclose reconnects */ } };
+    socket.onclose = () => {
+      if (socket !== this.socket || generation !== this.generation) return;
+      this.socket = undefined;
+      if (this.heartbeat !== undefined) globalThis.clearInterval(this.heartbeat);
+      this.heartbeat = undefined;
+      this.onState?.('closed');
+      if (this.manuallyClosed) return;
+      const delay = ARENA_RECONNECT_DELAYS_MS[Math.min(this.reconnectAttempt, ARENA_RECONNECT_DELAYS_MS.length - 1)];
+      this.reconnectAttempt += 1;
+      this.reconnectTimer = globalThis.setTimeout(() => {
+        this.reconnectTimer = undefined;
+        this.open(generation);
+      }, delay);
+    };
+  }
+
+  refresh(): void {
+    try { if (this.socket?.readyState === 1) this.socket.send(JSON.stringify({ type: 'refresh-social' })); }
+    catch { /* reconnect path refreshes the snapshot */ }
+  }
+
+  close(): void {
+    this.manuallyClosed = true;
+    this.generation += 1;
+    if (this.heartbeat !== undefined) globalThis.clearInterval(this.heartbeat);
+    if (this.reconnectTimer !== undefined) globalThis.clearTimeout(this.reconnectTimer);
+    this.heartbeat = undefined;
+    this.reconnectTimer = undefined;
+    const socket = this.socket;
+    this.socket = undefined;
+    if (socket) {
+      socket.onopen = null; socket.onmessage = null; socket.onerror = null; socket.onclose = null;
+      try { socket.close(); } catch { /* already closed */ }
+    }
   }
 }
