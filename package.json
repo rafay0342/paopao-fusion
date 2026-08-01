@@ -50,6 +50,9 @@
     "preview": "vite preview --host",
     "serve:live": "node server/index.mjs",
     "serve:downloads": "node server/downloads.mjs",
+    "cloudflare:check": "npm --prefix cloudflare run check",
+    "cloudflare:dev": "npm --prefix cloudflare run dev",
+    "cloudflare:deploy": "npm run build && npm --prefix cloudflare run deploy",
     "test": "vitest run",
     "test:watch": "vitest"
   },

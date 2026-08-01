@@ -1,7 +1,9 @@
 # Dependencies and build products
 node_modules/
 dist/
+dist-cloudflare/
 .vite/
+.wrangler/
 coverage/
 
 # Runtime state, databases and private recovery material
