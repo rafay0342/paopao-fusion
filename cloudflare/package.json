@@ -1,0 +1,21 @@
+{
+  "name": "paopao-fusion-cloudflare",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:assets": "node tools/build-assets.mjs",
+    "check": "tsc --noEmit",
+    "dev": "wrangler dev --local",
+    "db:local": "wrangler d1 migrations apply paopao-fusion --local",
+    "db:create": "wrangler d1 create paopao-fusion --location apac --binding DB --update-config",
+    "db:remote": "wrangler d1 migrations apply paopao-fusion --remote",
+    "deploy:dry": "npm run build:assets && wrangler deploy --dry-run --outdir .wrangler/dry-run",
+    "deploy": "npm run build:assets && wrangler deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260801.1",
+    "typescript": "^5.9.2",
+    "wrangler": "^4.118.0"
+  }
+}
