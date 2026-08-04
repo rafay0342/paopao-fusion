@@ -279,6 +279,26 @@ async function api(request: Request, env: Env): Promise<Response> {
     catch { return response({ ok: false, database: 'unavailable' }, 503); }
   }
   if (path === '/api/auth/providers' && method === 'GET') return response({ providers: (Object.keys(PROVIDERS) as Array<keyof typeof PROVIDERS>).map((provider) => ({ provider, configured: Boolean(providerSecrets(env, provider)) })) });
+  if ((path === '/api/telemetry/batch' || path === '/api/v3/telemetry/batch') && method === 'POST') {
+    const input = await body(request); const events = Array.isArray(input.events) ? input.events : [];
+    const allowedTypes = new Set(['performance', 'frame-health', 'tutorial-step', 'level-start', 'level-end', 'level-exit', 'shot-result', 'boss-phase', 'reward-claim', 'hand-state', 'session-exit', 'next-action']);
+    const productTypes = new Set(['tutorial-step', 'level-start', 'level-end', 'level-exit', 'shot-result', 'boss-phase', 'reward-claim', 'hand-state', 'session-exit', 'next-action']);
+    if (events.length < 1 || events.length > 50 || events.some((event) => !event || typeof event !== 'object' || Array.isArray(event) || !allowedTypes.has(String((event as Record<string, unknown>).type ?? '')))) {
+      return response({ error: 'telemetry-invalid' }, 400);
+    }
+    const containsProductEvents = events.some((event) => productTypes.has(String((event as Record<string, unknown>).type)));
+    if (containsProductEvents && (input.anonymous !== true || input.consentVersion !== 'product-telemetry-v1' || events.some((event) => {
+      const item = event as Record<string, unknown>;
+      return productTypes.has(String(item.type)) && (!validKey(item.eventId) || !validKey(item.sessionId) || !Number.isInteger(item.occurredAtMs));
+    }))) return response({ error: 'product-telemetry-consent-required' }, 400);
+    const requestedBatchId = input.batchId; const batchId = validKey(requestedBatchId) ? requestedBatchId : id('tel');
+    const existing = await env.DB.prepare('SELECT 1 FROM telemetry_batches WHERE batch_id=?').bind(batchId).first();
+    if (existing) return response({ accepted: 0, duplicate: true, batchId });
+    const session = await getSession(request, env);
+    await env.DB.prepare('INSERT INTO telemetry_batches(batch_id,user_id,events_json,created_at) VALUES(?,?,?,?)')
+      .bind(batchId, input.anonymous === true ? null : session?.userId ?? null, JSON.stringify(events), nowIso()).run();
+    return response({ accepted: events.length, duplicate: false, batchId });
+  }
   if (path === '/api/v3/bootstrap' && method === 'GET') {
     const session = await getSession(request, env);
     return response({ apiVersion: 3, serverTime: nowIso(), content: await contentPayload(), live: await livePayload(), account: session ? { authenticated: true, authentication: 'web', ...(await profile(env, session.userId)), csrfToken: session.csrfToken } : { authenticated: false } });

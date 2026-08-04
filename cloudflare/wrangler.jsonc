@@ -13,7 +13,7 @@
     {
       "binding": "DB",
       "database_name": "paopao-fusion",
-      "database_id": "local-paopao-fusion",
+      "database_id": "f58c2cc2-9d28-44a5-b70e-a2beda93de9e",
       "migrations_dir": "migrations"
     }
   ],
