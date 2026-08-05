@@ -194,15 +194,15 @@ export class WorldMapScene extends Phaser.Scene {
     addAmbientMotes(this, theme.accent, theme.id === 'ember' ? 24 : 18, 2);
     addUiScrim(this, 0.4, 3);
 
-    addArtPanel(this, width / 2, 143, 620, 238, 8, 0.96);
-    this.add.text(width / 2, 90, 'ADVENTURE MAP', {
+    addArtPanel(this, width / 2, 119, 620, 188, 8, 0.96);
+    this.add.text(width / 2, 76, 'ADVENTURE MAP', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe6a6', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 2, '#000000', 6);
-    this.add.text(width / 2, 140, theme.name, {
+    this.add.text(width / 2, 119, theme.name, {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: theme.accentCss, fontStyle: 'bold',
       stroke: '#101225', strokeThickness: 5,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    const detailsButton = this.add.container(104, 207).setDepth(16);
+    const detailsButton = this.add.container(104, 171).setDepth(16);
     const detailsSurface = this.add.graphics();
     const detailsLabel = this.add.text(0, 0, 'DETAILS  +', {
       fontFamily: UI_FONT,
@@ -213,7 +213,7 @@ export class WorldMapScene extends Phaser.Scene {
     }).setOrigin(0.5);
     detailsButton.add([detailsSurface, detailsLabel]);
     detailsButton.setSize(154, 100).setInteractive({ useHandCursor: true });
-    const detailsSummary = this.add.text(194, 207, '', {
+    const detailsSummary = this.add.text(194, 171, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#f4f7ff',
@@ -513,11 +513,11 @@ export class WorldMapScene extends Phaser.Scene {
       }).setOrigin(originX, 0.5).setDepth(13).setAlpha(labelAlpha), chipWidth, 0.88);
     });
 
-    addArtPanel(this, width / 2, height - 43, 620, 54, 13, 0.94);
+    addArtPanel(this, width / 2, height - 35, 620, 40, 13, 0.94);
     const footerCopy = accountBound
       ? 'ONE VERIFIED FIRST-CLEAR CLAIM PER STAGE'
       : 'LOCAL PLAY REMAINS AVAILABLE';
-    fitText(this.add.text(width / 2, height - 43, footerCopy, {
+    fitText(this.add.text(width / 2, height - 35, footerCopy, {
       fontFamily: UI_FONT,
       fontSize: TYPE.section,
       color: '#f4f7ff',

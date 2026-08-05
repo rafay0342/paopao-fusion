@@ -140,8 +140,8 @@ export class BootScene extends Phaser.Scene {
     // Restrained architectural lines give the loader depth without sweep or shimmer effects.
     const architecture = this.add.graphics();
     architecture.lineStyle(1, 0xc59a50, 0.1);
-    architecture.strokeCircle(VIEW.width / 2, 350, 176);
-    architecture.strokeCircle(VIEW.width / 2, 350, 150);
+    architecture.strokeCircle(VIEW.width / 2, 316, 176);
+    architecture.strokeCircle(VIEW.width / 2, 316, 150);
     architecture.beginPath();
     architecture.moveTo(86, 90);
     architecture.lineTo(VIEW.width / 2, 246);
@@ -155,18 +155,18 @@ export class BootScene extends Phaser.Scene {
 
     const crest = this.add.graphics();
     crest.fillStyle(0x21143a, 0.95);
-    crest.fillCircle(VIEW.width / 2, 350, 128);
+    crest.fillCircle(VIEW.width / 2, 316, 128);
     crest.lineStyle(2, 0xd2aa5e, 0.76);
-    crest.strokeCircle(VIEW.width / 2, 350, 128);
+    crest.strokeCircle(VIEW.width / 2, 316, 128);
     crest.lineStyle(1, 0x735798, 0.7);
-    crest.strokeCircle(VIEW.width / 2, 350, 113);
+    crest.strokeCircle(VIEW.width / 2, 316, 113);
     crest.fillStyle(0xd2aa5e, 0.96);
-    crest.fillTriangle(326, 305, 339, 276, 351, 305);
-    crest.fillTriangle(345, 305, 360, 267, 375, 305);
-    crest.fillTriangle(369, 305, 382, 276, 394, 305);
-    crest.fillRoundedRect(326, 302, 68, 11, 4);
+    crest.fillTriangle(326, 271, 339, 242, 351, 271);
+    crest.fillTriangle(345, 271, 360, 233, 375, 271);
+    crest.fillTriangle(369, 271, 382, 242, 394, 271);
+    crest.fillRoundedRect(326, 268, 68, 11, 4);
 
-    const title = this.add.text(VIEW.width / 2, 347, 'PAOPAO', {
+    const title = this.add.text(VIEW.width / 2, 313, 'PAOPAO', {
       fontFamily: DISPLAY_FONT,
       fontSize: TYPE.hero,
       color: '#f0ddb3',
@@ -175,7 +175,7 @@ export class BootScene extends Phaser.Scene {
       strokeThickness: 5,
       resolution: textResolution,
     }).setOrigin(0.5);
-    const subtitle = this.add.text(VIEW.width / 2, 403, 'F U S I O N', {
+    const subtitle = this.add.text(VIEW.width / 2, 369, 'F U S I O N', {
       fontFamily: UI_FONT,
       fontSize: TYPE.body,
       color: '#d2aa5e',
@@ -183,7 +183,7 @@ export class BootScene extends Phaser.Scene {
       letterSpacing: 5,
       resolution: textResolution,
     }).setOrigin(0.5);
-    const chapter = this.add.text(VIEW.width / 2, 470, 'THE SHATTERED CROWN', {
+    const chapter = this.add.text(VIEW.width / 2, 436, 'THE SHATTERED CROWN', {
       fontFamily: DISPLAY_FONT,
       fontSize: TYPE.caption,
       color: '#9f91b8',
@@ -192,7 +192,7 @@ export class BootScene extends Phaser.Scene {
       resolution: textResolution,
     }).setOrigin(0.5);
 
-    const realmHeading = this.add.text(VIEW.width / 2, 576, 'RESTORING THE SIX REALMS', {
+    const realmHeading = this.add.text(VIEW.width / 2, 550, 'RESTORING THE SIX REALMS', {
       fontFamily: UI_FONT,
       fontSize: TYPE.label,
       color: '#b99a63',
@@ -204,17 +204,17 @@ export class BootScene extends Phaser.Scene {
     const realmRail = this.add.graphics();
     realmRail.lineStyle(1, 0x6d5635, 0.65);
     realmRail.beginPath();
-    realmRail.moveTo(103, 640);
-    realmRail.lineTo(VIEW.width - 103, 640);
+    realmRail.moveTo(92, 620);
+    realmRail.lineTo(VIEW.width - 92, 620);
     realmRail.strokePath();
 
     const realmSeals = WORLD_THEMES.map((world, index) => {
-      const x = 102 + index * 103.2;
-      const outer = this.add.circle(x, 640, 22, 0x0d1023, 1)
+      const x = 92 + index * ((VIEW.width - 184) / (WORLD_THEMES.length - 1));
+      const outer = this.add.circle(x, 620, 22, 0x0d1023, 1)
         .setStrokeStyle(2, 0x6d5635, 0.75);
-      const core = this.add.circle(x, 640, 12, 0x211b30, 1)
+      const core = this.add.circle(x, 620, 12, 0x211b30, 1)
         .setStrokeStyle(1, world.accent, 0.22);
-      const label = this.add.text(x, index % 2 === 0 ? 676 : 706, REALM_SHORT_NAMES[index], {
+      const label = this.add.text(x, 660, REALM_SHORT_NAMES[index], {
         fontFamily: UI_FONT,
         fontSize: TYPE.caption,
         color: '#665d75',
@@ -225,18 +225,18 @@ export class BootScene extends Phaser.Scene {
       return { outer, core, label, accent: world.accent, active: false };
     });
 
-    const trackShadow = this.add.rectangle(VIEW.width / 2, 753, 454, 28, 0x03040c, 0.55);
-    const track = this.add.rectangle(VIEW.width / 2, 751, 432, 16, 0x0e1123, 1)
+    const trackShadow = this.add.rectangle(VIEW.width / 2, 735, 550, 34, 0x03040c, 0.55);
+    const track = this.add.rectangle(VIEW.width / 2, 733, 528, 22, 0x0e1123, 1)
       .setStrokeStyle(1, 0x8c6d3d, 0.9);
     const bar = this.add.graphics();
-    const percent = this.add.text(610, 751, '0%', {
+    const percent = this.add.text(644, 733, '0%', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#ead5aa',
       fontStyle: 'bold',
       resolution: textResolution,
     }).setOrigin(0, 0.5);
-    const status = this.add.text(VIEW.width / 2, 797, LOAD_STAGES[0].label, {
+    const status = this.add.text(VIEW.width / 2, 784, LOAD_STAGES[0].label, {
       fontFamily: UI_FONT,
       fontSize: TYPE.label,
       color: '#e2c98f',
@@ -244,14 +244,14 @@ export class BootScene extends Phaser.Scene {
       letterSpacing: 1.2,
       resolution: textResolution,
     }).setOrigin(0.5);
-    const detail = this.add.text(VIEW.width / 2, 833, 'Reading local save and display settings', {
+    const detail = this.add.text(VIEW.width / 2, 820, 'Reading local save and display settings', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#827792',
       letterSpacing: 0.4,
       resolution: textResolution,
     }).setOrigin(0.5);
-    const recovery = this.add.text(VIEW.width / 2, 870, '', {
+    const recovery = this.add.text(VIEW.width / 2, 857, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#c59a50',
@@ -260,7 +260,7 @@ export class BootScene extends Phaser.Scene {
       wordWrap: { width: VIEW.width - 72, useAdvancedWrap: true },
       resolution: textResolution,
     }).setOrigin(0.5);
-    const attribution = this.add.text(VIEW.width / 2, VIEW.height - 76, 'POWERED BY RAFAYGEN AI', {
+    const attribution = this.add.text(VIEW.width / 2, VIEW.height - 112, 'POWERED BY RAFAYGEN AI', {
       fontFamily: UI_FONT,
       fontSize: TYPE.caption,
       color: '#766886',
@@ -291,11 +291,11 @@ export class BootScene extends Phaser.Scene {
 
     const renderProgress = (rawProgress: number): void => {
       const progress = Phaser.Math.Clamp(rawProgress, 0, 1);
-      const fillWidth = 428 * progress;
+      const fillWidth = 520 * progress;
       bar.clear();
       if (fillWidth > 0) {
         bar.fillGradientStyle(0x9b7137, 0xd8b662, 0x80562c, 0xb38a46, 1);
-        bar.fillRoundedRect(VIEW.width / 2 - 214, 746, fillWidth, 10, Math.min(5, fillWidth / 2));
+        bar.fillRoundedRect(VIEW.width / 2 - 260, 725, fillWidth, 16, Math.min(8, fillWidth / 2));
       }
       percent.setText(`${Math.round(progress * 100)}%`);
       status.setText(loadStageFor(progress));
