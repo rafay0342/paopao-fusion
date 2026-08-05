@@ -114,13 +114,13 @@ export class ModeSelectScene extends Phaser.Scene {
       this.scene.start('Menu');
     }, 145, 50, 18);
 
-    const cardY = [365, 660, 955];
+    const cardY = [350, 626, 902];
     const availableModes = PHASER_RELEASE_FEATURES.completeGameplay ? MODE_ORDER : MODE_ORDER.slice(0, 1);
     availableModes.forEach((mode, index) => {
       const def = MODE_DEFS[mode];
       const selected = meta.mode === mode;
       const y = cardY[index];
-      addArtPanel(this, width / 2, y, 600, 270, 8, selected ? 1 : 0.91);
+      addArtPanel(this, width / 2, y, 600, 264, 8, selected ? 1 : 0.91);
       addModeCrystalIdentity(this, y, def.accent, index, selected);
       addIconFrame(this, 115, y, 116, def.accent, 10, selected);
       if (mode === 'classic') {
