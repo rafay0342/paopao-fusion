@@ -121,7 +121,7 @@ const CAPABILITIES = Object.freeze([
   }),
   capability({
     key: 'progress', title: 'progress', auth: 'session', mutable: true, rateLimit: 4,
-    input: { saveRevision: I({ min: 0, max: 1_000_000, alternate: 8 }), campaignLevel: I({ min: 1, max: 30, alternate: 8 }), endlessPoints: I({ min: 0, max: 10_000_000, alternate: 1500 }) },
+    input: { saveRevision: I({ min: 0, max: 1_000_000, alternate: 8 }), campaignLevel: I({ min: 1, max: 42, alternate: 8 }), endlessPoints: I({ min: 0, max: 10_000_000, alternate: 1500 }) },
     fixture: { saveRevision: 7, campaignLevel: 6, endlessPoints: 1200 }, resultKeys: ['acceptedRevision', 'campaignLevel', 'endlessPoints'],
     execute: ({ saveRevision, campaignLevel, endlessPoints }) => ({ acceptedRevision: saveRevision + 1, campaignLevel, endlessPoints }),
   }),
@@ -187,9 +187,9 @@ const CAPABILITIES = Object.freeze([
   }),
   capability({
     key: 'campaign', title: 'campaign', auth: 'session', mutable: true, rateLimit: 4,
-    input: { levelId: I({ min: 1, max: 30, alternate: 8 }), outcome: S({ min: 3, max: 8, pattern: /^(won|lost)$/, alternate: 'lost' }), stars: I({ min: 0, max: 3, alternate: 3 }) },
+    input: { levelId: I({ min: 1, max: 42, alternate: 8 }), outcome: S({ min: 3, max: 8, pattern: /^(won|lost)$/, alternate: 'lost' }), stars: I({ min: 0, max: 3, alternate: 3 }) },
     fixture: { levelId: 7, outcome: 'won', stars: 2 }, resultKeys: ['unlockedLevel', 'awardedStars', 'completed'],
-    execute: ({ levelId, outcome, stars }) => ({ unlockedLevel: outcome === 'won' ? Math.min(30, levelId + 1) : levelId, awardedStars: stars, completed: outcome === 'won' }),
+    execute: ({ levelId, outcome, stars }) => ({ unlockedLevel: outcome === 'won' ? Math.min(42, levelId + 1) : levelId, awardedStars: stars, completed: outcome === 'won' }),
   }),
   capability({
     key: 'endless-season', title: 'endless season', auth: 'session', mutable: true, rateLimit: 3,

@@ -277,6 +277,8 @@ export interface LevelDef {
   mechanicCount: number;
   shotLimit?: number;
   boss?: BossConfig;
+  act: 'crown' | 'echoes';
+  masteryTier?: 1 | 2;
 }
 
 const LEVEL_GOALS: readonly LevelGoal[] = ['clear', 'seals', 'vines', 'portal_cores', 'embers', 'ice_cores', 'polarity_nodes', 'boss'];
@@ -301,6 +303,10 @@ export const LEVELS: LevelDef[] = campaignFixture.levels.map((entry, expectedInd
     mechanicCount: entry.mechanicCount,
     ...(entry.shotLimit > 0 ? { shotLimit: entry.shotLimit } : {}),
     ...(boss ? { boss } : {}),
+    act: 'act' in entry && entry.act === 'echoes' ? 'echoes' : 'crown',
+    ...('masteryTier' in entry && (entry.masteryTier === 1 || entry.masteryTier === 2)
+      ? { masteryTier: entry.masteryTier }
+      : {}),
   };
 });
 
@@ -329,6 +335,7 @@ export interface WorldTheme {
   accentCss: string;
   shadow: number;
   levels: readonly number[];
+  echoLevels: readonly number[];
 }
 
 const WORLD_PRESENTATION = [
@@ -342,7 +349,7 @@ const WORLD_PRESENTATION = [
 
 export const WORLD_THEMES: readonly WorldTheme[] = campaignFixture.worlds.map((world, expectedIndex) => {
   const presentation = WORLD_PRESENTATION[expectedIndex];
-  if (!presentation || world.index !== expectedIndex || !/^#[0-9a-f]{6}$/i.test(world.accent) || world.levels.length !== 5) {
+  if (!presentation || world.index !== expectedIndex || !/^#[0-9a-f]{6}$/i.test(world.accent) || world.levels.length !== 5 || world.echoLevels.length !== 2) {
     throw new Error(`Invalid shared campaign world at index ${expectedIndex}`);
   }
   return {
@@ -354,10 +361,11 @@ export const WORLD_THEMES: readonly WorldTheme[] = campaignFixture.worlds.map((w
     accentCss: world.accent,
     shadow: presentation.shadow,
     levels: world.levels,
+    echoLevels: world.echoLevels,
   };
 });
 
-export const MAP_NODES: readonly MapNodeDef[] = WORLD_THEMES.flatMap((world) => world.levels.map((level, index) => ({
+const CROWN_MAP_NODES: readonly MapNodeDef[] = WORLD_THEMES.flatMap((world) => world.levels.map((level, index) => ({
   level,
   kind: (index === 4 ? 'boss' : index === 3 ? 'elite' : index === 1 ? 'mystery' : index === 2 ? 'challenge' : 'standard') as MapNodeKind,
   requires: index === 0
@@ -371,6 +379,21 @@ export const MAP_NODES: readonly MapNodeDef[] = WORLD_THEMES.flatMap((world) => 
     accountRequired: true,
   },
 }))) as readonly MapNodeDef[];
+
+const ECHO_MAP_NODES: readonly MapNodeDef[] = WORLD_THEMES.flatMap((world) => world.echoLevels.map((level, index) => ({
+  level,
+  kind: (index === 1 ? 'boss' : 'elite') as MapNodeKind,
+  requires: index === 0 ? [17] : [world.echoLevels[index - 1]],
+  reward: {
+    source: CLASSIC_FIRST_CLEAR_REWARD_SOURCE,
+    currency: CLASSIC_FIRST_CLEAR_REWARD_CURRENCY,
+    amount: classicFirstClearReward(level),
+    firstClearOnly: true,
+    accountRequired: true,
+  },
+}))) as readonly MapNodeDef[];
+
+export const MAP_NODES: readonly MapNodeDef[] = [...CROWN_MAP_NODES, ...ECHO_MAP_NODES];
 
 export function mapNodeForLevel(level: number): MapNodeDef {
   return MAP_NODES.find((node) => node.level === level) ?? MAP_NODES[0];
@@ -399,6 +422,12 @@ export function mapRewardLabel(reward: MapNodeDef['reward'], availability: MapRe
 
 export function nextStoryLevel(level: number): number | null {
   const world = WORLD_THEMES[LEVELS[level]?.world ?? 0];
+  if (LEVELS[level]?.act === 'echoes') {
+    const echoIndex = world.echoLevels.indexOf(level);
+    if (echoIndex >= 0 && echoIndex < world.echoLevels.length - 1) return world.echoLevels[echoIndex + 1];
+    const nextEchoWorld = WORLD_THEMES[(LEVELS[level]?.world ?? 0) + 1];
+    return nextEchoWorld?.echoLevels[0] ?? null;
+  }
   const index = world.levels.indexOf(level);
   if (index >= 0 && index < world.levels.length - 1) return world.levels[index + 1];
   const nextWorld = WORLD_THEMES[(LEVELS[level]?.world ?? 0) + 1];

@@ -133,7 +133,7 @@ export class RealtimeHub implements DurableObject {
       }
       const seed = crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff;
       const match: ArenaMatch = {
-        matchId: id('match'), seed, level: seed % 30, startsAt: Date.now() + 3_000, deadlineAt: Date.now() + 12 * 60_000,
+        matchId: id('match'), seed, level: seed % 42, startsAt: Date.now() + 3_000, deadlineAt: Date.now() + 12 * 60_000,
         players: [opponent, userId].map((playerId) => ({ userId: playerId, score: 0, shots: 0, hits: 0, maxCombo: 0, stateChecksum: '0000000000000000', shotTrace: [] })),
       };
       data.matches[match.matchId] = match; await this.save(data);

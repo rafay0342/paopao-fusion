@@ -263,7 +263,15 @@ const finiteInteger = (value, minimum, maximum, fallback = 0) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? Math.min(maximum, Math.max(minimum, Math.trunc(parsed))) : fallback;
 };
-const MAX_PROGRESS_LEVELS = 30;
+const MAX_PROGRESS_LEVELS = 42;
+const ECHO_CREST_ENTITLEMENTS = new Map([
+  [31, 'badge:echo-crest-crystal'],
+  [33, 'badge:echo-crest-emerald'],
+  [35, 'badge:echo-crest-celestial'],
+  [37, 'badge:echo-crest-ember'],
+  [39, 'badge:echo-crest-frost'],
+  [41, 'badge:echo-crest-nexus'],
+]);
 const progressArray = (value, maximum) => {
   const source = Array.isArray(value) ? value.slice(0, MAX_PROGRESS_LEVELS) : [];
   return Array.from({ length: MAX_PROGRESS_LEVELS }, (_, index) => finiteInteger(source[index], 0, maximum));
@@ -329,7 +337,7 @@ const normalizeClientState = (value, progress, live, updatedAt = nowIso()) => {
     campaign: {
       progress,
       activeWorld: finiteInteger(campaign.activeWorld, 0, 5),
-      activeLevel: finiteInteger(campaign.activeLevel, 0, 29, Math.max(0, progress.unlocked - 1)),
+      activeLevel: finiteInteger(campaign.activeLevel, 0, 41, Math.max(0, progress.unlocked - 1)),
       storyFlags: safeStringSet(campaign.storyFlags, 256),
     },
     endless: {
@@ -410,13 +418,13 @@ const CATALOG = [
 
 const V3_CONTENT = Object.freeze({
   schemaVersion: 3,
-  contentVersion: '2026.07.22-r1',
+  contentVersion: '2026.08.06-v16-crown-echoes',
   saveVersion: 4,
   clients: {
     classic: { route: '/classic/', engine: 'phaser-3.90.0', status: 'production', platforms: ['web'] },
   },
   worlds: 6,
-  levels: 30,
+  levels: 42,
   modes: ['classic', 'rush', 'precision', 'endless'],
   artifacts: ['chrono', 'phoenix', 'void', 'fortune'],
   compatibility: { minimumApiVersion: 3, legacyAdaptersThroughRelease: 2 },
@@ -534,12 +542,12 @@ const normalizeRemoteLivePayload = (value) => {
 const v3ProgressSchema = {
   type: 'object',
   properties: {
-    unlocked: { type: 'integer', minimum: 1, maximum: 30 },
-    bestScores: { type: 'array', maxItems: 30, items: { type: 'integer', minimum: 0, maximum: 10000000 } },
-    stars: { type: 'array', maxItems: 30, items: { type: 'integer', minimum: 0, maximum: 3 } },
-    cleared: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
-    mastered: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
-    claimedFirstClears: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
+    unlocked: { type: 'integer', minimum: 1, maximum: 42 },
+    bestScores: { type: 'array', maxItems: 42, items: { type: 'integer', minimum: 0, maximum: 10000000 } },
+    stars: { type: 'array', maxItems: 42, items: { type: 'integer', minimum: 0, maximum: 3 } },
+    cleared: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
+    mastered: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
+    claimedFirstClears: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
   },
   additionalProperties: false,
 };
@@ -555,7 +563,7 @@ const v4ClientStateSchema = {
   },
   campaign: {
     type: 'object', properties: {
-      activeWorld: { type: 'integer', minimum: 0, maximum: 5 }, activeLevel: { type: 'integer', minimum: 0, maximum: 29 },
+      activeWorld: { type: 'integer', minimum: 0, maximum: 5 }, activeLevel: { type: 'integer', minimum: 0, maximum: 41 },
       storyFlags: { ...stringIdArraySchema, maxItems: 256 },
     }, additionalProperties: false,
   },
@@ -1326,7 +1334,7 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
   });
   app.post('/api/v3/classic/runs/start', { preHandler: requireSession, bodyLimit: 4_096, schema: { body: {
     type: 'object', required: ['level', 'mode', 'idempotencyKey'], properties: {
-      level: { type: 'integer', minimum: 0, maximum: 29 },
+      level: { type: 'integer', minimum: 0, maximum: 41 },
       mode: { enum: ['classic', 'rush', 'precision'] },
       idempotencyKey: { type: 'string', minLength: 8, maxLength: 96, pattern: '^[A-Za-z0-9._:-]+$' },
     }, additionalProperties: false,
@@ -1465,7 +1473,7 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
   app.post('/api/v3/runs', { preHandler: requireSession, bodyLimit: 64_000, schema: { body: {
     type: 'object', required: ['runId', 'client', 'level', 'mode', 'score', 'durationMs', 'won', 'createdAt'], properties: {
       runId: { type: 'string', minLength: 8, maxLength: 96, pattern: '^[A-Za-z0-9._:-]+$' },
-      client: { const: 'classic' }, level: { type: 'integer', minimum: 0, maximum: 29 },
+      client: { const: 'classic' }, level: { type: 'integer', minimum: 0, maximum: 41 },
       mode: { enum: ['classic', 'rush', 'precision', 'endless'] }, score: { type: 'integer', minimum: 0, maximum: 10000000 },
       durationMs: { type: 'integer', minimum: 500, maximum: 14400000 }, won: { type: 'boolean' },
       shots: { type: 'integer', minimum: 0, maximum: 5000 }, hits: { type: 'integer', minimum: 0, maximum: 5000 },
@@ -1648,6 +1656,17 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
         if (replayVerification.rewardEligible) {
           db.prepare(`INSERT OR IGNORE INTO classic_authority_clears(user_id,level,run_id,verified_at)
             VALUES(?,?,?,?)`).run(userId, run.level, run.runId, acceptedAt);
+          const crestEntitlement = ECHO_CREST_ENTITLEMENTS.get(run.level);
+          if (crestEntitlement) {
+            db.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)')
+              .run(userId, crestEntitlement, `echo-level:${run.level}`, acceptedAt);
+          }
+          if (run.level === 41) {
+            db.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)')
+              .run(userId, 'badge:crown-echo', 'echo-completion', acceptedAt);
+            db.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)')
+              .run(userId, 'skin:nexus_crown_optical', 'echo-completion', acceptedAt);
+          }
           const progressRow = db.prepare('SELECT progress_json,revision,updated_at FROM player_progress WHERE user_id=?').get(userId);
           const progress = normalizeProgress(json(progressRow.progress_json));
           progress.unlocked = Math.max(progress.unlocked, Math.min(MAX_PROGRESS_LEVELS, run.level + 2));
@@ -1735,12 +1754,12 @@ export function installPlatform({ app, db, arena: arenaOptions = {}, otpRate: ot
     progress: {
       type: 'object',
       properties: {
-        unlocked: { type: 'integer', minimum: 1, maximum: 30 },
-        bestScores: { type: 'array', maxItems: 30, items: { type: 'integer', minimum: 0, maximum: 10000000 } },
-        stars: { type: 'array', maxItems: 30, items: { type: 'integer', minimum: 0, maximum: 3 } },
-        cleared: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
-        mastered: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
-        claimedFirstClears: { type: 'array', maxItems: 30, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 29 } },
+        unlocked: { type: 'integer', minimum: 1, maximum: 42 },
+        bestScores: { type: 'array', maxItems: 42, items: { type: 'integer', minimum: 0, maximum: 10000000 } },
+        stars: { type: 'array', maxItems: 42, items: { type: 'integer', minimum: 0, maximum: 3 } },
+        cleared: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
+        mastered: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
+        claimedFirstClears: { type: 'array', maxItems: 42, uniqueItems: true, items: { type: 'integer', minimum: 0, maximum: 41 } },
       },
       additionalProperties: false,
     },
@@ -2098,7 +2117,7 @@ function installArena({ app, db, sessionFor, options = {} }) {
     stateChecksum: '0000000000000000', shotTrace: [],
   });
   const startMatch = (first, second, kind = 'ranked') => {
-    const matchId = id('match'); const seed = Math.floor(Math.random() * 0x7fffffff); const level = seed % 30;
+    const matchId = id('match'); const seed = Math.floor(Math.random() * 0x7fffffff); const level = seed % MAX_PROGRESS_LEVELS;
     const createdAt = nowIso(); const startedAt = Date.now() + timings.startDelayMs; const startedAtIso = new Date(startedAt).toISOString();
     const players = [first, second].map(freshPlayer);
     db.transaction(() => {

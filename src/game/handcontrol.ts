@@ -71,8 +71,13 @@ export class HandAimFilter {
   // Fast motion opens the filter aggressively while a still fingertip remains
   // damped. This avoids stacking a full recognition-frame of aim lag on top of
   // MediaPipe and the final Phaser interpolation.
-  private readonly x = new OneEuroFilter(2.4, 4.2, 1.2);
-  private readonly y = new OneEuroFilter(2.2, 4, 1.2);
+  private readonly x: OneEuroFilter;
+  private readonly y: OneEuroFilter;
+
+  constructor(stability: 'balanced' | 'heavy' = 'balanced') {
+    this.x = stability === 'heavy' ? new OneEuroFilter(1.35, 2.25, 1) : new OneEuroFilter(2.4, 4.2, 1.2);
+    this.y = stability === 'heavy' ? new OneEuroFilter(1.2, 2.1, 1) : new OneEuroFilter(2.2, 4, 1.2);
+  }
 
   filter(point: HandPoint, timeMs: number): HandPoint {
     return {

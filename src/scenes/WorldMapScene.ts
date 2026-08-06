@@ -141,6 +141,7 @@ function drawDashedSegment(
 
 export class WorldMapScene extends Phaser.Scene {
   private world = 0;
+  private act: 'crown' | 'echoes' = 'crown';
   private readonly handleQualityChange = (): void => {
     applyLiveSceneQuality(this, getQualityProfile());
   };
@@ -149,10 +150,12 @@ export class WorldMapScene extends Phaser.Scene {
     super('WorldMap');
   }
 
-  init(data: { world?: number }): void {
+  init(data: { world?: number; act?: 'crown' | 'echoes' }): void {
     this.world = PHASER_RELEASE_FEATURES.completeGameplay
       ? Phaser.Math.Clamp(data.world ?? this.world, 0, WORLD_THEMES.length - 1)
       : 0;
+    const echoesUnlocked = isLevelCleared(17, getProgress());
+    this.act = data.act === 'echoes' && echoesUnlocked ? 'echoes' : 'crown';
   }
 
   preload(): void {
@@ -165,6 +168,8 @@ export class WorldMapScene extends Phaser.Scene {
     startMusic('story');
     const theme = WORLD_THEMES[this.world];
     const progress = getProgress();
+    const echoesUnlocked = isLevelCleared(17, progress);
+    const activeLevels = this.act === 'echoes' ? theme.echoLevels : theme.levels;
     const accountBound = hasPlatformAccountBinding();
     const meta = getMeta();
     const mode = MODE_DEFS[meta.mode];
@@ -173,15 +178,15 @@ export class WorldMapScene extends Phaser.Scene {
     const presentation = resolveWorldPresentation({
       worldId: theme.id,
       worldIndex: this.world,
-      finalLevel: theme.levels[theme.levels.length - 1],
+      finalLevel: activeLevels[activeLevels.length - 1],
       clearedLevels: progress.cleared,
       mode: 'bubble-shooter',
       backgroundKey: theme.background,
     });
     const a11y = accessibilityRuntimeForCanvas(this.game.canvas).mountScene({
       id: `world-map-${this.world + 1}`,
-      heading: `${theme.name} adventure map`,
-      description: `${theme.subtitle}. ${presentation.label}. ${presentation.guidance}. Choose an unlocked stage, switch realm, open the Chronicle, or return to the menu.`,
+      heading: `${theme.name} ${this.act === 'echoes' ? 'Ascended Path' : 'adventure map'}`,
+      description: `${theme.subtitle}. ${presentation.label}. ${presentation.guidance}. Choose an unlocked stage, switch path or realm, open the Chronicle, or return to the menu.`,
       status: `${presentation.label}. ${progress.unlocked} of ${LEVELS.length} stages unlocked. ${totalStars(progress)} stars earned.`,
       lifecycle: this.events,
     });
@@ -274,6 +279,19 @@ export class WorldMapScene extends Phaser.Scene {
       }, 156, 52, 16), 166, 100);
     }
 
+    const switchAct = (act: 'crown' | 'echoes'): void => {
+      if (act === 'echoes' && !echoesUnlocked) {
+        this.showLockedMessage(31, 'RESTORE THE CROWN FIRST');
+        a11y.announce('Ascended Path is locked. Restore the Crown first.');
+        return;
+      }
+      if (act === this.act) return;
+      SFX.click();
+      this.scene.restart({ world: this.world, act });
+    };
+    addArtButton(this, width / 2 - 112, 251, 'CROWN PATH', () => switchAct('crown'), 196, 54, 16);
+    addArtButton(this, width / 2 + 112, 251, echoesUnlocked ? 'ASCENDED PATH' : 'ASCENDED  🔒', () => switchAct('echoes'), 196, 54, 16);
+
     const previous = (this.world + WORLD_THEMES.length - 1) % WORLD_THEMES.length;
     const next = (this.world + 1) % WORLD_THEMES.length;
     if (PHASER_RELEASE_FEATURES.completeGameplay) {
@@ -294,11 +312,12 @@ export class WorldMapScene extends Phaser.Scene {
         label: `Next realm: ${WORLD_THEMES[next].name}`,
       });
     }
-    const realmStages = theme.levels.map(campaignStageNumber);
+    const realmStages = activeLevels.map(campaignStageNumber);
+    const routeHeading = this.act === 'echoes' ? 'ASCENDED' : 'WORLD';
     fitText(this.add.text(
       width / 2,
       326,
-      `WORLD ${this.world + 1}/${WORLD_THEMES.length}  ·  STAGES ${realmStages[0]}–${realmStages[realmStages.length - 1]}`,
+      `${routeHeading} ${this.world + 1}/${WORLD_THEMES.length}  ·  STAGES ${realmStages[0]}–${realmStages[realmStages.length - 1]}`,
       {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
@@ -310,30 +329,35 @@ export class WorldMapScene extends Phaser.Scene {
       },
     ).setOrigin(0.5).setDepth(12), 430, 0.9);
 
-    const positions: readonly RoutePosition[] = [
+    const crownPositions: readonly RoutePosition[] = [
       { x: 220, y: 468, side: 1 },
       { x: 500, y: 638, side: -1 },
       { x: 224, y: 808, side: 1 },
       { x: 496, y: 978, side: -1 },
       { x: 232, y: 1_138, side: 1 },
     ];
-    const currentLevel = theme.levels.find(
+    const echoPositions: readonly RoutePosition[] = [
+      { x: 224, y: 600, side: 1 },
+      { x: 496, y: 930, side: -1 },
+    ];
+    const positions = this.act === 'echoes' ? echoPositions : crownPositions;
+    const currentLevel = activeLevels.find(
       (level) => isLevelUnlocked(level, progress) && !isLevelCleared(level, progress),
-    ) ?? [...theme.levels].reverse().find((level) => isLevelUnlocked(level, progress))
-      ?? theme.levels[0];
+    ) ?? [...activeLevels].reverse().find((level) => isLevelUnlocked(level, progress))
+      ?? activeLevels[0];
     // The route is subordinate navigation: a quiet dashed rail behind nodes
     // and labels, never a competing foreground illustration.
     const path = this.add.graphics().setDepth(5);
     const route = [...positions];
     route.slice(1).forEach((point, index) => {
       const start = route[index];
-      const kind = mapNodeForLevel(theme.levels[index + 1]).kind;
+      const kind = mapNodeForLevel(activeLevels[index + 1]).kind;
       const color = nodeKindColor(kind, theme.accent);
-      const unlocked = isLevelUnlocked(theme.levels[index + 1], progress);
+      const unlocked = isLevelUnlocked(activeLevels[index + 1], progress);
       drawDashedSegment(path, start, point, color, unlocked ? 0.28 : 0.12);
     });
 
-    theme.levels.forEach((level, index) => {
+    activeLevels.forEach((level, index) => {
       const pos = positions[index];
       const releaseAvailable = PHASER_RELEASE_FEATURES.completeGameplay || level === 0;
       const unlocked = releaseAvailable && isLevelUnlocked(level, progress);
@@ -429,8 +453,8 @@ export class WorldMapScene extends Phaser.Scene {
           ? `${current ? 'Current stage. ' : ''}Play stage ${displayStage}: ${def.title}. ${def.objective}`
           : `Stage ${displayStage}: ${def.title}. Locked`,
         description: unlocked
-          ? `Realm step ${index + 1} of ${theme.levels.length}. ${NODE_KIND_LABEL[mapNode.kind]} route. ${stars} of 3 stars earned.${progress.bestScores[level] ? ` Best score ${progress.bestScores[level].toLocaleString()}.` : ''} First-clear reward status: ${rewardText}.`
-          : `Realm step ${index + 1} of ${theme.levels.length}. ${NODE_KIND_LABEL[mapNode.kind]} route. Complete the previous path to unlock. Reward: ${rewardText}.`,
+          ? `Realm step ${index + 1} of ${activeLevels.length}. ${NODE_KIND_LABEL[mapNode.kind]} route. ${stars} of 3 stars earned.${progress.bestScores[level] ? ` Best score ${progress.bestScores[level].toLocaleString()}.` : ''} First-clear reward status: ${rewardText}.`
+          : `Realm step ${index + 1} of ${activeLevels.length}. ${NODE_KIND_LABEL[mapNode.kind]} route. Complete the previous path to unlock. Reward: ${rewardText}.`,
         onActivate: activateLevel,
         onFocusChange: (focused) => {
           if (!unlocked) return;
@@ -471,7 +495,7 @@ export class WorldMapScene extends Phaser.Scene {
       labelRail.setAlpha(labelAlpha);
       const routeLabel = current
         ? `NEXT STAGE  ·  ${NODE_KIND_LABEL[mapNode.kind]}`
-        : `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${theme.levels.length}`;
+        : `${NODE_KIND_LABEL[mapNode.kind]}  ·  ${index + 1}/${activeLevels.length}`;
       fitText(this.add.text(chipCenterX, pos.y - 45, routeLabel, {
         fontFamily: UI_FONT,
         fontSize: TYPE.section,
@@ -534,7 +558,7 @@ export class WorldMapScene extends Phaser.Scene {
     SFX.click();
     const duration = prefersReducedMotion() ? 0 : 120;
     this.cameras.main.fadeOut(duration, 0, 0, 0);
-    this.time.delayedCall(duration > 0 ? 130 : 0, () => this.scene.restart({ world }));
+    this.time.delayedCall(duration > 0 ? 130 : 0, () => this.scene.restart({ world, act: this.act }));
   }
 
   private showLockedMessage(stage: number, reason = 'COMPLETE THE PREVIOUS PATH'): void {

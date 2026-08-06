@@ -279,7 +279,7 @@ function normalizeClassicRunSubmission(value: unknown): RunSubmissionV3 | null {
   return {
     runId: raw.runId,
     client: 'classic',
-    level: boundedInteger(raw.level, 0, 29),
+    level: boundedInteger(raw.level, 0, 41),
     mode: raw.mode as 'classic' | 'rush' | 'precision',
     score: boundedInteger(raw.score, 0, 10_000_000),
     durationMs: boundedInteger(raw.durationMs, 500, 14_400_000),
@@ -588,7 +588,7 @@ export async function beginClassicRunAuthorityV3(input: {
     api<ClassicAuthorityTicketV3>('/api/v3/classic/runs/start', {
       method: 'POST',
       body: JSON.stringify({
-        level: boundedInteger(input.level, 0, 29),
+        level: boundedInteger(input.level, 0, 41),
         mode: input.mode,
         idempotencyKey: input.idempotencyKey ?? idempotencyKey('classic-authority'),
       }),

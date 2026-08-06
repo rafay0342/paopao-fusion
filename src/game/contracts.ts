@@ -379,7 +379,7 @@ export function parsePlayerSaveV4(value: unknown): PlayerSaveV4 | null {
     campaign: {
       progress,
       activeWorld: integer(campaign.activeWorld, 0, 5, 0),
-      activeLevel: integer(campaign.activeLevel, 0, 29, Math.max(0, progress.unlocked - 1)),
+      activeLevel: integer(campaign.activeLevel, 0, 41, Math.max(0, progress.unlocked - 1)),
       storyFlags: cleanStrings(campaign.storyFlags, 256),
     },
     endless: {
@@ -529,7 +529,7 @@ export function parseProgressEnvelopeV3(value: unknown): ProgressEnvelopeV3 | nu
     campaign: {
       progress,
       activeWorld: integer(campaign.activeWorld, 0, 5, 0),
-      activeLevel: integer(campaign.activeLevel, 0, 29, Math.max(0, progress.unlocked - 1)),
+      activeLevel: integer(campaign.activeLevel, 0, 41, Math.max(0, progress.unlocked - 1)),
       storyFlags: cleanStrings(campaign.storyFlags, 256),
     },
     endless: {

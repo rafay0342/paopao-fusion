@@ -1,5 +1,13 @@
 import { RealtimeHub } from './realtime';
 import { ENDLESS_REPLAY_RULES, simulateEndlessReplay } from '../../shared/runtime/endless-replay.mjs';
+import {
+  CLASSIC_AUTHORITY_RULES,
+  classicAuthorityMinimumDurationMs,
+  classicAuthorityRequiredShots,
+  classicAuthorityTarget,
+  evaluateClassicAuthorityTrace,
+} from '../../shared/runtime/classic-authority.mjs';
+import { classicFirstClearReward } from '../../shared/runtime/classic-economy.mjs';
 
 export { RealtimeHub };
 
@@ -25,6 +33,11 @@ interface Session {
 interface WalletRow { coins: number; diamonds: number; revision: number; updatedAt: string }
 interface ProfileRow { userId: string; displayName: string; updatedAt: string; coins: number; diamonds: number; revision: number; walletUpdatedAt: string }
 interface OfferRow { offerId: string; title: string; currency: 'coins' | 'diamonds'; price: number; grantKind: 'inventory' | 'entitlement' | 'bundle'; grantId: string; quantity: number }
+interface ClassicTicketRow {
+  ticketId: string; runId: string; userId: string; level: number; mode: 'classic' | 'rush' | 'precision';
+  seed: number; tokenHash: string; startedAt: string; expiresAt: string; status: string;
+  traceJson: string; lastAck: string; terminalHash: string | null;
+}
 
 const COOKIE = 'paopao_session';
 const nowIso = (): string => new Date().toISOString();
@@ -151,15 +164,15 @@ async function socialSnapshot(env: Env, userId: string): Promise<Record<string, 
 }
 
 function defaultProgress(): Record<string, unknown> {
-  return { unlocked: 1, bestScores: Array(30).fill(0), stars: Array(30).fill(0), cleared: [], mastered: [], claimedFirstClears: [] };
+  return { unlocked: 1, bestScores: Array(42).fill(0), stars: Array(42).fill(0), cleared: [], mastered: [], claimedFirstClears: [] };
 }
 
 function mergeProgress(remoteValue: unknown, localValue: unknown): Record<string, unknown> {
   const normalize = (value: unknown): Record<string, unknown> => {
     const raw = value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
-    const array = (key: string, max: number): number[] => Array.from({ length: 30 }, (_, index) => Math.max(0, Math.min(max, Math.trunc(Number((Array.isArray(raw[key]) ? raw[key] : [])[index] ?? 0)))));
-    const set = (key: string): number[] => [...new Set((Array.isArray(raw[key]) ? raw[key] : []).map(Number).filter((item) => Number.isInteger(item) && item >= 0 && item < 30))];
-    return { unlocked: Math.max(1, Math.min(30, Math.trunc(Number(raw.unlocked ?? 1)))), bestScores: array('bestScores', 10_000_000), stars: array('stars', 3), cleared: set('cleared'), mastered: set('mastered'), claimedFirstClears: set('claimedFirstClears') };
+    const array = (key: string, max: number): number[] => Array.from({ length: 42 }, (_, index) => Math.max(0, Math.min(max, Math.trunc(Number((Array.isArray(raw[key]) ? raw[key] : [])[index] ?? 0)))));
+    const set = (key: string): number[] => [...new Set((Array.isArray(raw[key]) ? raw[key] : []).map(Number).filter((item) => Number.isInteger(item) && item >= 0 && item < 42))];
+    return { unlocked: Math.max(1, Math.min(42, Math.trunc(Number(raw.unlocked ?? 1)))), bestScores: array('bestScores', 10_000_000), stars: array('stars', 3), cleared: set('cleared'), mastered: set('mastered'), claimedFirstClears: set('claimedFirstClears') };
   };
   const a = normalize(remoteValue); const b = normalize(localValue);
   return {
@@ -269,7 +282,7 @@ async function livePayload(): Promise<Record<string, unknown>> {
 }
 
 async function contentPayload(): Promise<Record<string, unknown>> {
-  return signed({ schemaVersion: 3, contentVersion: '2026.08.01-cloudflare-r1', saveVersion: 4, clients: { classic: { route: '/classic/', engine: 'phaser-3.90.0', status: 'production', platforms: ['web'] } }, worlds: 6, levels: 30, modes: ['classic', 'rush', 'precision', 'endless'], artifacts: ['chrono', 'phoenix', 'void', 'fortune'], compatibility: { minimumApiVersion: 3, legacyAdaptersThroughRelease: 2 } });
+  return signed({ schemaVersion: 3, contentVersion: '2026.08.06-v16-crown-echoes', saveVersion: 4, clients: { classic: { route: '/classic/', engine: 'phaser-3.90.0', status: 'production', platforms: ['web'] } }, worlds: 6, levels: 42, modes: ['classic', 'rush', 'precision', 'endless'], artifacts: ['chrono', 'phoenix', 'void', 'fortune'], compatibility: { minimumApiVersion: 3, legacyAdaptersThroughRelease: 2 } });
 }
 
 async function api(request: Request, env: Env): Promise<Response> {
@@ -355,7 +368,10 @@ async function api(request: Request, env: Env): Promise<Response> {
     await env.DB.prepare('UPDATE player_progress SET progress_json=?,client_state_json=?,revision=revision+1,updated_at=? WHERE user_id=? AND revision=?').bind(JSON.stringify(progress), JSON.stringify(state), nowIso(), userId, current.revision).run();
     return response(await progressEnvelope(env, userId));
   }
-  if (path === '/api/v3/runs' && method === 'POST') return settleEndlessRun(request, env, authenticated);
+  if (path === '/api/v3/classic/runs/start' && method === 'POST') return startClassicRun(request, env, authenticated);
+  const classicShot = path.match(/^\/api\/v3\/classic\/runs\/(ctk_[A-Za-z0-9_-]+)\/shots$/);
+  if (classicShot && method === 'POST') return recordClassicShot(request, env, authenticated, classicShot[1]);
+  if (path === '/api/v3/runs' && method === 'POST') return settleRun(request, env, authenticated);
   if ((path === '/api/social/me' || path === '/api/social/friends') && method === 'GET') { const snapshot = await socialSnapshot(env, userId); return response(path.endsWith('friends') ? { friends: snapshot.friends } : snapshot); }
   if (path === '/api/social/connect' && method === 'POST') {
     const input = await body(request); const code = String(input.friendCode ?? '').trim().toUpperCase(); const target = await env.DB.prepare('SELECT user_id AS userId FROM player_social WHERE friend_code=?').bind(code).first<{ userId: string }>();
@@ -369,13 +385,98 @@ async function api(request: Request, env: Env): Promise<Response> {
   return response({ error: 'api-route-not-found' }, 404);
 }
 
-async function settleEndlessRun(request: Request, env: Env, session: Session): Promise<Response> {
-  const input = await body(request); const runId = String(input.runId ?? '');
+const CLASSIC_PREREQUISITES: readonly (readonly number[])[] = (() => {
+  const requirements: number[][] = Array.from({ length: 42 }, () => []);
+  const crownRoutes = [[0,18,1,19,2],[3,20,4,21,5],[6,22,7,23,8],[9,24,10,25,11],[12,26,13,27,14],[15,28,16,29,17]];
+  crownRoutes.forEach((route, world) => route.forEach((level, index) => {
+    requirements[level] = index ? [route[index - 1]] : world ? [crownRoutes[world - 1][4]] : [];
+  }));
+  [[30,31],[32,33],[34,35],[36,37],[38,39],[40,41]].forEach(([first, second]) => {
+    requirements[first] = [17]; requirements[second] = [first];
+  });
+  return requirements;
+})();
+
+function publicClassicTrace(value: unknown): Array<{ sequence: number; atMs: number; angleMilliDegrees: number }> {
+  if (!Array.isArray(value)) return [];
+  return value.map((shot) => {
+    const item = shot as Record<string, unknown>;
+    return { sequence: Number(item.sequence), atMs: Number(item.atMs), angleMilliDegrees: Number(item.angleMilliDegrees) };
+  });
+}
+
+async function classicTicket(env: Env, ticketId: string): Promise<ClassicTicketRow | null> {
+  return env.DB.prepare(`SELECT ticket_id AS ticketId,run_id AS runId,user_id AS userId,level,mode,seed,
+    token_hash AS tokenHash,started_at AS startedAt,expires_at AS expiresAt,status,trace_json AS traceJson,
+    last_ack AS lastAck,terminal_hash AS terminalHash FROM classic_run_tickets WHERE ticket_id=?`)
+    .bind(ticketId).first<ClassicTicketRow>();
+}
+
+async function targetFor(row: ClassicTicketRow, sequence: number): Promise<unknown | null> {
+  const target = classicAuthorityTarget({ seed: row.seed, level: row.level, sequence });
+  return target.ok ? target.target : null;
+}
+
+async function startClassicRun(request: Request, env: Env, session: Session): Promise<Response> {
+  const input = await body(request); const level = Number(input.level); const mode = String(input.mode); const key = input.idempotencyKey;
+  if (!Number.isInteger(level) || level < 0 || level > 41 || !['classic','rush','precision'].includes(mode) || !validKey(key)) return response({ error: 'classic-authority-request-invalid' }, 400);
+  const existing = await env.DB.prepare(`SELECT ticket_id AS ticketId FROM classic_run_tickets WHERE user_id=? AND idempotency_key=?`).bind(session.userId, key).first<{ ticketId: string }>();
+  if (existing) {
+    const row = await classicTicket(env, existing.ticketId);
+    if (!row || row.level !== level || row.mode !== mode) return response({ error: 'classic-authority-idempotency-conflict' }, 409);
+    if (row.status !== 'active' || row.expiresAt <= nowIso()) return response({ error: 'classic-authority-ticket-unavailable' }, 409);
+    const reissuedToken = randomToken(32);
+    await env.DB.prepare('UPDATE classic_run_tickets SET token_hash=? WHERE ticket_id=? AND status=\'active\'').bind(await sha256(reissuedToken), row.ticketId).run();
+    return response({ duplicate: true, ticketId: row.ticketId, ticketToken: reissuedToken, runId: row.runId, level: row.level, mode: row.mode, startedAt: row.startedAt, expiresAt: row.expiresAt, rulesVersion: CLASSIC_AUTHORITY_RULES.rulesVersion, requiredShots: classicAuthorityRequiredShots(row.level), requiredProofHits: 1, minimumDurationMs: classicAuthorityMinimumDurationMs(row.level), target: await targetFor(row, 0) });
+  }
+  const progressRow = await env.DB.prepare('SELECT progress_json AS progressJson FROM player_progress WHERE user_id=?').bind(session.userId).first<{ progressJson: string }>();
+  const cleared = new Set<number>(((progressRow ? JSON.parse(progressRow.progressJson) : defaultProgress()) as { cleared?: number[] }).cleared ?? []);
+  if (!CLASSIC_PREREQUISITES[level].every((required) => cleared.has(required))) return response({ error: 'classic-authority-prerequisite-required' }, 409);
+  const token = randomToken(32); const ticketId = id('ctk'); const runId = id('classic'); const startedAt = nowIso(); const expiresAt = new Date(Date.now() + CLASSIC_AUTHORITY_RULES.ticketTtlMs).toISOString(); const seed = crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff;
+  await env.DB.batch([
+    env.DB.prepare("UPDATE classic_run_tickets SET status=CASE WHEN expires_at<=? THEN 'expired' ELSE 'abandoned' END WHERE user_id=? AND status='active'").bind(startedAt, session.userId),
+    env.DB.prepare(`INSERT INTO classic_run_tickets(ticket_id,run_id,user_id,level,mode,seed,token_hash,idempotency_key,started_at,expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)`).bind(ticketId, runId, session.userId, level, mode, seed, await sha256(token), key, startedAt, expiresAt),
+  ]);
+  const row = await classicTicket(env, ticketId); if (!row) return response({ error: 'classic-authority-create-failed' }, 500);
+  return response({ duplicate: false, ticketId, ticketToken: token, runId, level, mode, startedAt, expiresAt, rulesVersion: CLASSIC_AUTHORITY_RULES.rulesVersion, requiredShots: classicAuthorityRequiredShots(level), requiredProofHits: 1, minimumDurationMs: classicAuthorityMinimumDurationMs(level), target: await targetFor(row, 0) });
+}
+
+async function recordClassicShot(request: Request, env: Env, session: Session, ticketId: string): Promise<Response> {
+  const input = await body(request); const row = await classicTicket(env, ticketId);
+  if (!row || row.userId !== session.userId) return response({ error: 'classic-authority-ticket-mismatch' }, 422);
+  if (row.status !== 'active') return response({ error: 'classic-authority-ticket-consumed' }, 409);
+  if (row.expiresAt <= nowIso()) { await env.DB.prepare("UPDATE classic_run_tickets SET status='expired' WHERE ticket_id=?").bind(ticketId).run(); return response({ error: 'classic-authority-ticket-expired' }, 409); }
+  if (typeof input.ticketToken !== 'string' || await sha256(input.ticketToken) !== row.tokenHash) return response({ error: 'classic-authority-ticket-invalid' }, 422);
+  const sequence = Number(input.sequence); const atMs = Number(input.atMs); const angleMilliDegrees = Number(input.angleMilliDegrees);
+  if (!Number.isInteger(sequence) || !Number.isInteger(atMs) || !Number.isInteger(angleMilliDegrees) || sequence < 0 || sequence >= CLASSIC_AUTHORITY_RULES.maximumShots || angleMilliDegrees < ENDLESS_REPLAY_RULES.aimMinimumMilliDegrees || angleMilliDegrees > ENDLESS_REPLAY_RULES.aimMaximumMilliDegrees) return response({ error: 'classic-authority-shot-invalid' }, 400);
+  const trace = publicClassicTrace(JSON.parse(row.traceJson));
+  if (sequence < trace.length) {
+    const prior = trace[sequence]; if (prior.atMs !== atMs || prior.angleMilliDegrees !== angleMilliDegrees) return response({ error: 'classic-authority-shot-conflict' }, 409);
+    const evaluation = evaluateClassicAuthorityTrace({ seed: row.seed, level: row.level, shotTrace: trace.slice(0, sequence + 1) });
+    if (!evaluation.ok) return response({ error: evaluation.error }, 422);
+    return response({ accepted: false, duplicate: true, sequence, ack: row.lastAck, proofHit: Boolean(evaluation.result.outcomes.at(-1)?.hit), proofHits: evaluation.result.proofHits, requiredProofHits: 1, requiredShots: evaluation.result.requiredShots, completed: evaluation.result.completed, nextTarget: await targetFor(row, sequence + 1) });
+  }
+  if (sequence !== trace.length || String(input.previousAck ?? '') !== row.lastAck) return response({ error: 'classic-authority-shot-chain-invalid' }, 422);
+  const nextTrace = [...trace, { sequence, atMs, angleMilliDegrees }]; const evaluation = evaluateClassicAuthorityTrace({ seed: row.seed, level: row.level, shotTrace: nextTrace });
+  if (!evaluation.ok) return response({ error: evaluation.error }, 422);
+  if (atMs > Date.now() - Date.parse(row.startedAt) + CLASSIC_AUTHORITY_RULES.maximumFutureLeadMs) return response({ error: 'classic-authority-shot-future' }, 422);
+  const ack = randomToken(24); const terminal = evaluation.result.completed ? randomToken(32) : '';
+  await env.DB.prepare('UPDATE classic_run_tickets SET trace_json=?,last_ack=?,terminal_hash=? WHERE ticket_id=? AND status=\'active\'').bind(JSON.stringify(nextTrace), ack, terminal ? await sha256(terminal) : null, ticketId).run();
+  return response({ accepted: true, duplicate: false, sequence, ack, proofHit: Boolean(evaluation.result.outcomes.at(-1)?.hit), proofHits: evaluation.result.proofHits, requiredProofHits: 1, requiredShots: evaluation.result.requiredShots, completed: evaluation.result.completed, ...(terminal ? { terminalChallenge: terminal } : {}), nextTarget: await targetFor(row, sequence + 1) });
+}
+
+async function settleRun(request: Request, env: Env, session: Session): Promise<Response> {
+  const input = await body(request);
+  return input.mode === 'endless' ? settleEndlessInput(input, env, session) : settleClassicInput(input, env, session);
+}
+
+async function settleEndlessInput(input: Record<string, unknown>, env: Env, session: Session): Promise<Response> {
+  const runId = String(input.runId ?? '');
   if (!/^[A-Za-z0-9._:-]{8,96}$/.test(runId) || input.client !== 'classic' || input.mode !== 'endless') return response({ error: 'run-invalid' }, 400);
   const duplicate = await env.DB.prepare('SELECT receipt_json AS receiptJson FROM v3_run_receipts WHERE run_id=? AND user_id=?').bind(runId, session.userId).first<{ receiptJson: string }>();
   if (duplicate) return response({ ...JSON.parse(duplicate.receiptJson), duplicate: true, replayed: true });
   const live = await livePayload(); const endless = live.endless as Record<string, unknown>; const seasonId = String(input.seasonId ?? '');
-  if (seasonId !== endless.seasonId || Number(input.seed) !== endless.seed || input.contentVersion !== '2026.08.01-cloudflare-r1') return response({ error: 'run-config-mismatch' }, 409);
+  if (seasonId !== endless.seasonId || Number(input.seed) !== endless.seed || input.contentVersion !== '2026.08.06-v16-crown-echoes') return response({ error: 'run-config-mismatch' }, 409);
   const trace = Array.isArray(input.shotTrace) ? input.shotTrace : []; const simulation = simulateEndlessReplay({ seed: Number(input.seed), level: Number(input.level), durationMs: Number(input.durationMs), shotTrace: trace, modifier: null, eventBoss: false });
   if (!simulation.ok) return response({ error: simulation.error }, 422);
   const result = simulation.result;
@@ -394,6 +495,45 @@ async function settleEndlessRun(request: Request, env: Env, session: Session): P
     env.DB.prepare('INSERT INTO v3_run_receipts(run_id,user_id,receipt_json,created_at) VALUES(?,?,?,?)').bind(runId, session.userId, JSON.stringify(receipt), timestamp),
   ]);
   return response(receipt);
+}
+
+async function settleClassicInput(input: Record<string, unknown>, env: Env, session: Session): Promise<Response> {
+  const runId = String(input.runId ?? ''); const level = Number(input.level); const mode = String(input.mode);
+  if (!validKey(runId) || input.client !== 'classic' || !Number.isInteger(level) || level < 0 || level > 41 || !['classic','rush','precision'].includes(mode) || input.won !== true || !Number.isInteger(Number(input.durationMs)) || !Number.isInteger(Number(input.score))) return response({ error: 'run-invalid' }, 400);
+  const duplicate = await env.DB.prepare('SELECT user_id AS userId,receipt_json AS receiptJson FROM v3_run_receipts WHERE run_id=?').bind(runId).first<{ userId: string; receiptJson: string }>();
+  if (duplicate) return duplicate.userId === session.userId ? response({ ...JSON.parse(duplicate.receiptJson), accepted: false, duplicate: true, replayed: true }) : response({ error: 'run-id-conflict' }, 409);
+  const ticketId = String(input.classicTicketId ?? ''); const ticketToken = String(input.classicTicketToken ?? ''); const terminal = String(input.classicTerminalChallenge ?? ''); const row = await classicTicket(env, ticketId);
+  if (!row || row.userId !== session.userId || row.runId !== runId || row.level !== level || row.mode !== mode) return response({ error: 'classic-authority-ticket-mismatch' }, 422);
+  if (row.status !== 'active' || row.expiresAt <= nowIso()) return response({ error: 'classic-authority-ticket-consumed' }, 409);
+  if (!ticketToken || await sha256(ticketToken) !== row.tokenHash || !terminal || !row.terminalHash || await sha256(terminal) !== row.terminalHash) return response({ error: 'classic-authority-proof-invalid' }, 422);
+  const trace = publicClassicTrace(JSON.parse(row.traceJson)); const evaluation = evaluateClassicAuthorityTrace({ seed: row.seed, level, shotTrace: trace });
+  if (!evaluation.ok || !evaluation.result.completed || Number(input.durationMs) < classicAuthorityMinimumDurationMs(level)) return response({ error: 'classic-authority-proof-incomplete' }, 422);
+  const timestamp = nowIso(); const wallet = await env.DB.prepare('SELECT coins,revision FROM wallets WHERE user_id=?').bind(session.userId).first<{ coins: number; revision: number }>();
+  if (!wallet) return response({ error: 'wallet-missing' }, 500);
+  const referenceId = `classic-level:${level}`; const priorReward = await env.DB.prepare("SELECT balance_after AS balanceAfter FROM wallet_ledger WHERE user_id=? AND kind='classic-first-clear' AND reference_id=?").bind(session.userId, referenceId).first<{ balanceAfter: number }>();
+  const amount = priorReward ? 0 : classicFirstClearReward(level); const balance = priorReward?.balanceAfter ?? wallet.coins + amount;
+  const progressRow = await env.DB.prepare('SELECT progress_json AS progressJson FROM player_progress WHERE user_id=?').bind(session.userId).first<{ progressJson: string }>();
+  const progress = mergeProgress(progressRow ? JSON.parse(progressRow.progressJson) : defaultProgress(), { unlocked: Math.min(42, level + 2), cleared: [level], claimedFirstClears: [level], stars: Array.from({ length: 42 }, (_, index) => index === level ? 1 : 0) });
+  const validationPayload = { runId, userId: session.userId, client: 'classic', contentVersion: String(input.contentVersion ?? '2026.08.06-v16-crown-echoes'), createdAt: String(input.createdAt ?? timestamp), scoreClaim: Number(input.score), wonClaim: true };
+  const reward = { granted: !priorReward, alreadyClaimed: Boolean(priorReward), currency: 'coins', amount, balance, source: 'classic-first-clear', level, ...(priorReward ? { reason: 'classic-first-clear-already-claimed' } : {}) };
+  const receipt = { accepted: true, duplicate: false, runId, serverAcceptedAt: timestamp, validation: await signed({ payload: validationPayload }), replayVerification: { status: 'authoritative', authoritative: true, rewardEligible: true, reason: 'server-observed-classic-authority', replayVersion: 1, shotCount: trace.length }, reward, rewardProof: await signed({ payload: { runId, userId: session.userId, ...reward } }) };
+  const statements = [
+    env.DB.prepare("UPDATE classic_run_tickets SET status='consumed',completed_run_id=? WHERE ticket_id=? AND user_id=? AND status='active'").bind(runId, ticketId, session.userId),
+    env.DB.prepare('INSERT OR IGNORE INTO classic_authority_clears(user_id,level,run_id,verified_at) VALUES(?,?,?,?)').bind(session.userId, level, runId, timestamp),
+    env.DB.prepare('UPDATE player_progress SET progress_json=?,revision=revision+1,updated_at=? WHERE user_id=?').bind(JSON.stringify(progress), timestamp, session.userId),
+    env.DB.prepare('INSERT INTO v3_run_receipts(run_id,user_id,receipt_json,created_at) VALUES(?,?,?,?)').bind(runId, session.userId, JSON.stringify(receipt), timestamp),
+  ];
+  if (!priorReward) {
+    statements.push(env.DB.prepare('UPDATE wallets SET coins=?,revision=revision+1,updated_at=? WHERE user_id=? AND revision=?').bind(balance, timestamp, session.userId, wallet.revision));
+    statements.push(env.DB.prepare('INSERT INTO wallet_ledger(entry_id,user_id,currency,delta,balance_after,kind,reference_id,created_at) VALUES(?,?,?,?,?,?,?,?)').bind(id('led'), session.userId, 'coins', amount, balance, 'classic-first-clear', referenceId, timestamp));
+  }
+  const crest = new Map([[31,'badge:echo-crest-crystal'],[33,'badge:echo-crest-emerald'],[35,'badge:echo-crest-celestial'],[37,'badge:echo-crest-ember'],[39,'badge:echo-crest-frost'],[41,'badge:echo-crest-nexus']]).get(level);
+  if (crest) statements.push(env.DB.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)').bind(session.userId, crest, `echo-level:${level}`, timestamp));
+  if (level === 41) {
+    statements.push(env.DB.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)').bind(session.userId, 'badge:crown-echo', 'echo-completion', timestamp));
+    statements.push(env.DB.prepare('INSERT OR IGNORE INTO entitlements(user_id,entitlement_id,source,created_at) VALUES(?,?,?,?)').bind(session.userId, 'skin:nexus_crown_optical', 'echo-completion', timestamp));
+  }
+  await env.DB.batch(statements); return response(receipt);
 }
 
 async function purchase(request: Request, env: Env, session: Session): Promise<Response> {

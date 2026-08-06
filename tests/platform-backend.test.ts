@@ -215,7 +215,7 @@ describe('server-authoritative platform', () => {
     db.prepare('UPDATE player_progress SET progress_json=? WHERE user_id=?').run(JSON.stringify({ bestScores: { length: 1_000_000_000 }, cleared: 3 }), userId);
     const recovered = await app.inject({ method: 'POST', url: '/api/progress/sync', headers: auth(), payload: { progress: { bestScores: [500], stars: [2], cleared: [0] } } });
     expect(recovered.statusCode).toBe(200);
-    expect(recovered.json().progress.bestScores).toHaveLength(30);
+    expect(recovered.json().progress.bestScores).toHaveLength(42);
     expect(recovered.json().progress.bestScores[0]).toBe(500);
     expect(recovered.json().progress.stars[0]).toBe(2);
     expect(recovered.json().progress.cleared).toEqual([0]);

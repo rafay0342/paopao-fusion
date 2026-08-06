@@ -1,13 +1,13 @@
 {
-  "schemaVersion": 1,
-  "contentVersion": "2026.07.22-r1",
+  "schemaVersion": 2,
+  "contentVersion": "2026.08.06-v16-crown-echoes",
   "worlds": [
-    { "index": 0, "id": "crystal", "name": "CRYSTAL KINGDOM", "subtitle": "THE AWAKENING", "accent": "#62f3ef", "levels": [0, 18, 1, 19, 2] },
-    { "index": 1, "id": "emerald", "name": "EMERALD WILDS", "subtitle": "THE LIVING FOREST", "accent": "#70ef98", "levels": [3, 20, 4, 21, 5] },
-    { "index": 2, "id": "celestial", "name": "CELESTIAL TEMPLE", "subtitle": "ABOVE THE CLOUDS", "accent": "#79d9ff", "levels": [6, 22, 7, 23, 8] },
-    { "index": 3, "id": "ember", "name": "EMBER FORGE", "subtitle": "THE FINAL FLAME", "accent": "#ff715a", "levels": [9, 24, 10, 25, 11] },
-    { "index": 4, "id": "frost", "name": "FROSTBOUND CITADEL", "subtitle": "THE ETERNAL WINTER", "accent": "#78dcff", "levels": [12, 26, 13, 27, 14] },
-    { "index": 5, "id": "nexus", "name": "MAGNETIC NEXUS", "subtitle": "THE SHIFTING RIFT", "accent": "#b8a3ff", "levels": [15, 28, 16, 29, 17] }
+    { "index": 0, "id": "crystal", "name": "CRYSTAL KINGDOM", "subtitle": "THE AWAKENING", "accent": "#62f3ef", "levels": [0, 18, 1, 19, 2], "echoLevels": [30, 31] },
+    { "index": 1, "id": "emerald", "name": "EMERALD WILDS", "subtitle": "THE LIVING FOREST", "accent": "#70ef98", "levels": [3, 20, 4, 21, 5], "echoLevels": [32, 33] },
+    { "index": 2, "id": "celestial", "name": "CELESTIAL TEMPLE", "subtitle": "ABOVE THE CLOUDS", "accent": "#79d9ff", "levels": [6, 22, 7, 23, 8], "echoLevels": [34, 35] },
+    { "index": 3, "id": "ember", "name": "EMBER FORGE", "subtitle": "THE FINAL FLAME", "accent": "#ff715a", "levels": [9, 24, 10, 25, 11], "echoLevels": [36, 37] },
+    { "index": 4, "id": "frost", "name": "FROSTBOUND CITADEL", "subtitle": "THE ETERNAL WINTER", "accent": "#78dcff", "levels": [12, 26, 13, 27, 14], "echoLevels": [38, 39] },
+    { "index": 5, "id": "nexus", "name": "MAGNETIC NEXUS", "subtitle": "THE SHIFTING RIFT", "accent": "#b8a3ff", "levels": [15, 28, 16, 29, 17], "echoLevels": [40, 41] }
   ],
   "levels": [
     { "index": 0, "rows": 4, "colors": 4, "world": 0, "title": "PRISM GATE", "objective": "Awaken the crystal path", "targetScore": 3200, "goal": "clear", "mechanic": "none", "mechanicCount": 0, "shotLimit": 0 },
@@ -39,6 +39,18 @@
     { "index": 26, "rows": 9, "colors": 5, "world": 4, "title": "AURORA ARCHIVE", "objective": "Thaw the keeper records", "targetScore": 24800, "goal": "ice_cores", "mechanic": "ice", "mechanicCount": 6, "shotLimit": 38 },
     { "index": 27, "rows": 10, "colors": 6, "world": 4, "title": "MIRRORGLASS PASS", "objective": "Cross the fractured winter", "targetScore": 27000, "goal": "clear", "mechanic": "ice", "mechanicCount": 5, "shotLimit": 36 },
     { "index": 28, "rows": 10, "colors": 6, "world": 5, "title": "GRAVITY WELL", "objective": "Anchor the escaping Pao spirits", "targetScore": 31600, "goal": "polarity_nodes", "mechanic": "polarity", "mechanicCount": 5, "shotLimit": 40 },
-    { "index": 29, "rows": 11, "colors": 6, "world": 5, "title": "CROWN CONVERGENCE", "objective": "Unite every restored resonance", "targetScore": 34200, "goal": "clear", "mechanic": "polarity", "mechanicCount": 6, "shotLimit": 38 }
+    { "index": 29, "rows": 11, "colors": 6, "world": 5, "title": "CROWN CONVERGENCE", "objective": "Unite every restored resonance", "targetScore": 34200, "goal": "clear", "mechanic": "polarity", "mechanicCount": 6, "shotLimit": 38 },
+    { "index": 30, "act": "echoes", "masteryTier": 1, "rows": 8, "colors": 6, "world": 0, "title": "REFRACTION GAUNTLET", "objective": "Break every returning crystal seal", "targetScore": 36800, "goal": "seals", "mechanic": "crystal", "mechanicCount": 10, "shotLimit": 34 },
+    { "index": 31, "act": "echoes", "masteryTier": 2, "rows": 9, "colors": 6, "world": 0, "title": "PRISM WARDEN ASCENDED", "objective": "Master the guardian's living light", "targetScore": 39200, "goal": "boss", "mechanic": "crystal", "mechanicCount": 0, "shotLimit": 38, "boss": { "name": "PRISM WARDEN ASCENDED", "hp": 10, "actionEvery": 3 } },
+    { "index": 32, "act": "echoes", "masteryTier": 1, "rows": 9, "colors": 6, "world": 1, "title": "THORNPULSE LABYRINTH", "objective": "Heal the spreading crown roots", "targetScore": 41600, "goal": "vines", "mechanic": "vine", "mechanicCount": 10, "shotLimit": 36 },
+    { "index": 33, "act": "echoes", "masteryTier": 2, "rows": 9, "colors": 6, "world": 1, "title": "HEARTWOOD ASCENDED", "objective": "Answer the guardian's wild rhythm", "targetScore": 44000, "goal": "boss", "mechanic": "vine", "mechanicCount": 0, "shotLimit": 38, "boss": { "name": "HEARTWOOD GUARDIAN ASCENDED", "hp": 12, "actionEvery": 3 } },
+    { "index": 34, "act": "echoes", "masteryTier": 1, "rows": 9, "colors": 6, "world": 2, "title": "TWIN-ORBIT PASSAGE", "objective": "Synchronize the echo portals", "targetScore": 46600, "goal": "portal_cores", "mechanic": "portal", "mechanicCount": 8, "shotLimit": 34 },
+    { "index": 35, "act": "echoes", "masteryTier": 2, "rows": 10, "colors": 6, "world": 2, "title": "ASTRAL ASCENDED", "objective": "Rewrite the sentinel's final orbit", "targetScore": 49200, "goal": "boss", "mechanic": "portal", "mechanicCount": 0, "shotLimit": 36, "boss": { "name": "ASTRAL SENTINEL ASCENDED", "hp": 13, "actionEvery": 3 } },
+    { "index": 36, "act": "echoes", "masteryTier": 1, "rows": 10, "colors": 6, "world": 3, "title": "CINDER CLOCKWORKS", "objective": "Cool the converging ember hearts", "targetScore": 52000, "goal": "embers", "mechanic": "ember", "mechanicCount": 10, "shotLimit": 32 },
+    { "index": 37, "act": "echoes", "masteryTier": 2, "rows": 10, "colors": 6, "world": 3, "title": "INFERNO ASCENDED", "objective": "Temper the sovereign's reborn flame", "targetScore": 54800, "goal": "boss", "mechanic": "ember", "mechanicCount": 0, "shotLimit": 34, "boss": { "name": "INFERNO SOVEREIGN ASCENDED", "hp": 14, "actionEvery": 2 } },
+    { "index": 38, "act": "echoes", "masteryTier": 1, "rows": 10, "colors": 6, "world": 4, "title": "AURORA FRACTURE", "objective": "Thaw the mirrored ice cores", "targetScore": 57800, "goal": "ice_cores", "mechanic": "ice", "mechanicCount": 10, "shotLimit": 36 },
+    { "index": 39, "act": "echoes", "masteryTier": 2, "rows": 11, "colors": 6, "world": 4, "title": "FROST REGENT ASCENDED", "objective": "Return motion to the eternal crown", "targetScore": 60800, "goal": "boss", "mechanic": "ice", "mechanicCount": 0, "shotLimit": 36, "boss": { "name": "FROST REGENT ASCENDED", "hp": 15, "actionEvery": 2 } },
+    { "index": 40, "act": "echoes", "masteryTier": 1, "rows": 11, "colors": 6, "world": 5, "title": "POLARITY CONVERGENCE", "objective": "Discharge the six echo anchors", "targetScore": 64000, "goal": "polarity_nodes", "mechanic": "polarity", "mechanicCount": 10, "shotLimit": 32 },
+    { "index": 41, "act": "echoes", "masteryTier": 2, "rows": 11, "colors": 6, "world": 5, "title": "ARCHITECT ASCENDED", "objective": "Prove that harmony can keep changing", "targetScore": 67600, "goal": "boss", "mechanic": "polarity", "mechanicCount": 0, "shotLimit": 34, "boss": { "name": "NEXUS ARCHITECT ASCENDED", "hp": 18, "actionEvery": 2 } }
   ]
 }

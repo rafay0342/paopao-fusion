@@ -84,6 +84,7 @@ import {
   getArtifact,
   getMeta,
   getQualityProfile,
+  grantSkinOwnership,
   MODE_DEFS,
   recordRunStats,
   type ArtifactDef,
@@ -2629,6 +2630,11 @@ export class GameScene extends Phaser.Scene {
     return 1;
   }
 
+  private grantEchoCompletionReward(): void {
+    if (this.challenge || this.arena || this.replayTrace || this.level !== 41) return;
+    grantSkinOwnership('nexus_crown_optical');
+  }
+
   private beginClassicAuthority(): void {
     if (this.classicAuthorityStarting || this.classicAuthority || this.classicAuthorityFailed) return;
     const generation = this.runGeneration;
@@ -3813,6 +3819,7 @@ export class GameScene extends Phaser.Scene {
     this.handCursor?.setVisible(false);
     getHandTracker().suspend();
     const progress = recordLevelClear(this.level, this.currentLevelScore());
+    this.grantEchoCompletionReward();
     this.recordCompletedRun(true);
     const shardAwarded = this.claimStoryShard();
     const stars = progress.stars[this.level] ?? 1;
@@ -3907,12 +3914,17 @@ export class GameScene extends Phaser.Scene {
         return;
       }
       const nextLevel = nextStoryLevel(this.level);
-      if (nextLevel == null) this.scene.start('Ending', { level: this.level, score: this.score, mode: this.mode });
+      if (nextLevel == null) this.scene.start('Ending', {
+        level: this.level,
+        score: this.score,
+        mode: this.mode,
+        echoComplete: LEVELS[this.level].act === 'echoes',
+      });
       else this.scene.start('Story', { level: nextLevel, score: this.score, mode: this.mode });
     }, 320, 78, 33);
     addArtButton(this, width / 2, height * 0.82, 'ADVENTURE MAP', () => {
       SFX.click();
-      this.scene.start('WorldMap', { world: LEVELS[this.level].world });
+      this.scene.start('WorldMap', { world: LEVELS[this.level].world, act: LEVELS[this.level].act });
     }, 280, 64, 33);
     sharpenSceneText(this);
   }
@@ -3977,7 +3989,7 @@ export class GameScene extends Phaser.Scene {
     }, 290, 66, 62);
     const map = addArtButton(this, width / 2, height * 0.72, 'ADVENTURE MAP', () => {
       SFX.click();
-      this.scene.start('WorldMap', { world: LEVELS[this.level].world });
+      this.scene.start('WorldMap', { world: LEVELS[this.level].world, act: LEVELS[this.level].act });
     }, 270, 62, 62);
     overlay.add([dim, panel, crestAura, crest, level, title, subtitle, details, resume, restart, map]);
     if (this.reducedMotion) {
@@ -4193,6 +4205,7 @@ export class GameScene extends Phaser.Scene {
       : '';
     if (won && !this.challenge && !this.arena && !this.replayTrace) {
       recordLevelClear(this.level, this.currentLevelScore());
+      this.grantEchoCompletionReward();
     }
     this.recordCompletedRun(won);
     const shardAwarded = won ? this.claimStoryShard() : 0;
@@ -4299,7 +4312,11 @@ export class GameScene extends Phaser.Scene {
         return;
       }
       if (finalStoryVictory) {
-        this.scene.start('Ending', { score: this.score, mode: this.mode });
+        this.scene.start('Ending', {
+          score: this.score,
+          mode: this.mode,
+          echoComplete: LEVELS[this.level].act === 'echoes',
+        });
         return;
       }
       if (this.challenge || this.replayTrace) {

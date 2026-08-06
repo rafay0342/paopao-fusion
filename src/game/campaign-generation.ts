@@ -3,6 +3,7 @@ import { COLOR_KEYS, GRID, LEVELS, type ColorKey } from '../config';
 
 export const CAMPAIGN_GENERATION_SCHEMA_VERSION = 1 as const;
 export const CAMPAIGN_CONTENT_VERSION = campaignFixture.contentVersion;
+export const LEGACY_CAMPAIGN_CONTENT_VERSION = '2026.07.22-r1' as const;
 
 export const CAMPAIGN_MODES = ['classic', 'rush', 'precision'] as const;
 export type CampaignMode = typeof CAMPAIGN_MODES[number];
@@ -122,7 +123,10 @@ function assertIdentity(input: CampaignGenerationIdentity): {
   if (!MODE_SET.has(input.mode)) {
     throw new RangeError(`Unsupported campaign mode: ${String(input.mode)}`);
   }
-  const contentVersion = input.contentVersion ?? CAMPAIGN_CONTENT_VERSION;
+  // The shipped 0-29 boards are immutable replay/save identities. V16 uses a
+  // new content domain only for the appended Crown Echoes levels.
+  const contentVersion = input.contentVersion
+    ?? (input.level < 30 ? LEGACY_CAMPAIGN_CONTENT_VERSION : CAMPAIGN_CONTENT_VERSION);
   if (typeof contentVersion !== 'string'
     || contentVersion.length < 1
     || contentVersion.length > 128
@@ -284,7 +288,7 @@ export function drawColorBagMany(
 }
 
 /**
- * Build the complete opening hex layout for one of the 30 campaign levels.
+ * Build the complete opening hex layout for one of the 42 campaign levels.
  * Even rows use GRID.cols and odd rows use GRID.cols - 1, matching Phaser's
  * existing hex geometry exactly.
  */

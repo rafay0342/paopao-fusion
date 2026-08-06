@@ -12,13 +12,16 @@ import {
 
 describe('V11 maps and adaptive rendering', () => {
   it('defines five dependency-backed nodes per realm and follows their story order', () => {
-    expect(MAP_NODES).toHaveLength(30);
+    expect(MAP_NODES).toHaveLength(42);
     WORLD_THEMES.forEach((world) => {
       expect(world.levels).toHaveLength(5);
       expect(nextStoryLevel(world.levels[0])).toBe(world.levels[1]);
       expect(nextStoryLevel(world.levels[3])).toBe(world.levels[4]);
+      expect(world.echoLevels).toHaveLength(2);
+      expect(nextStoryLevel(world.echoLevels[0])).toBe(world.echoLevels[1]);
     });
     expect(nextStoryLevel(WORLD_THEMES[5].levels[4])).toBeNull();
+    expect(nextStoryLevel(WORLD_THEMES[5].echoLevels[1])).toBeNull();
   });
 
   it('downgrades after sustained frame pressure and upgrades only after a stable window', () => {

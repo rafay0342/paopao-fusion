@@ -306,6 +306,66 @@ export const STORY_BEATS: readonly StoryBeat[] = [
     body: 'We do not sing because the Crown commands us. We sing because every realm has chosen to answer.',
     purpose: 'Unite every restored resonance without forcing their voices into one before the final battle.', aftermath: 'The Nexus Heart opens for the last choice as all six realms answer of their own free will.',
   },
+  {
+    level: 30, chapter: 0, kicker: 'THE FIRST ECHO', title: 'REFRACTION GAUNTLET', speaker: 'LUMI',
+    body: 'The restored Crown does not command the Crystal Kingdom; it listens. Old seals now answer with living echoes that test whether our harmony can bend without breaking.',
+    purpose: 'Break every returning crystal seal and stabilize the first Ascended Path.', aftermath: 'The gauntlet opens. The Prism Warden returns freely, carrying a light brighter than the shard it once guarded.',
+  },
+  {
+    level: 31, chapter: 0, kicker: 'LIGHT ASCENDED', title: 'THE WARDEN RETURNS', speaker: 'PRISM WARDEN',
+    body: 'Once I protected light by locking it away. Now let us prove that shared light can survive every reflection.',
+    purpose: 'Master the Prism Warden’s living light without silencing its echoes.', aftermath: 'The first Echo Crest awakens and sends a green pulse toward the deepest roots of the Emerald Wilds.',
+  },
+  {
+    level: 32, chapter: 1, kicker: 'ROOTS IN MOTION', title: 'THORNPULSE LABYRINTH', speaker: 'EMERALD PAOS',
+    body: 'The forest is growing again, but living growth makes no perfect road. Follow the pulse, heal the thorns and let every root choose where it reaches.',
+    purpose: 'Heal the spreading crown roots before the labyrinth closes.', aftermath: 'The wild paths bloom together and Heartwood answers with a rhythm no Crown could have ordered.',
+  },
+  {
+    level: 33, chapter: 1, kicker: 'LIFE ASCENDED', title: 'THE HEARTWOOD CHORUS', speaker: 'HEARTWOOD GUARDIAN',
+    body: 'A forest is harmony made from countless directions. Keep pace with us, Keeper, and do not ask the wild to stand still.',
+    purpose: 'Answer the guardian’s changing rhythm and preserve every living branch.', aftermath: 'The second Echo Crest rises on a current of starlight leading above the clouds.',
+  },
+  {
+    level: 34, chapter: 2, kicker: 'TWO TRUE ORBITS', title: 'TWIN-ORBIT PASSAGE', speaker: 'ASTRAL SENTINEL',
+    body: 'The stars now remember more than one future. Synchronize both paths without collapsing either into the other.',
+    purpose: 'Charge the paired echo portals and hold both celestial routes.', aftermath: 'Two constellations remain true at once. Their crossing summons the Sentinel beyond the old orrery.',
+  },
+  {
+    level: 35, chapter: 2, kicker: 'MEMORY ASCENDED', title: 'THE UNWRITTEN STAR', speaker: 'ASTRAL SENTINEL',
+    body: 'I guarded one unchanging memory. Today I will guard the right to write what comes next.',
+    purpose: 'Rewrite the Sentinel’s final orbit through living choices.', aftermath: 'The third Echo Crest falls like a comet into the Ember Forge, where new futures wait inside the flame.',
+  },
+  {
+    level: 36, chapter: 3, kicker: 'FUTURES REKINDLED', title: 'CINDER CLOCKWORKS', speaker: 'EMBER PAOS',
+    body: 'The futures once trapped as fuel are returning all at once. Cool their hearts without extinguishing what they may become.',
+    purpose: 'Stabilize every converging ember heart before its final pulse.', aftermath: 'The clockworks release their futures and the Sovereign steps forward in a flame chosen freely.',
+  },
+  {
+    level: 37, chapter: 3, kicker: 'FLAME ASCENDED', title: 'THE SOVEREIGN REBORN', speaker: 'INFERNO SOVEREIGN',
+    body: 'I no longer burn for a perfect world. Temper this flame so it can warm a thousand uncertain tomorrows.',
+    purpose: 'Temper the Sovereign’s reborn flame and keep its possibilities alive.', aftermath: 'The fourth Echo Crest cools into aurora glass and opens a path through the Frostbound mirrors.',
+  },
+  {
+    level: 38, chapter: 4, kicker: 'WINTER IN MOTION', title: 'AURORA FRACTURE', speaker: 'THE LOST KEEPERS',
+    body: 'These mirrors preserve every ending we feared. Thaw them carefully, and let memory guide the living instead of freezing them.',
+    purpose: 'Thaw the mirrored ice cores without shattering the truths inside.', aftermath: 'The mirrors become clear water. The Frost Regent sees spring moving through every reflection.',
+  },
+  {
+    level: 39, chapter: 4, kicker: 'STILLNESS ASCENDED', title: 'THE REGENT AWAKES', speaker: 'FROST REGENT',
+    body: 'Stillness can preserve a moment, but only motion lets it matter. Return change to my eternal crown.',
+    purpose: 'Restore motion to the Frost Regent’s crown and release the final winter.', aftermath: 'The fifth Echo Crest joins the others. Together they point toward six anchors inside the Magnetic Nexus.',
+  },
+  {
+    level: 40, chapter: 5, kicker: 'SIX FREE ANCHORS', title: 'POLARITY CONVERGENCE', speaker: 'LUMI',
+    body: 'The Nexus is no longer a machine of one future. Hold six different resonances together while every field continues to change.',
+    purpose: 'Discharge the six echo anchors without forcing them into one polarity.', aftermath: 'The anchors form a free constellation. At its centre, the Architect asks for one final proof.',
+  },
+  {
+    level: 41, chapter: 5, kicker: 'HARMONY ASCENDED', title: 'THE ARCHITECT’S LAST QUESTION', speaker: 'NEXUS ARCHITECT',
+    body: 'The Crown survived freedom. Now show me that harmony can keep changing and still remain whole.',
+    purpose: 'Complete the Ascended Path and answer the Architect with all six living echoes.', aftermath: 'Six Echo Crests become one Crown Echo. The realms remain different, connected and alive.',
+  },
 ] as const;
 
 export const CHRONICLE_LORE: readonly ChronicleLore[] = [
