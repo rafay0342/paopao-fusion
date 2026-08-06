@@ -25,13 +25,10 @@ export class StoreScene extends Phaser.Scene {
     addAmbientMotes(this, 0x70ef98, 22, 2);
 
     addArtPanel(this, width / 2, 115, 620, 210, 8, 0.97);
-    this.add.text(width / 2, 55, '✦  ROYAL RELIC EXCHANGE  ✦', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe6a3', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(12);
-    this.add.text(width / 2, 101, 'ARTIFACT VAULT', {
+    this.add.text(width / 2, 92, 'ARTIFACT VAULT', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#73f4a1', fontStyle: 'bold', stroke: '#113a31', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    this.add.text(width / 2, 148, `${meta.ownedArtifacts.length} / ${ARTIFACTS.length} RELICS OWNED   •   ONE ACTIVE SUPER EQUIPPED`, {
+    this.add.text(width / 2, 142, `${meta.ownedArtifacts.length} / ${ARTIFACTS.length} RELICS OWNED   •   ONE ACTIVE SUPER EQUIPPED`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#d9e4ef', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(12);
 

@@ -98,14 +98,11 @@ export class ModeSelectScene extends Phaser.Scene {
     addAmbientMotes(this, 0x82dcff, 22, 2);
     addUiScrim(this, 0.4, 3);
 
-    addArtPanel(this, width / 2, 118, 620, 215, 8, 0.97);
-    this.add.text(width / 2, 58, 'CHOOSE YOUR CHALLENGE', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe5a0', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(12);
-    this.add.text(width / 2, 105, 'SPECIAL MODES', {
+    addArtPanel(this, width / 2, 126, 620, 196, 8, 0.97);
+    this.add.text(width / 2, 112, 'SPECIAL MODES', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold', stroke: '#34215f', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    this.add.text(width / 2, 151, 'Every mode has its own timer, hit rules and coin multiplier.', {
+    this.add.text(width / 2, 158, 'Every mode has its own timer, hit rules and coin multiplier.', {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#d5deed', fontStyle: 'bold',
       align: 'center', wordWrap: { width: 540 },
     }).setOrigin(0.5).setDepth(12);

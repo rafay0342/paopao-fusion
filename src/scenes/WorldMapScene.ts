@@ -201,10 +201,10 @@ export class WorldMapScene extends Phaser.Scene {
     addUiScrim(this, 0.4, 3);
 
     addArtPanel(this, width / 2, 119, 620, 188, 8, 0.96);
-    this.add.text(width / 2, 76, 'ADVENTURE MAP', {
+    this.add.text(width / 2, 132, 'ADVENTURE MAP', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe6a6', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 2, '#000000', 6);
-    this.add.text(width / 2, 119, theme.name, {
+    this.add.text(width / 2, 96, theme.name, {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: theme.accentCss, fontStyle: 'bold',
       stroke: '#101225', strokeThickness: 5,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);

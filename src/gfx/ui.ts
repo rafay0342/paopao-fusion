@@ -46,6 +46,12 @@ export const UI_COLORS = {
   danger: '#f17692',
 } as const;
 
+/**
+ * Authored-canvas gutter. At the strict 360 px mobile width this resolves to
+ * 12 CSS pixels, keeping labels and framed controls visibly away from edges.
+ */
+export const UI_SAFE_GUTTER = 24;
+
 const accessibleButtonSerial = new WeakMap<Phaser.Scene, number>();
 
 function humanizeSceneKey(scene: Phaser.Scene): string {
@@ -86,6 +92,48 @@ export function prefersReducedMotion(): boolean {
 
 export function fitText(text: Phaser.GameObjects.Text, maxWidth: number, minScale = 0.88): Phaser.GameObjects.Text {
   text.setScale(resolveTextFitScale(text.width, maxWidth, minScale));
+  return text;
+}
+
+function localScaleForWorldDelta(object: Phaser.GameObjects.GameObject, axis: 'x' | 'y'): number {
+  const parent = (object as unknown as Phaser.GameObjects.Components.Transform & {
+    parentContainer?: Phaser.GameObjects.Container | null;
+  }).parentContainer;
+  if (!parent) return 1;
+  return Math.max(0.001, Math.abs(axis === 'x' ? parent.scaleX : parent.scaleY));
+}
+
+/**
+ * Last-resort viewport guard for player-facing canvas text. Scene-specific
+ * wrapping and fitText still establish hierarchy; this prevents any remaining
+ * dynamic/localized label from clipping against the authored mobile edges.
+ */
+export function constrainTextToSafeViewport(
+  text: Phaser.GameObjects.Text,
+  gutter = UI_SAFE_GUTTER,
+): Phaser.GameObjects.Text {
+  if (!text.visible || text.alpha <= 0 || !text.active) return text;
+  const availableWidth = VIEW.width - gutter * 2;
+  let bounds = text.getBounds();
+  if (bounds.width > availableWidth && bounds.width > 0) {
+    const scale = availableWidth / bounds.width;
+    text.setScale(text.scaleX * scale, text.scaleY * scale);
+    bounds = text.getBounds();
+  }
+
+  let deltaX = 0;
+  if (bounds.left < gutter) deltaX = gutter - bounds.left;
+  if (bounds.right + deltaX > VIEW.width - gutter) {
+    deltaX += VIEW.width - gutter - (bounds.right + deltaX);
+  }
+  if (Math.abs(deltaX) > 0.01) text.x += deltaX / localScaleForWorldDelta(text, 'x');
+  bounds = text.getBounds();
+  let deltaY = 0;
+  if (bounds.top < gutter) deltaY = gutter - bounds.top;
+  if (bounds.bottom + deltaY > VIEW.height - gutter) {
+    deltaY += VIEW.height - gutter - (bounds.bottom + deltaY);
+  }
+  if (Math.abs(deltaY) > 0.01) text.y += deltaY / localScaleForWorldDelta(text, 'y');
   return text;
 }
 
@@ -153,9 +201,12 @@ export function addUiScrim(
 /** Render canvas text at device-aware resolution after a scene is composed. */
 export function sharpenSceneText(scene: Phaser.Scene): void {
   const resolution = Phaser.Math.Clamp(window.devicePixelRatio || 1, 1, getQualityProfile().dprCap);
+  const textSignatures = new WeakMap<Phaser.GameObjects.Text, string>();
   const sharpen = (child: Phaser.GameObjects.GameObject): void => {
     if (child instanceof Phaser.GameObjects.Text) {
       child.setResolution(resolution);
+      constrainTextToSafeViewport(child);
+      textSignatures.set(child, `${child.text}|${child.visible}|${child.alpha}|${child.scaleX}`);
       return;
     }
     if (child instanceof Phaser.GameObjects.Container) {
@@ -163,6 +214,30 @@ export function sharpenSceneText(scene: Phaser.Scene): void {
     }
   };
   for (const child of scene.children.list) sharpen(child);
+
+  // Dynamic scores, account names, translated status copy and live objectives
+  // can change after create(). Re-check only changed text, not every label on
+  // every frame, so the guard remains cheap during active gameplay.
+  const keepDynamicTextSafe = (): void => {
+    const inspect = (child: Phaser.GameObjects.GameObject): void => {
+      if (child instanceof Phaser.GameObjects.Text) {
+        const signature = `${child.text}|${child.visible}|${child.alpha}|${child.scaleX}`;
+        if (textSignatures.get(child) !== signature) {
+          constrainTextToSafeViewport(child);
+          textSignatures.set(child, `${child.text}|${child.visible}|${child.alpha}|${child.scaleX}`);
+        }
+        return;
+      }
+      if (child instanceof Phaser.GameObjects.Container) {
+        for (const nested of child.list) inspect(nested);
+      }
+    };
+    for (const child of scene.children.list) inspect(child);
+  };
+  scene.events.on(Phaser.Scenes.Events.POST_UPDATE, keepDynamicTextSafe);
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    scene.events.off(Phaser.Scenes.Events.POST_UPDATE, keepDynamicTextSafe);
+  });
 }
 
 export function addWorldBackground(
@@ -517,11 +592,15 @@ export function addArtPanel(
   depth = 10,
   alpha = 1,
 ): Phaser.GameObjects.Container {
+  width = Math.min(Math.max(1, width), VIEW.width - UI_SAFE_GUTTER * 2);
+  height = Math.min(Math.max(1, height), VIEW.height - UI_SAFE_GUTTER * 2);
+  x = clampFloatingCenterX(x, width, UI_SAFE_GUTTER);
+  y = Phaser.Math.Clamp(y, UI_SAFE_GUTTER + height / 2, VIEW.height - UI_SAFE_GUTTER - height / 2);
   const panel = scene.add.container(x, y).setDepth(depth);
   const rasterPanelKey = height <= 150 ? UI_V16.panelCompact : UI_V16.panelWide;
   if (width / Math.max(1, height) >= 1.35 && hasV16UiArt(scene, rasterPanelKey)) {
     const raster = scene.add.image(0, 0, rasterPanelKey)
-      .setDisplaySize(width + Math.min(24, width * 0.04), height + Math.min(24, height * 0.1));
+      .setDisplaySize(width, height);
     panel.add(raster);
     panel.setData({ paopaoResourceRole: 'v16-art-panel', paopaoTexture: rasterPanelKey });
     if (prefersReducedMotion()) return panel.setAlpha(alpha);
@@ -599,10 +678,14 @@ export function addArtButton(
   height = 76,
   depth = 20,
 ): Phaser.GameObjects.Container {
+  width = Math.min(Math.max(1, width), VIEW.width - UI_SAFE_GUTTER * 2);
+  height = Math.min(Math.max(1, height), VIEW.height - UI_SAFE_GUTTER * 2);
+  x = clampFloatingCenterX(x, width, UI_SAFE_GUTTER);
+  y = Phaser.Math.Clamp(y, UI_SAFE_GUTTER + height / 2, VIEW.height - UI_SAFE_GUTTER - height / 2);
   const button = scene.add.container(x, y).setDepth(depth);
   if (width / Math.max(1, height) >= 2.2 && hasV16UiArt(scene, UI_V16.buttonPrimary)) {
     const texture = width >= 230 ? UI_V16.buttonPrimary : UI_V16.buttonSecondary;
-    const surface = scene.add.image(0, 0, texture).setDisplaySize(width + 12, height + 12);
+    const surface = scene.add.image(0, 0, texture).setDisplaySize(width, height);
     const text = scene.add.text(0, -1, label, {
       fontFamily: UI_FONT,
       fontSize: `${Phaser.Math.Clamp(Math.round(height * 0.34), 20, 26)}px`,
@@ -777,11 +860,14 @@ export function addIconFrame(
   depth = 10,
   selected = false,
 ): Phaser.GameObjects.Container {
+  size = Math.min(Math.max(1, size), VIEW.width - UI_SAFE_GUTTER * 2);
+  x = clampFloatingCenterX(x, size, UI_SAFE_GUTTER);
+  y = Phaser.Math.Clamp(y, UI_SAFE_GUTTER + size / 2, VIEW.height - UI_SAFE_GUTTER - size / 2);
   const frame = scene.add.container(x, y).setDepth(depth);
   if (hasV16UiArt(scene, UI_V16.medallion)) {
     const halo = scene.add.circle(0, 0, size * 0.47, accent, selected ? 0.2 : 0.08);
     const raster = scene.add.image(0, 0, UI_V16.medallion)
-      .setDisplaySize(size * 1.16, size * 1.16)
+      .setDisplaySize(size, size)
       .setAlpha(selected ? 1 : 0.94);
     frame.add([halo, raster]);
     frame.setData({ paopaoResourceRole: 'v16-icon-frame', paopaoTexture: UI_V16.medallion });

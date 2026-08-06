@@ -23,8 +23,8 @@ export class HandSetupScene extends Phaser.Scene {
     void getHandTracker().prepare().catch(() => undefined);
     addWorldBackground(this, 'world_celestial', 0.27);
     addArtPanel(this, VIEW.width / 2, 118, 630, 210, 8, 0.98);
-    this.add.text(VIEW.width / 2, 70, 'HAND CONTROL LAB', { fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold', stroke: '#132e51', strokeThickness: 7 }).setOrigin(0.5).setDepth(12);
-    this.add.text(VIEW.width / 2, 125, 'CAMERA-SAFE  •  ON-DEVICE LANDMARKS  •  NO VIDEO UPLOAD', { fontFamily: UI_FONT, fontSize: TYPE.label, color: '#79d9ff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
+    this.add.text(VIEW.width / 2, 88, 'HAND CONTROL LAB', { fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold', stroke: '#132e51', strokeThickness: 7 }).setOrigin(0.5).setDepth(12);
+    this.add.text(VIEW.width / 2, 145, 'CAMERA-SAFE  •  ON-DEVICE LANDMARKS  •  NO VIDEO UPLOAD', { fontFamily: UI_FONT, fontSize: TYPE.label, color: '#79d9ff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
     addArtButton(this, 86, 46, '‹  BACK', () => this.scene.start('GazeSetup'), 140, 50, 18);
     addArtPanel(this, VIEW.width / 2, 430, 630, 340, 8, 0.97);
     this.status = this.add.text(VIEW.width / 2, 325, 'START CAMERA TO CALIBRATE', { fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);

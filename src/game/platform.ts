@@ -509,7 +509,8 @@ export async function getCatalog(): Promise<CatalogOffer[]> {
 }
 
 export async function getAuthProviders(): Promise<AuthProviderStatus[]> {
-  return (await api<{ providers: AuthProviderStatus[] }>('/api/auth/providers')).providers;
+  const response = await api<{ providers?: AuthProviderStatus[] }>('/api/auth/providers');
+  return Array.isArray(response.providers) ? response.providers : [];
 }
 
 export function beginOAuth(provider: AuthProviderStatus['provider']): void {

@@ -97,14 +97,11 @@ export class ChronicleScene extends Phaser.Scene {
     this.add.rectangle(0, 0, width, height, 0x02050d, 0.36).setOrigin(0).setDepth(3);
 
     addArtPanel(this, width / 2, 88, 620, 150, 7, 0.97);
-    this.add.text(width / 2, 49, '✦  KEEPER ARCHIVE  ✦', {
-      fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ffe4a0', fontStyle: 'bold', letterSpacing: 3,
-    }).setOrigin(0.5).setDepth(10);
-    fitText(this.add.text(width / 2, 91, 'THE AURORA CHRONICLE', {
+    fitText(this.add.text(width / 2, 88, 'THE AURORA CHRONICLE', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#91e4ff', fontStyle: 'bold',
       stroke: '#192653', strokeThickness: 5,
     }).setOrigin(0.5).setDepth(10).setShadow(0, 4, '#000000', 9), 500);
-    this.add.text(width / 2, 126, STORY_TAGLINE.toUpperCase(), {
+    this.add.text(width / 2, 134, STORY_TAGLINE.toUpperCase(), {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#d8e1ef', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(10);
 

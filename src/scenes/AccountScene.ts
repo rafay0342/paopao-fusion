@@ -41,55 +41,50 @@ export class AccountScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(10);
 
     addArtPanel(this, width / 2, 300, 640, 290, 5, 0.98);
-    this.statusText = this.add.text(width / 2, 218, '', {
+    this.statusText = this.add.text(width / 2, 246, '', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', align: 'center',
     }).setOrigin(0.5).setDepth(10);
-    this.nameText = this.add.text(width / 2, 266, '', {
+    this.nameText = this.add.text(width / 2, 290, '', {
       fontFamily: UI_FONT, fontSize: TYPE.title, color: '#ffffff', fontStyle: 'bold', align: 'center',
     }).setOrigin(0.5).setDepth(10);
-    this.detailText = this.add.text(width / 2, 316, '', {
+    this.detailText = this.add.text(width / 2, 342, '', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#b9c7dc', fontStyle: 'bold', align: 'center', lineSpacing: 6,
     }).setOrigin(0.5).setDepth(10);
-    this.recoveryText = this.add.text(width / 2, 365, '', {
+    this.recoveryText = this.add.text(width / 2, 382, '', {
       fontFamily: 'monospace', fontSize: TYPE.body, color: '#7ff1d0', fontStyle: 'bold', align: 'center',
     }).setOrigin(0.5).setDepth(10);
 
-    addArtPanel(this, width / 2, 575, 640, 250, 5, 0.96);
-    this.add.text(width / 2, 506, 'ACCOUNT CONTROLS', {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(10);
+    addArtPanel(this, width / 2, 600, 640, 300, 5, 0.96);
     addArtButton(this, 190, 548, 'EMAIL LOGIN / UPGRADE', () => void this.emailLogin(), 290, 58, 12);
     addArtButton(this, 530, 548, 'PLAY AS GUEST', () => this.goGuest(), 290, 58, 12);
-    addArtButton(this, 190, 632, 'SECURE CLOUD SYNC', () => void this.goOnline(), 290, 58, 12);
-    addArtButton(this, 530, 632, 'SIGN OUT', () => void this.signOut(), 290, 58, 12);
-    addArtButton(this, 190, 716, 'CONTINUE WITH GOOGLE', () => void this.socialLogin('google'), 290, 58, 12);
-    addArtButton(this, 530, 716, 'CONTINUE WITH FACEBOOK', () => void this.socialLogin('facebook'), 290, 58, 12);
+    addArtButton(this, 190, 620, 'SECURE CLOUD SYNC', () => void this.goOnline(), 290, 58, 12);
+    addArtButton(this, 530, 620, 'SIGN OUT', () => void this.signOut(), 290, 58, 12);
+    addArtButton(this, 190, 692, 'CONTINUE WITH GOOGLE', () => void this.socialLogin('google'), 290, 58, 12);
+    addArtButton(this, 530, 692, 'CONTINUE WITH FACEBOOK', () => void this.socialLogin('facebook'), 290, 58, 12);
 
-    addArtPanel(this, width / 2, 872, 640, 260, 5, 0.96);
-    this.add.text(width / 2, 808, 'SECURE ACCOUNT', {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#79d9ff', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(10);
-    this.add.text(width / 2, 858, 'Sign in with your verified email on every device.\nThe browser keeps authentication inside a secure HttpOnly cookie.', {
+    addArtPanel(this, width / 2, 900, 640, 300, 5, 0.96);
+    this.add.text(width / 2, 866, 'Sign in with your verified email on every device.\nThe browser keeps authentication inside a secure HttpOnly cookie.', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#c4d0e1', align: 'center', lineSpacing: 5,
+      wordWrap: { width: 520 },
     }).setOrigin(0.5).setDepth(10);
-    addArtButton(this, width / 2, 936, 'EMAIL SIGN-IN', () => void this.emailLogin(), 390, 62, 12);
+    addArtButton(this, width / 2, 940, 'EMAIL SIGN-IN', () => void this.emailLogin(), 390, 62, 12);
     const analyticsEnabled = hasGameplayTelemetryConsent();
-    addArtButton(this, width / 2, 1012, `ANONYMOUS GAMEPLAY DATA  ${analyticsEnabled ? 'ON' : 'OFF'}`, () => {
+    addArtButton(this, width / 2, 1004, `ANONYMOUS GAMEPLAY DATA  ${analyticsEnabled ? 'ON' : 'OFF'}`, () => {
       SFX.click();
       setGameplayTelemetryConsent(!hasGameplayTelemetryConsent());
       this.scene.restart();
     }, 430, 54, 12);
-    this.add.text(width / 2, 1049, 'Optional and anonymous • never camera frames, landmarks, aim coordinates or email', {
+    this.add.text(width / 2, 1068, 'Optional and anonymous • never camera frames, landmarks, aim coordinates or email', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#9facc0', fontStyle: 'bold', align: 'center',
       wordWrap: { width: 610 },
     }).setOrigin(0.5).setDepth(10);
 
     if (PHASER_RELEASE_FEATURES.completeGameplay) {
-      addArtButton(this, 190, 1110, 'MY INVENTORY', () => {
+      addArtButton(this, 190, 1150, 'MY INVENTORY', () => {
         SFX.click();
         this.scene.start('Inventory');
       }, 290, 62, 12);
-      addArtButton(this, 530, 1110, 'RELIC STORE', () => {
+      addArtButton(this, 530, 1150, 'RELIC STORE', () => {
         SFX.click();
         this.scene.start('Store');
       }, 290, 62, 12);
@@ -147,7 +142,6 @@ export class AccountScene extends Phaser.Scene {
   }
 
   private renderAccount(account: AccountSnapshot): void {
-    const save = getPlayerSave();
     const colors: Record<AccountSnapshot['connection'], string> = {
       online: '#7ff1d0', offline: '#ffc879', connecting: '#ffe7a6', guest: '#b9c7dc',
     };
@@ -158,7 +152,7 @@ export class AccountScene extends Phaser.Scene {
     this.nameText?.setText(account.displayName);
     const player = account.playerId.length > 22 ? `${account.playerId.slice(0, 11)}…${account.playerId.slice(-8)}` : account.playerId;
     const sync = account.lastSyncedAt ? new Date(account.lastSyncedAt).toLocaleString() : 'NOT YET SYNCED';
-    this.detailText?.setText(`PLAYER ID  ${player}\nLAST CLOUD SYNC  ${sync}\n${save.pendingRuns.length} COMPETITIVE RUNS QUEUED`);
+    this.detailText?.setText(`PLAYER ID  ${player}\nLAST CLOUD SYNC  ${sync}`);
     const protection = account.mode === 'guest'
       ? 'GUEST MODE — LOCAL SAVE ONLY'
       : 'HTTPONLY SESSION  •  NO TOKEN STORED IN BROWSER DATA';

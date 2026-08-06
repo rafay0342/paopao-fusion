@@ -84,24 +84,24 @@ export class SocialScene extends Phaser.Scene {
 
   private async drawSignIn(): Promise<void> {
     this.content?.removeAll(true);
-    addArtPanel(this, VIEW.width / 2, 360, 640, 360, 5, 0.98);
-    this.add.text(VIEW.width / 2, 236, 'ONE ACCOUNT · EVERY REALM', {
-      fontFamily: UI_FONT, fontSize: TYPE.title, color: '#ffe7a6', fontStyle: 'bold',
+    addArtPanel(this, VIEW.width / 2, 370, 640, 400, 5, 0.98);
+    this.add.text(VIEW.width / 2, 302, 'ONE ACCOUNT · EVERY REALM', {
+      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(12);
-    this.add.text(VIEW.width / 2, 300, 'Cloud inventory, live 1v1, friend presence and gift hampers\nuse the same secure account. Guest play stays available.', {
+    this.add.text(VIEW.width / 2, 356, 'Cloud inventory, live 1v1, friend presence and gift hampers\nuse the same secure account. Guest play stays available.', {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#cfdaea', align: 'center', lineSpacing: 7,
     }).setOrigin(0.5).setDepth(12);
     const providers = await getAuthProviders().catch(() => []);
     if (!this.scene.isActive()) return;
     const google = providers.find(({ provider }) => provider === 'google');
     const facebook = providers.find(({ provider }) => provider === 'facebook');
-    addArtButton(this, 210, 430, google?.configured ? 'CONTINUE WITH GOOGLE' : 'GOOGLE · SETUP REQUIRED', () => {
+    addArtButton(this, 210, 432, google?.configured ? 'CONTINUE WITH GOOGLE' : 'GOOGLE · SETUP REQUIRED', () => {
       if (google?.configured) beginOAuth('google'); else this.toast('GOOGLE OAUTH CREDENTIALS ARE NOT CONNECTED YET', 0xffc879);
     }, 300, 62, 12);
-    addArtButton(this, 510, 430, facebook?.configured ? 'CONTINUE WITH FACEBOOK' : 'FACEBOOK · SETUP REQUIRED', () => {
+    addArtButton(this, 510, 432, facebook?.configured ? 'CONTINUE WITH FACEBOOK' : 'FACEBOOK · SETUP REQUIRED', () => {
       if (facebook?.configured) beginOAuth('facebook'); else this.toast('FACEBOOK APP CREDENTIALS ARE NOT CONNECTED YET', 0xffc879);
     }, 300, 62, 12);
-    addArtButton(this, VIEW.width / 2, 514, 'EMAIL ACCOUNT', () => this.scene.start('Account'), 360, 58, 12);
+    addArtButton(this, VIEW.width / 2, 506, 'EMAIL ACCOUNT', () => this.scene.start('Account'), 360, 58, 12);
   }
 
   private drawConnected(): void {
