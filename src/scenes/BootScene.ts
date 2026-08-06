@@ -17,6 +17,7 @@ import { requestEquippedOfflineArt } from '../game/offline';
 import { furthestUnlockedWorld, getProgress } from '../game/progression';
 import { makeOrbCanvas, makeSparkCanvas, makeBgCanvas } from '../gfx/textures';
 import { DISPLAY_FONT, TYPE, UI_FONT } from '../gfx/ui';
+import { queueV16UiArt } from '../gfx/ui-art-v16';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { ARCADE_WORLD_IMAGES } from '../game/arcade-art';
 import { INTRO_SEEN_KEY } from './IntroScene';
@@ -129,6 +130,7 @@ export class BootScene extends Phaser.Scene {
     this.legacyBootQueued = false;
     this.v14ManifestFailure = null;
     clearGameplayArtManifest();
+    queueV16UiArt(this);
 
     const textResolution = Math.min(2, window.devicePixelRatio || 1);
     const loaderUi = this.add.container(0, 0);

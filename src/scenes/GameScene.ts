@@ -105,6 +105,7 @@ import {
   UI_COLORS,
   UI_FONT,
 } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import {
   createRunSummary,
@@ -1187,26 +1188,36 @@ export class GameScene extends Phaser.Scene {
       hover.strokePoints(hoverPoints, true);
     };
     drawHover(0.015, 0.16);
-    const icon = this.add.graphics();
-    icon.lineStyle(4, 0xe9fbff, 0.98);
-    if (kind === 'back') {
-      icon.lineBetween(6, -17, -8, -7);
-      icon.lineBetween(-8, -7, 6, 3);
-      icon.lineBetween(-7, -7, 10, -7);
-    } else if (kind === 'pause') {
-      icon.fillStyle(0xe9fbff, 0.96);
-      icon.fillRoundedRect(-8, -18, 6, 22, 2);
-      icon.fillRoundedRect(3, -18, 6, 22, 2);
-    } else {
-      icon.fillStyle(0xe9fbff, 0.96);
-      icon.fillPoints([
-        { x: -11, y: -12 }, { x: -4, y: -12 }, { x: 5, y: -19 },
-        { x: 5, y: 5 }, { x: -4, y: -3 }, { x: -11, y: -3 },
-      ], true);
-      icon.lineStyle(2, 0xe9fbff, 0.78);
-      icon.beginPath();
-      icon.arc(5, -7, 10, -0.78, 0.78, false);
-      icon.strokePath();
+    const rasterKey = kind === 'back' ? UI_V16.controlsPrimitives : UI_V16.hud;
+    const rasterFrame = kind === 'back'
+      ? UI_V16_FRAME.controls.back
+      : kind === 'pause'
+        ? UI_V16_FRAME.hud.pause
+        : UI_V16_FRAME.hud.sound;
+    const icon = this.textures.exists(rasterKey)
+      ? this.add.image(0, -7, rasterKey, rasterFrame).setDisplaySize(74, 74)
+      : this.add.graphics();
+    if (icon instanceof Phaser.GameObjects.Graphics) {
+      icon.lineStyle(4, 0xe9fbff, 0.98);
+      if (kind === 'back') {
+        icon.lineBetween(6, -17, -8, -7);
+        icon.lineBetween(-8, -7, 6, 3);
+        icon.lineBetween(-7, -7, 10, -7);
+      } else if (kind === 'pause') {
+        icon.fillStyle(0xe9fbff, 0.96);
+        icon.fillRoundedRect(-8, -18, 6, 22, 2);
+        icon.fillRoundedRect(3, -18, 6, 22, 2);
+      } else {
+        icon.fillStyle(0xe9fbff, 0.96);
+        icon.fillPoints([
+          { x: -11, y: -12 }, { x: -4, y: -12 }, { x: 5, y: -19 },
+          { x: 5, y: 5 }, { x: -4, y: -3 }, { x: -11, y: -3 },
+        ], true);
+        icon.lineStyle(2, 0xe9fbff, 0.78);
+        icon.beginPath();
+        icon.arc(5, -7, 10, -0.78, 0.78, false);
+        icon.strokePath();
+      }
     }
     const label = fitText(this.add.text(0, 20, caption, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#dce9f7', fontStyle: 'bold', letterSpacing: 1,

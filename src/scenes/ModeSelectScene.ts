@@ -6,6 +6,7 @@ import { SFX } from '../game/sfx';
 import { PHASER_RELEASE_FEATURES } from '../game/release-profile';
 import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addUiScrim, addWorldBackground, DISPLAY_FONT, flowRowCenters, sharpenSceneText, TYPE, UI_COLORS, UI_FONT } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 
 const MODE_ORDER: GameMode[] = ['classic', 'rush', 'precision'];
 function addModeCrystalIdentity(
@@ -122,14 +123,24 @@ export class ModeSelectScene extends Phaser.Scene {
       const y = cardY[index];
       addArtPanel(this, width / 2, y, 600, 264, 8, selected ? 1 : 0.91);
       addModeCrystalIdentity(this, y, def.accent, index, selected);
-      addIconFrame(this, 115, y, 116, def.accent, 10, selected);
-      if (mode === 'classic') {
+      if (this.textures.exists(UI_V16.mapModes)) {
+        const texture = mode === 'precision' ? UI_V16.hud : UI_V16.mapModes;
+        const frame = mode === 'classic'
+          ? UI_V16_FRAME.map.classic
+          : mode === 'rush'
+            ? UI_V16_FRAME.map.rush
+            : UI_V16_FRAME.hud.objective;
+        this.add.image(115, y, texture, frame).setDisplaySize(146, 146).setDepth(12);
+      } else {
+        addIconFrame(this, 115, y, 116, def.accent, 10, selected);
+      }
+      if (mode === 'classic' && !this.textures.exists(UI_V16.mapModes)) {
         // The core match-three fantasy is represented by the player's real
         // equipped orb skin, not a platform-dependent emoji glyph.
         this.add.image(92, y + 13, orbTexture(meta.equippedSkin, 'green')).setDisplaySize(46, 46).setDepth(12);
         this.add.image(138, y + 13, orbTexture(meta.equippedSkin, 'purple')).setDisplaySize(46, 46).setDepth(12);
         this.add.image(115, y - 12, orbTexture(meta.equippedSkin, 'blue')).setDisplaySize(68, 68).setDepth(13);
-      } else {
+      } else if (!this.textures.exists(UI_V16.mapModes)) {
         this.add.image(115, y - 1, mode === 'rush' ? 'artifact_chrono' : 'mechanic_crystal_seal')
           .setDisplaySize(mode === 'rush' ? 82 : 78, mode === 'rush' ? 82 : 78)
           .setDepth(12);

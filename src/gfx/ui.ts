@@ -9,6 +9,7 @@ import {
   type AccessibilityButtonUpdate,
 } from './accessibility';
 import { resolveTextFitScale } from './text-layout';
+import { hasV16UiArt, UI_V16 } from './ui-art-v16';
 
 export const DISPLAY_FONT = '"PaoPao Display", Cinzel, Georgia, serif';
 export const UI_FONT = '"Fusion Sans", Sora, "Avenir Next", "Trebuchet MS", Arial, sans-serif';
@@ -517,6 +518,17 @@ export function addArtPanel(
   alpha = 1,
 ): Phaser.GameObjects.Container {
   const panel = scene.add.container(x, y).setDepth(depth);
+  const rasterPanelKey = height <= 150 ? UI_V16.panelCompact : UI_V16.panelWide;
+  if (width / Math.max(1, height) >= 1.35 && hasV16UiArt(scene, rasterPanelKey)) {
+    const raster = scene.add.image(0, 0, rasterPanelKey)
+      .setDisplaySize(width + Math.min(24, width * 0.04), height + Math.min(24, height * 0.1));
+    panel.add(raster);
+    panel.setData({ paopaoResourceRole: 'v16-art-panel', paopaoTexture: rasterPanelKey });
+    if (prefersReducedMotion()) return panel.setAlpha(alpha);
+    panel.setY(y + 8).setAlpha(0).setScale(0.99);
+    scene.tweens.add({ targets: panel, y, alpha, scale: 1, duration: 210, ease: 'Cubic.easeOut' });
+    return panel;
+  }
   const shell = scene.add.graphics();
   const outer = facetedSurfacePoints(width, height);
   const inner = facetedSurfacePoints(width, height, 6);
@@ -588,6 +600,54 @@ export function addArtButton(
   depth = 20,
 ): Phaser.GameObjects.Container {
   const button = scene.add.container(x, y).setDepth(depth);
+  if (width / Math.max(1, height) >= 2.2 && hasV16UiArt(scene, UI_V16.buttonPrimary)) {
+    const texture = width >= 230 ? UI_V16.buttonPrimary : UI_V16.buttonSecondary;
+    const surface = scene.add.image(0, 0, texture).setDisplaySize(width + 12, height + 12);
+    const text = scene.add.text(0, -1, label, {
+      fontFamily: UI_FONT,
+      fontSize: `${Phaser.Math.Clamp(Math.round(height * 0.34), 20, 26)}px`,
+      color: UI_COLORS.text,
+      fontStyle: 'bold',
+      stroke: '#251044',
+      strokeThickness: 3,
+      letterSpacing: 0.8,
+    }).setOrigin(0.5).setShadow(0, 2, '#1c0a36', 4);
+    fitText(text, width * 0.76, 0.78);
+    button.add([surface, text]);
+    button.setData({ paopaoResourceRole: 'v16-art-button', paopaoTexture: texture });
+    button.setSize(Math.max(100, width), Math.max(100, height)).setInteractive({ useHandCursor: true });
+    if (!prefersReducedMotion()) {
+      button.setY(y + 6).setAlpha(0);
+      scene.tweens.add({ targets: button, y, alpha: 1, duration: 190, ease: 'Cubic.easeOut' });
+    }
+    button.on('pointerover', () => surface.setTint(0xffffff).setAlpha(1));
+    button.on('pointerout', () => {
+      surface.clearTint().setAlpha(0.98);
+      button.setScale(1);
+    });
+    button.on('pointerdown', () => {
+      surface.setTint(0xd8c7ff).setAlpha(0.94);
+      button.setScale(0.98);
+    });
+    button.on('pointerup', () => {
+      surface.clearTint().setAlpha(1);
+      button.setScale(1);
+      onPress();
+    });
+    const accessibleScene = ensureAccessibleScene(scene);
+    const accessibilityRegistration = accessibleScene.registerButton({
+      id: accessibleButtonId(scene, label),
+      label,
+      onActivate: onPress,
+      onFocusChange: (focused) => {
+        surface.setTint(focused ? 0xffffff : 0xffffff).setAlpha(focused ? 1 : 0.98);
+        button.setScale(focused ? 1.025 : 1);
+      },
+    });
+    button.setData('paopaoAccessibilityRegistration', accessibilityRegistration);
+    button.once(Phaser.GameObjects.Events.DESTROY, () => accessibilityRegistration.unregister());
+    return button;
+  }
   const surface = scene.add.graphics();
   const outer = facetedSurfacePoints(width, height);
   const inner = facetedSurfacePoints(width, height, 4);
@@ -718,6 +778,15 @@ export function addIconFrame(
   selected = false,
 ): Phaser.GameObjects.Container {
   const frame = scene.add.container(x, y).setDepth(depth);
+  if (hasV16UiArt(scene, UI_V16.medallion)) {
+    const halo = scene.add.circle(0, 0, size * 0.47, accent, selected ? 0.2 : 0.08);
+    const raster = scene.add.image(0, 0, UI_V16.medallion)
+      .setDisplaySize(size * 1.16, size * 1.16)
+      .setAlpha(selected ? 1 : 0.94);
+    frame.add([halo, raster]);
+    frame.setData({ paopaoResourceRole: 'v16-icon-frame', paopaoTexture: UI_V16.medallion });
+    return frame;
+  }
   const art = scene.add.graphics();
   const outer = facetedSurfacePoints(size, size);
   const inner = facetedSurfacePoints(size, size, Math.max(6, size * 0.1));

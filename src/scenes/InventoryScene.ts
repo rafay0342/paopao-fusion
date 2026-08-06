@@ -6,6 +6,7 @@ import { getAccountSnapshot, syncOnline } from '../game/online';
 import { getPlatformAccount } from '../game/platform';
 import { SFX } from '../game/sfx';
 import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addWorldBackground, DISPLAY_FONT, fitText, sharpenSceneText, TYPE, UI_FONT } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 
 export class InventoryScene extends Phaser.Scene {
   private currencyText?: Phaser.GameObjects.Text;
@@ -50,14 +51,17 @@ export class InventoryScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
     }).setDepth(10);
     const items = [
-      { x: 135, texture: 'power_bomb', accent: 0xff8b72, label: 'PRISM BOMBS', count: inventory.balances.bomb, detail: 'Break a dense cluster' },
-      { x: 360, texture: 'power_rainbow', accent: 0x71ecff, label: 'RAINBOW ORBS', count: inventory.balances.rainbow, detail: 'Clear one orb colour' },
-      { x: 585, texture: 'mechanic_crystal_seal', accent: 0xd4ac5c, label: 'STORY SHARDS', count: inventory.balances.storyShard, detail: 'Restore lost memories' },
+      { x: 135, texture: 'power_bomb', v16Frame: UI_V16_FRAME.inventory.bomb, accent: 0xff8b72, label: 'PRISM BOMBS', count: inventory.balances.bomb, detail: 'Break a dense cluster' },
+      { x: 360, texture: 'power_rainbow', v16Frame: UI_V16_FRAME.inventory.wildcard, accent: 0x71ecff, label: 'RAINBOW ORBS', count: inventory.balances.rainbow, detail: 'Clear one orb colour' },
+      { x: 585, texture: 'mechanic_crystal_seal', v16Frame: UI_V16_FRAME.inventory.crystal, accent: 0xd4ac5c, label: 'STORY SHARDS', count: inventory.balances.storyShard, detail: 'Restore lost memories' },
     ];
     items.forEach((item) => {
       addArtPanel(this, item.x, 292, 204, 236, 5, 0.98);
       addIconFrame(this, item.x, 244, 88, item.accent, 9);
-      this.add.image(item.x, 244, item.texture).setDisplaySize(68, 68).setDepth(10);
+      const itemImage = this.textures.exists(UI_V16.inventoryRewards)
+        ? this.add.image(item.x, 244, UI_V16.inventoryRewards, item.v16Frame).setDisplaySize(104, 104)
+        : this.add.image(item.x, 244, item.texture).setDisplaySize(68, 68);
+      itemImage.setDepth(10);
       this.add.text(item.x, 301, `×${item.count}`, {
         fontFamily: UI_FONT, fontSize: TYPE.title, color: '#ffffff', fontStyle: 'bold', stroke: '#101225', strokeThickness: 4,
       }).setOrigin(0.5).setDepth(11);

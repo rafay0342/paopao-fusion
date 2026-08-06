@@ -36,6 +36,7 @@ import {
   updateArtButtonAccessibility,
   wrapText,
 } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 
 interface RoutePosition {
   x: number;
@@ -375,7 +376,16 @@ export class WorldMapScene extends Phaser.Scene {
       const currentHalo = this.add.circle(0, 0, 84, current ? UI_COLORS.gold : kindColor, current ? 0.12 : 0)
         .setStrokeStyle(current ? 5 : 0, current ? UI_COLORS.gold : kindColor, current ? 0.94 : 0);
       const kindFrame = addNodeKindFrame(this, mapNode.kind, kindColor, unlocked);
-      const medallion = this.add.image(0, 0, 'level_medallion').setDisplaySize(132, 132);
+      const nodeFrame = !unlocked
+        ? UI_V16_FRAME.map.locked
+        : current
+          ? UI_V16_FRAME.map.current
+          : cleared
+            ? UI_V16_FRAME.map.completed
+            : UI_V16_FRAME.map[mapNode.kind];
+      const medallion = this.textures.exists(UI_V16.mapModes)
+        ? this.add.image(0, 0, UI_V16.mapModes, nodeFrame).setDisplaySize(164, 164)
+        : this.add.image(0, 0, 'level_medallion').setDisplaySize(132, 132);
       if (!unlocked) medallion.setTint(0x5b6070).setAlpha(0.72);
       const number = this.add.text(0, -10, String(displayStage), {
         fontFamily: UI_FONT,
