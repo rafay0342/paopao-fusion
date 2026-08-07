@@ -203,14 +203,11 @@ export class RewardsScene extends Phaser.Scene {
       SFX.click();
       this.scene.start('Menu');
     }, 132, 48, 18);
-    this.add.text(width / 2, 48, 'TREASURES  •  SKINS  •  RANKS', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe5a4', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(12);
-    this.add.text(width / 2, 91, 'PRIZE VAULT', {
+    this.add.text(width / 2, 88, 'PRIZE VAULT', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#82edff', fontStyle: 'bold',
       stroke: '#14215a', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 11);
-    this.add.text(width / 2, 137, `${tierProgress.tier.name}   •   ${tierProgress.renown.toLocaleString()} RENOWN`, {
+    this.add.text(width / 2, 142, `${tierProgress.tier.name}   •   ${tierProgress.renown.toLocaleString()} RENOWN`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: tierProgress.tier.accentCss, fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(12);
     this.add.text(width - 22, 28, `◆ ${meta.coins.toLocaleString()}\nKEYS ${meta.mysteryKeys}`, {
@@ -251,26 +248,26 @@ export class RewardsScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12), 490);
     visibleSkins.forEach((skin, index) => this.addSkinCard(skin, 120 + index * 240, 902));
 
-    this.add.text(width / 2, 1053, 'ROYAL TIER ASCENSION', {
+    this.add.text(width / 2, 1046, 'ROYAL TIER ASCENSION', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe4a0', fontStyle: 'bold', letterSpacing: 2,
     }).setOrigin(0.5).setDepth(12);
-    addArtPanel(this, width / 2, 1162, 650, 188, 8, 0.9);
+    addArtPanel(this, width / 2, 1158, 650, 184, 8, 0.9);
     TIER_DEFS.forEach((tier, index) => {
       const x = 100 + index * 174;
       const unlocked = tierProgress.renown >= tier.threshold;
       const active = tier.id === tierProgress.tier.id;
-      addIconFrame(this, x, 1135, active ? 110 : 94, tier.accent, 10, active);
-      const badge = this.add.image(x, 1135, tier.texture).setDisplaySize(active ? 105 : 88, active ? 105 : 88).setDepth(11);
+      addIconFrame(this, x, 1128, active ? 104 : 90, tier.accent, 10, active);
+      const badge = this.add.image(x, 1128, tier.texture).setDisplaySize(active ? 99 : 84, active ? 99 : 84).setDepth(11);
       if (!unlocked) badge.setTint(0x7d8493).setAlpha(0.68);
-      this.add.text(x, 1200, tier.id.toUpperCase(), {
+      this.add.text(x, 1188, tier.id.toUpperCase(), {
         fontFamily: UI_FONT, fontSize: TYPE.caption, color: unlocked ? tier.accentCss : '#8f99aa', fontStyle: 'bold',
       }).setOrigin(0.5).setDepth(12);
     });
     const progressX = 110;
-    this.add.rectangle(width / 2, 1241, 500, 12, 0x10172d, 0.92).setStrokeStyle(1, 0xffdc7b, 0.36).setDepth(12);
-    this.add.rectangle(progressX, 1241, 500 * tierProgress.progress, 8, tierProgress.tier.accent, 0.95)
+    this.add.rectangle(width / 2, 1216, 500, 12, 0x10172d, 0.92).setStrokeStyle(1, 0xffdc7b, 0.36).setDepth(12);
+    this.add.rectangle(progressX, 1216, 500 * tierProgress.progress, 8, tierProgress.tier.accent, 0.95)
       .setOrigin(0, 0.5).setDepth(13);
-    this.add.text(width / 2, 1263, tierProgress.next
+    this.add.text(width / 2, 1242, tierProgress.next
       ? `${Math.max(0, tierProgress.next.threshold - tierProgress.renown).toLocaleString()} RENOWN TO ${tierProgress.next.name}`
       : 'MAXIMUM PRISMATIC TIER ACHIEVED', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#ccd9ea', fontStyle: 'bold', letterSpacing: 1,

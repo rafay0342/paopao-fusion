@@ -153,7 +153,7 @@ export class GazeSetupScene extends Phaser.Scene {
   private composeMainInterface(): void {
     const settings = getGazeSettings();
     this.trackMain(addArtPanel(this, VIEW.width / 2, 101, 630, 178, 8, 0.98));
-    this.trackMain(this.add.text(410, 66, 'CAMERA INPUT LAB', {
+    this.trackMain(this.add.text(410, 84, 'CAMERA INPUT LAB', {
       fontFamily: DISPLAY_FONT,
       fontSize: TYPE.screen,
       color: '#ffffff',
@@ -163,7 +163,7 @@ export class GazeSetupScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12));
     this.trackMain(fitText(this.add.text(
       VIEW.width / 2,
-      124,
+      142,
       'ON-DEVICE ONLY  •  NO VIDEO UPLOAD\nCAMERA FRAMES NEVER LEAVE THIS DEVICE',
       {
         fontFamily: UI_FONT,

@@ -69,7 +69,7 @@ export class ArcadeHubScene extends Phaser.Scene {
     this.cameras.main.fadeIn(prefersReducedMotion() ? 0 : 170, 0, 0, 0);
 
     addArtPanel(this, VIEW.width / 2, 112, 630, 194, 8, 0.97);
-    this.add.text(VIEW.width / 2, 60, 'PAOPAO ARCADE', {
+    this.add.text(VIEW.width / 2, 78, 'PAOPAO ARCADE', {
       fontFamily: DISPLAY_FONT,
       fontSize: '48px',
       color: '#ffffff',
@@ -78,7 +78,7 @@ export class ArcadeHubScene extends Phaser.Scene {
       strokeThickness: 7,
       letterSpacing: 1.2,
     }).setOrigin(0.5).setDepth(12);
-    this.add.text(VIEW.width / 2, 116, 'THREE NEW DETERMINISTIC CHALLENGES', {
+    this.add.text(VIEW.width / 2, 126, 'THREE NEW DETERMINISTIC CHALLENGES', {
       fontFamily: UI_FONT,
       fontSize: '30px',
       color: '#ffe5a0',
@@ -87,7 +87,7 @@ export class ArcadeHubScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12);
     fitText(this.add.text(
       VIEW.width / 2,
-      163,
+      170,
       'TOUCH  •  KEYS  •  HAND  •  EYES',
       {
         fontFamily: UI_FONT,
@@ -115,15 +115,15 @@ export class ArcadeHubScene extends Phaser.Scene {
       letterSpacing: 1.2,
     }).setOrigin(0.5).setDepth(22);
 
-    addArtPanel(this, VIEW.width / 2, 1_082, 620, 92, 8, 0.95);
-    this.add.text(VIEW.width / 2, 1_058, 'LOCAL PRACTICE  •  NO WALLET REWARDS', {
+    addArtPanel(this, VIEW.width / 2, 1_090, 620, 116, 8, 0.95);
+    this.add.text(VIEW.width / 2, 1_070, 'LOCAL PRACTICE  •  NO WALLET REWARDS', {
       fontFamily: UI_FONT,
       fontSize: '26px',
       color: '#aef5df',
       fontStyle: 'bold',
       letterSpacing: 0.7,
     }).setOrigin(0.5).setDepth(12);
-    this.add.text(VIEW.width / 2, 1_102, 'FAIR DAILY SEEDS  •  REPRODUCIBLE RECORDS', {
+    this.add.text(VIEW.width / 2, 1_112, 'FAIR DAILY SEEDS  •  REPRODUCIBLE RECORDS', {
       fontFamily: UI_FONT,
       fontSize: '28px',
       color: '#d8e3f2',
@@ -226,7 +226,7 @@ export class ArcadeHubScene extends Phaser.Scene {
     fitText(description, 390, 0.88);
     const best = this.add.text(
       214,
-      y + 126,
+      y + 106,
       progress.plays > 0
         ? `PLAY  •  BEST ${progress.bestScore.toLocaleString()}  •  RUNS ${progress.plays}`
         : 'PLAY  •  NEW CHALLENGE',

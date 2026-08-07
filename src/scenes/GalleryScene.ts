@@ -113,16 +113,13 @@ export class GalleryScene extends Phaser.Scene {
     addAmbientMotes(this, 0x9bdfff, 24, 2);
 
     addArtPanel(this, width / 2, 118, 620, 220, 8, 0.97);
-    this.add.text(width / 2, 49, '✦  THE ROYAL COLLECTION  ✦', {
-      fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe4a0', fontStyle: 'bold', letterSpacing: 2,
-    }).setOrigin(0.5).setDepth(12);
-    this.add.text(width / 2, 95, 'CRYSTAL GALLERY', {
+    this.add.text(width / 2, 88, 'CRYSTAL GALLERY', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#8ce5ff', fontStyle: 'bold', stroke: '#202b62', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(12).setShadow(0, 5, '#000000', 10);
-    this.add.text(width / 2, 140, `${totalStars(progress)} STARS   •   ${meta.totalHits} HITS   •   ${meta.ownedArtifacts.length} RELICS`, {
+    this.add.text(width / 2, 138, `${totalStars(progress)} STARS   •   ${meta.totalHits} HITS   •   ${meta.ownedArtifacts.length} RELICS`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#d7e2f2', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(12);
-    this.add.text(width / 2, 169, `◆ ${meta.coins.toLocaleString()} WALLET   •   ◆ ${meta.lifetimeCoins.toLocaleString()} LIFETIME EARNED`, {
+    this.add.text(width / 2, 176, `◆ ${meta.coins.toLocaleString()} WALLET   •   ◆ ${meta.lifetimeCoins.toLocaleString()} LIFETIME EARNED`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe29a', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5).setDepth(12);
     addArtButton(this, 86, 45, '‹  MENU', () => {

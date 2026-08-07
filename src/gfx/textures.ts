@@ -86,6 +86,7 @@ export function makeOrbCanvas(hex: number, size = 128): HTMLCanvasElement {
   return c;
 }
 
+
 /** Soft round particle used for pop bursts. */
 export function makeSparkCanvas(size = 32): HTMLCanvasElement {
   const c = document.createElement('canvas');

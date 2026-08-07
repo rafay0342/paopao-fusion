@@ -379,10 +379,10 @@ export class Match3Scene extends Phaser.Scene {
     this.renderBoard(this.state.board, true);
 
     addArtPanel(this, VIEW.width / 2, 932, 640, 108, 7, 0.97);
-    this.add.text(52, 888, this.isSprint() ? 'SPRINT RULES' : 'OBJECTIVES', {
+    this.add.text(52, 900, this.isSprint() ? 'SPRINT RULES' : 'OBJECTIVES', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#e6c982', fontStyle: 'bold', letterSpacing: 1.7,
     }).setDepth(12);
-    this.objectivesText = this.add.text(52, 914, '', {
+    this.objectivesText = this.add.text(52, 926, '', {
       fontFamily: UI_FONT,
       fontSize: TYPE.control,
       color: '#e6edf8',

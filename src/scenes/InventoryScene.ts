@@ -6,6 +6,7 @@ import { getAccountSnapshot, syncOnline } from '../game/online';
 import { getPlatformAccount } from '../game/platform';
 import { SFX } from '../game/sfx';
 import { addAmbientMotes, addArtButton, addArtPanel, addIconFrame, addWorldBackground, DISPLAY_FONT, fitText, sharpenSceneText, TYPE, UI_FONT } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 
 export class InventoryScene extends Phaser.Scene {
   private currencyText?: Phaser.GameObjects.Text;
@@ -50,14 +51,17 @@ export class InventoryScene extends Phaser.Scene {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
     }).setDepth(10);
     const items = [
-      { x: 135, texture: 'power_bomb', accent: 0xff8b72, label: 'PRISM BOMBS', count: inventory.balances.bomb, detail: 'Break a dense cluster' },
-      { x: 360, texture: 'power_rainbow', accent: 0x71ecff, label: 'RAINBOW ORBS', count: inventory.balances.rainbow, detail: 'Clear one orb colour' },
-      { x: 585, texture: 'mechanic_crystal_seal', accent: 0xd4ac5c, label: 'STORY SHARDS', count: inventory.balances.storyShard, detail: 'Restore lost memories' },
+      { x: 135, texture: 'power_bomb', v16Frame: UI_V16_FRAME.inventory.bomb, accent: 0xff8b72, label: 'PRISM BOMBS', count: inventory.balances.bomb, detail: 'Break a dense cluster' },
+      { x: 360, texture: 'power_rainbow', v16Frame: UI_V16_FRAME.inventory.wildcard, accent: 0x71ecff, label: 'RAINBOW ORBS', count: inventory.balances.rainbow, detail: 'Clear one orb colour' },
+      { x: 585, texture: 'mechanic_crystal_seal', v16Frame: UI_V16_FRAME.inventory.crystal, accent: 0xd4ac5c, label: 'STORY SHARDS', count: inventory.balances.storyShard, detail: 'Restore lost memories' },
     ];
     items.forEach((item) => {
       addArtPanel(this, item.x, 292, 204, 236, 5, 0.98);
       addIconFrame(this, item.x, 244, 88, item.accent, 9);
-      this.add.image(item.x, 244, item.texture).setDisplaySize(68, 68).setDepth(10);
+      const itemImage = this.textures.exists(UI_V16.inventoryRewards)
+        ? this.add.image(item.x, 244, UI_V16.inventoryRewards, item.v16Frame).setDisplaySize(104, 104)
+        : this.add.image(item.x, 244, item.texture).setDisplaySize(68, 68);
+      itemImage.setDepth(10);
       this.add.text(item.x, 301, `×${item.count}`, {
         fontFamily: UI_FONT, fontSize: TYPE.title, color: '#ffffff', fontStyle: 'bold', stroke: '#101225', strokeThickness: 4,
       }).setOrigin(0.5).setDepth(11);
@@ -72,10 +76,7 @@ export class InventoryScene extends Phaser.Scene {
   }
 
   private drawRelics(inventory: InventorySnapshot): void {
-    this.add.text(48, 434, 'OWNED RELICS', {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
-    }).setDepth(10);
-    addArtPanel(this, VIEW.width / 2, 554, 640, 190, 5, 0.96);
+    addArtPanel(this, VIEW.width / 2, 544, 640, 170, 5, 0.96);
     const owned = ARTIFACTS.filter((artifact) => inventory.ownedArtifacts.includes(artifact.id));
     owned.forEach((artifact, index) => {
       const gap = 160;
@@ -83,10 +84,10 @@ export class InventoryScene extends Phaser.Scene {
       const equipped = artifact.id === inventory.equippedArtifact;
       addIconFrame(this, x, 524, 78, artifact.accent, 9, equipped);
       this.add.image(x, 524, artifact.texture).setDisplaySize(62, 62).setDepth(10).setAlpha(equipped ? 1 : 0.76);
-      fitText(this.add.text(x, 578, artifact.name, {
+      fitText(this.add.text(x, 564, artifact.name, {
         fontFamily: UI_FONT, fontSize: TYPE.caption, color: equipped ? artifact.accentCss : '#c3cede', fontStyle: 'bold',
       }).setOrigin(0.5).setDepth(10), 155, 0.64);
-      this.add.text(x, 606, equipped ? 'EQUIPPED' : 'OWNED', {
+      this.add.text(x, 588, equipped ? 'EQUIPPED' : 'OWNED', {
         fontFamily: UI_FONT, fontSize: TYPE.caption, color: equipped ? '#ffe07e' : '#8293aa', fontStyle: 'bold',
       }).setOrigin(0.5).setDepth(10);
     });
@@ -94,16 +95,13 @@ export class InventoryScene extends Phaser.Scene {
   }
 
   private drawCollection(inventory: InventorySnapshot): void {
-    this.add.text(48, 678, 'COLLECTION & CURRENCY', {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
-    }).setDepth(10);
-    addArtPanel(this, VIEW.width / 2, 766, 640, 130, 5, 0.96);
-    this.currencyText = this.add.text(66, 732, `◆  ${inventory.coins.toLocaleString()} COINS     ◈ -- DIAMONDS     ✦ ${inventory.mysteryKeys} KEYS`, {
+    addArtPanel(this, VIEW.width / 2, 758, 640, 126, 5, 0.96);
+    this.currencyText = this.add.text(66, 746, `◆  ${inventory.coins.toLocaleString()} COINS     ◈ -- DIAMONDS     ✦ ${inventory.mysteryKeys} KEYS`, {
       fontFamily: UI_FONT, fontSize: TYPE.body, color: '#ffdf73', fontStyle: 'bold',
     }).setDepth(10);
     const ownedSkins = ORB_SKINS.filter((skin) => inventory.ownedSkins.includes(skin.id));
     const activeSkin = ORB_SKINS.find((skin) => skin.id === inventory.equippedSkin) ?? ORB_SKINS[0];
-    fitText(this.add.text(66, 784, `${ownedSkins.length} / ${ORB_SKINS.length} ORB SKINS  •  ACTIVE ${activeSkin.name}`, {
+    fitText(this.add.text(66, 778, `${ownedSkins.length} / ${ORB_SKINS.length} ORB SKINS  •  ACTIVE ${activeSkin.name}`, {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#bcdff1', fontStyle: 'bold',
     }).setDepth(10), 590, 0.62);
   }
@@ -116,10 +114,7 @@ export class InventoryScene extends Phaser.Scene {
   }
 
   private drawLedger(inventory: InventorySnapshot): void {
-    this.add.text(48, 862, 'RECENT INVENTORY ACTIVITY', {
-      fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe7a6', fontStyle: 'bold', letterSpacing: 2,
-    }).setDepth(10);
-    addArtPanel(this, VIEW.width / 2, 1010, 640, 230, 5, 0.96);
+    addArtPanel(this, VIEW.width / 2, 990, 640, 210, 5, 0.96);
     const recent = inventory.transactions.filter((entry) => entry.reason !== 'starter').slice(-4).reverse();
     const lines = recent.map((entry) => {
       const item = entry.item ? entry.item.replace(/([A-Z])/g, ' $1').toUpperCase() : 'RELIC PURCHASE';
@@ -128,11 +123,11 @@ export class InventoryScene extends Phaser.Scene {
       return `${quantity.padStart(3, ' ')}  ${item}${coins}`;
     });
     if (lines.length) {
-      this.add.text(76, 930, lines.join('\n'), {
+      this.add.text(76, 918, lines.join('\n'), {
         fontFamily: UI_FONT, fontSize: TYPE.label, color: '#dce6f5', lineSpacing: 14,
       }).setDepth(10);
     } else {
-      this.add.text(VIEW.width / 2, 1008, 'Your inventory history will appear here.\nVisit the Relic Store to prepare for the next realm.', {
+      this.add.text(VIEW.width / 2, 980, 'Your inventory history will appear here.\nVisit the Relic Store to prepare for the next realm.', {
         fontFamily: UI_FONT,
         fontSize: TYPE.body,
         color: '#dce6f5',
@@ -140,7 +135,7 @@ export class InventoryScene extends Phaser.Scene {
         lineSpacing: 10,
       }).setOrigin(0.5).setDepth(10);
     }
-    fitText(this.add.text(VIEW.width / 2, 1100, `REVISION ${inventory.revision}  •  PURCHASE HISTORY CLOUD-MERGED`, {
+    fitText(this.add.text(VIEW.width / 2, 1028, `REVISION ${inventory.revision}  •  PURCHASE HISTORY CLOUD-MERGED`, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#91a8c2', fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(10), 580);
   }

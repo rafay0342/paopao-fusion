@@ -26,12 +26,12 @@ export const CLASSIC_AUTHORITY_RULES = Object.freeze({
 });
 
 export function classicAuthorityRequiredShots(level) {
-  const normalized = Math.max(0, Math.min(29, Math.trunc(Number(level) || 0)));
+  const normalized = Math.max(0, Math.min(41, Math.trunc(Number(level) || 0)));
   return 2 + Math.floor(normalized / 10);
 }
 
 export function classicAuthorityMinimumDurationMs(level) {
-  const normalized = Math.max(0, Math.min(29, Math.trunc(Number(level) || 0)));
+  const normalized = Math.max(0, Math.min(41, Math.trunc(Number(level) || 0)));
   return 1_000 + normalized * 50;
 }
 
@@ -43,7 +43,7 @@ export function classicAuthorityTarget({ seed, level, sequence }) {
   if (!Number.isInteger(seed) || seed < 0 || seed > 0x7fffffff) {
     return { ok: false, error: 'classic-authority-seed-invalid' };
   }
-  if (!Number.isInteger(level) || level < 0 || level > 29) {
+  if (!Number.isInteger(level) || level < 0 || level > 41) {
     return { ok: false, error: 'classic-authority-level-invalid' };
   }
   if (!Number.isInteger(sequence) || sequence < 0 || sequence >= CLASSIC_AUTHORITY_RULES.maximumShots) {

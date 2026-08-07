@@ -84,6 +84,7 @@ import {
   getArtifact,
   getMeta,
   getQualityProfile,
+  grantSkinOwnership,
   MODE_DEFS,
   recordRunStats,
   type ArtifactDef,
@@ -104,6 +105,7 @@ import {
   UI_COLORS,
   UI_FONT,
 } from '../gfx/ui';
+import { UI_V16, UI_V16_FRAME } from '../gfx/ui-art-v16';
 import { accessibilityRuntimeForCanvas } from '../gfx/accessibility';
 import {
   createRunSummary,
@@ -1186,26 +1188,36 @@ export class GameScene extends Phaser.Scene {
       hover.strokePoints(hoverPoints, true);
     };
     drawHover(0.015, 0.16);
-    const icon = this.add.graphics();
-    icon.lineStyle(4, 0xe9fbff, 0.98);
-    if (kind === 'back') {
-      icon.lineBetween(6, -17, -8, -7);
-      icon.lineBetween(-8, -7, 6, 3);
-      icon.lineBetween(-7, -7, 10, -7);
-    } else if (kind === 'pause') {
-      icon.fillStyle(0xe9fbff, 0.96);
-      icon.fillRoundedRect(-8, -18, 6, 22, 2);
-      icon.fillRoundedRect(3, -18, 6, 22, 2);
-    } else {
-      icon.fillStyle(0xe9fbff, 0.96);
-      icon.fillPoints([
-        { x: -11, y: -12 }, { x: -4, y: -12 }, { x: 5, y: -19 },
-        { x: 5, y: 5 }, { x: -4, y: -3 }, { x: -11, y: -3 },
-      ], true);
-      icon.lineStyle(2, 0xe9fbff, 0.78);
-      icon.beginPath();
-      icon.arc(5, -7, 10, -0.78, 0.78, false);
-      icon.strokePath();
+    const rasterKey = kind === 'back' ? UI_V16.controlsPrimitives : UI_V16.hud;
+    const rasterFrame = kind === 'back'
+      ? UI_V16_FRAME.controls.back
+      : kind === 'pause'
+        ? UI_V16_FRAME.hud.pause
+        : UI_V16_FRAME.hud.sound;
+    const icon = this.textures.exists(rasterKey)
+      ? this.add.image(0, -7, rasterKey, rasterFrame).setDisplaySize(74, 74)
+      : this.add.graphics();
+    if (icon instanceof Phaser.GameObjects.Graphics) {
+      icon.lineStyle(4, 0xe9fbff, 0.98);
+      if (kind === 'back') {
+        icon.lineBetween(6, -17, -8, -7);
+        icon.lineBetween(-8, -7, 6, 3);
+        icon.lineBetween(-7, -7, 10, -7);
+      } else if (kind === 'pause') {
+        icon.fillStyle(0xe9fbff, 0.96);
+        icon.fillRoundedRect(-8, -18, 6, 22, 2);
+        icon.fillRoundedRect(3, -18, 6, 22, 2);
+      } else {
+        icon.fillStyle(0xe9fbff, 0.96);
+        icon.fillPoints([
+          { x: -11, y: -12 }, { x: -4, y: -12 }, { x: 5, y: -19 },
+          { x: 5, y: 5 }, { x: -4, y: -3 }, { x: -11, y: -3 },
+        ], true);
+        icon.lineStyle(2, 0xe9fbff, 0.78);
+        icon.beginPath();
+        icon.arc(5, -7, 10, -0.78, 0.78, false);
+        icon.strokePath();
+      }
     }
     const label = fitText(this.add.text(0, 20, caption, {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#dce9f7', fontStyle: 'bold', letterSpacing: 1,
@@ -2629,6 +2641,11 @@ export class GameScene extends Phaser.Scene {
     return 1;
   }
 
+  private grantEchoCompletionReward(): void {
+    if (this.challenge || this.arena || this.replayTrace || this.level !== 41) return;
+    grantSkinOwnership('nexus_crown_optical');
+  }
+
   private beginClassicAuthority(): void {
     if (this.classicAuthorityStarting || this.classicAuthority || this.classicAuthorityFailed) return;
     const generation = this.runGeneration;
@@ -3813,6 +3830,7 @@ export class GameScene extends Phaser.Scene {
     this.handCursor?.setVisible(false);
     getHandTracker().suspend();
     const progress = recordLevelClear(this.level, this.currentLevelScore());
+    this.grantEchoCompletionReward();
     this.recordCompletedRun(true);
     const shardAwarded = this.claimStoryShard();
     const stars = progress.stars[this.level] ?? 1;
@@ -3907,12 +3925,17 @@ export class GameScene extends Phaser.Scene {
         return;
       }
       const nextLevel = nextStoryLevel(this.level);
-      if (nextLevel == null) this.scene.start('Ending', { level: this.level, score: this.score, mode: this.mode });
+      if (nextLevel == null) this.scene.start('Ending', {
+        level: this.level,
+        score: this.score,
+        mode: this.mode,
+        echoComplete: LEVELS[this.level].act === 'echoes',
+      });
       else this.scene.start('Story', { level: nextLevel, score: this.score, mode: this.mode });
     }, 320, 78, 33);
     addArtButton(this, width / 2, height * 0.82, 'ADVENTURE MAP', () => {
       SFX.click();
-      this.scene.start('WorldMap', { world: LEVELS[this.level].world });
+      this.scene.start('WorldMap', { world: LEVELS[this.level].world, act: LEVELS[this.level].act });
     }, 280, 64, 33);
     sharpenSceneText(this);
   }
@@ -3977,7 +4000,7 @@ export class GameScene extends Phaser.Scene {
     }, 290, 66, 62);
     const map = addArtButton(this, width / 2, height * 0.72, 'ADVENTURE MAP', () => {
       SFX.click();
-      this.scene.start('WorldMap', { world: LEVELS[this.level].world });
+      this.scene.start('WorldMap', { world: LEVELS[this.level].world, act: LEVELS[this.level].act });
     }, 270, 62, 62);
     overlay.add([dim, panel, crestAura, crest, level, title, subtitle, details, resume, restart, map]);
     if (this.reducedMotion) {
@@ -4193,6 +4216,7 @@ export class GameScene extends Phaser.Scene {
       : '';
     if (won && !this.challenge && !this.arena && !this.replayTrace) {
       recordLevelClear(this.level, this.currentLevelScore());
+      this.grantEchoCompletionReward();
     }
     this.recordCompletedRun(won);
     const shardAwarded = won ? this.claimStoryShard() : 0;
@@ -4299,7 +4323,11 @@ export class GameScene extends Phaser.Scene {
         return;
       }
       if (finalStoryVictory) {
-        this.scene.start('Ending', { score: this.score, mode: this.mode });
+        this.scene.start('Ending', {
+          score: this.score,
+          mode: this.mode,
+          echoComplete: LEVELS[this.level].act === 'echoes',
+        });
         return;
       }
       if (this.challenge || this.replayTrace) {

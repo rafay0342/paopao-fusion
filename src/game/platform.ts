@@ -279,7 +279,7 @@ function normalizeClassicRunSubmission(value: unknown): RunSubmissionV3 | null {
   return {
     runId: raw.runId,
     client: 'classic',
-    level: boundedInteger(raw.level, 0, 29),
+    level: boundedInteger(raw.level, 0, 41),
     mode: raw.mode as 'classic' | 'rush' | 'precision',
     score: boundedInteger(raw.score, 0, 10_000_000),
     durationMs: boundedInteger(raw.durationMs, 500, 14_400_000),
@@ -509,7 +509,8 @@ export async function getCatalog(): Promise<CatalogOffer[]> {
 }
 
 export async function getAuthProviders(): Promise<AuthProviderStatus[]> {
-  return (await api<{ providers: AuthProviderStatus[] }>('/api/auth/providers')).providers;
+  const response = await api<{ providers?: AuthProviderStatus[] }>('/api/auth/providers');
+  return Array.isArray(response.providers) ? response.providers : [];
 }
 
 export function beginOAuth(provider: AuthProviderStatus['provider']): void {
@@ -588,7 +589,7 @@ export async function beginClassicRunAuthorityV3(input: {
     api<ClassicAuthorityTicketV3>('/api/v3/classic/runs/start', {
       method: 'POST',
       body: JSON.stringify({
-        level: boundedInteger(input.level, 0, 29),
+        level: boundedInteger(input.level, 0, 41),
         mode: input.mode,
         idempotencyKey: input.idempotencyKey ?? idempotencyKey('classic-authority'),
       }),

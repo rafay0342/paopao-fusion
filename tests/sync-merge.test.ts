@@ -57,8 +57,8 @@ describe('cloud restore merge regressions', () => {
     expect(merged.unlocked).toBe(8);
     expect(merged.bestScores.slice(0, 4)).toEqual([700, 900, 600, 800]);
     expect(merged.stars.slice(0, 4)).toEqual([3, 3, 2, 2]);
-    expect(merged.bestScores).toHaveLength(30);
-    expect(merged.stars).toHaveLength(30);
+    expect(merged.bestScores).toHaveLength(42);
+    expect(merged.stars).toHaveLength(42);
   });
 
   it('normalizes malformed cloud collections without throwing or amplifying shapes', () => {
@@ -77,7 +77,7 @@ describe('cloud restore merge regressions', () => {
     );
 
     expect(meta).toMatchObject({ coins: 600, ownedArtifacts: ['chrono'] });
-    expect(progress.bestScores).toHaveLength(30);
+    expect(progress.bestScores).toHaveLength(42);
     expect(progress.bestScores.every((value) => Number.isFinite(value))).toBe(true);
     expect(progress.stars.slice(0, 3)).toEqual([0, 3, 0]);
     expect(progress.mastered).toEqual([1]);

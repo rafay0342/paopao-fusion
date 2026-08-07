@@ -54,4 +54,34 @@ describe('strict mobile viewport regression contract', () => {
     expect(game).not.toContain('tracker.prepare().catch');
     expect(match3).not.toContain('tracker.prepare().catch');
   });
+
+  it('enforces one shared gutter for panels, controls, icons and dynamic text', () => {
+    const ui = read('src/gfx/ui.ts');
+
+    expect(ui).toContain('export const UI_SAFE_GUTTER = 24');
+    expect(ui).toContain('export function constrainTextToSafeViewport');
+    expect(ui).toContain('VIEW.width - UI_SAFE_GUTTER * 2');
+    expect(ui).toContain('VIEW.height - UI_SAFE_GUTTER * 2');
+    expect(ui).toContain('Phaser.Scenes.Events.POST_UPDATE, keepDynamicTextSafe');
+    expect(ui).toContain('.setDisplaySize(width, height)');
+    expect(ui).not.toContain('.setDisplaySize(width + 12, height + 12)');
+  });
+
+  it('keeps every production scene on the global dynamic-text safety pass', () => {
+    const sceneNames = [
+      'Account', 'ArcadeHub', 'Challenges', 'Chronicle', 'Competitive', 'Ending',
+      'Endless', 'Gallery', 'Game', 'GazeSetup', 'HandSetup', 'Inventory',
+      'Match3Map', 'Match3', 'MemoryConstellation', 'Menu', 'ModeSelect',
+      'ProductionArchive', 'ProductionExperience', 'ProductionSystems', 'Rewards',
+      'Social', 'Store', 'Story', 'WorldMap',
+    ];
+    for (const scene of sceneNames) {
+      expect(read(`src/scenes/${scene}Scene.ts`), `${scene} should enforce safe text`).toContain('sharpenSceneText(this)');
+    }
+  });
+
+  it('treats a malformed auth-provider response as an empty provider list', () => {
+    const platform = read('src/game/platform.ts');
+    expect(platform).toContain('Array.isArray(response.providers) ? response.providers : []');
+  });
 });

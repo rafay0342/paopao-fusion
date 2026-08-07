@@ -11,6 +11,7 @@ interface EndingLaunchData {
   score?: number;
   mode?: GameMode;
   replay?: boolean;
+  echoComplete?: boolean;
 }
 
 const SHARD_COLORS = [0x62f3ef, 0x70ef98, 0x79d9ff, 0xff715a, 0x78dcff, 0xb8a3ff] as const;
@@ -19,6 +20,7 @@ export class EndingScene extends Phaser.Scene {
   private score = 0;
   private mode?: GameMode;
   private replay = true;
+  private echoComplete = false;
   private passageText?: Phaser.GameObjects.Text;
   private passageIndex = 0;
   private choicesShown = false;
@@ -35,6 +37,7 @@ export class EndingScene extends Phaser.Scene {
     this.score = Math.max(0, data.score ?? 0);
     this.mode = data.mode;
     this.replay = data.replay ?? true;
+    this.echoComplete = data.echoComplete === true;
     this.passageIndex = 0;
     this.choicesShown = false;
     this.shards = [];
@@ -101,10 +104,10 @@ export class EndingScene extends Phaser.Scene {
       stroke: '#754b16', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(8).setAlpha(0).setScale(0.45).setShadow(0, 0, '#ffe188', 18);
 
-    this.add.text(width / 2, 66, 'THE FINAL CHRONICLE', {
+    this.add.text(width / 2, 66, this.echoComplete ? 'THE ASCENDED CHRONICLE' : 'THE FINAL CHRONICLE', {
       fontFamily: UI_FONT, fontSize: TYPE.label, color: '#ffe3a0', fontStyle: 'bold', letterSpacing: 3,
     }).setOrigin(0.5).setDepth(9);
-    this.add.text(width / 2, 108, 'THE CROWN REBORN', {
+    this.add.text(width / 2, 108, this.echoComplete ? 'THE CROWN ECHO' : 'THE CROWN REBORN', {
       fontFamily: DISPLAY_FONT, fontSize: TYPE.screen, color: '#ffffff', fontStyle: 'bold',
       stroke: '#1e2145', strokeThickness: 6,
     }).setOrigin(0.5).setDepth(9).setShadow(0, 5, '#000000', 10);
@@ -186,7 +189,7 @@ export class EndingScene extends Phaser.Scene {
     this.skipText?.setVisible(false);
     const { width, height } = VIEW;
     const layer = this.add.container(0, immediate ? 0 : 22).setDepth(12).setAlpha(immediate ? 1 : 0);
-    const epilogue = this.add.text(width / 2, 785, 'THE RIFT IS CLOSED', {
+    const epilogue = this.add.text(width / 2, 785, this.echoComplete ? 'ALL SIX ECHOES LIVE' : 'THE RIFT IS CLOSED', {
       fontFamily: UI_FONT, fontSize: TYPE.section, color: '#ffe3a0', fontStyle: 'bold', letterSpacing: 3,
     }).setOrigin(0.5);
     const tagline = this.add.text(width / 2, 828, STORY_TAGLINE.toUpperCase(), {
@@ -199,7 +202,7 @@ export class EndingScene extends Phaser.Scene {
       SFX.click();
       this.scene.start('Story', { level: 0, score: 0, mode: this.mode });
     }, 360, 74, 14);
-    const retained = this.add.text(width / 2, 1000, 'ALL RELICS, STARS AND SHARDS RETAINED', {
+    const retained = this.add.text(width / 2, 1000, this.echoComplete ? 'CROWN ECHO ORBS UNLOCKED' : 'ALL RELICS, STARS AND SHARDS RETAINED', {
       fontFamily: UI_FONT, fontSize: TYPE.caption, color: '#aebdd0', fontStyle: 'bold', letterSpacing: 1,
     }).setOrigin(0.5);
     const chronicle = addArtButton(this, width / 2, 1064, 'OPEN CHRONICLE', () => {

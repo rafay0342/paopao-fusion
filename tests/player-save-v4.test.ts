@@ -58,7 +58,7 @@ describe('Classic PlayerSaveV4 migration and mirror', () => {
       meta: { coins: 9_999_999, quality: 'ultra', ownedArtifacts: ['chrono'] },
       inventory: { version: 1 },
     });
-    expect(save.progress.bestScores).toHaveLength(30);
+    expect(save.progress.bestScores).toHaveLength(42);
     expect(save.progress.stars.slice(0, 3)).toEqual([0, 3, 0]);
     expect(save.progress.cleared).toEqual([0, 1]);
     expect(save.inventory.transactions.map(({ id }) => id)).toEqual(['starter-bombs-v1', 'starter-rainbows-v1']);

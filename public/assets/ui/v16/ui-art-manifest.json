@@ -1,0 +1,58 @@
+{
+  "version": "v16",
+  "format": "rgba-webp-grid",
+  "columns": 4,
+  "rows": 3,
+  "cellWidth": 362,
+  "cellHeight": 362,
+  "sheets": {
+    "hud-controls": {
+      "file": "paopao-hud-controls-transparent.webp",
+      "elements": [
+        "score", "stage", "timer", "moves",
+        "objective", "next-orb", "combo", "danger",
+        "pause", "sound", "hand-control", "touch-aim"
+      ]
+    },
+    "map-modes": {
+      "file": "paopao-map-modes-transparent.webp",
+      "elements": [
+        "stage-standard", "stage-mystery", "stage-challenge", "stage-elite",
+        "stage-boss", "stage-locked", "stage-current", "stage-completed",
+        "world-emblem", "path-junction", "mode-classic", "mode-rush"
+      ]
+    },
+    "inventory-rewards": {
+      "file": "paopao-inventory-rewards-transparent.webp",
+      "elements": [
+        "coins", "premium-crystal", "heart-energy", "mystery-key",
+        "booster-wildcard", "booster-aim", "booster-bomb", "booster-shield",
+        "chest-closed", "chest-open", "gift-hamper", "launcher-skin-token"
+      ]
+    },
+    "social-system": {
+      "file": "paopao-social-system-transparent.webp",
+      "elements": [
+        "profile", "friends", "multiplayer", "invite",
+        "chat", "leaderboard", "cloud-save", "online",
+        "offline", "settings", "camera-hand", "quality-performance"
+      ]
+    },
+    "overlays-progress": {
+      "file": "paopao-overlays-progress-transparent.webp",
+      "elements": [
+        "chronicle-panel", "tooltip", "toast", "tab-selected",
+        "tab-unselected", "progress-track", "progress-fill", "loading-spinner",
+        "objective-banner", "victory", "defeat-retry", "achievement-claim"
+      ]
+    },
+    "controls-primitives": {
+      "file": "paopao-controls-primitives-transparent.webp",
+      "elements": [
+        "back", "home", "close", "information",
+        "help", "checkbox-checked", "toggle", "slider",
+        "scrollbar", "divider", "corner-pair", "cursor"
+      ]
+    }
+  }
+}

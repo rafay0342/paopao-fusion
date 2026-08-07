@@ -129,7 +129,7 @@ function stringSet(value, maximum = 100, length = 96) {
     .filter(Boolean)));
 }
 
-function mergeNumberArray(first, second, maximum = 30, valueMaximum = 10000000) {
+function mergeNumberArray(first, second, maximum = 42, valueMaximum = 10000000) {
   const left = Array.isArray(first) ? first.slice(0, maximum) : [];
   const right = Array.isArray(second) ? second.slice(0, maximum) : [];
   return Array.from({ length: maximum }, (_, index) => Math.max(
@@ -138,7 +138,7 @@ function mergeNumberArray(first, second, maximum = 30, valueMaximum = 10000000) 
   ));
 }
 
-function numberSet(value, maximum = 30, valueMaximum = 29) {
+function numberSet(value, maximum = 42, valueMaximum = 41) {
   if (!Array.isArray(value)) return [];
   return Array.from(new Set(value.slice(0, maximum)
     .filter((entry) => Number.isInteger(entry) && entry >= 0 && entry <= valueMaximum)));
@@ -427,9 +427,9 @@ app.post('/api/sync', { preHandler: authenticated, bodyLimit: 512_000, schema: {
       ownedSkins: stringSet([...stringSet(remoteMeta.ownedSkins, 32, 64), ...stringSet(localMeta.ownedSkins, 32, 64)], 32, 64),
     },
     progress: {
-      unlocked: Math.max(1, integer(remoteProgress.unlocked, 1, 30), integer(localProgress.unlocked, 1, 30)),
-      bestScores: mergeNumberArray(remoteProgress.bestScores, localProgress.bestScores, 30, 10000000),
-      stars: mergeNumberArray(remoteProgress.stars, localProgress.stars, 30, 3),
+      unlocked: Math.max(1, integer(remoteProgress.unlocked, 1, 42), integer(localProgress.unlocked, 1, 42)),
+      bestScores: mergeNumberArray(remoteProgress.bestScores, localProgress.bestScores, 42, 10000000),
+      stars: mergeNumberArray(remoteProgress.stars, localProgress.stars, 42, 3),
       cleared: Array.from(new Set([...numberSet(remoteProgress.cleared), ...numberSet(localProgress.cleared)])),
       mastered: Array.from(new Set([...numberSet(remoteProgress.mastered), ...numberSet(localProgress.mastered)])),
       claimedFirstClears: Array.from(new Set([...numberSet(remoteProgress.claimedFirstClears), ...numberSet(localProgress.claimedFirstClears)])),

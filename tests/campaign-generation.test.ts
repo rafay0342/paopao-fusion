@@ -41,7 +41,7 @@ function playQueueScript(): ShotQueueState {
 
 describe('deterministic campaign identity and openings', () => {
   it('locks stable content-versioned seeds for level and mode', () => {
-    expect(CAMPAIGN_CONTENT_VERSION).toBe('2026.07.22-r1');
+    expect(CAMPAIGN_CONTENT_VERSION).toBe('2026.08.06-v16-crown-echoes');
     expect(campaignGenerationSeed({ level: 0, mode: 'classic' })).toBe(3918183452);
     expect(campaignGenerationSeed({ level: 7, mode: 'rush' })).toBe(1726054823);
     expect(campaignGenerationSeed({ level: 29, mode: 'precision' })).toBe(937350449);
@@ -90,7 +90,7 @@ describe('deterministic campaign identity and openings', () => {
 
   it('rejects invalid campaign identities instead of silently aliasing a board', () => {
     expect(() => buildCampaignOpening({ level: -1, mode: 'classic' })).toThrow(RangeError);
-    expect(() => buildCampaignOpening({ level: 30, mode: 'classic' })).toThrow(RangeError);
+    expect(() => buildCampaignOpening({ level: 42, mode: 'classic' })).toThrow(RangeError);
     expect(() => campaignGenerationSeed({ level: 0, mode: 'arcade' as 'classic' })).toThrow(RangeError);
     expect(() => campaignGenerationSeed({ level: 0, mode: 'classic', contentVersion: ' bad ' })).toThrow(RangeError);
   });

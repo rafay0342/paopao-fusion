@@ -18,7 +18,7 @@ describe('classic-client V3 contract', () => {
       expect(bootstrap.json()).toMatchObject({
         apiVersion: 3,
         content: {
-          saveVersion: 4, worlds: 6, levels: 30,
+          saveVersion: 4, worlds: 6, levels: 42,
           clients: { classic: { status: 'production', engine: 'phaser-3.90.0' } },
         },
         live: { minimumFps: 30, preferredFps: 60 },
@@ -71,7 +71,7 @@ describe('classic-client V3 contract', () => {
       const headers = { cookie, 'x-csrf-token': csrf };
       const update = await app.inject({ method: 'PUT', url: '/api/v3/progress', headers, payload: { revision: 0, progress: { unlocked: 2, stars: [3], cleared: [0] } } });
       expect(update.json()).toMatchObject({ saveVersion: 4, revision: 1, progress: { cleared: [0] } });
-      expect(update.json().progress.stars).toHaveLength(30); expect(update.json().progress.stars[0]).toBe(3);
+      expect(update.json().progress.stars).toHaveLength(42); expect(update.json().progress.stars[0]).toBe(3);
       const conflict = await app.inject({ method: 'PUT', url: '/api/v3/progress', headers, payload: { revision: 0, progress: { unlocked: 1 } } });
       expect(conflict.statusCode).toBe(409); expect(conflict.json()).toMatchObject({ error: 'revision-conflict', revision: 1 });
       const payload = { runId: 'classic-run-0001', client: 'classic', level: 0, mode: 'classic', score: 1200, durationMs: 2500, won: true, shots: 4, hits: 3, createdAt: '2026-07-22T00:00:00.000Z' };

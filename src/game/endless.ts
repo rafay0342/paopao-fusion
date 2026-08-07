@@ -138,7 +138,7 @@ export function resolveEndlessSessionV3(
   const serverNowMs = Date.parse(bootstrap.serverTime);
   const activeEvents = bootstrap.live.events.filter((event) => event.kind === 'event-boss'
     && Number.isSafeInteger(event.seed) && event.seed >= 0 && event.seed <= 0x7fffffff
-    && Number.isInteger(event.level) && event.level >= 0 && event.level < 30
+    && Number.isInteger(event.level) && event.level >= 0 && event.level < 42
     && typeof event.submissionToken === 'string' && event.submissionToken.length >= 32
     && ['mirror-orbs', 'short-fuse', 'precision-plus'].includes(event.modifier)
     && activeAt(event.startsAt, event.endsAt, serverNowMs));

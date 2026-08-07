@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const source = path.join(root, 'dist');
+const source = process.env.PAOPAO_BUILD_SOURCE
+  ? path.resolve(root, process.env.PAOPAO_BUILD_SOURCE)
+  : path.join(root, 'dist');
 const target = path.join(root, 'dist-cloudflare');
 const cinematic = 'assets/cinematics/paopao-opening-final-light-1080.mp4';
 const maximumAssetBytes = 25 * 1024 * 1024;
